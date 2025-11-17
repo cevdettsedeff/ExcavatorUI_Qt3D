@@ -100,7 +100,7 @@ Rectangle {
         }
     }
 
-    // Kontroller
+    // Kontroller - Buton Bazlı
     Rectangle {
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -118,13 +118,25 @@ Rectangle {
             anchors.centerIn: parent
             spacing: 15
 
+            // Otomatik Dönme Butonu
+            Button {
+                id: autoRotateButton
+                text: autoRotateCheckbox.checked ? "Otomatik Dönmeyi Durdur" : "Otomatik Döndür"
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 200
+                palette.button: autoRotateCheckbox.checked ? "#4CAF50" : "#555555"
+                palette.buttonText: "#ffffff"
+
+                onClicked: {
+                    autoRotateCheckbox.checked = !autoRotateCheckbox.checked
+                }
+            }
+
             CheckBox {
                 id: autoRotateCheckbox
                 checked: false
-                text: "Otomatik Döndür"
-                palette.text: "#ffffff"
+                visible: false
 
-                // Checkbox değiştiğinde animasyonu yönet
                 onCheckedChanged: {
                     if (checked) {
                         rotationAnimation.restart()
@@ -134,10 +146,43 @@ Rectangle {
                 }
             }
 
+            // Döndürme Butonları
             Row {
                 spacing: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+
                 Text {
-                    text: "Dönüş:"
+                    text: "Döndür:"
+                    color: "#ffffff"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button {
+                    text: "◄ Sola"
+                    width: 80
+                    enabled: !autoRotateCheckbox.checked
+                    onClicked: {
+                        excavatorContainer.eulerRotation.y -= 15
+                        rotationSlider.value = excavatorContainer.eulerRotation.y % 360
+                    }
+                }
+
+                Button {
+                    text: "Sağa ►"
+                    width: 80
+                    enabled: !autoRotateCheckbox.checked
+                    onClicked: {
+                        excavatorContainer.eulerRotation.y += 15
+                        rotationSlider.value = excavatorContainer.eulerRotation.y % 360
+                    }
+                }
+            }
+
+            Row {
+                spacing: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+                Text {
+                    text: "Açı:"
                     color: "#ffffff"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -146,7 +191,7 @@ Rectangle {
                     from: 0
                     to: 360
                     value: 0
-                    width: 200
+                    width: 150
                     enabled: !autoRotateCheckbox.checked
 
                     onValueChanged: {
@@ -163,24 +208,49 @@ Rectangle {
                 }
             }
 
+            // Zoom Butonları
             Row {
                 spacing: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+
                 Text {
                     text: "Zoom:"
                     color: "#ffffff"
                     anchors.verticalCenter: parent.verticalCenter
                 }
+
+                Button {
+                    text: "−"
+                    width: 40
+                    height: 40
+                    font.pixelSize: 24
+                    onClicked: {
+                        zoomSlider.value = Math.min(500, zoomSlider.value + 20)
+                    }
+                }
+
+                Button {
+                    text: "+"
+                    width: 40
+                    height: 40
+                    font.pixelSize: 24
+                    onClicked: {
+                        zoomSlider.value = Math.max(100, zoomSlider.value - 20)
+                    }
+                }
+
                 Slider {
                     id: zoomSlider
                     from: 100
                     to: 500
                     value: 200
-                    width: 200
+                    width: 150
 
                     onValueChanged: {
                         camera.position.z = value
                     }
                 }
+
                 Text {
                     text: Math.round(zoomSlider.value)
                     color: "#ffffff"
@@ -189,8 +259,10 @@ Rectangle {
                 }
             }
 
+            // Ölçek Slider
             Row {
                 spacing: 10
+                anchors.horizontalCenter: parent.horizontalCenter
                 Text {
                     text: "Ölçek:"
                     color: "#ffffff"
@@ -216,9 +288,11 @@ Rectangle {
                 }
             }
 
+            // Sıfırla Butonu
             Button {
                 text: "Sıfırla"
                 anchors.horizontalCenter: parent.horizontalCenter
+                width: 120
                 onClicked: {
                     autoRotateCheckbox.checked = false
                     rotationSlider.value = 0

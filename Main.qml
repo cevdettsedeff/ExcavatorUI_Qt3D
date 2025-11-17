@@ -16,9 +16,9 @@ ApplicationWindow {
         anchors.margins: 0
         spacing: 0
 
-        // Sol panel - 3D Excavator Modeli
+        // Sol panel - 3D Excavator Modeli (2/3 genişlik)
         Rectangle {
-            Layout.fillWidth: true
+            Layout.preferredWidth: root.width * 2 / 3
             Layout.fillHeight: true
             color: "#2a2a2a"
             
@@ -51,9 +51,9 @@ ApplicationWindow {
             color: "#404040"
         }
 
-        // Sağ panel - Harita
+        // Sağ panel - Harita (1/3 genişlik)
         Rectangle {
-            Layout.fillWidth: true
+            Layout.preferredWidth: root.width * 1 / 3
             Layout.fillHeight: true
             color: "#2a2a2a"
             
