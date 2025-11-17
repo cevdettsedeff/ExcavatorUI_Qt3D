@@ -1,3 +1,4 @@
+
 # ExcavatorUI Qt3D
 
 3D ekskavatör görselleştirme uygulaması. Qt Quick 3D kullanılarak geliştirilmiştir.
@@ -49,6 +50,7 @@ ExcavatorUI_Qt3D/
 ├── resources/             # Uygulama kaynakları
 │   ├── meshes/           # 3D mesh dosyaları
 │   └── textures/         # Doku dosyaları
+│   └── icons/            # İkon dosyaları
 ├── main.cpp              # C++ giriş noktası
 ├── CMakeLists.txt        # CMake yapılandırması
 └── README.md             # Bu dosya
@@ -63,6 +65,3 @@ ExcavatorUI_Qt3D/
 - **RESET**: Tüm ayarları varsayılana döndür
 - **Fare**: Sürükle - rotasyon, Scroll - zoom
 
-## Lisans
-
-Bu proje eğitim amaçlı geliştirilmiştir.
