@@ -16,7 +16,7 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
 # Platform-specific icon
 set(APP_ICON "")
 if(WIN32)
-    set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/app_icon.rc")
+    set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app_icon.rc")
 
     # Dosya var mı kontrol et
     if(EXISTS "${APP_ICON}")
