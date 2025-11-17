@@ -108,30 +108,6 @@ Rectangle {
                     metalness: 0.1
                 }
             }
-
-            // Sol Direk (ince - kazı için)
-            Model {
-                source: "#Cylinder"
-                position: Qt.vector3d(-30, -35, 0)
-                scale: Qt.vector3d(0.8, 15, 0.8)  // Çok ince direk
-                materials: PrincipledMaterial {
-                    baseColor: "#8B7355"  // Ahşap rengi
-                    roughness: 0.7
-                    metalness: 0.2
-                }
-            }
-
-            // Sağ Direk (ince - kazı için)
-            Model {
-                source: "#Cylinder"
-                position: Qt.vector3d(30, -35, 0)
-                scale: Qt.vector3d(0.8, 15, 0.8)  // Çok ince direk
-                materials: PrincipledMaterial {
-                    baseColor: "#8B7355"  // Ahşap rengi
-                    roughness: 0.7
-                    metalness: 0.2
-                }
-            }
         }
     }
 
