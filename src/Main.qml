@@ -10,9 +10,6 @@ ApplicationWindow {
     title: qsTr("Excavator Dashboard - 3D Model & Map")
     color: "#1a1a1a"
 
-    // Window icon - hem window'da hem de taskbar'da görünür
-    icon.source: "../resources/icons/app_icon.ico"
-
     // Ana layout - yan yana iki panel
     RowLayout {
         anchors.fill: parent

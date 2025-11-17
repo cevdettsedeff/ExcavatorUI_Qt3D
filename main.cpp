@@ -2,11 +2,15 @@
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
 #include <QQuickStyle>
+#include <QIcon>
 
 int main(int argc, char *argv[])
 {
     QQuickStyle::setStyle("Basic");
     QGuiApplication app(argc, argv);
+
+    // Set application window icon (visible in window title bar and taskbar)
+    app.setWindowIcon(QIcon(":/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"));
 
     QQmlApplicationEngine engine;
 
