@@ -63,7 +63,7 @@ Rectangle {
             position: Qt.vector3d(0, -10, 0)  // Platform üzerinde
 
             // Scale ve rotation bu node'a uygulanacak
-            property real currentScale: 1.5
+            property real currentScale: 2.5
             scale: Qt.vector3d(currentScale, currentScale, currentScale)
 
             Excavator {
@@ -84,7 +84,7 @@ Rectangle {
                 scale: Qt.vector3d(200, 200, 1)
                 materials: PrincipledMaterial {
                     baseColorMap: Texture {
-                        source: "textures/deniz.png"
+                        source: "../resources/textures/deniz.png"
                         scaleU: 40
                         scaleV: 40
                     }
@@ -350,7 +350,7 @@ Rectangle {
                     id: scaleSlider
                     from: 0.5
                     to: 3.0
-                    value: 1.5
+                    value: 2.5
                     stepSize: 0.1
                     width: 90
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -412,7 +412,7 @@ Rectangle {
                         autoRotateCheckbox.checked = false
                         rotationSlider.value = 0
                         zoomSlider.value = 200
-                        scaleSlider.value = 1.5
+                        scaleSlider.value = 2.5
                         excavatorContainer.eulerRotation.y = 0
                         camera.position = Qt.vector3d(0, 50, 200)
                         camera.eulerRotation.x = -10

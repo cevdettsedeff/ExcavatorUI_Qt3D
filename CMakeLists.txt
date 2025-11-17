@@ -10,6 +10,7 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Core
     Quick
     Quick3D
+    QuickControls2
 )
 
 qt_add_executable(ExcavatorUI_Qt3DApp
@@ -19,7 +20,7 @@ qt_add_executable(ExcavatorUI_Qt3DApp
 # Tüm mesh dosyalarını bul
 file(GLOB MESH_FILES
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-    "meshes/*.mesh"
+    "resources/meshes/*.mesh"
 )
 
 # Debug: Kaç mesh dosyası bulundu göster
@@ -34,20 +35,21 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
     URI ExcavatorUI_Qt3D
     VERSION 1.0
     QML_FILES
-        Main.qml
-        ExcavatorView.qml
-        MapView.qml
-        Excavator.qml
+        src/Main.qml
+        src/ExcavatorView.qml
+        src/MapView.qml
+        src/Excavator.qml
     RESOURCES
         ${MESH_FILES}
-        textures/deniz.png
-        textures/toprak.png
+        resources/textures/deniz.png
+        resources/textures/toprak.png
 )
 
 target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::Core
     Qt6::Quick
     Qt6::Quick3D
+    Qt6::QuickControls2
 )
 
 set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES
