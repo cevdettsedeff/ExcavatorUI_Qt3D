@@ -60,7 +60,7 @@ Rectangle {
         // Excavator Container Node - Bu node döndürülecek
         Node {
             id: excavatorContainer
-            position: Qt.vector3d(0, -35, 0)  // Yere oturmuş pozisyon
+            position: Qt.vector3d(0, 5, 0)  // Platform üzerinde
 
             // Scale ve rotation bu node'a uygulanacak
             property real currentScale: 1.5
@@ -76,37 +76,84 @@ Rectangle {
             id: groundNode
             position: Qt.vector3d(0, 0, 0)
 
-            // Zemin - Büyük tek parça (tüm alanı kapsar)
+            // Ana Deniz Zemini - Çok geniş, her yeri kaplar
             Model {
                 source: "#Rectangle"
                 position: Qt.vector3d(0, -50, 0)
                 eulerRotation.x: -90
-                scale: Qt.vector3d(100, 100, 1)
+                scale: Qt.vector3d(200, 200, 1)
+                materials: PrincipledMaterial {
+                    baseColorMap: Texture {
+                        source: "textures/deniz.png"
+                        scaleU: 40
+                        scaleV: 40
+                    }
+                    roughness: 0.2
+                    metalness: 0.7
+                }
+            }
+
+            // Platform/İskele - Ekskavatörün durduğu yer
+            Model {
+                source: "#Cube"
+                position: Qt.vector3d(0, -20, 0)
+                scale: Qt.vector3d(8, 3, 12)  // Geniş platform
                 materials: PrincipledMaterial {
                     baseColorMap: Texture {
                         source: "textures/toprak.png"
-                        scaleU: 20
-                        scaleV: 20
+                        scaleU: 3
+                        scaleV: 4
                     }
                     roughness: 0.8
                     metalness: 0.1
                 }
             }
 
-            // Deniz katmanı (ön taraf)
+            // Sol Direk
             Model {
-                source: "#Rectangle"
-                position: Qt.vector3d(0, -49.5, -250)
-                eulerRotation.x: -90
-                scale: Qt.vector3d(100, 50, 1)
+                source: "#Cylinder"
+                position: Qt.vector3d(-35, -35, 0)
+                scale: Qt.vector3d(1.5, 15, 1.5)
                 materials: PrincipledMaterial {
-                    baseColorMap: Texture {
-                        source: "textures/deniz.png"
-                        scaleU: 15
-                        scaleV: 10
-                    }
-                    roughness: 0.2
-                    metalness: 0.7
+                    baseColor: "#8B7355"  // Ahşap rengi
+                    roughness: 0.7
+                    metalness: 0.2
+                }
+            }
+
+            // Sağ Direk
+            Model {
+                source: "#Cylinder"
+                position: Qt.vector3d(35, -35, 0)
+                scale: Qt.vector3d(1.5, 15, 1.5)
+                materials: PrincipledMaterial {
+                    baseColor: "#8B7355"  // Ahşap rengi
+                    roughness: 0.7
+                    metalness: 0.2
+                }
+            }
+
+            // Sol direk üst bağlantısı
+            Model {
+                source: "#Cube"
+                position: Qt.vector3d(-35, -5, 0)
+                scale: Qt.vector3d(2, 1.5, 14)
+                materials: PrincipledMaterial {
+                    baseColor: "#654321"
+                    roughness: 0.6
+                    metalness: 0.2
+                }
+            }
+
+            // Sağ direk üst bağlantısı
+            Model {
+                source: "#Cube"
+                position: Qt.vector3d(35, -5, 0)
+                scale: Qt.vector3d(2, 1.5, 14)
+                materials: PrincipledMaterial {
+                    baseColor: "#654321"
+                    roughness: 0.6
+                    metalness: 0.2
                 }
             }
         }
