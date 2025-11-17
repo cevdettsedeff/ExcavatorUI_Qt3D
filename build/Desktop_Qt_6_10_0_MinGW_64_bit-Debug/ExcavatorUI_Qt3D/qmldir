@@ -1,9 +1,0 @@
-module ExcavatorUI_Qt3D
-typeinfo ExcavatorUI_Qt3DApp.qmltypes
-prefer :/ExcavatorUI_Qt3D/
-Main 1.0 src/Main.qml
-ExcavatorView 1.0 src/ExcavatorView.qml
-MapView 1.0 src/MapView.qml
-Excavator 1.0 src/Excavator.qml
-depends QtQuick
-
