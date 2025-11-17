@@ -93,16 +93,16 @@ Rectangle {
                 }
             }
 
-            // Platform/İskele - Ekskavatörün durduğu yer (daha küçük)
+            // Platform/İskele - Ekskavatörün durduğu yer (çok küçük - sadece ekskavatör)
             Model {
                 source: "#Cube"
                 position: Qt.vector3d(0, -35, 0)
-                scale: Qt.vector3d(12, 2, 8)  // Daha kompakt platform
+                scale: Qt.vector3d(6, 2, 4)  // Çok küçük platform - sadece ekskavatör sığsın
                 materials: PrincipledMaterial {
                     baseColorMap: Texture {
                         source: "textures/toprak.png"
-                        scaleU: 4
-                        scaleV: 3
+                        scaleU: 2
+                        scaleV: 1.5
                     }
                     roughness: 0.8
                     metalness: 0.1
@@ -307,7 +307,7 @@ Rectangle {
                         height: 35
                         font.pixelSize: 18
                         onClicked: {
-                            zoomSlider.value = Math.min(500, zoomSlider.value + 20)
+                            zoomSlider.value = Math.max(100, zoomSlider.value - 20)  // Uzaklaştır
                         }
                     }
 
@@ -330,7 +330,7 @@ Rectangle {
                         height: 35
                         font.pixelSize: 18
                         onClicked: {
-                            zoomSlider.value = Math.max(100, zoomSlider.value - 20)
+                            zoomSlider.value = Math.min(500, zoomSlider.value + 20)  // Yakınlaştır
                         }
                     }
                 }
