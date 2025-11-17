@@ -40,6 +40,8 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         Excavator.qml
     RESOURCES
         ${MESH_FILES}
+        textures/deniz.png
+        textures/toprak.png
 )
 
 target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE

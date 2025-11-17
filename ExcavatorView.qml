@@ -71,40 +71,53 @@ Rectangle {
             }
         }
 
-        // Zemin - Ön taraf (Deniz)
+        // Zemin - Ön taraf (Deniz) - Texture kullanarak
         Model {
             source: "#Rectangle"
             position: Qt.vector3d(0, -50, 100)
             eulerRotation.x: -90
             scale: Qt.vector3d(20, 20, 1)
             materials: PrincipledMaterial {
-                baseColor: "#1e88e5"  // Deniz mavisi
+                baseColorMap: Texture {
+                    source: "textures/deniz.png"
+                    scaleU: 5
+                    scaleV: 5
+                }
                 roughness: 0.3
                 metalness: 0.6
             }
         }
 
-        // Zemin - Arka taraf (Toprak)
+        // Zemin - Arka taraf (Toprak) - Texture kullanarak
         Model {
             source: "#Rectangle"
             position: Qt.vector3d(0, -50, -100)
             eulerRotation.x: -90
             scale: Qt.vector3d(20, 20, 1)
             materials: PrincipledMaterial {
-                baseColor: "#8B4513"  // Toprak kahverengisi
+                baseColorMap: Texture {
+                    source: "textures/toprak.png"
+                    scaleU: 5
+                    scaleV: 5
+                }
                 roughness: 0.9
                 metalness: 0.1
             }
         }
 
-        // Zemin - Merkez (Geçiş bölgesi)
+        // Zemin - Merkez (Geçiş bölgesi) - Toprak texture kullanarak
         Model {
             source: "#Rectangle"
             position: Qt.vector3d(0, -49, 0)
             eulerRotation.x: -90
             scale: Qt.vector3d(20, 5, 1)
             materials: PrincipledMaterial {
-                baseColor: "#D2691E"  // Kumsal rengi
+                baseColorMap: Texture {
+                    source: "textures/toprak.png"
+                    scaleU: 3
+                    scaleV: 3
+                }
+                baseColor: "#D2691E"  // Kumsal rengi ile blend
                 roughness: 0.7
                 metalness: 0.2
             }
@@ -164,15 +177,15 @@ Rectangle {
 
         Row {
             anchors.centerIn: parent
-            spacing: 30
+            spacing: 15
 
             // Otomatik Dönme Bölümü
             Column {
-                spacing: 10
+                spacing: 8
 
                 Rectangle {
-                    width: 180
-                    height: 35
+                    width: 140
+                    height: 30
                     color: "transparent"
 
                     Rectangle {
@@ -185,9 +198,9 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "⚙ OTOMATIK DÖNME"
+                        text: "⚙ OTO DÖNME"
                         color: "#00bcd4"
-                        font.pixelSize: 13
+                        font.pixelSize: 11
                         font.bold: true
                     }
                 }
@@ -196,8 +209,8 @@ Rectangle {
                     id: autoRotateButton
                     text: autoRotateCheckbox.checked ? "⏸ Durdur" : "▶ Başlat"
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: 180
-                    height: 55
+                    width: 140
+                    height: 50
 
                     background: Rectangle {
                         color: autoRotateCheckbox.checked ? "#4CAF50" : "#424242"
@@ -241,11 +254,11 @@ Rectangle {
 
             // Açı Bölümü
             Column {
-                spacing: 10
+                spacing: 8
 
                 Rectangle {
-                    width: 250
-                    height: 35
+                    width: 200
+                    height: 30
                     color: "transparent"
 
                     Rectangle {
@@ -258,21 +271,21 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "🔄 AÇI KONTROLÜ"
+                        text: "🔄 AÇI"
                         color: "#ffc107"
-                        font.pixelSize: 13
+                        font.pixelSize: 11
                         font.bold: true
                     }
                 }
 
                 Row {
-                    spacing: 10
+                    spacing: 5
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     Button {
                         text: "◄"
-                        width: 50
-                        height: 50
+                        width: 40
+                        height: 40
                         enabled: !autoRotateCheckbox.checked
                         font.pixelSize: 20
                         onClicked: {
@@ -286,7 +299,7 @@ Rectangle {
                         from: 0
                         to: 360
                         value: 0
-                        width: 120
+                        width: 90
                         enabled: !autoRotateCheckbox.checked
                         anchors.verticalCenter: parent.verticalCenter
 
@@ -299,10 +312,10 @@ Rectangle {
 
                     Button {
                         text: "►"
-                        width: 50
-                        height: 50
+                        width: 40
+                        height: 40
                         enabled: !autoRotateCheckbox.checked
-                        font.pixelSize: 20
+                        font.pixelSize: 16
                         onClicked: {
                             excavatorContainer.eulerRotation.y += 15
                             rotationSlider.value = excavatorContainer.eulerRotation.y % 360
@@ -312,9 +325,9 @@ Rectangle {
                     Text {
                         text: Math.round(rotationSlider.value) + "°"
                         color: "#ffffff"
-                        width: 45
+                        width: 35
                         anchors.verticalCenter: parent.verticalCenter
-                        font.pixelSize: 14
+                        font.pixelSize: 12
                     }
                 }
             }
@@ -333,11 +346,11 @@ Rectangle {
 
             // Zoom Bölümü
             Column {
-                spacing: 10
+                spacing: 8
 
                 Rectangle {
-                    width: 250
-                    height: 35
+                    width: 200
+                    height: 30
                     color: "transparent"
 
                     Rectangle {
@@ -352,20 +365,20 @@ Rectangle {
                         anchors.centerIn: parent
                         text: "🔍 ZOOM"
                         color: "#9c27b0"
-                        font.pixelSize: 13
+                        font.pixelSize: 11
                         font.bold: true
                     }
                 }
 
                 Row {
-                    spacing: 10
+                    spacing: 5
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     Button {
                         text: "−"
-                        width: 50
-                        height: 50
-                        font.pixelSize: 24
+                        width: 40
+                        height: 40
+                        font.pixelSize: 20
                         onClicked: {
                             zoomSlider.value = Math.min(500, zoomSlider.value + 20)
                         }
@@ -376,7 +389,7 @@ Rectangle {
                         from: 100
                         to: 500
                         value: 200
-                        width: 120
+                        width: 90
                         anchors.verticalCenter: parent.verticalCenter
 
                         onValueChanged: {
@@ -386,9 +399,9 @@ Rectangle {
 
                     Button {
                         text: "+"
-                        width: 50
-                        height: 50
-                        font.pixelSize: 24
+                        width: 40
+                        height: 40
+                        font.pixelSize: 20
                         onClicked: {
                             zoomSlider.value = Math.max(100, zoomSlider.value - 20)
                         }
@@ -397,9 +410,9 @@ Rectangle {
                     Text {
                         text: Math.round(zoomSlider.value)
                         color: "#ffffff"
-                        width: 45
+                        width: 35
                         anchors.verticalCenter: parent.verticalCenter
-                        font.pixelSize: 14
+                        font.pixelSize: 12
                     }
                 }
             }
@@ -418,11 +431,11 @@ Rectangle {
 
             // Ölçek Bölümü
             Column {
-                spacing: 10
+                spacing: 8
 
                 Rectangle {
-                    width: 220
-                    height: 35
+                    width: 160
+                    height: 30
                     color: "transparent"
 
                     Rectangle {
@@ -437,13 +450,13 @@ Rectangle {
                         anchors.centerIn: parent
                         text: "📏 ÖLÇEK"
                         color: "#ff5722"
-                        font.pixelSize: 13
+                        font.pixelSize: 11
                         font.bold: true
                     }
                 }
 
                 Row {
-                    spacing: 10
+                    spacing: 5
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     Slider {
@@ -452,7 +465,7 @@ Rectangle {
                         to: 3.0
                         value: 1.5
                         stepSize: 0.1
-                        width: 150
+                        width: 100
                         anchors.verticalCenter: parent.verticalCenter
 
                         onValueChanged: {
@@ -463,9 +476,9 @@ Rectangle {
                     Text {
                         text: scaleSlider.value.toFixed(1) + "x"
                         color: "#ffffff"
-                        width: 50
+                        width: 40
                         anchors.verticalCenter: parent.verticalCenter
-                        font.pixelSize: 14
+                        font.pixelSize: 12
                     }
                 }
             }
@@ -484,11 +497,11 @@ Rectangle {
 
             // Sıfırla Bölümü
             Column {
-                spacing: 10
+                spacing: 8
 
                 Rectangle {
-                    width: 130
-                    height: 35
+                    width: 100
+                    height: 30
                     color: "transparent"
 
                     Rectangle {
@@ -503,7 +516,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: "🔄 RESET"
                         color: "#f44336"
-                        font.pixelSize: 13
+                        font.pixelSize: 11
                         font.bold: true
                     }
                 }
@@ -511,8 +524,8 @@ Rectangle {
                 Button {
                     text: "Sıfırla"
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: 130
-                    height: 55
+                    width: 100
+                    height: 50
 
                     background: Rectangle {
                         color: "#e53935"
