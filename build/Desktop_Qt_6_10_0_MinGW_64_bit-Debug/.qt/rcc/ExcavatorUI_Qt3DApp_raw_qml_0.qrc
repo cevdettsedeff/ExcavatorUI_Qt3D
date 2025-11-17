@@ -1,9 +1,0 @@
-<RCC>
-  <qresource prefix="/ExcavatorUI_Qt3D/">
-    <file alias="src/Main.qml">C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/src/Main.qml</file>
-    <file alias="src/ExcavatorView.qml">C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/src/ExcavatorView.qml</file>
-    <file alias="src/MapView.qml">C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/src/MapView.qml</file>
-    <file alias="src/Excavator.qml">C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/src/Excavator.qml</file>
-  </qresource>
-</RCC>
-
