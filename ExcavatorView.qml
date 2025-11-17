@@ -71,55 +71,43 @@ Rectangle {
             }
         }
 
-        // Zemin - Ön taraf (Deniz) - Texture kullanarak
-        Model {
-            source: "#Rectangle"
-            position: Qt.vector3d(0, -50, -200)  // Excavator'ın ön tarafı
-            eulerRotation.x: -90
-            scale: Qt.vector3d(30, 30, 1)
-            materials: PrincipledMaterial {
-                baseColorMap: Texture {
-                    source: "textures/deniz.png"
-                    scaleU: 8
-                    scaleV: 8
-                }
-                roughness: 0.3
-                metalness: 0.6
-            }
-        }
+        // Sabit Zemin Düğümü - Excavator dönerken sabit kalır
+        Node {
+            id: groundNode
+            position: Qt.vector3d(0, 0, 0)
 
-        // Zemin - Arka taraf (Toprak) - Texture kullanarak
-        Model {
-            source: "#Rectangle"
-            position: Qt.vector3d(0, -50, 200)  // Excavator'ın arka tarafı
-            eulerRotation.x: -90
-            scale: Qt.vector3d(30, 30, 1)
-            materials: PrincipledMaterial {
-                baseColorMap: Texture {
-                    source: "textures/toprak.png"
-                    scaleU: 8
-                    scaleV: 8
+            // Zemin - Büyük tek parça (tüm alanı kapsar)
+            Model {
+                source: "#Rectangle"
+                position: Qt.vector3d(0, -50, 0)
+                eulerRotation.x: -90
+                scale: Qt.vector3d(100, 100, 1)
+                materials: PrincipledMaterial {
+                    baseColorMap: Texture {
+                        source: "textures/toprak.png"
+                        scaleU: 20
+                        scaleV: 20
+                    }
+                    roughness: 0.8
+                    metalness: 0.1
                 }
-                roughness: 0.9
-                metalness: 0.1
             }
-        }
 
-        // Zemin - Merkez (Excavator'ın altı)
-        Model {
-            source: "#Rectangle"
-            position: Qt.vector3d(0, -50, 0)
-            eulerRotation.x: -90
-            scale: Qt.vector3d(30, 10, 1)
-            materials: PrincipledMaterial {
-                baseColorMap: Texture {
-                    source: "textures/toprak.png"
-                    scaleU: 5
-                    scaleV: 3
+            // Deniz katmanı (ön taraf)
+            Model {
+                source: "#Rectangle"
+                position: Qt.vector3d(0, -49.5, -250)
+                eulerRotation.x: -90
+                scale: Qt.vector3d(100, 50, 1)
+                materials: PrincipledMaterial {
+                    baseColorMap: Texture {
+                        source: "textures/deniz.png"
+                        scaleU: 15
+                        scaleV: 10
+                    }
+                    roughness: 0.2
+                    metalness: 0.7
                 }
-                baseColor: "#D2691E"
-                roughness: 0.7
-                metalness: 0.2
             }
         }
     }

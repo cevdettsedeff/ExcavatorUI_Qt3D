@@ -36,7 +36,7 @@ ApplicationWindow {
                 
                 Text {
                     anchors.centerIn: parent
-                    text: "3D Araba Modeli"
+                    text: "3D Ekskavatör Modeli"
                     font.pixelSize: 20
                     font.bold: true
                     color: "#ffffff"
