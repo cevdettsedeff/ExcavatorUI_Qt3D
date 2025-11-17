@@ -11,7 +11,7 @@ Rectangle {
         id: view3D
         anchors.fill: parent
         anchors.topMargin: 60
-        anchors.bottomMargin: 150
+        anchors.bottomMargin: 120
         anchors.margins: 20
 
         environment: SceneEnvironment {
@@ -74,14 +74,14 @@ Rectangle {
         // Zemin - Ön taraf (Deniz) - Texture kullanarak
         Model {
             source: "#Rectangle"
-            position: Qt.vector3d(0, -50, 100)
+            position: Qt.vector3d(0, -50, -200)  // Excavator'ın ön tarafı
             eulerRotation.x: -90
-            scale: Qt.vector3d(20, 20, 1)
+            scale: Qt.vector3d(30, 30, 1)
             materials: PrincipledMaterial {
                 baseColorMap: Texture {
                     source: "textures/deniz.png"
-                    scaleU: 5
-                    scaleV: 5
+                    scaleU: 8
+                    scaleV: 8
                 }
                 roughness: 0.3
                 metalness: 0.6
@@ -91,33 +91,33 @@ Rectangle {
         // Zemin - Arka taraf (Toprak) - Texture kullanarak
         Model {
             source: "#Rectangle"
-            position: Qt.vector3d(0, -50, -100)
+            position: Qt.vector3d(0, -50, 200)  // Excavator'ın arka tarafı
             eulerRotation.x: -90
-            scale: Qt.vector3d(20, 20, 1)
+            scale: Qt.vector3d(30, 30, 1)
             materials: PrincipledMaterial {
                 baseColorMap: Texture {
                     source: "textures/toprak.png"
-                    scaleU: 5
-                    scaleV: 5
+                    scaleU: 8
+                    scaleV: 8
                 }
                 roughness: 0.9
                 metalness: 0.1
             }
         }
 
-        // Zemin - Merkez (Geçiş bölgesi) - Toprak texture kullanarak
+        // Zemin - Merkez (Excavator'ın altı)
         Model {
             source: "#Rectangle"
-            position: Qt.vector3d(0, -49, 0)
+            position: Qt.vector3d(0, -50, 0)
             eulerRotation.x: -90
-            scale: Qt.vector3d(20, 5, 1)
+            scale: Qt.vector3d(30, 10, 1)
             materials: PrincipledMaterial {
                 baseColorMap: Texture {
                     source: "textures/toprak.png"
-                    scaleU: 3
+                    scaleU: 5
                     scaleV: 3
                 }
-                baseColor: "#D2691E"  // Kumsal rengi ile blend
+                baseColor: "#D2691E"
                 roughness: 0.7
                 metalness: 0.2
             }
@@ -148,10 +148,10 @@ Rectangle {
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         anchors.bottomMargin: 10
-        height: 130
+        height: 100
         color: "#1e1e1e"
         opacity: 0.98
-        radius: 12
+        radius: 10
         border.color: "#505050"
         border.width: 2
 
@@ -177,59 +177,38 @@ Rectangle {
 
         Row {
             anchors.centerIn: parent
-            spacing: 15
+            spacing: 8
 
             // Otomatik Dönme Bölümü
             Column {
-                spacing: 8
+                spacing: 5
 
-                Rectangle {
-                    width: 140
-                    height: 30
-                    color: "transparent"
-
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#2d2d2d"
-                        radius: 6
-                        border.color: "#404040"
-                        border.width: 1
-                    }
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "⚙ OTO DÖNME"
-                        color: "#00bcd4"
-                        font.pixelSize: 11
-                        font.bold: true
-                    }
+                Text {
+                    text: "OTO"
+                    color: "#00bcd4"
+                    font.pixelSize: 9
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 Button {
                     id: autoRotateButton
-                    text: autoRotateCheckbox.checked ? "⏸ Durdur" : "▶ Başlat"
+                    text: autoRotateCheckbox.checked ? "⏸" : "▶"
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: 140
-                    height: 50
+                    width: 45
+                    height: 45
 
                     background: Rectangle {
                         color: autoRotateCheckbox.checked ? "#4CAF50" : "#424242"
-                        radius: 8
+                        radius: 6
                         border.color: autoRotateCheckbox.checked ? "#66BB6A" : "#616161"
-                        border.width: 2
-
-                        // Hover efekti için gradient
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: autoRotateCheckbox.checked ? "#66BB6A" : "#505050" }
-                            GradientStop { position: 1.0; color: autoRotateCheckbox.checked ? "#4CAF50" : "#383838" }
-                        }
+                        border.width: 1
                     }
 
                     contentItem: Text {
                         text: autoRotateButton.text
                         color: "#ffffff"
-                        font.pixelSize: 16
-                        font.bold: true
+                        font.pixelSize: 18
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
@@ -242,52 +221,33 @@ Rectangle {
 
             // Ayırıcı
             Rectangle {
-                width: 2
-                height: 110
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 0.2; color: "#505050" }
-                    GradientStop { position: 0.8; color: "#505050" }
-                    GradientStop { position: 1.0; color: "transparent" }
-                }
+                width: 1
+                height: 90
+                color: "#505050"
             }
 
             // Açı Bölümü
             Column {
-                spacing: 8
+                spacing: 5
 
-                Rectangle {
-                    width: 200
-                    height: 30
-                    color: "transparent"
-
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#2d2d2d"
-                        radius: 6
-                        border.color: "#404040"
-                        border.width: 1
-                    }
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "🔄 AÇI"
-                        color: "#ffc107"
-                        font.pixelSize: 11
-                        font.bold: true
-                    }
+                Text {
+                    text: "AÇI"
+                    color: "#ffc107"
+                    font.pixelSize: 9
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 Row {
-                    spacing: 5
+                    spacing: 3
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     Button {
                         text: "◄"
-                        width: 40
-                        height: 40
+                        width: 35
+                        height: 35
                         enabled: !autoRotateCheckbox.checked
-                        font.pixelSize: 20
+                        font.pixelSize: 16
                         onClicked: {
                             excavatorContainer.eulerRotation.y -= 15
                             rotationSlider.value = excavatorContainer.eulerRotation.y % 360
@@ -299,7 +259,7 @@ Rectangle {
                         from: 0
                         to: 360
                         value: 0
-                        width: 90
+                        width: 70
                         enabled: !autoRotateCheckbox.checked
                         anchors.verticalCenter: parent.verticalCenter
 
@@ -312,8 +272,8 @@ Rectangle {
 
                     Button {
                         text: "►"
-                        width: 40
-                        height: 40
+                        width: 35
+                        height: 35
                         enabled: !autoRotateCheckbox.checked
                         font.pixelSize: 16
                         onClicked: {
@@ -321,64 +281,44 @@ Rectangle {
                             rotationSlider.value = excavatorContainer.eulerRotation.y % 360
                         }
                     }
+                }
 
-                    Text {
-                        text: Math.round(rotationSlider.value) + "°"
-                        color: "#ffffff"
-                        width: 35
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.pixelSize: 12
-                    }
+                Text {
+                    text: Math.round(rotationSlider.value) + "°"
+                    color: "#ffffff"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.pixelSize: 10
                 }
             }
 
             // Ayırıcı
             Rectangle {
-                width: 2
-                height: 110
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 0.2; color: "#505050" }
-                    GradientStop { position: 0.8; color: "#505050" }
-                    GradientStop { position: 1.0; color: "transparent" }
-                }
+                width: 1
+                height: 90
+                color: "#505050"
             }
 
             // Zoom Bölümü
             Column {
-                spacing: 8
+                spacing: 5
 
-                Rectangle {
-                    width: 200
-                    height: 30
-                    color: "transparent"
-
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#2d2d2d"
-                        radius: 6
-                        border.color: "#404040"
-                        border.width: 1
-                    }
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "🔍 ZOOM"
-                        color: "#9c27b0"
-                        font.pixelSize: 11
-                        font.bold: true
-                    }
+                Text {
+                    text: "ZOOM"
+                    color: "#9c27b0"
+                    font.pixelSize: 9
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 Row {
-                    spacing: 5
+                    spacing: 3
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     Button {
                         text: "−"
-                        width: 40
-                        height: 40
-                        font.pixelSize: 20
+                        width: 35
+                        height: 35
+                        font.pixelSize: 18
                         onClicked: {
                             zoomSlider.value = Math.min(500, zoomSlider.value + 20)
                         }
@@ -389,7 +329,7 @@ Rectangle {
                         from: 100
                         to: 500
                         value: 200
-                        width: 90
+                        width: 70
                         anchors.verticalCenter: parent.verticalCenter
 
                         onValueChanged: {
@@ -399,151 +339,100 @@ Rectangle {
 
                     Button {
                         text: "+"
-                        width: 40
-                        height: 40
-                        font.pixelSize: 20
+                        width: 35
+                        height: 35
+                        font.pixelSize: 18
                         onClicked: {
                             zoomSlider.value = Math.max(100, zoomSlider.value - 20)
                         }
                     }
+                }
 
-                    Text {
-                        text: Math.round(zoomSlider.value)
-                        color: "#ffffff"
-                        width: 35
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.pixelSize: 12
-                    }
+                Text {
+                    text: Math.round(zoomSlider.value)
+                    color: "#ffffff"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    font.pixelSize: 10
                 }
             }
 
             // Ayırıcı
             Rectangle {
-                width: 2
-                height: 110
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 0.2; color: "#505050" }
-                    GradientStop { position: 0.8; color: "#505050" }
-                    GradientStop { position: 1.0; color: "transparent" }
-                }
+                width: 1
+                height: 90
+                color: "#505050"
             }
 
             // Ölçek Bölümü
             Column {
-                spacing: 8
+                spacing: 5
 
-                Rectangle {
-                    width: 160
-                    height: 30
-                    color: "transparent"
+                Text {
+                    text: "ÖLÇEK"
+                    color: "#ff5722"
+                    font.pixelSize: 9
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
 
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#2d2d2d"
-                        radius: 6
-                        border.color: "#404040"
-                        border.width: 1
-                    }
+                Slider {
+                    id: scaleSlider
+                    from: 0.5
+                    to: 3.0
+                    value: 1.5
+                    stepSize: 0.1
+                    width: 90
+                    anchors.horizontalCenter: parent.horizontalCenter
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: "📏 ÖLÇEK"
-                        color: "#ff5722"
-                        font.pixelSize: 11
-                        font.bold: true
+                    onValueChanged: {
+                        excavatorContainer.currentScale = value
                     }
                 }
 
-                Row {
-                    spacing: 5
+                Text {
+                    text: scaleSlider.value.toFixed(1) + "x"
+                    color: "#ffffff"
                     anchors.horizontalCenter: parent.horizontalCenter
-
-                    Slider {
-                        id: scaleSlider
-                        from: 0.5
-                        to: 3.0
-                        value: 1.5
-                        stepSize: 0.1
-                        width: 100
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        onValueChanged: {
-                            excavatorContainer.currentScale = value
-                        }
-                    }
-
-                    Text {
-                        text: scaleSlider.value.toFixed(1) + "x"
-                        color: "#ffffff"
-                        width: 40
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.pixelSize: 12
-                    }
+                    font.pixelSize: 10
                 }
             }
 
             // Ayırıcı
             Rectangle {
-                width: 2
-                height: 110
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 0.2; color: "#505050" }
-                    GradientStop { position: 0.8; color: "#505050" }
-                    GradientStop { position: 1.0; color: "transparent" }
-                }
+                width: 1
+                height: 90
+                color: "#505050"
             }
 
             // Sıfırla Bölümü
             Column {
-                spacing: 8
+                spacing: 5
 
-                Rectangle {
-                    width: 100
-                    height: 30
-                    color: "transparent"
-
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "#2d2d2d"
-                        radius: 6
-                        border.color: "#404040"
-                        border.width: 1
-                    }
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "🔄 RESET"
-                        color: "#f44336"
-                        font.pixelSize: 11
-                        font.bold: true
-                    }
+                Text {
+                    text: "RESET"
+                    color: "#f44336"
+                    font.pixelSize: 9
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 Button {
-                    text: "Sıfırla"
+                    text: "⟲"
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: 100
-                    height: 50
+                    width: 45
+                    height: 45
 
                     background: Rectangle {
                         color: "#e53935"
-                        radius: 8
+                        radius: 6
                         border.color: "#ef5350"
-                        border.width: 2
-
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: "#ef5350" }
-                            GradientStop { position: 1.0; color: "#d32f2f" }
-                        }
+                        border.width: 1
                     }
 
                     contentItem: Text {
                         text: parent.text
                         color: "#ffffff"
-                        font.pixelSize: 14
-                        font.bold: true
+                        font.pixelSize: 24
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
