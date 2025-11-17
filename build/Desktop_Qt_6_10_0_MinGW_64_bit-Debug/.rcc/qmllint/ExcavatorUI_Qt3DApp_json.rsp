@@ -1,0 +1,17 @@
+--bare
+-I
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug
+-I
+C:/Qt/6.10.0/mingw_64/qml
+--resource
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/.qt/rcc/qmake_ExcavatorUI_Qt3D.qrc
+--resource
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/.qt/rcc/ExcavatorUI_Qt3DApp_raw_qml_0.qrc
+--resource
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/.qt/rcc/ExcavatorUI_Qt3DApp_raw_res_0.qrc
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/Main.qml
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/ExcavatorView.qml
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/MapView.qml
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/Excavator.qml
+--json
+C:/Users/cevde/Desktop/Excavator/ExcavatorUI_Qt3D/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/ExcavatorUI_Qt3DApp_qmllint.json
