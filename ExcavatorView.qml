@@ -60,7 +60,7 @@ Rectangle {
         // Excavator Container Node - Bu node döndürülecek
         Node {
             id: excavatorContainer
-            position: Qt.vector3d(0, 5, 0)  // Platform üzerinde
+            position: Qt.vector3d(0, -10, 0)  // Platform üzerinde
 
             // Scale ve rotation bu node'a uygulanacak
             property real currentScale: 1.5
@@ -93,27 +93,27 @@ Rectangle {
                 }
             }
 
-            // Platform/İskele - Ekskavatörün durduğu yer
+            // Platform/İskele - Ekskavatörün durduğu yer (daha küçük)
             Model {
                 source: "#Cube"
-                position: Qt.vector3d(0, -20, 0)
-                scale: Qt.vector3d(8, 3, 12)  // Geniş platform
+                position: Qt.vector3d(0, -35, 0)
+                scale: Qt.vector3d(12, 2, 8)  // Daha kompakt platform
                 materials: PrincipledMaterial {
                     baseColorMap: Texture {
                         source: "textures/toprak.png"
-                        scaleU: 3
-                        scaleV: 4
+                        scaleU: 4
+                        scaleV: 3
                     }
                     roughness: 0.8
                     metalness: 0.1
                 }
             }
 
-            // Sol Direk
+            // Sol Direk (daha kalın)
             Model {
                 source: "#Cylinder"
-                position: Qt.vector3d(-35, -35, 0)
-                scale: Qt.vector3d(1.5, 15, 1.5)
+                position: Qt.vector3d(-40, -35, 0)
+                scale: Qt.vector3d(3, 15, 3)  // Daha kalın direk
                 materials: PrincipledMaterial {
                     baseColor: "#8B7355"  // Ahşap rengi
                     roughness: 0.7
@@ -121,38 +121,14 @@ Rectangle {
                 }
             }
 
-            // Sağ Direk
+            // Sağ Direk (daha kalın)
             Model {
                 source: "#Cylinder"
-                position: Qt.vector3d(35, -35, 0)
-                scale: Qt.vector3d(1.5, 15, 1.5)
+                position: Qt.vector3d(40, -35, 0)
+                scale: Qt.vector3d(3, 15, 3)  // Daha kalın direk
                 materials: PrincipledMaterial {
                     baseColor: "#8B7355"  // Ahşap rengi
                     roughness: 0.7
-                    metalness: 0.2
-                }
-            }
-
-            // Sol direk üst bağlantısı
-            Model {
-                source: "#Cube"
-                position: Qt.vector3d(-35, -5, 0)
-                scale: Qt.vector3d(2, 1.5, 14)
-                materials: PrincipledMaterial {
-                    baseColor: "#654321"
-                    roughness: 0.6
-                    metalness: 0.2
-                }
-            }
-
-            // Sağ direk üst bağlantısı
-            Model {
-                source: "#Cube"
-                position: Qt.vector3d(35, -5, 0)
-                scale: Qt.vector3d(2, 1.5, 14)
-                materials: PrincipledMaterial {
-                    baseColor: "#654321"
-                    roughness: 0.6
                     metalness: 0.2
                 }
             }
