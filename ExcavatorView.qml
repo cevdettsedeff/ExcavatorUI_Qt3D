@@ -60,7 +60,7 @@ Rectangle {
         // Excavator Container Node - Bu node döndürülecek
         Node {
             id: excavatorContainer
-            position: Qt.vector3d(0, 0, 0)
+            position: Qt.vector3d(0, -35, 0)  // Yere oturmuş pozisyon
 
             // Scale ve rotation bu node'a uygulanacak
             property real currentScale: 1.5
@@ -132,13 +132,21 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 10
-        height: 120
-        color: "#1a1a1a"
-        opacity: 0.95
-        radius: 10
-        border.color: "#404040"
-        border.width: 1
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        anchors.bottomMargin: 10
+        height: 130
+        color: "#1e1e1e"
+        opacity: 0.98
+        radius: 12
+        border.color: "#505050"
+        border.width: 2
+
+        // Gradient arka plan için
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#252525" }
+            GradientStop { position: 1.0; color: "#1a1a1a" }
+        }
 
         CheckBox {
             id: autoRotateCheckbox
@@ -156,37 +164,62 @@ Rectangle {
 
         Row {
             anchors.centerIn: parent
-            spacing: 40
+            spacing: 30
 
             // Otomatik Dönme Bölümü
             Column {
-                spacing: 8
+                spacing: 10
 
                 Rectangle {
                     width: 180
-                    height: 30
-                    color: "#2a2a2a"
-                    radius: 5
+                    height: 35
+                    color: "transparent"
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "#2d2d2d"
+                        radius: 6
+                        border.color: "#404040"
+                        border.width: 1
+                    }
 
                     Text {
                         anchors.centerIn: parent
-                        text: "OTOMATIK DÖNME"
-                        color: "#ffffff"
-                        font.pixelSize: 12
+                        text: "⚙ OTOMATIK DÖNME"
+                        color: "#00bcd4"
+                        font.pixelSize: 13
                         font.bold: true
                     }
                 }
 
                 Button {
                     id: autoRotateButton
-                    text: autoRotateCheckbox.checked ? "Durdur ⏸" : "Başlat ▶"
+                    text: autoRotateCheckbox.checked ? "⏸ Durdur" : "▶ Başlat"
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: 180
-                    height: 50
-                    palette.button: autoRotateCheckbox.checked ? "#4CAF50" : "#555555"
-                    palette.buttonText: "#ffffff"
-                    font.pixelSize: 16
-                    font.bold: true
+                    height: 55
+
+                    background: Rectangle {
+                        color: autoRotateCheckbox.checked ? "#4CAF50" : "#424242"
+                        radius: 8
+                        border.color: autoRotateCheckbox.checked ? "#66BB6A" : "#616161"
+                        border.width: 2
+
+                        // Hover efekti için gradient
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: autoRotateCheckbox.checked ? "#66BB6A" : "#505050" }
+                            GradientStop { position: 1.0; color: autoRotateCheckbox.checked ? "#4CAF50" : "#383838" }
+                        }
+                    }
+
+                    contentItem: Text {
+                        text: autoRotateButton.text
+                        color: "#ffffff"
+                        font.pixelSize: 16
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
 
                     onClicked: {
                         autoRotateCheckbox.checked = !autoRotateCheckbox.checked
@@ -197,25 +230,37 @@ Rectangle {
             // Ayırıcı
             Rectangle {
                 width: 2
-                height: 100
-                color: "#404040"
+                height: 110
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 0.2; color: "#505050" }
+                    GradientStop { position: 0.8; color: "#505050" }
+                    GradientStop { position: 1.0; color: "transparent" }
+                }
             }
 
             // Açı Bölümü
             Column {
-                spacing: 8
+                spacing: 10
 
                 Rectangle {
                     width: 250
-                    height: 30
-                    color: "#2a2a2a"
-                    radius: 5
+                    height: 35
+                    color: "transparent"
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "#2d2d2d"
+                        radius: 6
+                        border.color: "#404040"
+                        border.width: 1
+                    }
 
                     Text {
                         anchors.centerIn: parent
-                        text: "AÇI KONTROLÜ"
-                        color: "#ffffff"
-                        font.pixelSize: 12
+                        text: "🔄 AÇI KONTROLÜ"
+                        color: "#ffc107"
+                        font.pixelSize: 13
                         font.bold: true
                     }
                 }
@@ -277,25 +322,37 @@ Rectangle {
             // Ayırıcı
             Rectangle {
                 width: 2
-                height: 100
-                color: "#404040"
+                height: 110
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 0.2; color: "#505050" }
+                    GradientStop { position: 0.8; color: "#505050" }
+                    GradientStop { position: 1.0; color: "transparent" }
+                }
             }
 
             // Zoom Bölümü
             Column {
-                spacing: 8
+                spacing: 10
 
                 Rectangle {
                     width: 250
-                    height: 30
-                    color: "#2a2a2a"
-                    radius: 5
+                    height: 35
+                    color: "transparent"
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "#2d2d2d"
+                        radius: 6
+                        border.color: "#404040"
+                        border.width: 1
+                    }
 
                     Text {
                         anchors.centerIn: parent
-                        text: "ZOOM"
-                        color: "#ffffff"
-                        font.pixelSize: 12
+                        text: "🔍 ZOOM"
+                        color: "#9c27b0"
+                        font.pixelSize: 13
                         font.bold: true
                     }
                 }
@@ -350,25 +407,37 @@ Rectangle {
             // Ayırıcı
             Rectangle {
                 width: 2
-                height: 100
-                color: "#404040"
+                height: 110
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 0.2; color: "#505050" }
+                    GradientStop { position: 0.8; color: "#505050" }
+                    GradientStop { position: 1.0; color: "transparent" }
+                }
             }
 
             // Ölçek Bölümü
             Column {
-                spacing: 8
+                spacing: 10
 
                 Rectangle {
                     width: 220
-                    height: 30
-                    color: "#2a2a2a"
-                    radius: 5
+                    height: 35
+                    color: "transparent"
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "#2d2d2d"
+                        radius: 6
+                        border.color: "#404040"
+                        border.width: 1
+                    }
 
                     Text {
                         anchors.centerIn: parent
-                        text: "ÖLÇEK"
-                        color: "#ffffff"
-                        font.pixelSize: 12
+                        text: "📏 ÖLÇEK"
+                        color: "#ff5722"
+                        font.pixelSize: 13
                         font.bold: true
                     }
                 }
@@ -404,25 +473,37 @@ Rectangle {
             // Ayırıcı
             Rectangle {
                 width: 2
-                height: 100
-                color: "#404040"
+                height: 110
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 0.2; color: "#505050" }
+                    GradientStop { position: 0.8; color: "#505050" }
+                    GradientStop { position: 1.0; color: "transparent" }
+                }
             }
 
             // Sıfırla Bölümü
             Column {
-                spacing: 8
+                spacing: 10
 
                 Rectangle {
-                    width: 120
-                    height: 30
-                    color: "#2a2a2a"
-                    radius: 5
+                    width: 130
+                    height: 35
+                    color: "transparent"
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "#2d2d2d"
+                        radius: 6
+                        border.color: "#404040"
+                        border.width: 1
+                    }
 
                     Text {
                         anchors.centerIn: parent
-                        text: "RESET"
-                        color: "#ffffff"
-                        font.pixelSize: 12
+                        text: "🔄 RESET"
+                        color: "#f44336"
+                        font.pixelSize: 13
                         font.bold: true
                     }
                 }
@@ -430,12 +511,30 @@ Rectangle {
                 Button {
                     text: "Sıfırla"
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: 120
-                    height: 50
-                    palette.button: "#e53935"
-                    palette.buttonText: "#ffffff"
-                    font.pixelSize: 14
-                    font.bold: true
+                    width: 130
+                    height: 55
+
+                    background: Rectangle {
+                        color: "#e53935"
+                        radius: 8
+                        border.color: "#ef5350"
+                        border.width: 2
+
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "#ef5350" }
+                            GradientStop { position: 1.0; color: "#d32f2f" }
+                        }
+                    }
+
+                    contentItem: Text {
+                        text: parent.text
+                        color: "#ffffff"
+                        font.pixelSize: 14
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
                     onClicked: {
                         autoRotateCheckbox.checked = false
                         rotationSlider.value = 0
