@@ -11,6 +11,7 @@ Rectangle {
         id: view3D
         anchors.fill: parent
         anchors.topMargin: 60
+        anchors.bottomMargin: 150
         anchors.margins: 20
 
         environment: SceneEnvironment {
@@ -62,7 +63,7 @@ Rectangle {
             position: Qt.vector3d(0, 0, 0)
 
             // Scale ve rotation bu node'a uygulanacak
-            property real currentScale: 1.0
+            property real currentScale: 1.5
             scale: Qt.vector3d(currentScale, currentScale, currentScale)
 
             Excavator {
@@ -70,16 +71,42 @@ Rectangle {
             }
         }
 
-        // Zemin
+        // Zemin - Ön taraf (Deniz)
         Model {
             source: "#Rectangle"
-            position: Qt.vector3d(0, -50, 0)
+            position: Qt.vector3d(0, -50, 100)
             eulerRotation.x: -90
             scale: Qt.vector3d(20, 20, 1)
             materials: PrincipledMaterial {
-                baseColor: "#2a2a2a"
+                baseColor: "#1e88e5"  // Deniz mavisi
+                roughness: 0.3
+                metalness: 0.6
+            }
+        }
+
+        // Zemin - Arka taraf (Toprak)
+        Model {
+            source: "#Rectangle"
+            position: Qt.vector3d(0, -50, -100)
+            eulerRotation.x: -90
+            scale: Qt.vector3d(20, 20, 1)
+            materials: PrincipledMaterial {
+                baseColor: "#8B4513"  // Toprak kahverengisi
                 roughness: 0.9
                 metalness: 0.1
+            }
+        }
+
+        // Zemin - Merkez (Geçiş bölgesi)
+        Model {
+            source: "#Rectangle"
+            position: Qt.vector3d(0, -49, 0)
+            eulerRotation.x: -90
+            scale: Qt.vector3d(20, 5, 1)
+            materials: PrincipledMaterial {
+                baseColor: "#D2691E"  // Kumsal rengi
+                roughness: 0.7
+                metalness: 0.2
             }
         }
     }
@@ -95,212 +122,329 @@ Rectangle {
             property: "eulerRotation.y"
             from: 0
             to: 360
-            duration: 10000
-            easing.type: Easing.InOutQuad
+            duration: 20000  // Yavaş dönme (20 saniye)
+            easing.type: Easing.Linear
         }
     }
 
-    // Kontroller - Buton Bazlı
+    // Kontroller - Alt Menü (Yatay Layout)
     Rectangle {
         anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: 20
-        width: controlsColumn.width + 40
-        height: controlsColumn.height + 40
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: 10
+        height: 120
         color: "#1a1a1a"
-        opacity: 0.9
+        opacity: 0.95
         radius: 10
         border.color: "#404040"
         border.width: 1
 
-        Column {
-            id: controlsColumn
+        CheckBox {
+            id: autoRotateCheckbox
+            checked: false
+            visible: false
+
+            onCheckedChanged: {
+                if (checked) {
+                    rotationAnimation.restart()
+                } else {
+                    rotationAnimation.stop()
+                }
+            }
+        }
+
+        Row {
             anchors.centerIn: parent
-            spacing: 15
+            spacing: 40
 
-            // Otomatik Dönme Butonu
-            Button {
-                id: autoRotateButton
-                text: autoRotateCheckbox.checked ? "Otomatik Dönmeyi Durdur" : "Otomatik Döndür"
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 200
-                palette.button: autoRotateCheckbox.checked ? "#4CAF50" : "#555555"
-                palette.buttonText: "#ffffff"
+            // Otomatik Dönme Bölümü
+            Column {
+                spacing: 8
 
-                onClicked: {
-                    autoRotateCheckbox.checked = !autoRotateCheckbox.checked
-                }
-            }
+                Rectangle {
+                    width: 180
+                    height: 30
+                    color: "#2a2a2a"
+                    radius: 5
 
-            CheckBox {
-                id: autoRotateCheckbox
-                checked: false
-                visible: false
-
-                onCheckedChanged: {
-                    if (checked) {
-                        rotationAnimation.restart()
-                    } else {
-                        rotationAnimation.stop()
-                    }
-                }
-            }
-
-            // Döndürme Butonları
-            Row {
-                spacing: 10
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                Text {
-                    text: "Döndür:"
-                    color: "#ffffff"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Button {
-                    text: "◄ Sola"
-                    width: 80
-                    enabled: !autoRotateCheckbox.checked
-                    onClicked: {
-                        excavatorContainer.eulerRotation.y -= 15
-                        rotationSlider.value = excavatorContainer.eulerRotation.y % 360
+                    Text {
+                        anchors.centerIn: parent
+                        text: "OTOMATIK DÖNME"
+                        color: "#ffffff"
+                        font.pixelSize: 12
+                        font.bold: true
                     }
                 }
 
                 Button {
-                    text: "Sağa ►"
-                    width: 80
-                    enabled: !autoRotateCheckbox.checked
+                    id: autoRotateButton
+                    text: autoRotateCheckbox.checked ? "Durdur ⏸" : "Başlat ▶"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: 180
+                    height: 50
+                    palette.button: autoRotateCheckbox.checked ? "#4CAF50" : "#555555"
+                    palette.buttonText: "#ffffff"
+                    font.pixelSize: 16
+                    font.bold: true
+
                     onClicked: {
-                        excavatorContainer.eulerRotation.y += 15
-                        rotationSlider.value = excavatorContainer.eulerRotation.y % 360
+                        autoRotateCheckbox.checked = !autoRotateCheckbox.checked
                     }
                 }
             }
 
-            Row {
-                spacing: 10
-                anchors.horizontalCenter: parent.horizontalCenter
-                Text {
-                    text: "Açı:"
-                    color: "#ffffff"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-                Slider {
-                    id: rotationSlider
-                    from: 0
-                    to: 360
-                    value: 0
-                    width: 150
-                    enabled: !autoRotateCheckbox.checked
+            // Ayırıcı
+            Rectangle {
+                width: 2
+                height: 100
+                color: "#404040"
+            }
 
-                    onValueChanged: {
-                        if (!autoRotateCheckbox.checked) {
-                            excavatorContainer.eulerRotation.y = value
+            // Açı Bölümü
+            Column {
+                spacing: 8
+
+                Rectangle {
+                    width: 250
+                    height: 30
+                    color: "#2a2a2a"
+                    radius: 5
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "AÇI KONTROLÜ"
+                        color: "#ffffff"
+                        font.pixelSize: 12
+                        font.bold: true
+                    }
+                }
+
+                Row {
+                    spacing: 10
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Button {
+                        text: "◄"
+                        width: 50
+                        height: 50
+                        enabled: !autoRotateCheckbox.checked
+                        font.pixelSize: 20
+                        onClicked: {
+                            excavatorContainer.eulerRotation.y -= 15
+                            rotationSlider.value = excavatorContainer.eulerRotation.y % 360
                         }
                     }
-                }
-                Text {
-                    text: Math.round(rotationSlider.value) + "°"
-                    color: "#ffffff"
-                    width: 50
-                    anchors.verticalCenter: parent.verticalCenter
+
+                    Slider {
+                        id: rotationSlider
+                        from: 0
+                        to: 360
+                        value: 0
+                        width: 120
+                        enabled: !autoRotateCheckbox.checked
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        onValueChanged: {
+                            if (!autoRotateCheckbox.checked) {
+                                excavatorContainer.eulerRotation.y = value
+                            }
+                        }
+                    }
+
+                    Button {
+                        text: "►"
+                        width: 50
+                        height: 50
+                        enabled: !autoRotateCheckbox.checked
+                        font.pixelSize: 20
+                        onClicked: {
+                            excavatorContainer.eulerRotation.y += 15
+                            rotationSlider.value = excavatorContainer.eulerRotation.y % 360
+                        }
+                    }
+
+                    Text {
+                        text: Math.round(rotationSlider.value) + "°"
+                        color: "#ffffff"
+                        width: 45
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.pixelSize: 14
+                    }
                 }
             }
 
-            // Zoom Butonları
-            Row {
-                spacing: 10
-                anchors.horizontalCenter: parent.horizontalCenter
+            // Ayırıcı
+            Rectangle {
+                width: 2
+                height: 100
+                color: "#404040"
+            }
 
-                Text {
-                    text: "Zoom:"
-                    color: "#ffffff"
-                    anchors.verticalCenter: parent.verticalCenter
+            // Zoom Bölümü
+            Column {
+                spacing: 8
+
+                Rectangle {
+                    width: 250
+                    height: 30
+                    color: "#2a2a2a"
+                    radius: 5
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "ZOOM"
+                        color: "#ffffff"
+                        font.pixelSize: 12
+                        font.bold: true
+                    }
+                }
+
+                Row {
+                    spacing: 10
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Button {
+                        text: "−"
+                        width: 50
+                        height: 50
+                        font.pixelSize: 24
+                        onClicked: {
+                            zoomSlider.value = Math.min(500, zoomSlider.value + 20)
+                        }
+                    }
+
+                    Slider {
+                        id: zoomSlider
+                        from: 100
+                        to: 500
+                        value: 200
+                        width: 120
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        onValueChanged: {
+                            camera.position.z = value
+                        }
+                    }
+
+                    Button {
+                        text: "+"
+                        width: 50
+                        height: 50
+                        font.pixelSize: 24
+                        onClicked: {
+                            zoomSlider.value = Math.max(100, zoomSlider.value - 20)
+                        }
+                    }
+
+                    Text {
+                        text: Math.round(zoomSlider.value)
+                        color: "#ffffff"
+                        width: 45
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.pixelSize: 14
+                    }
+                }
+            }
+
+            // Ayırıcı
+            Rectangle {
+                width: 2
+                height: 100
+                color: "#404040"
+            }
+
+            // Ölçek Bölümü
+            Column {
+                spacing: 8
+
+                Rectangle {
+                    width: 220
+                    height: 30
+                    color: "#2a2a2a"
+                    radius: 5
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "ÖLÇEK"
+                        color: "#ffffff"
+                        font.pixelSize: 12
+                        font.bold: true
+                    }
+                }
+
+                Row {
+                    spacing: 10
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Slider {
+                        id: scaleSlider
+                        from: 0.5
+                        to: 3.0
+                        value: 1.5
+                        stepSize: 0.1
+                        width: 150
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        onValueChanged: {
+                            excavatorContainer.currentScale = value
+                        }
+                    }
+
+                    Text {
+                        text: scaleSlider.value.toFixed(1) + "x"
+                        color: "#ffffff"
+                        width: 50
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.pixelSize: 14
+                    }
+                }
+            }
+
+            // Ayırıcı
+            Rectangle {
+                width: 2
+                height: 100
+                color: "#404040"
+            }
+
+            // Sıfırla Bölümü
+            Column {
+                spacing: 8
+
+                Rectangle {
+                    width: 120
+                    height: 30
+                    color: "#2a2a2a"
+                    radius: 5
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "RESET"
+                        color: "#ffffff"
+                        font.pixelSize: 12
+                        font.bold: true
+                    }
                 }
 
                 Button {
-                    text: "−"
-                    width: 40
-                    height: 40
-                    font.pixelSize: 24
+                    text: "Sıfırla"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: 120
+                    height: 50
+                    palette.button: "#e53935"
+                    palette.buttonText: "#ffffff"
+                    font.pixelSize: 14
+                    font.bold: true
                     onClicked: {
-                        zoomSlider.value = Math.min(500, zoomSlider.value + 20)
+                        autoRotateCheckbox.checked = false
+                        rotationSlider.value = 0
+                        zoomSlider.value = 200
+                        scaleSlider.value = 1.5
+                        excavatorContainer.eulerRotation.y = 0
+                        camera.position = Qt.vector3d(0, 50, 200)
+                        camera.eulerRotation.x = -10
                     }
-                }
-
-                Button {
-                    text: "+"
-                    width: 40
-                    height: 40
-                    font.pixelSize: 24
-                    onClicked: {
-                        zoomSlider.value = Math.max(100, zoomSlider.value - 20)
-                    }
-                }
-
-                Slider {
-                    id: zoomSlider
-                    from: 100
-                    to: 500
-                    value: 200
-                    width: 150
-
-                    onValueChanged: {
-                        camera.position.z = value
-                    }
-                }
-
-                Text {
-                    text: Math.round(zoomSlider.value)
-                    color: "#ffffff"
-                    width: 50
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-
-            // Ölçek Slider
-            Row {
-                spacing: 10
-                anchors.horizontalCenter: parent.horizontalCenter
-                Text {
-                    text: "Ölçek:"
-                    color: "#ffffff"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-                Slider {
-                    id: scaleSlider
-                    from: 0.5
-                    to: 3.0
-                    value: 1.0
-                    stepSize: 0.1
-                    width: 200
-
-                    onValueChanged: {
-                        excavatorContainer.currentScale = value
-                    }
-                }
-                Text {
-                    text: scaleSlider.value.toFixed(1) + "x"
-                    color: "#ffffff"
-                    width: 50
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-
-            // Sıfırla Butonu
-            Button {
-                text: "Sıfırla"
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 120
-                onClicked: {
-                    autoRotateCheckbox.checked = false
-                    rotationSlider.value = 0
-                    zoomSlider.value = 200
-                    scaleSlider.value = 1.0
-                    excavatorContainer.eulerRotation.y = 0
-                    camera.position = Qt.vector3d(0, 50, 200)
-                    camera.eulerRotation.x = -10
                 }
             }
         }
