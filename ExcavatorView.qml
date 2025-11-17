@@ -109,11 +109,11 @@ Rectangle {
                 }
             }
 
-            // Sol Direk (daha kalın)
+            // Sol Direk (ince - kazı için)
             Model {
                 source: "#Cylinder"
-                position: Qt.vector3d(-40, -35, 0)
-                scale: Qt.vector3d(3, 15, 3)  // Daha kalın direk
+                position: Qt.vector3d(-30, -35, 0)
+                scale: Qt.vector3d(0.8, 15, 0.8)  // Çok ince direk
                 materials: PrincipledMaterial {
                     baseColor: "#8B7355"  // Ahşap rengi
                     roughness: 0.7
@@ -121,11 +121,11 @@ Rectangle {
                 }
             }
 
-            // Sağ Direk (daha kalın)
+            // Sağ Direk (ince - kazı için)
             Model {
                 source: "#Cylinder"
-                position: Qt.vector3d(40, -35, 0)
-                scale: Qt.vector3d(3, 15, 3)  // Daha kalın direk
+                position: Qt.vector3d(30, -35, 0)
+                scale: Qt.vector3d(0.8, 15, 0.8)  // Çok ince direk
                 materials: PrincipledMaterial {
                     baseColor: "#8B7355"  // Ahşap rengi
                     roughness: 0.7
