@@ -10,16 +10,34 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Core
     Quick
     Quick3D
+    QuickControls2
 )
+
+# Platform-specific icon
+set(APP_ICON "")
+if(WIN32)
+    set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app_icon.rc")
+
+    # Dosya var mı kontrol et
+    if(EXISTS "${APP_ICON}")
+        message(STATUS "✓ Windows icon bulundu: ${APP_ICON}")
+    else()
+        message(WARNING "✗ Windows icon bulunamadı: ${APP_ICON}")
+        set(APP_ICON "")  # Dosya yoksa boş bırak
+    endif()
+elseif(APPLE)
+    set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app_icon.icns")
+endif()
 
 qt_add_executable(ExcavatorUI_Qt3DApp
     main.cpp
+    ${APP_ICON}
 )
 
 # Tüm mesh dosyalarını bul
 file(GLOB MESH_FILES
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-    "meshes/*.mesh"
+    "resources/meshes/*.mesh"
 )
 
 # Debug: Kaç mesh dosyası bulundu göster
@@ -34,18 +52,22 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
     URI ExcavatorUI_Qt3D
     VERSION 1.0
     QML_FILES
-        Main.qml
-        ExcavatorView.qml
-        MapView.qml
-        Excavator.qml
+        src/Main.qml
+        src/ExcavatorView.qml
+        src/MapView.qml
+        src/Excavator.qml
     RESOURCES
         ${MESH_FILES}
+        resources/textures/deniz.png
+        resources/textures/toprak.png
+        resources/icons/app_icon.ico
 )
 
 target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::Core
     Qt6::Quick
     Qt6::Quick3D
+    Qt6::QuickControls2
 )
 
 set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES

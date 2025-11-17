@@ -1,23 +1,75 @@
-# Build results
-[Dd]ebug/
-[Rr]elease/
-bin/
-obj/
+# C++ objects and libs
 
-# Visual Studio
-.vs/
+*.slo
+*.lo
+*.o
+*.a
+*.la
+*.lai
+*.so
+*.dll
+*.dylib
+
+# Qt-es
+
+/.qmake.cache
+/.qmake.stash
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+Makefile*
+*-build-*
+
+# QtCreator
+
+*.autosave
+
+#QtCtreator Qml
+*.qmlproject.user
+*.qmlproject.user.*
+
+.directory
+
+misc/
+
+# CMake
+build/
+build*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.cmake
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# Qt6 specific
+.qt/
+*.qmltc
+*.qrc.depends
+.qmlls.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+convert_to_glb.py
+
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# User files
-*.user
-*.suo
-
-# Database
-*.db
-*.db-shm
-*.db-wal
-
-# OS files
-.DS_Store
-Thumbs.db
+# Build artifacts
+ExcavatorUI
+*.app
+*.exe
