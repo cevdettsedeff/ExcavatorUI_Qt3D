@@ -5,7 +5,7 @@ import QtQuick.Layouts
 ApplicationWindow {
     id: loginWindow
     width: 400
-    height: 550
+    height: 620
     visible: true
     title: qsTr("Excavator Dashboard - Login")
     color: "#1a1a1a"
@@ -216,6 +216,70 @@ ApplicationWindow {
                         }
                     }
                 }
+
+                // Üye Ol bölümü
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 10
+                    spacing: 5
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        height: 1
+                        color: "#404040"
+                    }
+
+                    Text {
+                        text: "veya"
+                        font.pixelSize: 11
+                        color: "#888888"
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        height: 1
+                        color: "#404040"
+                    }
+                }
+
+                // Üye Ol butonu
+                Button {
+                    id: registerButton
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 45
+                    text: "Üye Ol"
+                    font.pixelSize: 14
+
+                    background: Rectangle {
+                        color: registerButton.pressed ? "#1e1e1e" : "transparent"
+                        border.color: "#3498db"
+                        border.width: 2
+                        radius: 5
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
+                    }
+
+                    contentItem: Text {
+                        text: registerButton.text
+                        font: registerButton.font
+                        color: "#3498db"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    onClicked: {
+                        // RegisterWindow'u aç
+                        var component = Qt.createComponent("RegisterWindow.qml")
+                        if (component.status === Component.Ready) {
+                            var registerWindow = component.createObject(loginWindow)
+                            registerWindow.show()
+                        } else {
+                            console.error("RegisterWindow yüklenemedi:", component.errorString())
+                        }
+                    }
+                }
             }
         }
     }
@@ -226,6 +290,11 @@ ApplicationWindow {
 
         function onLoginFailed(error) {
             errorMessage.text = error
+        }
+
+        function onLoginSucceeded() {
+            // Login başarılı, window'u kapat
+            loginWindow.close()
         }
     }
 }
