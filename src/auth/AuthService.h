@@ -25,6 +25,7 @@ signals:
     void authenticationChanged();
     void loginSucceeded();
     void loginFailed(const QString& error);
+    void loggedOut();
 
 private:
     bool m_isAuthenticated;

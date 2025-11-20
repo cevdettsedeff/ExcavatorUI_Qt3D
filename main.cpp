@@ -53,5 +53,24 @@ int main(int argc, char *argv[])
         engine.load(dashboardUrl);
     });
 
+    // Logout olduğunda login ekranına dön
+    QObject::connect(&authService, &AuthService::loggedOut, [&engine, loginUrl]() {
+        qDebug() << "Logout yapıldı, login ekranına dönülüyor...";
+
+        // Tüm mevcut QML objelerini temizle
+        auto rootObjects = engine.rootObjects();
+        for (auto obj : rootObjects) {
+            if (obj) {
+                obj->deleteLater();
+            }
+        }
+
+        // Engine'i temizle
+        engine.clearComponentCache();
+
+        // Login window'u tekrar yükle
+        engine.load(loginUrl);
+    });
+
     return app.exec();
 }

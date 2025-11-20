@@ -46,6 +46,7 @@ void AuthService::logout()
         m_isAuthenticated = false;
         m_currentUser.clear();
         emit authenticationChanged();
+        emit loggedOut();
     }
 }
 
