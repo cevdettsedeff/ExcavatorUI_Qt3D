@@ -58,7 +58,8 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
     VERSION 1.0
     QML_FILES
         src/LoginWindow.qml
-        src/RegisterWindow.qml
+        src/LoginView.qml
+        src/RegisterView.qml
         src/Main.qml
         src/ExcavatorView.qml
         src/MapView.qml

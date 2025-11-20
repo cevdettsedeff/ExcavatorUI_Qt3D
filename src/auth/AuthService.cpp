@@ -59,8 +59,15 @@ bool AuthService::registerUser(const QString& username, const QString& password)
         return false;
     }
 
-    if (password.length() < 4) {
-        qWarning() << "Şifre çok kısa";
+    // Kullanıcı adı kontrolü
+    if (username.length() < 3) {
+        qWarning() << "Kullanıcı adı çok kısa";
+        return false;
+    }
+
+    // Şifre uzunluk kontrolü (minimum 6 karakter)
+    if (password.length() < 6) {
+        qWarning() << "Şifre çok kısa (minimum 6 karakter)";
         return false;
     }
 

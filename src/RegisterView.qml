@@ -2,22 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-ApplicationWindow {
-    id: registerWindow
-    width: 400
-    height: 650
-    visible: true
-    title: qsTr("Excavator Dashboard - Üye Ol")
-    color: "#1a1a1a"
-    modality: Qt.ApplicationModal
+Item {
+    id: registerView
 
-    // Window'u ortala
-    Component.onCompleted: {
-        registerWindow.x = (Screen.width - registerWindow.width) / 2
-        registerWindow.y = (Screen.height - registerWindow.height) / 2
-    }
+    signal switchToLogin()
+    signal registrationSuccessful()
 
-    // Ana container
     Rectangle {
         anchors.fill: parent
         color: "#1a1a1a"
@@ -91,7 +81,7 @@ ApplicationWindow {
                         id: usernameField
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: "Kullanıcı adınızı seçin"
+                        placeholderText: "Kullanıcı adınızı seçin (min. 3 karakter)"
                         font.pixelSize: 14
                         color: "#ffffff"
 
@@ -121,7 +111,7 @@ ApplicationWindow {
                         id: passwordField
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: "Şifrenizi belirleyin (min. 4 karakter)"
+                        placeholderText: "Şifrenizi belirleyin"
                         echoMode: TextInput.Password
                         font.pixelSize: 14
                         color: "#ffffff"
@@ -168,22 +158,6 @@ ApplicationWindow {
                     }
                 }
 
-                // Hata/Başarı mesajı
-                Text {
-                    id: messageText
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: visible ? implicitHeight : 0
-                    text: ""
-                    font.pixelSize: 12
-                    wrapMode: Text.WordWrap
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: text !== ""
-
-                    // Dinamik renk (hata için kırmızı, başarı için yeşil)
-                    property bool isError: true
-                    color: isError ? "#e74c3c" : "#2ecc71"
-                }
-
                 // Kayıt Ol butonu
                 Button {
                     id: registerButton
@@ -193,8 +167,8 @@ ApplicationWindow {
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 &&
-                             passwordField.text.length >= 4 &&
-                             confirmPasswordField.text.length >= 4
+                             passwordField.text.length > 0 &&
+                             confirmPasswordField.text.length > 0
 
                     background: Rectangle {
                         color: registerButton.enabled ? (registerButton.pressed ? "#27ae60" : "#2ecc71") : "#555555"
@@ -214,37 +188,21 @@ ApplicationWindow {
                     }
 
                     onClicked: {
-                        messageText.text = ""
+                        // Validasyon kontrolleri
+                        var validationResult = validateForm()
 
-                        // Validasyon
-                        if (usernameField.text.length < 3) {
-                            messageText.isError = true
-                            messageText.text = "Kullanıcı adı en az 3 karakter olmalıdır"
-                            return
-                        }
-
-                        if (passwordField.text.length < 4) {
-                            messageText.isError = true
-                            messageText.text = "Şifre en az 4 karakter olmalıdır"
-                            return
-                        }
-
-                        if (passwordField.text !== confirmPasswordField.text) {
-                            messageText.isError = true
-                            messageText.text = "Şifreler eşleşmiyor"
+                        if (!validationResult.valid) {
+                            errorDialog.errorText = validationResult.error
+                            errorDialog.open()
                             return
                         }
 
                         // Kayıt işlemi
                         if (authService.registerUser(usernameField.text, passwordField.text)) {
-                            messageText.isError = false
-                            messageText.text = "Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz..."
-
-                            // 1.5 saniye sonra window'u kapat
-                            closeTimer.start()
+                            successDialog.open()
                         } else {
-                            messageText.isError = true
-                            messageText.text = "Bu kullanıcı adı zaten kullanımda"
+                            errorDialog.errorText = "Bu kullanıcı adı zaten kullanımda. Lütfen başka bir kullanıcı adı seçin."
+                            errorDialog.open()
                         }
                     }
                 }
@@ -277,14 +235,14 @@ ApplicationWindow {
                     }
 
                     onClicked: {
-                        registerWindow.close()
+                        switchToLogin()
                     }
                 }
 
                 // Bilgi mesajı
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 70
+                    Layout.preferredHeight: 90
                     color: "#2c3e50"
                     radius: 5
                     border.color: "#34495e"
@@ -297,7 +255,7 @@ ApplicationWindow {
 
                         Text {
                             Layout.fillWidth: true
-                            text: "ℹ️ Bilgi"
+                            text: "ℹ️ Şifre Gereksinimleri"
                             font.pixelSize: 11
                             font.bold: true
                             color: "#ecf0f1"
@@ -305,7 +263,7 @@ ApplicationWindow {
 
                         Text {
                             Layout.fillWidth: true
-                            text: "Kullanıcı adı en az 3 karakter\nŞifre en az 4 karakter olmalıdır"
+                            text: "• Kullanıcı adı: En az 3 karakter\n• Şifre: En az 6 karakter\n• En az 1 büyük harf, 1 küçük harf\n• En az 1 rakam içermeli"
                             font.pixelSize: 10
                             color: "#bdc3c7"
                             lineHeight: 1.3
@@ -316,14 +274,163 @@ ApplicationWindow {
         }
     }
 
-    // Başarılı kayıt sonrası window'u kapatmak için timer
-    Timer {
-        id: closeTimer
-        interval: 1500
-        running: false
-        repeat: false
-        onTriggered: {
-            registerWindow.close()
+    // Validasyon fonksiyonu
+    function validateForm() {
+        var username = usernameField.text
+        var password = passwordField.text
+        var confirmPassword = confirmPasswordField.text
+
+        // Kullanıcı adı kontrolü
+        if (username.length < 3) {
+            return {
+                valid: false,
+                error: "Kullanıcı adı en az 3 karakter olmalıdır."
+            }
+        }
+
+        if (username.length > 20) {
+            return {
+                valid: false,
+                error: "Kullanıcı adı en fazla 20 karakter olabilir."
+            }
+        }
+
+        // Özel karakterlerin kontrolü (sadece alfanumerik ve alt çizgi)
+        var usernameRegex = /^[a-zA-Z0-9_]+$/
+        if (!usernameRegex.test(username)) {
+            return {
+                valid: false,
+                error: "Kullanıcı adı sadece harf, rakam ve alt çizgi (_) içerebilir."
+            }
+        }
+
+        // Şifre uzunluk kontrolü
+        if (password.length < 6) {
+            return {
+                valid: false,
+                error: "Şifre en az 6 karakter olmalıdır."
+            }
+        }
+
+        // Büyük harf kontrolü
+        if (!/[A-Z]/.test(password)) {
+            return {
+                valid: false,
+                error: "Şifre en az 1 büyük harf içermelidir."
+            }
+        }
+
+        // Küçük harf kontrolü
+        if (!/[a-z]/.test(password)) {
+            return {
+                valid: false,
+                error: "Şifre en az 1 küçük harf içermelidir."
+            }
+        }
+
+        // Rakam kontrolü
+        if (!/[0-9]/.test(password)) {
+            return {
+                valid: false,
+                error: "Şifre en az 1 rakam içermelidir."
+            }
+        }
+
+        // Şifre eşleşme kontrolü
+        if (password !== confirmPassword) {
+            return {
+                valid: false,
+                error: "Şifreler eşleşmiyor. Lütfen aynı şifreyi tekrar girin."
+            }
+        }
+
+        return { valid: true }
+    }
+
+    // Başarı Dialog'u
+    Dialog {
+        id: successDialog
+        anchors.centerIn: parent
+        width: parent.width * 0.7
+        modal: true
+        title: "Kayıt Başarılı!"
+        standardButtons: Dialog.Ok
+
+        background: Rectangle {
+            color: "#2a2a2a"
+            border.color: "#2ecc71"
+            border.width: 2
+            radius: 10
+        }
+
+        header: Rectangle {
+            width: parent.width
+            height: 50
+            color: "#2ecc71"
+            radius: 10
+
+            Text {
+                anchors.centerIn: parent
+                text: "✓ Kayıt Başarılı!"
+                font.pixelSize: 18
+                font.bold: true
+                color: "#ffffff"
+            }
+        }
+
+        contentItem: Text {
+            text: "Hesabınız başarıyla oluşturuldu!\nGiriş sayfasına yönlendiriliyorsunuz..."
+            font.pixelSize: 14
+            color: "#ffffff"
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        onAccepted: {
+            registrationSuccessful()
+            switchToLogin()
+        }
+    }
+
+    // Hata Dialog'u
+    Dialog {
+        id: errorDialog
+        anchors.centerIn: parent
+        width: parent.width * 0.7
+        modal: true
+        title: "Hata"
+        standardButtons: Dialog.Ok
+
+        property string errorText: ""
+
+        background: Rectangle {
+            color: "#2a2a2a"
+            border.color: "#e74c3c"
+            border.width: 2
+            radius: 10
+        }
+
+        header: Rectangle {
+            width: parent.width
+            height: 50
+            color: "#e74c3c"
+            radius: 10
+
+            Text {
+                anchors.centerIn: parent
+                text: "⚠ Hata"
+                font.pixelSize: 18
+                font.bold: true
+                color: "#ffffff"
+            }
+        }
+
+        contentItem: Text {
+            text: errorDialog.errorText
+            font.pixelSize: 14
+            color: "#ffffff"
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignLeft
         }
     }
 }
