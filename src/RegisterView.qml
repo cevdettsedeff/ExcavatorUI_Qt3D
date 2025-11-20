@@ -12,10 +12,17 @@ Item {
         anchors.fill: parent
         color: "#1a1a1a"
 
-        ColumnLayout {
-            anchors.centerIn: parent
-            width: parent.width * 0.8
-            spacing: 20
+        ScrollView {
+            anchors.fill: parent
+            contentWidth: availableWidth
+            clip: true
+
+            ColumnLayout {
+                width: registerView.width * 0.8
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 20
+                anchors.topMargin: 20
+                anchors.bottomMargin: 20
 
             // Logo/Başlık bölümü
             Rectangle {
@@ -242,7 +249,7 @@ Item {
                 // Bilgi mesajı
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 90
+                    Layout.preferredHeight: 100
                     color: "#2c3e50"
                     radius: 5
                     border.color: "#34495e"
@@ -250,13 +257,13 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 10
-                        spacing: 5
+                        anchors.margins: 12
+                        spacing: 8
 
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ Şifre Gereksinimleri"
-                            font.pixelSize: 11
+                            font.pixelSize: 12
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -264,15 +271,16 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "• Kullanıcı adı: En az 3 karakter\n• Şifre: En az 6 karakter\n• En az 1 büyük harf, 1 küçük harf\n• En az 1 rakam içermeli"
-                            font.pixelSize: 10
+                            font.pixelSize: 11
                             color: "#bdc3c7"
-                            lineHeight: 1.3
+                            lineHeight: 1.4
                         }
                     }
                 }
             }
-        }
-    }
+            }  // ColumnLayout
+        }  // ScrollView
+    }  // Rectangle
 
     // Validasyon fonksiyonu
     function validateForm() {
@@ -351,9 +359,8 @@ Item {
     Dialog {
         id: successDialog
         anchors.centerIn: parent
-        width: parent.width * 0.7
+        width: Math.min(parent.width * 0.8, 350)
         modal: true
-        title: "Kayıt Başarılı!"
         standardButtons: Dialog.Ok
 
         background: Rectangle {
@@ -365,7 +372,7 @@ Item {
 
         header: Rectangle {
             width: parent.width
-            height: 50
+            height: 60
             color: "#2ecc71"
             radius: 10
 
@@ -378,12 +385,20 @@ Item {
             }
         }
 
-        contentItem: Text {
-            text: "Hesabınız başarıyla oluşturuldu!\nGiriş sayfasına yönlendiriliyorsunuz..."
-            font.pixelSize: 14
-            color: "#ffffff"
-            wrapMode: Text.WordWrap
-            horizontalAlignment: Text.AlignHCenter
+        ColumnLayout {
+            width: parent.width
+            spacing: 10
+
+            Text {
+                Layout.fillWidth: true
+                Layout.margins: 20
+                text: "Hesabınız başarıyla oluşturuldu!\n\nGiriş sayfasına yönlendiriliyorsunuz..."
+                font.pixelSize: 14
+                color: "#ffffff"
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.AlignHCenter
+                lineHeight: 1.4
+            }
         }
 
         onAccepted: {
@@ -396,9 +411,8 @@ Item {
     Dialog {
         id: errorDialog
         anchors.centerIn: parent
-        width: parent.width * 0.7
+        width: Math.min(parent.width * 0.8, 350)
         modal: true
-        title: "Hata"
         standardButtons: Dialog.Ok
 
         property string errorText: ""
@@ -412,7 +426,7 @@ Item {
 
         header: Rectangle {
             width: parent.width
-            height: 50
+            height: 60
             color: "#e74c3c"
             radius: 10
 
@@ -425,12 +439,20 @@ Item {
             }
         }
 
-        contentItem: Text {
-            text: errorDialog.errorText
-            font.pixelSize: 14
-            color: "#ffffff"
-            wrapMode: Text.WordWrap
-            horizontalAlignment: Text.AlignLeft
+        ColumnLayout {
+            width: parent.width
+            spacing: 10
+
+            Text {
+                Layout.fillWidth: true
+                Layout.margins: 20
+                text: errorDialog.errorText
+                font.pixelSize: 14
+                color: "#ffffff"
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.AlignLeft
+                lineHeight: 1.4
+            }
         }
     }
 }

@@ -11,10 +11,17 @@ Item {
         anchors.fill: parent
         color: "#1a1a1a"
 
-        ColumnLayout {
-            anchors.centerIn: parent
-            width: parent.width * 0.8
-            spacing: 20
+        ScrollView {
+            anchors.fill: parent
+            contentWidth: availableWidth
+            clip: true
+
+            ColumnLayout {
+                width: loginView.width * 0.8
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 20
+                anchors.topMargin: 20
+                anchors.bottomMargin: 20
 
             // Logo/Başlık bölümü
             Rectangle {
@@ -178,7 +185,7 @@ Item {
                 // Bilgi mesajı
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 60
+                    Layout.preferredHeight: 70
                     color: "#2c3e50"
                     radius: 5
                     border.color: "#34495e"
@@ -186,13 +193,13 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 10
-                        spacing: 5
+                        anchors.margins: 12
+                        spacing: 8
 
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ Varsayılan Kullanıcı"
-                            font.pixelSize: 11
+                            font.pixelSize: 12
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -200,9 +207,9 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "Kullanıcı Adı: admin\nŞifre: admin"
-                            font.pixelSize: 10
+                            font.pixelSize: 11
                             color: "#bdc3c7"
-                            lineHeight: 1.3
+                            lineHeight: 1.4
                         }
                     }
                 }
@@ -264,8 +271,9 @@ Item {
                     }
                 }
             }
-        }
-    }
+            }  // ColumnLayout
+        }  // ScrollView
+    }  // Rectangle
 
     // AuthService'ten gelen sinyalleri dinle
     Connections {
