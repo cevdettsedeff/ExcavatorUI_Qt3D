@@ -11,6 +11,7 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Quick
     Quick3D
     QuickControls2
+    Sql
 )
 
 # Platform-specific icon
@@ -31,6 +32,10 @@ endif()
 
 qt_add_executable(ExcavatorUI_Qt3DApp
     main.cpp
+    src/database/DatabaseManager.h
+    src/database/DatabaseManager.cpp
+    src/auth/AuthService.h
+    src/auth/AuthService.cpp
     ${APP_ICON}
 )
 
@@ -52,6 +57,9 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
     URI ExcavatorUI_Qt3D
     VERSION 1.0
     QML_FILES
+        src/LoginWindow.qml
+        src/LoginView.qml
+        src/RegisterView.qml
         src/Main.qml
         src/ExcavatorView.qml
         src/MapView.qml
@@ -68,6 +76,7 @@ target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::Quick
     Qt6::Quick3D
     Qt6::QuickControls2
+    Qt6::Sql
 )
 
 set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES
