@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
 
 Item {
     id: registerView
@@ -194,19 +193,31 @@ Item {
                             return "#2ecc71"
                         }
                         radius: 8
+                        opacity: registerButton.enabled ? 1.0 : 0.6
 
-                        layer.enabled: registerButton.enabled
-                        layer.effect: DropShadow {
-                            transparentBorder: true
-                            horizontalOffset: 0
-                            verticalOffset: registerButton.hovered ? 4 : 2
-                            radius: registerButton.hovered ? 12 : 8
-                            samples: 17
-                            color: "#80000000"
-                        }
+                        // Glow effect with border
+                        border.width: registerButton.hovered ? 2 : 0
+                        border.color: "#5ddd87"
 
                         Behavior on color {
                             ColorAnimation { duration: 150 }
+                        }
+                        Behavior on border.width {
+                            NumberAnimation { duration: 150 }
+                        }
+
+                        // Inner glow effect
+                        Rectangle {
+                            anchors.fill: parent
+                            anchors.margins: 1
+                            radius: parent.radius - 1
+                            color: "transparent"
+                            border.width: registerButton.hovered ? 1 : 0
+                            border.color: "#ffffff40"
+
+                            Behavior on border.width {
+                                NumberAnimation { duration: 150 }
+                            }
                         }
                     }
 
@@ -262,21 +273,25 @@ Item {
                         border.width: 2
                         radius: 8
 
-                        layer.enabled: backButton.hovered
-                        layer.effect: DropShadow {
-                            transparentBorder: true
-                            horizontalOffset: 0
-                            verticalOffset: 3
-                            radius: 10
-                            samples: 17
-                            color: "#60000000"
-                        }
-
                         Behavior on color {
                             ColorAnimation { duration: 150 }
                         }
                         Behavior on border.color {
                             ColorAnimation { duration: 150 }
+                        }
+
+                        // Inner glow effect
+                        Rectangle {
+                            anchors.fill: parent
+                            anchors.margins: 2
+                            radius: parent.radius - 2
+                            color: "transparent"
+                            border.width: backButton.hovered ? 1 : 0
+                            border.color: "#95a5a640"
+
+                            Behavior on border.width {
+                                NumberAnimation { duration: 150 }
+                            }
                         }
                     }
 
