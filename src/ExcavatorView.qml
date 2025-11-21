@@ -24,8 +24,8 @@ Rectangle {
         // Kamera
         PerspectiveCamera {
             id: camera
-            position: Qt.vector3d(0, 50, 200)
-            eulerRotation.x: -10
+            position: Qt.vector3d(0, 80, 200)
+            eulerRotation.x: -15
             clipNear: 1
             clipFar: 20000
             fieldOfView: 60
@@ -76,21 +76,12 @@ Rectangle {
             id: groundNode
             position: Qt.vector3d(0, 0, 0)
 
-            // 3D Grid - Harita koordinat sistemi
-            Grid3D {
-                id: mapGrid
-                gridSize: 1000
-                cellSize: 50
-                gridColor: "#00bcd4"
-                gridOpacity: 0.5
-            }
-
-            // Batimetrik Harita Düzlemi
+            // Batimetrik Harita - Izgaralı derinlik haritası
             BathymetricPlane {
                 id: bathymetricMap
-                planeSize: 1000
-                textureSource: "../resources/textures/deniz.png"
-                heightOffset: -2
+                gridSize: 1000
+                gridResolution: 20  // 20x20 grid
+                maxDepth: 50        // 50 birim derinlik
             }
         }
     }
@@ -364,6 +355,7 @@ Rectangle {
 
                         onValueChanged: {
                             camera.position.z = value
+                            camera.position.y = value * 0.4  // Y pozisyonunu da orantılı olarak ayarla
                         }
                     }
 
@@ -473,8 +465,8 @@ Rectangle {
                         zoomSlider.value = 200
                         scaleSlider.value = 2.5
                         excavatorContainer.eulerRotation.y = 0
-                        camera.position = Qt.vector3d(0, 50, 200)
-                        camera.eulerRotation.x = -10
+                        camera.position = Qt.vector3d(0, 80, 200)
+                        camera.eulerRotation.x = -15
                     }
                 }
             }
