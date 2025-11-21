@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
 Item {
     id: registerView
@@ -27,12 +28,14 @@ Item {
             // Logo/Başlık bölümü
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 120
+                Layout.preferredHeight: 100
                 color: "transparent"
+                Layout.topMargin: 10
 
                 ColumnLayout {
-                    anchors.centerIn: parent
-                    spacing: 10
+                    anchors.fill: parent
+                    anchors.topMargin: 10
+                    spacing: 8
 
                     // İkon
                     Rectangle {
@@ -177,6 +180,11 @@ Item {
                              passwordField.text.length > 0 &&
                              confirmPasswordField.text.length > 0
                     hoverEnabled: true
+                    scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
+
+                    Behavior on scale {
+                        NumberAnimation { duration: 100 }
+                    }
 
                     background: Rectangle {
                         color: {
@@ -185,7 +193,17 @@ Item {
                             if (registerButton.hovered) return "#29d170"
                             return "#2ecc71"
                         }
-                        radius: 5
+                        radius: 8
+
+                        layer.enabled: registerButton.enabled
+                        layer.effect: DropShadow {
+                            transparentBorder: true
+                            horizontalOffset: 0
+                            verticalOffset: registerButton.hovered ? 4 : 2
+                            radius: registerButton.hovered ? 12 : 8
+                            samples: 17
+                            color: "#80000000"
+                        }
 
                         Behavior on color {
                             ColorAnimation { duration: 150 }
@@ -228,6 +246,11 @@ Item {
                     text: "Geri Dön"
                     font.pixelSize: 14
                     hoverEnabled: true
+                    scale: backButton.pressed ? 0.97 : (backButton.hovered ? 1.02 : 1.0)
+
+                    Behavior on scale {
+                        NumberAnimation { duration: 100 }
+                    }
 
                     background: Rectangle {
                         color: {
@@ -237,7 +260,17 @@ Item {
                         }
                         border.color: backButton.hovered ? "#b4bec4" : "#95a5a6"
                         border.width: 2
-                        radius: 5
+                        radius: 8
+
+                        layer.enabled: backButton.hovered
+                        layer.effect: DropShadow {
+                            transparentBorder: true
+                            horizontalOffset: 0
+                            verticalOffset: 3
+                            radius: 10
+                            samples: 17
+                            color: "#60000000"
+                        }
 
                         Behavior on color {
                             ColorAnimation { duration: 150 }
@@ -267,21 +300,21 @@ Item {
                 // Bilgi mesajı
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 120
+                    Layout.preferredHeight: 140
                     color: "#2c3e50"
-                    radius: 5
+                    radius: 8
                     border.color: "#34495e"
                     border.width: 1
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 10
+                        anchors.margins: 18
+                        spacing: 12
 
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ Şifre Gereksinimleri"
-                            font.pixelSize: 13
+                            font.pixelSize: 14
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -289,9 +322,9 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "• Kullanıcı adı: En az 3 karakter\n• Şifre: En az 6 karakter\n• En az 1 büyük harf, 1 küçük harf\n• En az 1 rakam içermeli"
-                            font.pixelSize: 12
+                            font.pixelSize: 13
                             color: "#bdc3c7"
-                            lineHeight: 1.5
+                            lineHeight: 1.6
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
 Item {
     id: loginView
@@ -26,12 +27,14 @@ Item {
             // Logo/Başlık bölümü
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 120
+                Layout.preferredHeight: 100
                 color: "transparent"
+                Layout.topMargin: 10
 
                 ColumnLayout {
-                    anchors.centerIn: parent
-                    spacing: 10
+                    anchors.fill: parent
+                    anchors.topMargin: 10
+                    spacing: 8
 
                     // İkon
                     Rectangle {
@@ -154,6 +157,11 @@ Item {
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
                     hoverEnabled: true
+                    scale: loginButton.pressed ? 0.97 : (loginButton.hovered ? 1.02 : 1.0)
+
+                    Behavior on scale {
+                        NumberAnimation { duration: 100 }
+                    }
 
                     background: Rectangle {
                         color: {
@@ -162,7 +170,17 @@ Item {
                             if (loginButton.hovered) return "#2c90c9"
                             return "#3498db"
                         }
-                        radius: 5
+                        radius: 8
+
+                        layer.enabled: loginButton.enabled
+                        layer.effect: DropShadow {
+                            transparentBorder: true
+                            horizontalOffset: 0
+                            verticalOffset: loginButton.hovered ? 4 : 2
+                            radius: loginButton.hovered ? 12 : 8
+                            samples: 17
+                            color: "#80000000"
+                        }
 
                         Behavior on color {
                             ColorAnimation { duration: 150 }
@@ -191,21 +209,21 @@ Item {
                 // Bilgi mesajı
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 90
+                    Layout.preferredHeight: 110
                     color: "#2c3e50"
-                    radius: 5
+                    radius: 8
                     border.color: "#34495e"
                     border.width: 1
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 10
+                        anchors.margins: 18
+                        spacing: 12
 
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ Varsayılan Kullanıcı"
-                            font.pixelSize: 13
+                            font.pixelSize: 14
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -213,9 +231,9 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "Kullanıcı Adı: admin\nŞifre: admin"
-                            font.pixelSize: 12
+                            font.pixelSize: 13
                             color: "#bdc3c7"
-                            lineHeight: 1.5
+                            lineHeight: 1.6
                         }
                     }
                 }
@@ -253,6 +271,11 @@ Item {
                     text: "Üye Ol"
                     font.pixelSize: 14
                     hoverEnabled: true
+                    scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
+
+                    Behavior on scale {
+                        NumberAnimation { duration: 100 }
+                    }
 
                     background: Rectangle {
                         color: {
@@ -262,7 +285,17 @@ Item {
                         }
                         border.color: registerButton.hovered ? "#5dade2" : "#3498db"
                         border.width: 2
-                        radius: 5
+                        radius: 8
+
+                        layer.enabled: registerButton.hovered
+                        layer.effect: DropShadow {
+                            transparentBorder: true
+                            horizontalOffset: 0
+                            verticalOffset: 3
+                            radius: 10
+                            samples: 17
+                            color: "#60000000"
+                        }
 
                         Behavior on color {
                             ColorAnimation { duration: 150 }

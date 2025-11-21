@@ -12,6 +12,7 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Quick3D
     QuickControls2
     Sql
+    Core5Compat
 )
 
 # Platform-specific icon
@@ -77,6 +78,7 @@ target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::Quick3D
     Qt6::QuickControls2
     Qt6::Sql
+    Qt6::Core5Compat
 )
 
 set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES
