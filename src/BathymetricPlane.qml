@@ -112,10 +112,9 @@ Node {
             scale: Qt.vector3d(gridSize, 2, 2)
 
             materials: PrincipledMaterial {
-                baseColor: Qt.rgba(0.0, 0.8, 1.0, 0.8)
-                metalness: 0.7
-                roughness: 0.3
-                emissiveColor: Qt.rgba(0.0, 0.4, 0.5, 1.0)
+                baseColor: Qt.rgba(0.0, 0.9, 1.0, 1.0)
+                metalness: 0.8
+                roughness: 0.2
             }
         }
     }
