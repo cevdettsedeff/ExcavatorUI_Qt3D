@@ -32,100 +32,69 @@ Node {
         return Qt.rgba(gray, gray, gray, 1.0)
     }
 
-    // Izgara hücreleri - Üstten başlayıp aşağı inen
-    Repeater {
-        model: gridResolution * gridResolution
+    Component.onCompleted: {
+        createBathymetricGrid()
+    }
 
-        Node {
-            property int gridX: index % gridResolution
-            property int gridZ: Math.floor(index / gridResolution)
-            property real posX: -gridSize/2 + gridX * cellSize + cellSize/2
-            property real posZ: -gridSize/2 + gridZ * cellSize + cellSize/2
-            property real depth: bathymetricPlaneRoot.getDepth(gridX, gridZ)
+    function createBathymetricGrid() {
+        // Grid hücreleri oluştur
+        var cellComponent = Qt.createComponent("qrc:/qt/qml/ExcavatorUI_Qt3D/BathymetricCell.qml")
 
-            Model {
-                id: cell
-                source: "#Cube"
+        if (cellComponent.status === Component.Error) {
+            console.log("Error loading component:", cellComponent.errorString())
+            return
+        }
 
-                // Üst yüzey y=0'da (deniz seviyesi), aşağı doğru uzanıyor
-                position: Qt.vector3d(parent.posX, -parent.depth/2, parent.posZ)
-                scale: Qt.vector3d(cellSize, parent.depth, cellSize)
+        for (var i = 0; i < gridResolution; i++) {
+            for (var j = 0; j < gridResolution; j++) {
+                var posX = -gridSize/2 + i * cellSize + cellSize/2
+                var posZ = -gridSize/2 + j * cellSize + cellSize/2
+                var depth = getDepth(i, j)
+                var color = getColorForDepth(depth)
 
-                materials: PrincipledMaterial {
-                    baseColor: bathymetricPlaneRoot.getColorForDepth(parent.depth)
-                    metalness: 0.1
-                    roughness: 0.8
+                var cellObj = cellComponent.createObject(bathymetricPlaneRoot, {
+                    "position": Qt.vector3d(posX, -depth/2, posZ),
+                    "scale": Qt.vector3d(cellSize, depth, cellSize),
+                    "cellColor": color
+                })
+
+                if (cellObj === null) {
+                    console.log("Error creating object")
                 }
             }
         }
-    }
 
-    // Dikey X ekseni boyunca grid çizgileri
-    Repeater {
-        model: gridResolution + 1
+        // Grid çizgileri X ekseni
+        var lineComponent = Qt.createComponent("qrc:/qt/qml/ExcavatorUI_Qt3D/GridLine.qml")
 
-        Node {
-            property real linePos: -gridSize/2 + index * cellSize
+        for (var k = 0; k <= gridResolution; k++) {
+            var linePos = -gridSize/2 + k * cellSize
 
-            Model {
-                source: "#Cube"
-                position: Qt.vector3d(parent.linePos, -(minDepth + maxDepth) / 4, 0)
-                scale: Qt.vector3d(1.5, (minDepth + maxDepth) / 2, gridSize + 2)
+            // X ekseni çizgisi
+            lineComponent.createObject(bathymetricPlaneRoot, {
+                "position": Qt.vector3d(linePos, -(minDepth + maxDepth) / 4, 0),
+                "scale": Qt.vector3d(1.5, (minDepth + maxDepth) / 2, gridSize + 2)
+            })
 
-                materials: PrincipledMaterial {
-                    baseColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-                    metalness: 0.3
-                    roughness: 0.8
-                }
-            }
+            // Z ekseni çizgisi
+            lineComponent.createObject(bathymetricPlaneRoot, {
+                "position": Qt.vector3d(0, -(minDepth + maxDepth) / 4, linePos),
+                "scale": Qt.vector3d(gridSize + 2, (minDepth + maxDepth) / 2, 1.5)
+            })
         }
-    }
 
-    // Dikey Z ekseni boyunca grid çizgileri
-    Repeater {
-        model: gridResolution + 1
+        // Deniz seviyesi çerçevesi
+        var frameComponent = Qt.createComponent("qrc:/qt/qml/ExcavatorUI_Qt3D/SeaLevelFrame.qml")
 
-        Node {
-            property real linePos: -gridSize/2 + index * cellSize
+        for (var m = 0; m < 4; m++) {
+            var angle = m * 90 * Math.PI / 180
+            var offset = gridSize / 2
 
-            Model {
-                source: "#Cube"
-                position: Qt.vector3d(0, -(minDepth + maxDepth) / 4, parent.linePos)
-                scale: Qt.vector3d(gridSize + 2, (minDepth + maxDepth) / 2, 1.5)
-
-                materials: PrincipledMaterial {
-                    baseColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
-                    metalness: 0.3
-                    roughness: 0.8
-                }
-            }
-        }
-    }
-
-    // Deniz seviyesi referans çerçevesi
-    Repeater {
-        model: 4
-
-        Node {
-            property real angle: index * 90 * Math.PI / 180
-            property real offset: gridSize / 2
-
-            Model {
-                source: "#Cube"
-                position: Qt.vector3d(
-                    Math.cos(parent.angle) * parent.offset,
-                    0,
-                    Math.sin(parent.angle) * parent.offset
-                )
-                eulerRotation.y: index * 90
-                scale: Qt.vector3d(gridSize, 2, 2)
-
-                materials: PrincipledMaterial {
-                    baseColor: Qt.rgba(0.0, 0.9, 1.0, 1.0)
-                    metalness: 0.8
-                    roughness: 0.2
-                }
-            }
+            frameComponent.createObject(bathymetricPlaneRoot, {
+                "position": Qt.vector3d(Math.cos(angle) * offset, 0, Math.sin(angle) * offset),
+                "eulerRotation": Qt.vector3d(0, m * 90, 0),
+                "scale": Qt.vector3d(gridSize, 2, 2)
+            })
         }
     }
 }
