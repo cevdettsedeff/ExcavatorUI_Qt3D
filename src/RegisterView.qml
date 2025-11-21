@@ -176,9 +176,15 @@ Item {
                     enabled: usernameField.text.length > 0 &&
                              passwordField.text.length > 0 &&
                              confirmPasswordField.text.length > 0
+                    hoverEnabled: true
 
                     background: Rectangle {
-                        color: registerButton.enabled ? (registerButton.pressed ? "#27ae60" : "#2ecc71") : "#555555"
+                        color: {
+                            if (!registerButton.enabled) return "#555555"
+                            if (registerButton.pressed) return "#27ae60"
+                            if (registerButton.hovered) return "#29d170"
+                            return "#2ecc71"
+                        }
                         radius: 5
 
                         Behavior on color {
@@ -221,14 +227,22 @@ Item {
                     Layout.preferredHeight: 45
                     text: "Geri Dön"
                     font.pixelSize: 14
+                    hoverEnabled: true
 
                     background: Rectangle {
-                        color: backButton.pressed ? "#1e1e1e" : "transparent"
-                        border.color: "#95a5a6"
+                        color: {
+                            if (backButton.pressed) return "#1e1e1e"
+                            if (backButton.hovered) return "#2a2a2a"
+                            return "transparent"
+                        }
+                        border.color: backButton.hovered ? "#b4bec4" : "#95a5a6"
                         border.width: 2
                         radius: 5
 
                         Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
+                        Behavior on border.color {
                             ColorAnimation { duration: 150 }
                         }
                     }
@@ -236,9 +250,13 @@ Item {
                     contentItem: Text {
                         text: backButton.text
                         font: backButton.font
-                        color: "#95a5a6"
+                        color: backButton.hovered ? "#b4bec4" : "#95a5a6"
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
                     }
 
                     onClicked: {
@@ -249,7 +267,7 @@ Item {
                 // Bilgi mesajı
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 100
+                    Layout.preferredHeight: 120
                     color: "#2c3e50"
                     radius: 5
                     border.color: "#34495e"
@@ -257,13 +275,13 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
+                        anchors.margins: 15
+                        spacing: 10
 
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ Şifre Gereksinimleri"
-                            font.pixelSize: 12
+                            font.pixelSize: 13
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -271,9 +289,9 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "• Kullanıcı adı: En az 3 karakter\n• Şifre: En az 6 karakter\n• En az 1 büyük harf, 1 küçük harf\n• En az 1 rakam içermeli"
-                            font.pixelSize: 11
+                            font.pixelSize: 12
                             color: "#bdc3c7"
-                            lineHeight: 1.4
+                            lineHeight: 1.5
                         }
                     }
                 }

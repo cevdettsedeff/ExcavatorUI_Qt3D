@@ -153,9 +153,15 @@ Item {
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
+                    hoverEnabled: true
 
                     background: Rectangle {
-                        color: loginButton.enabled ? (loginButton.pressed ? "#2980b9" : "#3498db") : "#555555"
+                        color: {
+                            if (!loginButton.enabled) return "#555555"
+                            if (loginButton.pressed) return "#2980b9"
+                            if (loginButton.hovered) return "#2c90c9"
+                            return "#3498db"
+                        }
                         radius: 5
 
                         Behavior on color {
@@ -185,7 +191,7 @@ Item {
                 // Bilgi mesajı
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 70
+                    Layout.preferredHeight: 90
                     color: "#2c3e50"
                     radius: 5
                     border.color: "#34495e"
@@ -193,13 +199,13 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
+                        anchors.margins: 15
+                        spacing: 10
 
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ Varsayılan Kullanıcı"
-                            font.pixelSize: 12
+                            font.pixelSize: 13
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -207,9 +213,9 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "Kullanıcı Adı: admin\nŞifre: admin"
-                            font.pixelSize: 11
+                            font.pixelSize: 12
                             color: "#bdc3c7"
-                            lineHeight: 1.4
+                            lineHeight: 1.5
                         }
                     }
                 }
@@ -246,14 +252,22 @@ Item {
                     Layout.preferredHeight: 45
                     text: "Üye Ol"
                     font.pixelSize: 14
+                    hoverEnabled: true
 
                     background: Rectangle {
-                        color: registerButton.pressed ? "#1e1e1e" : "transparent"
-                        border.color: "#3498db"
+                        color: {
+                            if (registerButton.pressed) return "#1e1e1e"
+                            if (registerButton.hovered) return "#2a2a2a"
+                            return "transparent"
+                        }
+                        border.color: registerButton.hovered ? "#5dade2" : "#3498db"
                         border.width: 2
                         radius: 5
 
                         Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
+                        Behavior on border.color {
                             ColorAnimation { duration: 150 }
                         }
                     }
@@ -261,9 +275,13 @@ Item {
                     contentItem: Text {
                         text: registerButton.text
                         font: registerButton.font
-                        color: "#3498db"
+                        color: registerButton.hovered ? "#5dade2" : "#3498db"
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
                     }
 
                     onClicked: {
