@@ -45,7 +45,7 @@ Item {
 
                         Text {
                             anchors.centerIn: parent
-                            text: "🚜"
+                            text: "👷🏻"
                             font.pixelSize: 32
                         }
                     }
