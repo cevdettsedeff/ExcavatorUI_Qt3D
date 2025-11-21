@@ -80,9 +80,9 @@ Rectangle {
             BathymetricPlane {
                 id: bathymetricMap
                 gridSize: 1000
-                gridResolution: 25  // 25x25 grid
+                gridResolution: 15  // 15x15 grid
                 minDepth: 20        // 20 birim minimum derinlik
-                maxDepth: 80        // 80 birim maksimum derinlik
+                maxDepth: 60        // 60 birim maksimum derinlik
             }
         }
     }
