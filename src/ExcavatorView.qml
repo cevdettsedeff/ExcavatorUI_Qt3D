@@ -76,13 +76,11 @@ Rectangle {
             id: groundNode
             position: Qt.vector3d(0, 0, 0)
 
-            // Batimetrik Harita - Izgaralı derinlik haritası
+            // Batimetrik Harita - Basit statik grid
             BathymetricPlane {
                 id: bathymetricMap
-                gridSize: 1000
-                gridResolution: 15  // 15x15 grid
-                minDepth: 20        // 20 birim minimum derinlik
-                maxDepth: 60        // 60 birim maksimum derinlik
+                gridSize: 800
+                seaFloorDepth: 40
             }
         }
     }
