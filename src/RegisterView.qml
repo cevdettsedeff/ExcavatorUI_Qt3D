@@ -66,6 +66,7 @@ Item {
                         text: "Lütfen bilgilerinizi girin"
                         font.pixelSize: 14
                         color: "#888888"
+                        Layout.bottomMargin: 15
                     }
                 }
             }
@@ -329,7 +330,7 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ Şifre Gereksinimleri"
-                            font.pixelSize: 14
+                            font.pixelSize: 12
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -337,7 +338,7 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "• Kullanıcı adı: En az 3 karakter\n• Şifre: En az 6 karakter\n• En az 1 büyük harf, 1 küçük harf\n• En az 1 rakam içermeli"
-                            font.pixelSize: 13
+                            font.pixelSize: 11
                             color: "#bdc3c7"
                             lineHeight: 1.6
                         }

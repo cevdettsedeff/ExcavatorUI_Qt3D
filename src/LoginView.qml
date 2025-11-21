@@ -63,6 +63,7 @@ Item {
                         text: "Lütfen giriş yapın"
                         font.pixelSize: 14
                         color: "#888888"
+                        Layout.bottomMargin: 15
                     }
                 }
             }
@@ -234,7 +235,7 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ Varsayılan Kullanıcı"
-                            font.pixelSize: 14
+                            font.pixelSize: 12
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -242,7 +243,7 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: "Kullanıcı Adı: admin\nŞifre: admin"
-                            font.pixelSize: 13
+                            font.pixelSize: 11
                             color: "#bdc3c7"
                             lineHeight: 1.6
                         }
