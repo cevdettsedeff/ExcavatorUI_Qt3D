@@ -76,11 +76,22 @@ Rectangle {
             id: groundNode
             position: Qt.vector3d(0, 0, 0)
 
-            // Batimetrik Harita - Basit statik grid
-            BathymetricPlane {
-                id: bathymetricMap
-                gridSize: 800
-                seaFloorDepth: 40
+            // Düz zemin platformu
+            Model {
+                source: "#Rectangle"
+                position: Qt.vector3d(0, -5, 0)
+                eulerRotation.x: -90
+                scale: Qt.vector3d(20, 20, 1)
+
+                materials: PrincipledMaterial {
+                    baseColorMap: Texture {
+                        source: "../resources/textures/toprak.png"
+                        scaleU: 5
+                        scaleV: 5
+                    }
+                    roughness: 0.8
+                    metalness: 0.2
+                }
             }
         }
     }
