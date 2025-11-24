@@ -24,8 +24,8 @@ Rectangle {
         // Kamera
         PerspectiveCamera {
             id: camera
-            position: Qt.vector3d(0, 50, 200)
-            eulerRotation.x: -10
+            position: Qt.vector3d(0, 80, 200)
+            eulerRotation.x: -15
             clipNear: 1
             clipFar: 20000
             fieldOfView: 60
@@ -60,7 +60,7 @@ Rectangle {
         // Excavator Container Node - Bu node döndürülecek
         Node {
             id: excavatorContainer
-            position: Qt.vector3d(0, -10, 0)  // Platform üzerinde
+            position: Qt.vector3d(0, 0, 0)  // Grid üzerinde (y=0 seviyesi)
 
             // Scale ve rotation bu node'a uygulanacak
             property real currentScale: 2.5
@@ -76,20 +76,21 @@ Rectangle {
             id: groundNode
             position: Qt.vector3d(0, 0, 0)
 
-            // Ana Deniz Zemini - Çok geniş, her yeri kaplar
+            // Düz zemin platformu
             Model {
                 source: "#Rectangle"
-                position: Qt.vector3d(0, -50, 0)
+                position: Qt.vector3d(0, -5, 0)
                 eulerRotation.x: -90
-                scale: Qt.vector3d(200, 200, 1)
+                scale: Qt.vector3d(20, 20, 1)
+
                 materials: PrincipledMaterial {
                     baseColorMap: Texture {
-                        source: "../resources/textures/deniz.png"
-                        scaleU: 40
-                        scaleV: 40
+                        source: "../resources/textures/toprak.png"
+                        scaleU: 5
+                        scaleV: 5
                     }
-                    roughness: 0.2
-                    metalness: 0.7
+                    roughness: 0.8
+                    metalness: 0.2
                 }
             }
         }
@@ -111,8 +112,67 @@ Rectangle {
         }
     }
 
+    // GPS ve Pozisyon Bilgisi - Sol Alt Köşe
+    Rectangle {
+        anchors.left: parent.left
+        anchors.bottom: controlPanel.top
+        anchors.leftMargin: 20
+        anchors.bottomMargin: 10
+        width: 240
+        height: gpsColumn.height + 30
+        color: "#1a1a1a"
+        opacity: 0.95
+        radius: 10
+        border.color: "#505050"
+        border.width: 2
+
+        Column {
+            id: gpsColumn
+            anchors.centerIn: parent
+            spacing: 8
+
+            // GPS Başlık
+            Rectangle {
+                width: 200
+                height: 1
+                color: "#505050"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Text {
+                text: "GPS: 40.1213, 29.1412"
+                font.pixelSize: 14
+                font.bold: true
+                color: "#00bcd4"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Text {
+                text: "Derinlik: 33m"
+                font.pixelSize: 13
+                color: "#ffc107"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Text {
+                text: "Bağlantı: OK"
+                font.pixelSize: 12
+                color: "#4CAF50"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Rectangle {
+                width: 200
+                height: 1
+                color: "#505050"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+    }
+
     // Kontroller - Alt Menü (Yatay Layout)
     Rectangle {
+        id: controlPanel
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
@@ -305,6 +365,7 @@ Rectangle {
 
                         onValueChanged: {
                             camera.position.z = value
+                            camera.position.y = value * 0.4  // Y pozisyonunu da orantılı olarak ayarla
                         }
                     }
 
@@ -414,8 +475,8 @@ Rectangle {
                         zoomSlider.value = 200
                         scaleSlider.value = 2.5
                         excavatorContainer.eulerRotation.y = 0
-                        camera.position = Qt.vector3d(0, 50, 200)
-                        camera.eulerRotation.x = -10
+                        camera.position = Qt.vector3d(0, 80, 200)
+                        camera.eulerRotation.x = -15
                     }
                 }
             }

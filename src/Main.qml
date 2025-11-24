@@ -100,18 +100,12 @@ ApplicationWindow {
             color: "#404040"
         }
 
-        // Ana içerik - yan yana iki panel
-        RowLayout {
+        // Ana içerik - Tek panel (3D Ekskavatör + Harita Birleşik)
+        Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 0
-
-        // Sol panel - 3D Excavator Modeli (2/3 genişlik)
-        Rectangle {
-            Layout.preferredWidth: root.width * 2 / 3
-            Layout.fillHeight: true
             color: "#2a2a2a"
-            
+
             ExcavatorView {
                 anchors.fill: parent
             }
@@ -123,51 +117,59 @@ ApplicationWindow {
                 anchors.right: parent.right
                 height: 50
                 color: "#1a1a1a"
-                
+
                 Text {
                     anchors.centerIn: parent
-                    text: "3D Ekskavatör Modeli"
+                    text: "3D Ekskavatör & Batimetrik Harita"
                     font.pixelSize: 20
                     font.bold: true
                     color: "#ffffff"
                 }
             }
-        }
 
-        // Ayırıcı çizgi
-        Rectangle {
-            Layout.fillHeight: true
-            width: 2
-            color: "#404040"
-        }
-
-        // Sağ panel - Harita (1/3 genişlik)
-        Rectangle {
-            Layout.preferredWidth: root.width * 1 / 3
-            Layout.fillHeight: true
-            color: "#2a2a2a"
-            
-            MapView {
-                anchors.fill: parent
-            }
-
-            // Panel başlığı
+            // Mini kamera görünümü (sağ üst köşe)
             Rectangle {
+                id: miniCameraView
                 anchors.top: parent.top
-                anchors.left: parent.left
                 anchors.right: parent.right
-                height: 50
+                anchors.topMargin: 60
+                anchors.rightMargin: 20
+                width: 280
+                height: 200
                 color: "#1a1a1a"
-                
+                radius: 10
+                border.color: "#00bcd4"
+                border.width: 2
+                opacity: 0.95
+
+                // Başlık
+                Rectangle {
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: 30
+                    color: "#0d0d0d"
+                    radius: 10
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Mini Kamera Görünümü"
+                        font.pixelSize: 12
+                        font.bold: true
+                        color: "#00bcd4"
+                    }
+                }
+
+                // İçerik placeholder
                 Text {
                     anchors.centerIn: parent
-                    text: "Harita"
-                    font.pixelSize: 20
-                    font.bold: true
-                    color: "#ffffff"
+                    text: "📹\nKamera Görüntüsü"
+                    font.pixelSize: 14
+                    color: "#888888"
+                    horizontalAlignment: Text.AlignHCenter
+                    lineHeight: 1.5
                 }
             }
-        }
         }
     }
 }
