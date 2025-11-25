@@ -249,6 +249,7 @@ ApplicationWindow {
                         View3D {
                             anchors.fill: parent
                             anchors.topMargin: 30
+                            anchors.bottomMargin: 35
                             anchors.margins: 5
 
                             environment: SceneEnvironment {
@@ -260,7 +261,8 @@ ApplicationWindow {
 
                             // Üstten kamera
                             PerspectiveCamera {
-                                position: Qt.vector3d(0, 150, 0)
+                                id: topCamera
+                                position: Qt.vector3d(0, topZoomSlider.value, 0)
                                 eulerRotation.x: -90
                                 clipNear: 1
                                 clipFar: 1000
@@ -277,6 +279,75 @@ ApplicationWindow {
 
                                 Excavator {
                                     id: excavatorTopView
+                                }
+                            }
+                        }
+
+                        // Zoom kontrolü - Üstten görünüm
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.margins: 5
+                            height: 30
+                            color: "#0d0d0d"
+                            radius: 5
+                            opacity: 0.9
+
+                            Row {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text: "−"
+                                    font.pixelSize: 16
+                                    color: "#00bcd4"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                Slider {
+                                    id: topZoomSlider
+                                    from: 50
+                                    to: 150
+                                    value: 80
+                                    width: 180
+                                    anchors.verticalCenter: parent.verticalCenter
+
+                                    background: Rectangle {
+                                        x: topZoomSlider.leftPadding
+                                        y: topZoomSlider.topPadding + topZoomSlider.availableHeight / 2 - height / 2
+                                        implicitWidth: 180
+                                        implicitHeight: 4
+                                        width: topZoomSlider.availableWidth
+                                        height: implicitHeight
+                                        radius: 2
+                                        color: "#404040"
+
+                                        Rectangle {
+                                            width: topZoomSlider.visualPosition * parent.width
+                                            height: parent.height
+                                            color: "#00bcd4"
+                                            radius: 2
+                                        }
+                                    }
+
+                                    handle: Rectangle {
+                                        x: topZoomSlider.leftPadding + topZoomSlider.visualPosition * (topZoomSlider.availableWidth - width)
+                                        y: topZoomSlider.topPadding + topZoomSlider.availableHeight / 2 - height / 2
+                                        implicitWidth: 16
+                                        implicitHeight: 16
+                                        radius: 8
+                                        color: topZoomSlider.pressed ? "#00e5ff" : "#00bcd4"
+                                        border.color: "#ffffff"
+                                        border.width: 2
+                                    }
+                                }
+
+                                Text {
+                                    text: "+"
+                                    font.pixelSize: 16
+                                    color: "#00bcd4"
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
                         }
@@ -319,6 +390,7 @@ ApplicationWindow {
                         View3D {
                             anchors.fill: parent
                             anchors.topMargin: 30
+                            anchors.bottomMargin: 35
                             anchors.margins: 5
 
                             environment: SceneEnvironment {
@@ -330,7 +402,8 @@ ApplicationWindow {
 
                             // Yandan kamera (yakın plan)
                             PerspectiveCamera {
-                                position: Qt.vector3d(80, 25, 0)
+                                id: sideCamera
+                                position: Qt.vector3d(sideZoomSlider.value, 25, 0)
                                 eulerRotation.y: 90
                                 eulerRotation.x: 0
                                 clipNear: 1
@@ -360,6 +433,75 @@ ApplicationWindow {
 
                                 Excavator {
                                     id: excavatorSideView
+                                }
+                            }
+                        }
+
+                        // Zoom kontrolü - Yandan görünüm
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.margins: 5
+                            height: 30
+                            color: "#0d0d0d"
+                            radius: 5
+                            opacity: 0.9
+
+                            Row {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text: "−"
+                                    font.pixelSize: 16
+                                    color: "#ffc107"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                Slider {
+                                    id: sideZoomSlider
+                                    from: 50
+                                    to: 120
+                                    value: 80
+                                    width: 180
+                                    anchors.verticalCenter: parent.verticalCenter
+
+                                    background: Rectangle {
+                                        x: sideZoomSlider.leftPadding
+                                        y: sideZoomSlider.topPadding + sideZoomSlider.availableHeight / 2 - height / 2
+                                        implicitWidth: 180
+                                        implicitHeight: 4
+                                        width: sideZoomSlider.availableWidth
+                                        height: implicitHeight
+                                        radius: 2
+                                        color: "#404040"
+
+                                        Rectangle {
+                                            width: sideZoomSlider.visualPosition * parent.width
+                                            height: parent.height
+                                            color: "#ffc107"
+                                            radius: 2
+                                        }
+                                    }
+
+                                    handle: Rectangle {
+                                        x: sideZoomSlider.leftPadding + sideZoomSlider.visualPosition * (sideZoomSlider.availableWidth - width)
+                                        y: sideZoomSlider.topPadding + sideZoomSlider.availableHeight / 2 - height / 2
+                                        implicitWidth: 16
+                                        implicitHeight: 16
+                                        radius: 8
+                                        color: sideZoomSlider.pressed ? "#ffeb3b" : "#ffc107"
+                                        border.color: "#ffffff"
+                                        border.width: 2
+                                    }
+                                }
+
+                                Text {
+                                    text: "+"
+                                    font.pixelSize: 16
+                                    color: "#ffc107"
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
                         }
