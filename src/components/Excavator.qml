@@ -410,7 +410,7 @@ Node {
             objectName: "obj1"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj1_mesh.mesh"
+            source: "../../resources/meshes/obj1_mesh.mesh"
             materials: [
                 mat2_material,
                 mat3_material
@@ -421,7 +421,7 @@ Node {
             objectName: "obj10"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj10_mesh.mesh"
+            source: "../../resources/meshes/obj10_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -431,7 +431,7 @@ Node {
             objectName: "obj100"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj100_mesh.mesh"
+            source: "../../resources/meshes/obj100_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -441,7 +441,7 @@ Node {
             objectName: "obj101"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj101_mesh.mesh"
+            source: "../../resources/meshes/obj101_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -451,7 +451,7 @@ Node {
             objectName: "obj102"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj102_mesh.mesh"
+            source: "../../resources/meshes/obj102_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -461,7 +461,7 @@ Node {
             objectName: "obj103"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj103_mesh.mesh"
+            source: "../../resources/meshes/obj103_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -471,7 +471,7 @@ Node {
             objectName: "obj104"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj104_mesh.mesh"
+            source: "../../resources/meshes/obj104_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -481,7 +481,7 @@ Node {
             objectName: "obj105"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj105_mesh.mesh"
+            source: "../../resources/meshes/obj105_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -491,7 +491,7 @@ Node {
             objectName: "obj106"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj106_mesh.mesh"
+            source: "../../resources/meshes/obj106_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -501,7 +501,7 @@ Node {
             objectName: "obj107"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj107_mesh.mesh"
+            source: "../../resources/meshes/obj107_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -511,7 +511,7 @@ Node {
             objectName: "obj108"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj108_mesh.mesh"
+            source: "../../resources/meshes/obj108_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -521,7 +521,7 @@ Node {
             objectName: "obj109"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj109_mesh.mesh"
+            source: "../../resources/meshes/obj109_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -531,7 +531,7 @@ Node {
             objectName: "obj11"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj11_mesh.mesh"
+            source: "../../resources/meshes/obj11_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -541,7 +541,7 @@ Node {
             objectName: "obj110"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj110_mesh.mesh"
+            source: "../../resources/meshes/obj110_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -551,7 +551,7 @@ Node {
             objectName: "obj111"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj111_mesh.mesh"
+            source: "../../resources/meshes/obj111_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -561,7 +561,7 @@ Node {
             objectName: "obj112"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj112_mesh.mesh"
+            source: "../../resources/meshes/obj112_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -571,7 +571,7 @@ Node {
             objectName: "obj113"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj113_mesh.mesh"
+            source: "../../resources/meshes/obj113_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -581,7 +581,7 @@ Node {
             objectName: "obj114"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj114_mesh.mesh"
+            source: "../../resources/meshes/obj114_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -591,7 +591,7 @@ Node {
             objectName: "obj115"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj115_mesh.mesh"
+            source: "../../resources/meshes/obj115_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -601,7 +601,7 @@ Node {
             objectName: "obj116"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj116_mesh.mesh"
+            source: "../../resources/meshes/obj116_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -611,7 +611,7 @@ Node {
             objectName: "obj117"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj117_mesh.mesh"
+            source: "../../resources/meshes/obj117_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -621,7 +621,7 @@ Node {
             objectName: "obj118"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj118_mesh.mesh"
+            source: "../../resources/meshes/obj118_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -631,7 +631,7 @@ Node {
             objectName: "obj119"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj119_mesh.mesh"
+            source: "../../resources/meshes/obj119_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -641,7 +641,7 @@ Node {
             objectName: "obj12"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj12_mesh.mesh"
+            source: "../../resources/meshes/obj12_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -651,7 +651,7 @@ Node {
             objectName: "obj120"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj120_mesh.mesh"
+            source: "../../resources/meshes/obj120_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -661,7 +661,7 @@ Node {
             objectName: "obj121"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj121_mesh.mesh"
+            source: "../../resources/meshes/obj121_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -671,7 +671,7 @@ Node {
             objectName: "obj122"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj122_mesh.mesh"
+            source: "../../resources/meshes/obj122_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -681,7 +681,7 @@ Node {
             objectName: "obj123"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj123_mesh.mesh"
+            source: "../../resources/meshes/obj123_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -691,7 +691,7 @@ Node {
             objectName: "obj124"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj124_mesh.mesh"
+            source: "../../resources/meshes/obj124_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -701,7 +701,7 @@ Node {
             objectName: "obj125"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj125_mesh.mesh"
+            source: "../../resources/meshes/obj125_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -711,7 +711,7 @@ Node {
             objectName: "obj126"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj126_mesh.mesh"
+            source: "../../resources/meshes/obj126_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -721,7 +721,7 @@ Node {
             objectName: "obj127"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj127_mesh.mesh"
+            source: "../../resources/meshes/obj127_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -731,7 +731,7 @@ Node {
             objectName: "obj128"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj128_mesh.mesh"
+            source: "../../resources/meshes/obj128_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -741,7 +741,7 @@ Node {
             objectName: "obj129"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj129_mesh.mesh"
+            source: "../../resources/meshes/obj129_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -751,7 +751,7 @@ Node {
             objectName: "obj13"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj13_mesh.mesh"
+            source: "../../resources/meshes/obj13_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -761,7 +761,7 @@ Node {
             objectName: "obj130"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj130_mesh.mesh"
+            source: "../../resources/meshes/obj130_mesh.mesh"
             materials: [
                 mat30_material
             ]
@@ -771,7 +771,7 @@ Node {
             objectName: "obj131"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj131_mesh.mesh"
+            source: "../../resources/meshes/obj131_mesh.mesh"
             materials: [
                 mat31_material
             ]
@@ -781,7 +781,7 @@ Node {
             objectName: "obj132"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj132_mesh.mesh"
+            source: "../../resources/meshes/obj132_mesh.mesh"
             materials: [
                 mat32_material
             ]
@@ -791,7 +791,7 @@ Node {
             objectName: "obj133"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj133_mesh.mesh"
+            source: "../../resources/meshes/obj133_mesh.mesh"
             materials: [
                 mat33_material
             ]
@@ -801,7 +801,7 @@ Node {
             objectName: "obj134"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj134_mesh.mesh"
+            source: "../../resources/meshes/obj134_mesh.mesh"
             materials: [
                 mat34_material
             ]
@@ -811,7 +811,7 @@ Node {
             objectName: "obj135"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj135_mesh.mesh"
+            source: "../../resources/meshes/obj135_mesh.mesh"
             materials: [
                 mat4_material,
                 mat5_material
@@ -822,7 +822,7 @@ Node {
             objectName: "obj136"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj136_mesh.mesh"
+            source: "../../resources/meshes/obj136_mesh.mesh"
             materials: [
                 mat35_material
             ]
@@ -832,7 +832,7 @@ Node {
             objectName: "obj137"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj137_mesh.mesh"
+            source: "../../resources/meshes/obj137_mesh.mesh"
             materials: [
                 mat36_material
             ]
@@ -842,7 +842,7 @@ Node {
             objectName: "obj138"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj138_mesh.mesh"
+            source: "../../resources/meshes/obj138_mesh.mesh"
             materials: [
                 mat37_material
             ]
@@ -852,7 +852,7 @@ Node {
             objectName: "obj139"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj139_mesh.mesh"
+            source: "../../resources/meshes/obj139_mesh.mesh"
             materials: [
                 mat37_material
             ]
@@ -862,7 +862,7 @@ Node {
             objectName: "obj14"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj14_mesh.mesh"
+            source: "../../resources/meshes/obj14_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -872,7 +872,7 @@ Node {
             objectName: "obj140"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj140_mesh.mesh"
+            source: "../../resources/meshes/obj140_mesh.mesh"
             materials: [
                 mat11_material,
                 mat14_material
@@ -883,7 +883,7 @@ Node {
             objectName: "obj141"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj141_mesh.mesh"
+            source: "../../resources/meshes/obj141_mesh.mesh"
             materials: [
                 mat11_material,
                 mat14_material
@@ -894,7 +894,7 @@ Node {
             objectName: "obj142"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj142_mesh.mesh"
+            source: "../../resources/meshes/obj142_mesh.mesh"
             materials: [
                 mat11_material,
                 mat14_material
@@ -905,7 +905,7 @@ Node {
             objectName: "obj143"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj143_mesh.mesh"
+            source: "../../resources/meshes/obj143_mesh.mesh"
             materials: [
                 mat38_material
             ]
@@ -915,7 +915,7 @@ Node {
             objectName: "obj144"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj144_mesh.mesh"
+            source: "../../resources/meshes/obj144_mesh.mesh"
             materials: [
                 mat38_material
             ]
@@ -925,7 +925,7 @@ Node {
             objectName: "obj145"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj145_mesh.mesh"
+            source: "../../resources/meshes/obj145_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -935,7 +935,7 @@ Node {
             objectName: "obj146"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj146_mesh.mesh"
+            source: "../../resources/meshes/obj146_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -946,7 +946,7 @@ Node {
             objectName: "obj147"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj147_mesh.mesh"
+            source: "../../resources/meshes/obj147_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -957,7 +957,7 @@ Node {
             objectName: "obj148"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj148_mesh.mesh"
+            source: "../../resources/meshes/obj148_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -968,7 +968,7 @@ Node {
             objectName: "obj149"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj149_mesh.mesh"
+            source: "../../resources/meshes/obj149_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -979,7 +979,7 @@ Node {
             objectName: "obj15"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj15_mesh.mesh"
+            source: "../../resources/meshes/obj15_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -989,7 +989,7 @@ Node {
             objectName: "obj150"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj150_mesh.mesh"
+            source: "../../resources/meshes/obj150_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -1000,7 +1000,7 @@ Node {
             objectName: "obj151"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj151_mesh.mesh"
+            source: "../../resources/meshes/obj151_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -1011,7 +1011,7 @@ Node {
             objectName: "obj152"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj152_mesh.mesh"
+            source: "../../resources/meshes/obj152_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -1022,7 +1022,7 @@ Node {
             objectName: "obj153"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj153_mesh.mesh"
+            source: "../../resources/meshes/obj153_mesh.mesh"
             materials: [
                 mat13_material,
                 mat40_material
@@ -1033,7 +1033,7 @@ Node {
             objectName: "obj154"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj154_mesh.mesh"
+            source: "../../resources/meshes/obj154_mesh.mesh"
             materials: [
                 mat31_material
             ]
@@ -1043,7 +1043,7 @@ Node {
             objectName: "obj155"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj155_mesh.mesh"
+            source: "../../resources/meshes/obj155_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1053,7 +1053,7 @@ Node {
             objectName: "obj156"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj156_mesh.mesh"
+            source: "../../resources/meshes/obj156_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1063,7 +1063,7 @@ Node {
             objectName: "obj157"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj157_mesh.mesh"
+            source: "../../resources/meshes/obj157_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1073,7 +1073,7 @@ Node {
             objectName: "obj158"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj158_mesh.mesh"
+            source: "../../resources/meshes/obj158_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1083,7 +1083,7 @@ Node {
             objectName: "obj159"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj159_mesh.mesh"
+            source: "../../resources/meshes/obj159_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1093,7 +1093,7 @@ Node {
             objectName: "obj16"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj16_mesh.mesh"
+            source: "../../resources/meshes/obj16_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -1103,7 +1103,7 @@ Node {
             objectName: "obj160"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj160_mesh.mesh"
+            source: "../../resources/meshes/obj160_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1113,7 +1113,7 @@ Node {
             objectName: "obj161"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj161_mesh.mesh"
+            source: "../../resources/meshes/obj161_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1123,7 +1123,7 @@ Node {
             objectName: "obj162"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj162_mesh.mesh"
+            source: "../../resources/meshes/obj162_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1133,7 +1133,7 @@ Node {
             objectName: "obj163"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj163_mesh.mesh"
+            source: "../../resources/meshes/obj163_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1143,7 +1143,7 @@ Node {
             objectName: "obj164"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj164_mesh.mesh"
+            source: "../../resources/meshes/obj164_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -1153,7 +1153,7 @@ Node {
             objectName: "obj165"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj165_mesh.mesh"
+            source: "../../resources/meshes/obj165_mesh.mesh"
             materials: [
                 mat41_material
             ]
@@ -1163,7 +1163,7 @@ Node {
             objectName: "obj166"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj166_mesh.mesh"
+            source: "../../resources/meshes/obj166_mesh.mesh"
             materials: [
                 mat42_material
             ]
@@ -1173,7 +1173,7 @@ Node {
             objectName: "obj167"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj167_mesh.mesh"
+            source: "../../resources/meshes/obj167_mesh.mesh"
             materials: [
                 mat42_material
             ]
@@ -1183,7 +1183,7 @@ Node {
             objectName: "obj168"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj168_mesh.mesh"
+            source: "../../resources/meshes/obj168_mesh.mesh"
             materials: [
                 mat42_material
             ]
@@ -1193,7 +1193,7 @@ Node {
             objectName: "obj169"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj169_mesh.mesh"
+            source: "../../resources/meshes/obj169_mesh.mesh"
             materials: [
                 mat42_material
             ]
@@ -1203,7 +1203,7 @@ Node {
             objectName: "obj17"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj17_mesh.mesh"
+            source: "../../resources/meshes/obj17_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -1213,7 +1213,7 @@ Node {
             objectName: "obj170"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj170_mesh.mesh"
+            source: "../../resources/meshes/obj170_mesh.mesh"
             materials: [
                 mat8_material
             ]
@@ -1223,7 +1223,7 @@ Node {
             objectName: "obj171"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj171_mesh.mesh"
+            source: "../../resources/meshes/obj171_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1233,7 +1233,7 @@ Node {
             objectName: "obj172"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj172_mesh.mesh"
+            source: "../../resources/meshes/obj172_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1243,7 +1243,7 @@ Node {
             objectName: "obj173"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj173_mesh.mesh"
+            source: "../../resources/meshes/obj173_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1253,7 +1253,7 @@ Node {
             objectName: "obj174"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj174_mesh.mesh"
+            source: "../../resources/meshes/obj174_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1263,7 +1263,7 @@ Node {
             objectName: "obj175"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj175_mesh.mesh"
+            source: "../../resources/meshes/obj175_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1273,7 +1273,7 @@ Node {
             objectName: "obj176"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj176_mesh.mesh"
+            source: "../../resources/meshes/obj176_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1283,7 +1283,7 @@ Node {
             objectName: "obj177"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj177_mesh.mesh"
+            source: "../../resources/meshes/obj177_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1293,7 +1293,7 @@ Node {
             objectName: "obj178"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj178_mesh.mesh"
+            source: "../../resources/meshes/obj178_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1303,7 +1303,7 @@ Node {
             objectName: "obj179"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj179_mesh.mesh"
+            source: "../../resources/meshes/obj179_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1313,7 +1313,7 @@ Node {
             objectName: "obj18"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj18_mesh.mesh"
+            source: "../../resources/meshes/obj18_mesh.mesh"
             materials: [
                 mat11_material,
                 mat14_material
@@ -1324,7 +1324,7 @@ Node {
             objectName: "obj180"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj180_mesh.mesh"
+            source: "../../resources/meshes/obj180_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1334,7 +1334,7 @@ Node {
             objectName: "obj181"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj181_mesh.mesh"
+            source: "../../resources/meshes/obj181_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1344,7 +1344,7 @@ Node {
             objectName: "obj182"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj182_mesh.mesh"
+            source: "../../resources/meshes/obj182_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1354,7 +1354,7 @@ Node {
             objectName: "obj183"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj183_mesh.mesh"
+            source: "../../resources/meshes/obj183_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1364,7 +1364,7 @@ Node {
             objectName: "obj184"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj184_mesh.mesh"
+            source: "../../resources/meshes/obj184_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1374,7 +1374,7 @@ Node {
             objectName: "obj185"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj185_mesh.mesh"
+            source: "../../resources/meshes/obj185_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1384,7 +1384,7 @@ Node {
             objectName: "obj186"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj186_mesh.mesh"
+            source: "../../resources/meshes/obj186_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1394,7 +1394,7 @@ Node {
             objectName: "obj187"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj187_mesh.mesh"
+            source: "../../resources/meshes/obj187_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1404,7 +1404,7 @@ Node {
             objectName: "obj188"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj188_mesh.mesh"
+            source: "../../resources/meshes/obj188_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1414,7 +1414,7 @@ Node {
             objectName: "obj189"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj189_mesh.mesh"
+            source: "../../resources/meshes/obj189_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1424,7 +1424,7 @@ Node {
             objectName: "obj19"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj19_mesh.mesh"
+            source: "../../resources/meshes/obj19_mesh.mesh"
             materials: [
                 mat15_material
             ]
@@ -1434,7 +1434,7 @@ Node {
             objectName: "obj190"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj190_mesh.mesh"
+            source: "../../resources/meshes/obj190_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1444,7 +1444,7 @@ Node {
             objectName: "obj191"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj191_mesh.mesh"
+            source: "../../resources/meshes/obj191_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1454,7 +1454,7 @@ Node {
             objectName: "obj192"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj192_mesh.mesh"
+            source: "../../resources/meshes/obj192_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1464,7 +1464,7 @@ Node {
             objectName: "obj193"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj193_mesh.mesh"
+            source: "../../resources/meshes/obj193_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1474,7 +1474,7 @@ Node {
             objectName: "obj194"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj194_mesh.mesh"
+            source: "../../resources/meshes/obj194_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1484,7 +1484,7 @@ Node {
             objectName: "obj195"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj195_mesh.mesh"
+            source: "../../resources/meshes/obj195_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1494,7 +1494,7 @@ Node {
             objectName: "obj196"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj196_mesh.mesh"
+            source: "../../resources/meshes/obj196_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1504,7 +1504,7 @@ Node {
             objectName: "obj197"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj197_mesh.mesh"
+            source: "../../resources/meshes/obj197_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1514,7 +1514,7 @@ Node {
             objectName: "obj198"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj198_mesh.mesh"
+            source: "../../resources/meshes/obj198_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1524,7 +1524,7 @@ Node {
             objectName: "obj199"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj199_mesh.mesh"
+            source: "../../resources/meshes/obj199_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1534,7 +1534,7 @@ Node {
             objectName: "obj2"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj2_mesh.mesh"
+            source: "../../resources/meshes/obj2_mesh.mesh"
             materials: [
                 mat4_material,
                 mat5_material,
@@ -1547,7 +1547,7 @@ Node {
             objectName: "obj20"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj20_mesh.mesh"
+            source: "../../resources/meshes/obj20_mesh.mesh"
             materials: [
                 mat16_material
             ]
@@ -1557,7 +1557,7 @@ Node {
             objectName: "obj200"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj200_mesh.mesh"
+            source: "../../resources/meshes/obj200_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1567,7 +1567,7 @@ Node {
             objectName: "obj201"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj201_mesh.mesh"
+            source: "../../resources/meshes/obj201_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1577,7 +1577,7 @@ Node {
             objectName: "obj202"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj202_mesh.mesh"
+            source: "../../resources/meshes/obj202_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1587,7 +1587,7 @@ Node {
             objectName: "obj203"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj203_mesh.mesh"
+            source: "../../resources/meshes/obj203_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1597,7 +1597,7 @@ Node {
             objectName: "obj204"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj204_mesh.mesh"
+            source: "../../resources/meshes/obj204_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1607,7 +1607,7 @@ Node {
             objectName: "obj205"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj205_mesh.mesh"
+            source: "../../resources/meshes/obj205_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1617,7 +1617,7 @@ Node {
             objectName: "obj206"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj206_mesh.mesh"
+            source: "../../resources/meshes/obj206_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1627,7 +1627,7 @@ Node {
             objectName: "obj207"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj207_mesh.mesh"
+            source: "../../resources/meshes/obj207_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1637,7 +1637,7 @@ Node {
             objectName: "obj208"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj208_mesh.mesh"
+            source: "../../resources/meshes/obj208_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1647,7 +1647,7 @@ Node {
             objectName: "obj209"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj209_mesh.mesh"
+            source: "../../resources/meshes/obj209_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1657,7 +1657,7 @@ Node {
             objectName: "obj21"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj21_mesh.mesh"
+            source: "../../resources/meshes/obj21_mesh.mesh"
             materials: [
                 mat17_material
             ]
@@ -1667,7 +1667,7 @@ Node {
             objectName: "obj210"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj210_mesh.mesh"
+            source: "../../resources/meshes/obj210_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1677,7 +1677,7 @@ Node {
             objectName: "obj211"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj211_mesh.mesh"
+            source: "../../resources/meshes/obj211_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1687,7 +1687,7 @@ Node {
             objectName: "obj212"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj212_mesh.mesh"
+            source: "../../resources/meshes/obj212_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1697,7 +1697,7 @@ Node {
             objectName: "obj213"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj213_mesh.mesh"
+            source: "../../resources/meshes/obj213_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1707,7 +1707,7 @@ Node {
             objectName: "obj214"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj214_mesh.mesh"
+            source: "../../resources/meshes/obj214_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1717,7 +1717,7 @@ Node {
             objectName: "obj215"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj215_mesh.mesh"
+            source: "../../resources/meshes/obj215_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1727,7 +1727,7 @@ Node {
             objectName: "obj216"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj216_mesh.mesh"
+            source: "../../resources/meshes/obj216_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1737,7 +1737,7 @@ Node {
             objectName: "obj217"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj217_mesh.mesh"
+            source: "../../resources/meshes/obj217_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1747,7 +1747,7 @@ Node {
             objectName: "obj218"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj218_mesh.mesh"
+            source: "../../resources/meshes/obj218_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1757,7 +1757,7 @@ Node {
             objectName: "obj219"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj219_mesh.mesh"
+            source: "../../resources/meshes/obj219_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1767,7 +1767,7 @@ Node {
             objectName: "obj22"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj22_mesh.mesh"
+            source: "../../resources/meshes/obj22_mesh.mesh"
             materials: [
                 mat18_material
             ]
@@ -1777,7 +1777,7 @@ Node {
             objectName: "obj220"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj220_mesh.mesh"
+            source: "../../resources/meshes/obj220_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -1787,7 +1787,7 @@ Node {
             objectName: "obj221"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj221_mesh.mesh"
+            source: "../../resources/meshes/obj221_mesh.mesh"
             materials: [
                 mat43_material
             ]
@@ -1797,7 +1797,7 @@ Node {
             objectName: "obj222"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj222_mesh.mesh"
+            source: "../../resources/meshes/obj222_mesh.mesh"
             materials: [
                 mat8_material
             ]
@@ -1807,7 +1807,7 @@ Node {
             objectName: "obj223"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj223_mesh.mesh"
+            source: "../../resources/meshes/obj223_mesh.mesh"
             materials: [
                 mat4_material,
                 mat6_material
@@ -1818,7 +1818,7 @@ Node {
             objectName: "obj224"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj224_mesh.mesh"
+            source: "../../resources/meshes/obj224_mesh.mesh"
             materials: [
                 mat4_material
             ]
@@ -1828,7 +1828,7 @@ Node {
             objectName: "obj225"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj225_mesh.mesh"
+            source: "../../resources/meshes/obj225_mesh.mesh"
             materials: [
                 mat4_material,
                 mat6_material
@@ -1839,7 +1839,7 @@ Node {
             objectName: "obj226"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj226_mesh.mesh"
+            source: "../../resources/meshes/obj226_mesh.mesh"
             materials: [
                 mat28_material
             ]
@@ -1849,7 +1849,7 @@ Node {
             objectName: "obj227"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj227_mesh.mesh"
+            source: "../../resources/meshes/obj227_mesh.mesh"
             materials: [
                 mat24_material,
                 mat28_material
@@ -1860,7 +1860,7 @@ Node {
             objectName: "obj228"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj228_mesh.mesh"
+            source: "../../resources/meshes/obj228_mesh.mesh"
             materials: [
                 mat13_material,
                 mat40_material
@@ -1871,7 +1871,7 @@ Node {
             objectName: "obj229"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj229_mesh.mesh"
+            source: "../../resources/meshes/obj229_mesh.mesh"
             materials: [
                 mat44_material
             ]
@@ -1881,7 +1881,7 @@ Node {
             objectName: "obj23"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj23_mesh.mesh"
+            source: "../../resources/meshes/obj23_mesh.mesh"
             materials: [
                 mat17_material
             ]
@@ -1891,7 +1891,7 @@ Node {
             objectName: "obj230"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj230_mesh.mesh"
+            source: "../../resources/meshes/obj230_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -1901,7 +1901,7 @@ Node {
             objectName: "obj231"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj231_mesh.mesh"
+            source: "../../resources/meshes/obj231_mesh.mesh"
             materials: [
                 mat42_material
             ]
@@ -1911,7 +1911,7 @@ Node {
             objectName: "obj232"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj232_mesh.mesh"
+            source: "../../resources/meshes/obj232_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -1921,7 +1921,7 @@ Node {
             objectName: "obj233"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj233_mesh.mesh"
+            source: "../../resources/meshes/obj233_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -1931,7 +1931,7 @@ Node {
             objectName: "obj234"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj234_mesh.mesh"
+            source: "../../resources/meshes/obj234_mesh.mesh"
             materials: [
                 mat9_material
             ]
@@ -1941,7 +1941,7 @@ Node {
             objectName: "obj235"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj235_mesh.mesh"
+            source: "../../resources/meshes/obj235_mesh.mesh"
             materials: [
                 mat9_material
             ]
@@ -1951,7 +1951,7 @@ Node {
             objectName: "obj236"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj236_mesh.mesh"
+            source: "../../resources/meshes/obj236_mesh.mesh"
             materials: [
                 mat9_material
             ]
@@ -1961,7 +1961,7 @@ Node {
             objectName: "obj237"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj237_mesh.mesh"
+            source: "../../resources/meshes/obj237_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -1972,7 +1972,7 @@ Node {
             objectName: "obj238"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj238_mesh.mesh"
+            source: "../../resources/meshes/obj238_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -1983,7 +1983,7 @@ Node {
             objectName: "obj239"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj239_mesh.mesh"
+            source: "../../resources/meshes/obj239_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -1994,7 +1994,7 @@ Node {
             objectName: "obj24"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj24_mesh.mesh"
+            source: "../../resources/meshes/obj24_mesh.mesh"
             materials: [
                 mat18_material
             ]
@@ -2004,7 +2004,7 @@ Node {
             objectName: "obj240"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj240_mesh.mesh"
+            source: "../../resources/meshes/obj240_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -2015,7 +2015,7 @@ Node {
             objectName: "obj241"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj241_mesh.mesh"
+            source: "../../resources/meshes/obj241_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -2026,7 +2026,7 @@ Node {
             objectName: "obj242"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj242_mesh.mesh"
+            source: "../../resources/meshes/obj242_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -2037,7 +2037,7 @@ Node {
             objectName: "obj243"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj243_mesh.mesh"
+            source: "../../resources/meshes/obj243_mesh.mesh"
             materials: [
                 mat13_material,
                 mat39_material
@@ -2048,7 +2048,7 @@ Node {
             objectName: "obj244"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj244_mesh.mesh"
+            source: "../../resources/meshes/obj244_mesh.mesh"
             materials: [
                 mat33_material
             ]
@@ -2058,7 +2058,7 @@ Node {
             objectName: "obj245"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj245_mesh.mesh"
+            source: "../../resources/meshes/obj245_mesh.mesh"
             materials: [
                 mat8_material
             ]
@@ -2068,7 +2068,7 @@ Node {
             objectName: "obj246"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj246_mesh.mesh"
+            source: "../../resources/meshes/obj246_mesh.mesh"
             materials: [
                 mat8_material
             ]
@@ -2078,7 +2078,7 @@ Node {
             objectName: "obj247"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj247_mesh.mesh"
+            source: "../../resources/meshes/obj247_mesh.mesh"
             materials: [
                 mat32_material
             ]
@@ -2088,7 +2088,7 @@ Node {
             objectName: "obj248"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj248_mesh.mesh"
+            source: "../../resources/meshes/obj248_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2098,7 +2098,7 @@ Node {
             objectName: "obj249"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj249_mesh.mesh"
+            source: "../../resources/meshes/obj249_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2108,7 +2108,7 @@ Node {
             objectName: "obj25"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj25_mesh.mesh"
+            source: "../../resources/meshes/obj25_mesh.mesh"
             materials: [
                 mat16_material
             ]
@@ -2118,7 +2118,7 @@ Node {
             objectName: "obj250"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj250_mesh.mesh"
+            source: "../../resources/meshes/obj250_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2128,7 +2128,7 @@ Node {
             objectName: "obj251"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj251_mesh.mesh"
+            source: "../../resources/meshes/obj251_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2138,7 +2138,7 @@ Node {
             objectName: "obj252"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj252_mesh.mesh"
+            source: "../../resources/meshes/obj252_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2148,7 +2148,7 @@ Node {
             objectName: "obj253"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj253_mesh.mesh"
+            source: "../../resources/meshes/obj253_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2158,7 +2158,7 @@ Node {
             objectName: "obj254"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj254_mesh.mesh"
+            source: "../../resources/meshes/obj254_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2168,7 +2168,7 @@ Node {
             objectName: "obj255"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj255_mesh.mesh"
+            source: "../../resources/meshes/obj255_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2178,7 +2178,7 @@ Node {
             objectName: "obj256"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj256_mesh.mesh"
+            source: "../../resources/meshes/obj256_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2188,7 +2188,7 @@ Node {
             objectName: "obj257"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj257_mesh.mesh"
+            source: "../../resources/meshes/obj257_mesh.mesh"
             materials: [
                 mat12_material
             ]
@@ -2198,7 +2198,7 @@ Node {
             objectName: "obj258"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj258_mesh.mesh"
+            source: "../../resources/meshes/obj258_mesh.mesh"
             materials: [
                 mat4_material,
                 mat6_material
@@ -2209,7 +2209,7 @@ Node {
             objectName: "obj259"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj259_mesh.mesh"
+            source: "../../resources/meshes/obj259_mesh.mesh"
             materials: [
                 mat4_material,
                 mat6_material
@@ -2220,7 +2220,7 @@ Node {
             objectName: "obj26"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj26_mesh.mesh"
+            source: "../../resources/meshes/obj26_mesh.mesh"
             materials: [
                 mat19_material
             ]
@@ -2230,7 +2230,7 @@ Node {
             objectName: "obj260"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj260_mesh.mesh"
+            source: "../../resources/meshes/obj260_mesh.mesh"
             materials: [
                 mat28_material
             ]
@@ -2240,7 +2240,7 @@ Node {
             objectName: "obj261"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj261_mesh.mesh"
+            source: "../../resources/meshes/obj261_mesh.mesh"
             materials: [
                 mat28_material
             ]
@@ -2250,7 +2250,7 @@ Node {
             objectName: "obj262"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj262_mesh.mesh"
+            source: "../../resources/meshes/obj262_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -2260,7 +2260,7 @@ Node {
             objectName: "obj263"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj263_mesh.mesh"
+            source: "../../resources/meshes/obj263_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -2270,7 +2270,7 @@ Node {
             objectName: "obj264"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj264_mesh.mesh"
+            source: "../../resources/meshes/obj264_mesh.mesh"
             materials: [
                 mat45_material
             ]
@@ -2280,7 +2280,7 @@ Node {
             objectName: "obj265"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj265_mesh.mesh"
+            source: "../../resources/meshes/obj265_mesh.mesh"
             materials: [
                 mat45_material
             ]
@@ -2290,7 +2290,7 @@ Node {
             objectName: "obj266"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj266_mesh.mesh"
+            source: "../../resources/meshes/obj266_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2300,7 +2300,7 @@ Node {
             objectName: "obj267"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj267_mesh.mesh"
+            source: "../../resources/meshes/obj267_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2310,7 +2310,7 @@ Node {
             objectName: "obj27"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj27_mesh.mesh"
+            source: "../../resources/meshes/obj27_mesh.mesh"
             materials: [
                 mat20_material
             ]
@@ -2320,7 +2320,7 @@ Node {
             objectName: "obj28"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj28_mesh.mesh"
+            source: "../../resources/meshes/obj28_mesh.mesh"
             materials: [
                 mat20_material
             ]
@@ -2330,7 +2330,7 @@ Node {
             objectName: "obj29"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj29_mesh.mesh"
+            source: "../../resources/meshes/obj29_mesh.mesh"
             materials: [
                 mat20_material
             ]
@@ -2340,7 +2340,7 @@ Node {
             objectName: "obj3"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj3_mesh.mesh"
+            source: "../../resources/meshes/obj3_mesh.mesh"
             materials: [
                 mat4_material,
                 mat6_material
@@ -2351,7 +2351,7 @@ Node {
             objectName: "obj30"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj30_mesh.mesh"
+            source: "../../resources/meshes/obj30_mesh.mesh"
             materials: [
                 mat4_material
             ]
@@ -2361,7 +2361,7 @@ Node {
             objectName: "obj31"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj31_mesh.mesh"
+            source: "../../resources/meshes/obj31_mesh.mesh"
             materials: [
                 mat4_material,
                 mat6_material
@@ -2372,7 +2372,7 @@ Node {
             objectName: "obj32"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj32_mesh.mesh"
+            source: "../../resources/meshes/obj32_mesh.mesh"
             materials: [
                 mat21_material
             ]
@@ -2382,7 +2382,7 @@ Node {
             objectName: "obj33"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj33_mesh.mesh"
+            source: "../../resources/meshes/obj33_mesh.mesh"
             materials: [
                 mat21_material
             ]
@@ -2392,7 +2392,7 @@ Node {
             objectName: "obj34"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj34_mesh.mesh"
+            source: "../../resources/meshes/obj34_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2402,7 +2402,7 @@ Node {
             objectName: "obj35"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj35_mesh.mesh"
+            source: "../../resources/meshes/obj35_mesh.mesh"
             materials: [
                 mat23_material
             ]
@@ -2412,7 +2412,7 @@ Node {
             objectName: "obj36"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj36_mesh.mesh"
+            source: "../../resources/meshes/obj36_mesh.mesh"
             materials: [
                 mat24_material
             ]
@@ -2422,7 +2422,7 @@ Node {
             objectName: "obj37"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj37_mesh.mesh"
+            source: "../../resources/meshes/obj37_mesh.mesh"
             materials: [
                 mat21_material
             ]
@@ -2432,7 +2432,7 @@ Node {
             objectName: "obj38"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj38_mesh.mesh"
+            source: "../../resources/meshes/obj38_mesh.mesh"
             materials: [
                 mat24_material
             ]
@@ -2442,7 +2442,7 @@ Node {
             objectName: "obj39"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj39_mesh.mesh"
+            source: "../../resources/meshes/obj39_mesh.mesh"
             materials: [
                 mat24_material
             ]
@@ -2452,7 +2452,7 @@ Node {
             objectName: "obj4"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj4_mesh.mesh"
+            source: "../../resources/meshes/obj4_mesh.mesh"
             materials: [
                 mat8_material
             ]
@@ -2462,7 +2462,7 @@ Node {
             objectName: "obj40"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj40_mesh.mesh"
+            source: "../../resources/meshes/obj40_mesh.mesh"
             materials: [
                 mat4_material
             ]
@@ -2472,7 +2472,7 @@ Node {
             objectName: "obj41"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj41_mesh.mesh"
+            source: "../../resources/meshes/obj41_mesh.mesh"
             materials: [
                 mat4_material,
                 mat6_material
@@ -2483,7 +2483,7 @@ Node {
             objectName: "obj42"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj42_mesh.mesh"
+            source: "../../resources/meshes/obj42_mesh.mesh"
             materials: [
                 mat25_material
             ]
@@ -2493,7 +2493,7 @@ Node {
             objectName: "obj43"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj43_mesh.mesh"
+            source: "../../resources/meshes/obj43_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2503,7 +2503,7 @@ Node {
             objectName: "obj44"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj44_mesh.mesh"
+            source: "../../resources/meshes/obj44_mesh.mesh"
             materials: [
                 mat16_material
             ]
@@ -2513,7 +2513,7 @@ Node {
             objectName: "obj45"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj45_mesh.mesh"
+            source: "../../resources/meshes/obj45_mesh.mesh"
             materials: [
                 mat16_material
             ]
@@ -2523,7 +2523,7 @@ Node {
             objectName: "obj46"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj46_mesh.mesh"
+            source: "../../resources/meshes/obj46_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -2533,7 +2533,7 @@ Node {
             objectName: "obj47"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj47_mesh.mesh"
+            source: "../../resources/meshes/obj47_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2543,7 +2543,7 @@ Node {
             objectName: "obj48"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj48_mesh.mesh"
+            source: "../../resources/meshes/obj48_mesh.mesh"
             materials: [
                 mat16_material
             ]
@@ -2553,7 +2553,7 @@ Node {
             objectName: "obj49"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj49_mesh.mesh"
+            source: "../../resources/meshes/obj49_mesh.mesh"
             materials: [
                 mat16_material
             ]
@@ -2563,7 +2563,7 @@ Node {
             objectName: "obj5"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj5_mesh.mesh"
+            source: "../../resources/meshes/obj5_mesh.mesh"
             materials: [
                 mat9_material
             ]
@@ -2573,7 +2573,7 @@ Node {
             objectName: "obj50"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj50_mesh.mesh"
+            source: "../../resources/meshes/obj50_mesh.mesh"
             materials: [
                 mat21_material
             ]
@@ -2583,7 +2583,7 @@ Node {
             objectName: "obj51"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj51_mesh.mesh"
+            source: "../../resources/meshes/obj51_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -2593,7 +2593,7 @@ Node {
             objectName: "obj52"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj52_mesh.mesh"
+            source: "../../resources/meshes/obj52_mesh.mesh"
             materials: [
                 mat24_material
             ]
@@ -2603,7 +2603,7 @@ Node {
             objectName: "obj53"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj53_mesh.mesh"
+            source: "../../resources/meshes/obj53_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2613,7 +2613,7 @@ Node {
             objectName: "obj54"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj54_mesh.mesh"
+            source: "../../resources/meshes/obj54_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2623,7 +2623,7 @@ Node {
             objectName: "obj55"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj55_mesh.mesh"
+            source: "../../resources/meshes/obj55_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2633,7 +2633,7 @@ Node {
             objectName: "obj56"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj56_mesh.mesh"
+            source: "../../resources/meshes/obj56_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -2643,7 +2643,7 @@ Node {
             objectName: "obj57"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj57_mesh.mesh"
+            source: "../../resources/meshes/obj57_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2653,7 +2653,7 @@ Node {
             objectName: "obj58"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj58_mesh.mesh"
+            source: "../../resources/meshes/obj58_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -2663,7 +2663,7 @@ Node {
             objectName: "obj59"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj59_mesh.mesh"
+            source: "../../resources/meshes/obj59_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2673,7 +2673,7 @@ Node {
             objectName: "obj6"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj6_mesh.mesh"
+            source: "../../resources/meshes/obj6_mesh.mesh"
             materials: [
                 mat10_material,
                 mat11_material,
@@ -2685,7 +2685,7 @@ Node {
             objectName: "obj60"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj60_mesh.mesh"
+            source: "../../resources/meshes/obj60_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2695,7 +2695,7 @@ Node {
             objectName: "obj61"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj61_mesh.mesh"
+            source: "../../resources/meshes/obj61_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -2705,7 +2705,7 @@ Node {
             objectName: "obj62"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj62_mesh.mesh"
+            source: "../../resources/meshes/obj62_mesh.mesh"
             materials: [
                 mat13_material,
                 mat27_material
@@ -2716,7 +2716,7 @@ Node {
             objectName: "obj63"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj63_mesh.mesh"
+            source: "../../resources/meshes/obj63_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2726,7 +2726,7 @@ Node {
             objectName: "obj64"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj64_mesh.mesh"
+            source: "../../resources/meshes/obj64_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2736,7 +2736,7 @@ Node {
             objectName: "obj65"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj65_mesh.mesh"
+            source: "../../resources/meshes/obj65_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2746,7 +2746,7 @@ Node {
             objectName: "obj66"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj66_mesh.mesh"
+            source: "../../resources/meshes/obj66_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2756,7 +2756,7 @@ Node {
             objectName: "obj67"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj67_mesh.mesh"
+            source: "../../resources/meshes/obj67_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2766,7 +2766,7 @@ Node {
             objectName: "obj68"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj68_mesh.mesh"
+            source: "../../resources/meshes/obj68_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2776,7 +2776,7 @@ Node {
             objectName: "obj69"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj69_mesh.mesh"
+            source: "../../resources/meshes/obj69_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2786,7 +2786,7 @@ Node {
             objectName: "obj7"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj7_mesh.mesh"
+            source: "../../resources/meshes/obj7_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -2796,7 +2796,7 @@ Node {
             objectName: "obj70"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj70_mesh.mesh"
+            source: "../../resources/meshes/obj70_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2806,7 +2806,7 @@ Node {
             objectName: "obj71"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj71_mesh.mesh"
+            source: "../../resources/meshes/obj71_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2816,7 +2816,7 @@ Node {
             objectName: "obj72"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj72_mesh.mesh"
+            source: "../../resources/meshes/obj72_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2826,7 +2826,7 @@ Node {
             objectName: "obj73"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj73_mesh.mesh"
+            source: "../../resources/meshes/obj73_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2836,7 +2836,7 @@ Node {
             objectName: "obj74"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj74_mesh.mesh"
+            source: "../../resources/meshes/obj74_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2846,7 +2846,7 @@ Node {
             objectName: "obj75"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj75_mesh.mesh"
+            source: "../../resources/meshes/obj75_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2856,7 +2856,7 @@ Node {
             objectName: "obj76"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj76_mesh.mesh"
+            source: "../../resources/meshes/obj76_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2866,7 +2866,7 @@ Node {
             objectName: "obj77"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj77_mesh.mesh"
+            source: "../../resources/meshes/obj77_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2876,7 +2876,7 @@ Node {
             objectName: "obj78"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj78_mesh.mesh"
+            source: "../../resources/meshes/obj78_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2886,7 +2886,7 @@ Node {
             objectName: "obj79"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj79_mesh.mesh"
+            source: "../../resources/meshes/obj79_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2896,7 +2896,7 @@ Node {
             objectName: "obj8"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj8_mesh.mesh"
+            source: "../../resources/meshes/obj8_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -2906,7 +2906,7 @@ Node {
             objectName: "obj80"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj80_mesh.mesh"
+            source: "../../resources/meshes/obj80_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2916,7 +2916,7 @@ Node {
             objectName: "obj81"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj81_mesh.mesh"
+            source: "../../resources/meshes/obj81_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2926,7 +2926,7 @@ Node {
             objectName: "obj82"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj82_mesh.mesh"
+            source: "../../resources/meshes/obj82_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2936,7 +2936,7 @@ Node {
             objectName: "obj83"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj83_mesh.mesh"
+            source: "../../resources/meshes/obj83_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2946,7 +2946,7 @@ Node {
             objectName: "obj84"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj84_mesh.mesh"
+            source: "../../resources/meshes/obj84_mesh.mesh"
             materials: [
                 mat22_material
             ]
@@ -2956,7 +2956,7 @@ Node {
             objectName: "obj85"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj85_mesh.mesh"
+            source: "../../resources/meshes/obj85_mesh.mesh"
             materials: [
                 mat20_material
             ]
@@ -2966,7 +2966,7 @@ Node {
             objectName: "obj86"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj86_mesh.mesh"
+            source: "../../resources/meshes/obj86_mesh.mesh"
             materials: [
                 mat24_material,
                 mat28_material
@@ -2977,7 +2977,7 @@ Node {
             objectName: "obj87"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj87_mesh.mesh"
+            source: "../../resources/meshes/obj87_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -2987,7 +2987,7 @@ Node {
             objectName: "obj88"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj88_mesh.mesh"
+            source: "../../resources/meshes/obj88_mesh.mesh"
             materials: [
                 mat13_material,
                 mat19_material
@@ -2998,7 +2998,7 @@ Node {
             objectName: "obj89"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj89_mesh.mesh"
+            source: "../../resources/meshes/obj89_mesh.mesh"
             materials: [
                 mat28_material
             ]
@@ -3008,7 +3008,7 @@ Node {
             objectName: "obj9"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj9_mesh.mesh"
+            source: "../../resources/meshes/obj9_mesh.mesh"
             materials: [
                 mat11_material
             ]
@@ -3018,7 +3018,7 @@ Node {
             objectName: "obj90"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj90_mesh.mesh"
+            source: "../../resources/meshes/obj90_mesh.mesh"
             materials: [
                 mat28_material
             ]
@@ -3028,7 +3028,7 @@ Node {
             objectName: "obj91"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj91_mesh.mesh"
+            source: "../../resources/meshes/obj91_mesh.mesh"
             materials: [
                 mat28_material
             ]
@@ -3038,7 +3038,7 @@ Node {
             objectName: "obj92"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj92_mesh.mesh"
+            source: "../../resources/meshes/obj92_mesh.mesh"
             materials: [
                 mat29_material
             ]
@@ -3048,7 +3048,7 @@ Node {
             objectName: "obj93"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj93_mesh.mesh"
+            source: "../../resources/meshes/obj93_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -3058,7 +3058,7 @@ Node {
             objectName: "obj94"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj94_mesh.mesh"
+            source: "../../resources/meshes/obj94_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -3068,7 +3068,7 @@ Node {
             objectName: "obj95"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj95_mesh.mesh"
+            source: "../../resources/meshes/obj95_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -3078,7 +3078,7 @@ Node {
             objectName: "obj96"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj96_mesh.mesh"
+            source: "../../resources/meshes/obj96_mesh.mesh"
             materials: [
                 mat13_material
             ]
@@ -3088,7 +3088,7 @@ Node {
             objectName: "obj97"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj97_mesh.mesh"
+            source: "../../resources/meshes/obj97_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -3098,7 +3098,7 @@ Node {
             objectName: "obj98"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj98_mesh.mesh"
+            source: "../../resources/meshes/obj98_mesh.mesh"
             materials: [
                 mat26_material
             ]
@@ -3108,7 +3108,7 @@ Node {
             objectName: "obj99"
             rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
-            source: "../resources/meshes/obj99_mesh.mesh"
+            source: "../../resources/meshes/obj99_mesh.mesh"
             materials: [
                 mat26_material
             ]

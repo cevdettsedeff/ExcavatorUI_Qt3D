@@ -57,15 +57,19 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
     URI ExcavatorUI_Qt3D
     VERSION 1.0
     QML_FILES
-        src/LoginWindow.qml
-        src/LoginView.qml
-        src/RegisterView.qml
-        src/Main.qml
-        src/ExcavatorView.qml
-        src/MapView.qml
-        src/Excavator.qml
-        src/Grid3D.qml
-        src/BathymetricPlane.qml
+        # Auth views
+        src/auth/LoginWindow.qml
+        src/auth/LoginView.qml
+        src/auth/RegisterView.qml
+        # Main views
+        src/views/Main.qml
+        src/views/ExcavatorView.qml
+        src/views/MapView.qml
+        src/views/BathymetricMapView.qml
+        # 3D Components
+        src/components/Excavator.qml
+        src/components/Grid3D.qml
+        src/components/BathymetricPlane.qml
     RESOURCES
         ${MESH_FILES}
         resources/textures/deniz.png

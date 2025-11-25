@@ -2,10 +2,14 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick3D
 import QtQuick3D.Helpers
+import ExcavatorUI_Qt3D
 
 Rectangle {
     id: excavatorViewRoot
     color: "#2a2a2a"
+
+    // Excavator rotasyonunu dışarı aç
+    property alias excavatorRotation: excavatorContainer.eulerRotation.y
 
     View3D {
         id: view3D
@@ -85,7 +89,7 @@ Rectangle {
 
                 materials: PrincipledMaterial {
                     baseColorMap: Texture {
-                        source: "../resources/textures/toprak.png"
+                        source: "../../resources/textures/toprak.png"
                         scaleU: 5
                         scaleV: 5
                     }
