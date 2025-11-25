@@ -307,8 +307,8 @@ ApplicationWindow {
 
                                 Slider {
                                     id: topZoomSlider
-                                    from: 50
-                                    to: 150
+                                    from: 150
+                                    to: 50
                                     value: 80
                                     width: 180
                                     anchors.verticalCenter: parent.verticalCenter
@@ -461,8 +461,8 @@ ApplicationWindow {
 
                                 Slider {
                                     id: sideZoomSlider
-                                    from: 50
-                                    to: 120
+                                    from: 120
+                                    to: 50
                                     value: 80
                                     width: 180
                                     anchors.verticalCenter: parent.verticalCenter
