@@ -393,4 +393,217 @@ Rectangle {
             }
         }
     }
+
+    // Üstten Görünüm Paneli (sağ üst köşe)
+    Rectangle {
+        id: topViewPanel
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: 60
+        anchors.rightMargin: 20
+        width: 350
+        height: 260
+        color: "#1a1a1a"
+        radius: 10
+        border.color: "#00bcd4"
+        border.width: 2
+        opacity: 0.95
+        z: 15
+
+        // Başlık
+        Rectangle {
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 30
+            color: "#0d0d0d"
+            radius: 10
+
+            Text {
+                anchors.centerIn: parent
+                text: "Üstten Görünüm"
+                font.pixelSize: 12
+                font.bold: true
+                color: "#00bcd4"
+            }
+        }
+
+        // 3D Görünüm - Üstten (Batimetrik Harita)
+        View3D {
+            id: topView3D
+            anchors.fill: parent
+            anchors.topMargin: 30
+            anchors.bottomMargin: 35
+            anchors.margins: 5
+
+            environment: SceneEnvironment {
+                clearColor: "#2a2a2a"
+                backgroundMode: SceneEnvironment.Color
+                antialiasingMode: SceneEnvironment.MSAA
+                antialiasingQuality: SceneEnvironment.Medium
+            }
+
+            // Üstten kamera
+            PerspectiveCamera {
+                id: topViewCamera
+                position: Qt.vector3d(0, topViewZoomSlider.value, 0)
+                eulerRotation.x: -90
+                clipNear: 1
+                clipFar: 2000
+            }
+
+            DirectionalLight {
+                eulerRotation.x: -90
+                brightness: 2.0
+            }
+
+            // Batimetrik mesh container (mini)
+            Node {
+                id: bathymetricContainerMini
+
+                Component.onCompleted: {
+                    var gridSize = 16
+                    var cellSize = 50
+                    var centerOffset = (gridSize * cellSize) / 2
+
+                    for (var row = 0; row < gridSize; row++) {
+                        for (var col = 0; col < gridSize; col++) {
+                            var x = (col * cellSize) - centerOffset + cellSize/2
+                            var z = (row * cellSize) - centerOffset + cellSize/2
+
+                            var distFromCenter = Math.sqrt(
+                                Math.pow((col - gridSize/2), 2) +
+                                Math.pow((row - gridSize/2), 2)
+                            )
+
+                            var distFromLeftEdge = col
+                            var distFromTopEdge = row
+                            var shoreEffect = Math.min(distFromLeftEdge, distFromTopEdge) * 3
+
+                            var depth = -5 - (distFromCenter * 2) + shoreEffect
+                            depth = Math.max(depth, -60)
+                            depth = Math.min(depth, -2)
+
+                            var normalizedDepth = (depth + 60) / 58.0
+                            var color = getDepthColorMini(normalizedDepth)
+
+                            var component = Qt.createQmlObject(
+                                'import QtQuick; import QtQuick3D; ' +
+                                'Model { ' +
+                                '    source: "#Cube"; ' +
+                                '    position: Qt.vector3d(' + x + ', ' + depth + ', ' + z + '); ' +
+                                '    scale: Qt.vector3d(' + (cellSize/100) + ', ' + (Math.abs(depth)/10) + ', ' + (cellSize/100) + '); ' +
+                                '    materials: PrincipledMaterial { ' +
+                                '        baseColor: "' + color + '"; ' +
+                                '        roughness: 0.7; ' +
+                                '        metalness: 0.3; ' +
+                                '    } ' +
+                                '}',
+                                bathymetricContainerMini
+                            )
+                        }
+                    }
+
+                    // Ekskavatör işareti
+                    var excavatorMarker = Qt.createQmlObject(
+                        'import QtQuick; import QtQuick3D; ' +
+                        'Model { ' +
+                        '    source: "#Cylinder"; ' +
+                        '    position: Qt.vector3d(150, 5, 100); ' +
+                        '    scale: Qt.vector3d(1.2, 0.4, 1.2); ' +
+                        '    materials: PrincipledMaterial { ' +
+                        '        baseColor: "#FF5722"; ' +
+                        '        roughness: 0.3; ' +
+                        '        metalness: 0.6; ' +
+                        '    } ' +
+                        '}',
+                        bathymetricContainerMini
+                    )
+                }
+
+                function getDepthColorMini(normalized) {
+                    if (normalized > 0.7) {
+                        return "#90EE90"
+                    } else if (normalized > 0.5) {
+                        return "#4DB8A8"
+                    } else if (normalized > 0.35) {
+                        return "#3EADC4"
+                    } else if (normalized > 0.2) {
+                        return "#2E8BC0"
+                    } else {
+                        return "#1F5F8B"
+                    }
+                }
+            }
+        }
+
+        // Zoom kontrolü - Üstten görünüm
+        Rectangle {
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 5
+            height: 30
+            color: "#0d0d0d"
+            radius: 5
+            opacity: 0.9
+
+            Row {
+                anchors.centerIn: parent
+                spacing: 8
+
+                Text {
+                    text: "−"
+                    font.pixelSize: 16
+                    color: "#00bcd4"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Slider {
+                    id: topViewZoomSlider
+                    from: 600
+                    to: 300
+                    value: 450
+                    width: 240
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    background: Rectangle {
+                        x: topViewZoomSlider.leftPadding
+                        y: topViewZoomSlider.topPadding + topViewZoomSlider.availableHeight / 2 - height / 2
+                        implicitWidth: 240
+                        implicitHeight: 4
+                        width: topViewZoomSlider.availableWidth
+                        height: implicitHeight
+                        radius: 2
+                        color: "#404040"
+
+                        Rectangle {
+                            width: topViewZoomSlider.visualPosition * parent.width
+                            height: parent.height
+                            color: "#00bcd4"
+                            radius: 2
+                        }
+                    }
+
+                    handle: Rectangle {
+                        x: topViewZoomSlider.leftPadding + topViewZoomSlider.visualPosition * (topViewZoomSlider.availableWidth - width)
+                        y: topViewZoomSlider.topPadding + topViewZoomSlider.availableHeight / 2 - height / 2
+                        implicitWidth: 16
+                        implicitHeight: 16
+                        radius: 8
+                        color: topViewZoomSlider.pressed ? "#00e5ff" : "#00bcd4"
+                        border.color: "#ffffff"
+                        border.width: 2
+                    }
+                }
+
+                Text {
+                    text: "+"
+                    font.pixelSize: 16
+                    color: "#00bcd4"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+    }
 }
