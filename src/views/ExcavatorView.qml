@@ -86,7 +86,7 @@ Rectangle {
 
                 materials: PrincipledMaterial {
                     baseColorMap: Texture {
-                        source: "../resources/textures/toprak.png"
+                        source: "../../resources/textures/toprak.png"
                         scaleU: 5
                         scaleV: 5
                     }
