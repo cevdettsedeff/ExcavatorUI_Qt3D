@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("authService", &authService);
 
     // Login window'u yükle
-    const QUrl loginUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/LoginWindow.qml"));
+    const QUrl loginUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/auth/LoginWindow.qml"));
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [loginUrl](QObject *obj, const QUrl &objUrl) {
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         qDebug() << "Login başarılı, dashboard açılıyor...";
 
         // Dashboard URL'i
-        const QUrl dashboardUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/Main.qml"));
+        const QUrl dashboardUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/views/Main.qml"));
 
         // Dashboard'u yükle
         engine.load(dashboardUrl);
