@@ -330,34 +330,33 @@ ApplicationWindow {
 
                             // Yandan kamera (yakın plan)
                             PerspectiveCamera {
-                                position: Qt.vector3d(100, 30, 0)
-                                eulerRotation.y: -90
-                                eulerRotation.x: -5
+                                position: Qt.vector3d(80, 25, 0)
+                                eulerRotation.y: 90
+                                eulerRotation.x: 0
                                 clipNear: 1
                                 clipFar: 1000
-                                fieldOfView: 50
+                                fieldOfView: 45
                             }
 
                             DirectionalLight {
-                                eulerRotation.x: -30
+                                eulerRotation.x: -45
+                                eulerRotation.y: 90
+                                brightness: 2.5
+                            }
+
+                            DirectionalLight {
+                                eulerRotation.x: 45
                                 eulerRotation.y: -90
                                 brightness: 2.0
-                            }
-
-                            DirectionalLight {
-                                eulerRotation.x: 20
-                                eulerRotation.y: 90
-                                brightness: 1.5
                             }
 
                             PointLight {
-                                position: Qt.vector3d(100, 50, 0)
-                                brightness: 2.0
-                                ambientColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
+                                position: Qt.vector3d(0, 50, 0)
+                                brightness: 3.0
                             }
 
                             Node {
-                                scale: Qt.vector3d(1.5, 1.5, 1.5)
+                                scale: Qt.vector3d(1.8, 1.8, 1.8)
 
                                 Excavator {
                                     id: excavatorSideView
