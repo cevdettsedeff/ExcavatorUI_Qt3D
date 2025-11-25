@@ -151,8 +151,8 @@ Rectangle {
             id: gridLines
 
             Component.onCompleted: {
-                var gridSize = 16
-                var cellSize = 50
+                var gridSize = 32  // Daha küçük ızgaralar için artırıldı
+                var cellSize = 25  // Hücre boyutu küçültüldü
                 var centerOffset = (gridSize * cellSize) / 2
 
                 // Yatay çizgiler
@@ -162,11 +162,12 @@ Rectangle {
                         'import QtQuick; import QtQuick3D; ' +
                         'Model { ' +
                         '    source: "#Cube"; ' +
-                        '    position: Qt.vector3d(0, 0, ' + z + '); ' +
-                        '    scale: Qt.vector3d(' + (gridSize * cellSize / 100) + ', 0.02, 0.02); ' +
+                        '    position: Qt.vector3d(0, 1, ' + z + '); ' +
+                        '    scale: Qt.vector3d(' + (gridSize * cellSize / 100) + ', 0.005, 0.005); ' +
                         '    materials: PrincipledMaterial { ' +
-                        '        baseColor: "#1a1a1a"; ' +
-                        '        roughness: 0.1; ' +
+                        '        baseColor: "#404040"; ' +
+                        '        roughness: 0.3; ' +
+                        '        opacity: 0.4; ' +
                         '    } ' +
                         '}',
                         gridLines
@@ -180,11 +181,12 @@ Rectangle {
                         'import QtQuick; import QtQuick3D; ' +
                         'Model { ' +
                         '    source: "#Cube"; ' +
-                        '    position: Qt.vector3d(' + x + ', 0, 0); ' +
-                        '    scale: Qt.vector3d(0.02, 0.02, ' + (gridSize * cellSize / 100) + '); ' +
+                        '    position: Qt.vector3d(' + x + ', 1, 0); ' +
+                        '    scale: Qt.vector3d(0.005, 0.005, ' + (gridSize * cellSize / 100) + '); ' +
                         '    materials: PrincipledMaterial { ' +
-                        '        baseColor: "#1a1a1a"; ' +
-                        '        roughness: 0.1; ' +
+                        '        baseColor: "#404040"; ' +
+                        '        roughness: 0.3; ' +
+                        '        opacity: 0.4; ' +
                         '    } ' +
                         '}',
                         gridLines
