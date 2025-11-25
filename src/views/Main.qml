@@ -141,7 +141,7 @@ ApplicationWindow {
                     text: "Çıkış"
 
                     background: Rectangle {
-                        color: logoutButton.pressed ? "#c0392b" : (logoutButton.hovered ? "#e74c3c" : "#34495e")
+                        color: logoutButton.pressed ? "#c0392b" : (logoutButton.hovered ? "#e74c3c" : "#d32f2f")
                         radius: 5
 
                         Behavior on color {
@@ -219,8 +219,8 @@ ApplicationWindow {
                         anchors.right: parent.right
                         anchors.topMargin: 60
                         anchors.rightMargin: 20
-                        width: 280
-                        height: 200
+                        width: 350
+                        height: 260
                         color: "#1a1a1a"
                         radius: 10
                         border.color: "#00bcd4"
@@ -360,8 +360,8 @@ ApplicationWindow {
                         anchors.right: parent.right
                         anchors.topMargin: 10
                         anchors.rightMargin: 20
-                        width: 280
-                        height: 200
+                        width: 350
+                        height: 260
                         color: "#1a1a1a"
                         radius: 10
                         border.color: "#ffc107"
