@@ -63,6 +63,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/Main.qml
         src/ExcavatorView.qml
         src/MapView.qml
+        src/BathymetricMapView.qml
         src/Excavator.qml
         src/Grid3D.qml
         src/BathymetricPlane.qml
