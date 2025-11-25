@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick3D
 import QtQuick3D.Helpers
 import QtQuick.Controls
+import ExcavatorUI_Qt3D
 
 Rectangle {
     id: bathymetricMapRoot

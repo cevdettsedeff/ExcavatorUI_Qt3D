@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ExcavatorUI_Qt3D
 
 ApplicationWindow {
     id: root
