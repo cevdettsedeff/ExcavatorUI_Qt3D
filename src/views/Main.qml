@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick3D
 import ExcavatorUI_Qt3D
 
 ApplicationWindow {
@@ -210,7 +211,7 @@ ApplicationWindow {
                         }
                     }
 
-                    // Mini kamera görünümü (sağ üst köşe)
+                    // Mini kamera görünümü (sağ üst köşe - üstten)
                     Rectangle {
                         id: miniCameraView
                         anchors.top: parent.top
@@ -236,21 +237,123 @@ ApplicationWindow {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "Mini Kamera Görünümü"
+                                text: "Üstten Görünüm"
                                 font.pixelSize: 12
                                 font.bold: true
                                 color: "#00bcd4"
                             }
                         }
 
-                        // İçerik placeholder
-                        Text {
-                            anchors.centerIn: parent
-                            text: "📹\nKamera Görüntüsü"
-                            font.pixelSize: 14
-                            color: "#888888"
-                            horizontalAlignment: Text.AlignHCenter
-                            lineHeight: 1.5
+                        // 3D Görünüm - Üstten
+                        View3D {
+                            anchors.fill: parent
+                            anchors.topMargin: 30
+                            anchors.margins: 5
+
+                            environment: SceneEnvironment {
+                                clearColor: "#2a2a2a"
+                                backgroundMode: SceneEnvironment.Color
+                                antialiasingMode: SceneEnvironment.MSAA
+                                antialiasingQuality: SceneEnvironment.Medium
+                            }
+
+                            // Üstten kamera
+                            PerspectiveCamera {
+                                position: Qt.vector3d(0, 150, 0)
+                                eulerRotation.x: -90
+                                clipNear: 1
+                                clipFar: 1000
+                            }
+
+                            DirectionalLight {
+                                eulerRotation.x: -45
+                                brightness: 1.5
+                            }
+
+                            Node {
+                                scale: Qt.vector3d(1.5, 1.5, 1.5)
+
+                                Excavator {
+                                    id: excavatorTopView
+                                }
+                            }
+                        }
+                    }
+
+                    // Yandan görünüm (sağ ortada)
+                    Rectangle {
+                        id: sideView
+                        anchors.top: miniCameraView.bottom
+                        anchors.right: parent.right
+                        anchors.topMargin: 10
+                        anchors.rightMargin: 20
+                        width: 280
+                        height: 200
+                        color: "#1a1a1a"
+                        radius: 10
+                        border.color: "#ffc107"
+                        border.width: 2
+                        opacity: 0.95
+
+                        // Başlık
+                        Rectangle {
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 30
+                            color: "#0d0d0d"
+                            radius: 10
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "Yandan Görünüm"
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: "#ffc107"
+                            }
+                        }
+
+                        // 3D Görünüm - Yandan
+                        View3D {
+                            anchors.fill: parent
+                            anchors.topMargin: 30
+                            anchors.margins: 5
+
+                            environment: SceneEnvironment {
+                                clearColor: "#2a2a2a"
+                                backgroundMode: SceneEnvironment.Color
+                                antialiasingMode: SceneEnvironment.MSAA
+                                antialiasingQuality: SceneEnvironment.Medium
+                            }
+
+                            // Yandan kamera
+                            PerspectiveCamera {
+                                position: Qt.vector3d(150, 40, 0)
+                                eulerRotation.y: -90
+                                eulerRotation.x: -10
+                                clipNear: 1
+                                clipFar: 1000
+                            }
+
+                            DirectionalLight {
+                                eulerRotation.x: -30
+                                eulerRotation.y: -70
+                                brightness: 1.5
+                            }
+
+                            DirectionalLight {
+                                eulerRotation.x: 30
+                                eulerRotation.y: 110
+                                brightness: 1.0
+                            }
+
+                            Node {
+                                scale: Qt.vector3d(1.5, 1.5, 1.5)
+
+                                Excavator {
+                                    id: excavatorSideView
+                                }
+                            }
                         }
                     }
                 }
