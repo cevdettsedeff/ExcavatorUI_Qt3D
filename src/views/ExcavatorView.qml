@@ -8,6 +8,9 @@ Rectangle {
     id: excavatorViewRoot
     color: "#2a2a2a"
 
+    // Excavator rotasyonunu dışarı aç
+    property alias excavatorRotation: excavatorContainer.eulerRotation.y
+
     View3D {
         id: view3D
         anchors.fill: parent

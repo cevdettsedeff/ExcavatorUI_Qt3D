@@ -191,6 +191,7 @@ ApplicationWindow {
                     color: "#2a2a2a"
 
                     ExcavatorView {
+                        id: mainExcavatorView
                         anchors.fill: parent
                     }
 
@@ -272,6 +273,7 @@ ApplicationWindow {
 
                             Node {
                                 scale: Qt.vector3d(1.5, 1.5, 1.5)
+                                eulerRotation.y: mainExcavatorView.excavatorRotation
 
                                 Excavator {
                                     id: excavatorTopView
@@ -326,25 +328,32 @@ ApplicationWindow {
                                 antialiasingQuality: SceneEnvironment.Medium
                             }
 
-                            // Yandan kamera
+                            // Yandan kamera (yakın plan)
                             PerspectiveCamera {
-                                position: Qt.vector3d(150, 40, 0)
+                                position: Qt.vector3d(100, 30, 0)
                                 eulerRotation.y: -90
-                                eulerRotation.x: -10
+                                eulerRotation.x: -5
                                 clipNear: 1
                                 clipFar: 1000
+                                fieldOfView: 50
                             }
 
                             DirectionalLight {
                                 eulerRotation.x: -30
-                                eulerRotation.y: -70
-                                brightness: 1.5
+                                eulerRotation.y: -90
+                                brightness: 2.0
                             }
 
                             DirectionalLight {
-                                eulerRotation.x: 30
-                                eulerRotation.y: 110
-                                brightness: 1.0
+                                eulerRotation.x: 20
+                                eulerRotation.y: 90
+                                brightness: 1.5
+                            }
+
+                            PointLight {
+                                position: Qt.vector3d(100, 50, 0)
+                                brightness: 2.0
+                                ambientColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
                             }
 
                             Node {
