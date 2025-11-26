@@ -54,15 +54,6 @@ public:
     Q_INVOKABLE void updatePositionFromGPS(double latitude, double longitude, double depth);
 
     /**
-     * @brief 3D world pozisyonundan grid koordinatlarını hesaplar
-     * @param position 3D pozisyon
-     * @param outRow Grid satırı (output)
-     * @param outCol Grid sütunu (output)
-     * @return Grid sınırları içindeyse true
-     */
-    Q_INVOKABLE bool worldToGrid(const QVector3D &position, int &outRow, int &outCol) const;
-
-    /**
      * @brief Grid koordinatlarından 3D world pozisyonunu hesaplar
      * @param row Grid satırı
      * @param col Grid sütunu
@@ -103,6 +94,7 @@ private:
     double m_simulationAngle;
 
     void updateGridPosition();
+    bool worldToGrid(const QVector3D &position, int &outRow, int &outCol) const;
 };
 
 #endif // EXCAVATORTRACKER_H
