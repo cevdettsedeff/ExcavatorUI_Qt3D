@@ -14,6 +14,17 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Sql
 )
 
+# GDAL kütüphanesini bul (opsiyonel - yoksa fallback mode)
+find_package(GDAL QUIET)
+if(GDAL_FOUND)
+    message(STATUS "✓ GDAL found: ${GDAL_VERSION}")
+    add_compile_definitions(HAS_GDAL)
+else()
+    message(STATUS "✗ GDAL not found - GeoTIFF loader will use fallback mode")
+    message(STATUS "  Install GDAL: sudo apt-get install libgdal-dev (Linux)")
+    message(STATUS "  Install GDAL: brew install gdal (macOS)")
+endif()
+
 # Platform-specific icon
 set(APP_ICON "")
 if(WIN32)
@@ -36,6 +47,12 @@ qt_add_executable(ExcavatorUI_Qt3DApp
     src/database/DatabaseManager.cpp
     src/auth/AuthService.h
     src/auth/AuthService.cpp
+    src/geotiff/GeoTIFFLoader.h
+    src/geotiff/GeoTIFFLoader.cpp
+    src/map/MapTileManager.h
+    src/map/MapTileManager.cpp
+    src/tracking/ExcavatorTracker.h
+    src/tracking/ExcavatorTracker.cpp
     ${APP_ICON}
 )
 
@@ -84,6 +101,12 @@ target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::QuickControls2
     Qt6::Sql
 )
+
+# GDAL varsa link et
+if(GDAL_FOUND)
+    target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE ${GDAL_LIBRARIES})
+    target_include_directories(ExcavatorUI_Qt3DApp PRIVATE ${GDAL_INCLUDE_DIRS})
+endif()
 
 set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES
     WIN32_EXECUTABLE TRUE
