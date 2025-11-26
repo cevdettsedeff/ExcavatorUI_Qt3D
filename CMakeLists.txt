@@ -47,12 +47,6 @@ qt_add_executable(ExcavatorUI_Qt3DApp
     src/database/DatabaseManager.cpp
     src/auth/AuthService.h
     src/auth/AuthService.cpp
-    src/geotiff/GeoTIFFLoader.h
-    src/geotiff/GeoTIFFLoader.cpp
-    src/map/MapTileManager.h
-    src/map/MapTileManager.cpp
-    src/tracking/ExcavatorTracker.h
-    src/tracking/ExcavatorTracker.cpp
     ${APP_ICON}
 )
 
@@ -87,6 +81,14 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/components/Excavator.qml
         src/components/Grid3D.qml
         src/components/BathymetricPlane.qml
+    SOURCES
+        # C++ sınıfları QML'e expose etmek için
+        src/geotiff/GeoTIFFLoader.h
+        src/geotiff/GeoTIFFLoader.cpp
+        src/map/MapTileManager.h
+        src/map/MapTileManager.cpp
+        src/tracking/ExcavatorTracker.h
+        src/tracking/ExcavatorTracker.cpp
     RESOURCES
         ${MESH_FILES}
         resources/textures/deniz.png
