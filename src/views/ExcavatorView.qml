@@ -72,6 +72,10 @@ Rectangle {
 
             Excavator {
                 id: excavatorModel
+                // IMU servisinden açı verilerini al
+                boomAngle: imuService ? imuService.boomAngle : 0.0
+                armAngle: imuService ? imuService.armAngle : 0.0
+                bucketAngle: imuService ? imuService.bucketAngle : 0.0
             }
         }
 

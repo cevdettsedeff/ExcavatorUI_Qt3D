@@ -36,6 +36,8 @@ qt_add_executable(ExcavatorUI_Qt3DApp
     src/database/DatabaseManager.cpp
     src/auth/AuthService.h
     src/auth/AuthService.cpp
+    src/sensors/IMUMockService.h
+    src/sensors/IMUMockService.cpp
     ${APP_ICON}
 )
 

@@ -279,6 +279,10 @@ ApplicationWindow {
 
                                 Excavator {
                                     id: excavatorTopView
+                                    // IMU servisinden açı verilerini al
+                                    boomAngle: imuService ? imuService.boomAngle : 0.0
+                                    armAngle: imuService ? imuService.armAngle : 0.0
+                                    bucketAngle: imuService ? imuService.bucketAngle : 0.0
                                 }
                             }
                         }
@@ -433,6 +437,10 @@ ApplicationWindow {
 
                                 Excavator {
                                     id: excavatorSideView
+                                    // IMU servisinden açı verilerini al
+                                    boomAngle: imuService ? imuService.boomAngle : 0.0
+                                    armAngle: imuService ? imuService.armAngle : 0.0
+                                    bucketAngle: imuService ? imuService.bucketAngle : 0.0
                                 }
                             }
                         }
@@ -760,6 +768,61 @@ ApplicationWindow {
                                     text: "Bağlantı: Aktif"
                                     font.pixelSize: 10
                                     color: "#4CAF50"
+                                }
+                            }
+                        }
+                    }
+
+                    // Kazı Simülasyonu Kontrolü
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: "#404040"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Button {
+                        width: parent.width - 20
+                        height: 50
+                        anchors.horizontalCenter: parent.horizontalCenter
+
+                        background: Rectangle {
+                            color: imuService && imuService.isDigging ? "#f44336" : "#4CAF50"
+                            radius: 5
+                            border.color: imuService && imuService.isDigging ? "#e53935" : "#66BB6A"
+                            border.width: 2
+
+                            Behavior on color {
+                                ColorAnimation { duration: 200 }
+                            }
+                        }
+
+                        contentItem: Row {
+                            anchors.centerIn: parent
+                            spacing: 10
+
+                            Text {
+                                text: imuService && imuService.isDigging ? "⏸" : "▶"
+                                font.pixelSize: 20
+                                color: "#ffffff"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Text {
+                                text: imuService && imuService.isDigging ? "KAZI DURDUR" : "KAZI BAŞLAT"
+                                font.pixelSize: 13
+                                font.bold: true
+                                color: "#ffffff"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        onClicked: {
+                            if (imuService) {
+                                if (imuService.isDigging) {
+                                    imuService.stopDigging()
+                                } else {
+                                    imuService.startDigging()
                                 }
                             }
                         }
