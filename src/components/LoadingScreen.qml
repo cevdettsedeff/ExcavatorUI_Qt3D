@@ -62,30 +62,4 @@ Rectangle {
             color: "#4CAF50"
         }
     }
-
-    // Loading timer - simulates loading process
-    Timer {
-        id: loadingTimer
-        interval: 50
-        repeat: true
-        running: true
-
-        onTriggered: {
-            loadingScreen.progress += 0.02
-            if (loadingScreen.progress >= 1.0) {
-                loadingScreen.progress = 1.0
-                stop()
-                // Kısa bir gecikme sonrası loading complete signal gönder
-                completeTimer.start()
-            }
-        }
-    }
-
-    Timer {
-        id: completeTimer
-        interval: 300
-        onTriggered: {
-            loadingScreen.loadingComplete()
-        }
-    }
 }

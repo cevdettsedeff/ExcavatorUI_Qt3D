@@ -12,10 +12,26 @@ ApplicationWindow {
     title: qsTr("Excavator Dashboard - 3D Model & Map")
     color: "#1a1a1a"
 
+    property bool contentLoaded: false
+
     // Ana container - dikey layout
     ColumnLayout {
+        id: mainContent
         anchors.fill: parent
         spacing: 0
+        opacity: 0
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        Component.onCompleted: {
+            // İçerik yüklendi, loading ekranını kapat
+            loadingCompleteTimer.start()
+        }
 
         // Üst menü bar
         Rectangle {
@@ -832,7 +848,18 @@ ApplicationWindow {
         }
     }
 
-    // Loading Screen overlay
+    // Timer - Ana içerik yüklendiğinde tetiklenir
+    Timer {
+        id: loadingCompleteTimer
+        interval: 800
+        onTriggered: {
+            root.contentLoaded = true
+            mainContent.opacity = 1.0
+            fadeOutAnimation.start()
+        }
+    }
+
+    // Loading Screen overlay - İLK GÖRÜNEN EKRAN
     LoadingScreen {
         id: loadingScreen
         anchors.fill: parent
@@ -840,9 +867,20 @@ ApplicationWindow {
         visible: true
         opacity: 1.0
 
-        onLoadingComplete: {
-            // Fade out animation
-            fadeOutAnimation.start()
+        // Progress otomatik olarak artacak
+        property real loadProgress: 0.0
+
+        Timer {
+            interval: 50
+            repeat: true
+            running: !root.contentLoaded
+
+            onTriggered: {
+                if (loadingScreen.loadProgress < 0.95) {
+                    loadingScreen.loadProgress += 0.015
+                }
+                loadingScreen.progress = loadingScreen.loadProgress
+            }
         }
 
         OpacityAnimator {
