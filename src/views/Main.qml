@@ -14,6 +14,13 @@ ApplicationWindow {
 
     property bool contentLoaded: false
 
+    // İLK FRAME'DEN İTİBAREN GÖRÜNMESİ GEREKEN ARKAPLAN
+    Rectangle {
+        anchors.fill: parent
+        color: "#1a1a1a"
+        z: -1
+    }
+
     // Ana container - dikey layout
     ColumnLayout {
         id: mainContent
@@ -851,11 +858,27 @@ ApplicationWindow {
     // Timer - Ana içerik yüklendiğinde tetiklenir
     Timer {
         id: loadingCompleteTimer
-        interval: 800
+        interval: 200
         onTriggered: {
             root.contentLoaded = true
-            mainContent.opacity = 1.0
-            fadeOutAnimation.start()
+            // Minimum 2 saniye göster + %100'e ulaş
+            loadingMinTimeTimer.start()
+        }
+    }
+
+    // Minimum gösterim süresi timer
+    Timer {
+        id: loadingMinTimeTimer
+        interval: 2000
+        onTriggered: {
+            // Progress %100'e ulaştığında fade out
+            if (loadingScreen.progress >= 1.0) {
+                mainContent.opacity = 1.0
+                fadeOutAnimation.start()
+            } else {
+                // Henüz %100 değilse bekle
+                loadingMinTimeTimer.start()
+            }
         }
     }
 
@@ -869,16 +892,30 @@ ApplicationWindow {
 
         // Progress otomatik olarak artacak
         property real loadProgress: 0.0
+        property real targetProgress: 0.0
 
         Timer {
-            interval: 50
+            interval: 30
             repeat: true
-            running: !root.contentLoaded
+            running: true
 
             onTriggered: {
-                if (loadingScreen.loadProgress < 0.95) {
-                    loadingScreen.loadProgress += 0.015
+                // İçerik yüklendiyse hedef %100
+                if (root.contentLoaded) {
+                    loadingScreen.targetProgress = 1.0
+                } else {
+                    // Yüklenmiyorsa yavaşça %90'a kadar
+                    if (loadingScreen.targetProgress < 0.9) {
+                        loadingScreen.targetProgress += 0.01
+                    }
                 }
+
+                // Smooth progress artışı
+                if (loadingScreen.loadProgress < loadingScreen.targetProgress) {
+                    var diff = loadingScreen.targetProgress - loadingScreen.loadProgress
+                    loadingScreen.loadProgress += diff * 0.15
+                }
+
                 loadingScreen.progress = loadingScreen.loadProgress
             }
         }
