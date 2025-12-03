@@ -274,7 +274,7 @@ ApplicationWindow {
                             }
 
                             Node {
-                                scale: Qt.vector3d(1.5, 1.5, 1.5)
+                                scale: Qt.vector3d(2.5, 2.5, 2.5)
                                 eulerRotation.y: mainExcavatorView.excavatorRotation
 
                                 Excavator {
@@ -433,7 +433,7 @@ ApplicationWindow {
                             }
 
                             Node {
-                                scale: Qt.vector3d(1.8, 1.8, 1.8)
+                                scale: Qt.vector3d(2.8, 2.8, 2.8)
 
                                 Excavator {
                                     id: excavatorSideView
