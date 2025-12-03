@@ -4,401 +4,61 @@ import QtQuick3D
 Node {
     id: node
 
+    // IMU servisi bağlantısı için property'ler
+    property real boomAngle: 0.0
+    property real armAngle: 0.0
+    property real bucketAngle: 0.0
+
     // Resources
     PrincipledMaterial {
-        id: mat19_material
-        objectName: "mat19"
-        baseColor: "#ff666666"
-        roughness: 0.5
+        id: dynamic_Rust_material
+        objectName: "Dynamic Rust"
+        metalness: 1
+        roughness: 0.7100736498832703
         cullMode: PrincipledMaterial.NoCulling
         alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
     }
     PrincipledMaterial {
-        id: mat21_material
-        objectName: "mat21"
-        baseColor: "#ff919191"
-        roughness: 0.5
+        id: material_material
+        objectName: "Material"
+        baseColor: "#ff444143"
+        metalness: 1
         cullMode: PrincipledMaterial.NoCulling
         alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
     }
     PrincipledMaterial {
-        id: mat20_material
-        objectName: "mat20"
-        baseColor: "#ff9f9f9f"
-        roughness: 0.5
+        id: master_Glass_material
+        objectName: "Master Glass"
+        roughness: 1
         cullMode: PrincipledMaterial.NoCulling
         alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
+        transmissionFactor: 1
+        indexOfRefraction: 1.4500000476837158
     }
     PrincipledMaterial {
-        id: mat45_material
-        objectName: "mat45"
-        baseColor: "#ffc00000"
+        id: material_001_material
+        objectName: "Material.001"
+        baseColor: "#ff000000"
         roughness: 0.5
         cullMode: PrincipledMaterial.NoCulling
         alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
     }
     PrincipledMaterial {
-        id: mat24_material
-        objectName: "mat24"
-        baseColor: "#ffffde1c"
-        roughness: 0.5
+        id: metal_material
+        objectName: "metal"
+        baseColor: "#ffa1a1a1"
+        metalness: 1
         cullMode: PrincipledMaterial.NoCulling
         alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
     }
     PrincipledMaterial {
-        id: mat28_material
-        objectName: "mat28"
-        baseColor: "#ff8c8c8c"
-        roughness: 0.5
+        id: level_1_material
+        objectName: "Level_1"
+        baseColor: "#fffff85f"
+        roughness: 1
         cullMode: PrincipledMaterial.NoCulling
         alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat43_material
-        objectName: "mat43"
-        baseColor: "#ffb1aeae"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat18_material
-        objectName: "mat18"
-        baseColor: "#ff777777"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat9_material
-        objectName: "mat9"
-        baseColor: "#ffa8a6a6"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat44_material
-        objectName: "mat44"
-        baseColor: "#ffcecece"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat29_material
-        objectName: "mat29"
-        baseColor: "#ffc1c1c1"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat25_material
-        objectName: "mat25"
-        baseColor: "#ffffdf1c"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat23_material
-        objectName: "mat23"
-        baseColor: "#ffffe62a"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat27_material
-        objectName: "mat27"
-        baseColor: "#ff999999"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat10_material
-        objectName: "mat10"
-        baseColor: "#ffcccccc"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat34_material
-        objectName: "mat34"
-        baseColor: "#ffd9d9d9"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat37_material
-        objectName: "mat37"
-        baseColor: "#ffa5a5a5"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat36_material
-        objectName: "mat36"
-        baseColor: "#ffb3b3b3"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat35_material
-        objectName: "mat35"
-        baseColor: "#ff909090"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat5_material
-        objectName: "mat5"
-        baseColor: "#ffdabb45"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat4_material
-        objectName: "mat4"
-        baseColor: "#ffffdf1c"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat33_material
-        objectName: "mat33"
-        baseColor: "#ff828181"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat32_material
-        objectName: "mat32"
-        baseColor: "#ff767676"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat31_material
-        objectName: "mat31"
-        baseColor: "#ffa9a8a8"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat30_material
-        objectName: "mat30"
-        baseColor: "#ffafafaf"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat39_material
-        objectName: "mat39"
-        baseColor: "#ffababab"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat13_material
-        objectName: "mat13"
-        baseColor: "#ffe7e7e7"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat38_material
-        objectName: "mat38"
-        baseColor: "#ff818181"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat14_material
-        objectName: "mat14"
-        baseColor: "#ff8e8b8b"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat22_material
-        objectName: "mat22"
-        baseColor: "#ff9c9c9c"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat26_material
-        objectName: "mat26"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat11_material
-        objectName: "mat11"
-        baseColor: "#ff7d7d7d"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat3_material
-        objectName: "mat3"
-        baseColor: "#ff7b7b7b"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat6_material
-        objectName: "mat6"
-        baseColor: "#fff2d040"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat15_material
-        objectName: "mat15"
-        baseColor: "#ff8a8888"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat17_material
-        objectName: "mat17"
-        baseColor: "#ffbababa"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat16_material
-        objectName: "mat16"
-        baseColor: "#ffc3c3c3"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat7_material
-        objectName: "mat7"
-        baseColor: "#ff9e9e9e"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat41_material
-        objectName: "mat41"
-        baseColor: "#ffd6d6d6"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat42_material
-        objectName: "mat42"
-        baseColor: "#ff929292"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat12_material
-        objectName: "mat12"
-        baseColor: "#ffcdcdcd"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat40_material
-        objectName: "mat40"
-        baseColor: "#ff979494"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat2_material
-        objectName: "mat2"
-        baseColor: "#ffa6a6a6"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
-    }
-    PrincipledMaterial {
-        id: mat8_material
-        objectName: "mat8"
-        baseColor: "#ffa29e9e"
-        roughness: 0.5
-        cullMode: PrincipledMaterial.NoCulling
-        alphaMode: PrincipledMaterial.Opaque
-        indexOfRefraction: 1
+        indexOfRefraction: 1.4500000476837158
     }
 
     // Nodes:
@@ -406,2712 +66,1061 @@ Node {
         id: root
         objectName: "ROOT"
         Model {
-            id: obj1
-            objectName: "obj1"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj1_mesh.mesh"
-            materials: [
-                mat2_material,
-                mat3_material
-            ]
-        }
-        Model {
-            id: obj10
-            objectName: "obj10"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj10_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj100
-            objectName: "obj100"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj100_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj101
-            objectName: "obj101"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj101_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj102
-            objectName: "obj102"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj102_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj103
-            objectName: "obj103"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj103_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj104
-            objectName: "obj104"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj104_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj105
-            objectName: "obj105"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj105_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj106
-            objectName: "obj106"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj106_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj107
-            objectName: "obj107"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj107_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj108
-            objectName: "obj108"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj108_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj109
-            objectName: "obj109"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj109_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj11
-            objectName: "obj11"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj11_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj110
-            objectName: "obj110"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj110_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj111
-            objectName: "obj111"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj111_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj112
-            objectName: "obj112"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj112_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj113
-            objectName: "obj113"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj113_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj114
-            objectName: "obj114"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj114_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj115
-            objectName: "obj115"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj115_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj116
-            objectName: "obj116"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj116_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj117
-            objectName: "obj117"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj117_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj118
-            objectName: "obj118"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj118_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj119
-            objectName: "obj119"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj119_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj12
-            objectName: "obj12"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj12_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj120
-            objectName: "obj120"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj120_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj121
-            objectName: "obj121"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj121_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj122
-            objectName: "obj122"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj122_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj123
-            objectName: "obj123"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj123_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj124
-            objectName: "obj124"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj124_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj125
-            objectName: "obj125"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj125_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj126
-            objectName: "obj126"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj126_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj127
-            objectName: "obj127"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj127_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj128
-            objectName: "obj128"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj128_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj129
-            objectName: "obj129"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj129_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj13
-            objectName: "obj13"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj13_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj130
-            objectName: "obj130"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj130_mesh.mesh"
-            materials: [
-                mat30_material
-            ]
-        }
-        Model {
-            id: obj131
-            objectName: "obj131"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj131_mesh.mesh"
-            materials: [
-                mat31_material
-            ]
-        }
-        Model {
-            id: obj132
-            objectName: "obj132"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj132_mesh.mesh"
-            materials: [
-                mat32_material
-            ]
-        }
-        Model {
-            id: obj133
-            objectName: "obj133"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj133_mesh.mesh"
-            materials: [
-                mat33_material
-            ]
-        }
-        Model {
-            id: obj134
-            objectName: "obj134"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj134_mesh.mesh"
-            materials: [
-                mat34_material
-            ]
-        }
-        Model {
-            id: obj135
-            objectName: "obj135"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj135_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat5_material
-            ]
-        }
-        Model {
-            id: obj136
-            objectName: "obj136"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj136_mesh.mesh"
-            materials: [
-                mat35_material
-            ]
-        }
-        Model {
-            id: obj137
-            objectName: "obj137"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj137_mesh.mesh"
-            materials: [
-                mat36_material
-            ]
-        }
-        Model {
-            id: obj138
-            objectName: "obj138"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj138_mesh.mesh"
-            materials: [
-                mat37_material
-            ]
-        }
-        Model {
-            id: obj139
-            objectName: "obj139"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj139_mesh.mesh"
-            materials: [
-                mat37_material
-            ]
-        }
-        Model {
-            id: obj14
-            objectName: "obj14"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj14_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj140
-            objectName: "obj140"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj140_mesh.mesh"
-            materials: [
-                mat11_material,
-                mat14_material
-            ]
-        }
-        Model {
-            id: obj141
-            objectName: "obj141"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj141_mesh.mesh"
-            materials: [
-                mat11_material,
-                mat14_material
-            ]
-        }
-        Model {
-            id: obj142
-            objectName: "obj142"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj142_mesh.mesh"
-            materials: [
-                mat11_material,
-                mat14_material
-            ]
-        }
-        Model {
-            id: obj143
-            objectName: "obj143"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj143_mesh.mesh"
-            materials: [
-                mat38_material
-            ]
-        }
-        Model {
-            id: obj144
-            objectName: "obj144"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj144_mesh.mesh"
-            materials: [
-                mat38_material
-            ]
-        }
-        Model {
-            id: obj145
-            objectName: "obj145"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj145_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj146
-            objectName: "obj146"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj146_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj147
-            objectName: "obj147"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj147_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj148
-            objectName: "obj148"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj148_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj149
-            objectName: "obj149"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj149_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj15
-            objectName: "obj15"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj15_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj150
-            objectName: "obj150"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj150_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj151
-            objectName: "obj151"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj151_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj152
-            objectName: "obj152"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj152_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj153
-            objectName: "obj153"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj153_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat40_material
-            ]
-        }
-        Model {
-            id: obj154
-            objectName: "obj154"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj154_mesh.mesh"
-            materials: [
-                mat31_material
-            ]
-        }
-        Model {
-            id: obj155
-            objectName: "obj155"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj155_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj156
-            objectName: "obj156"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj156_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj157
-            objectName: "obj157"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj157_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj158
-            objectName: "obj158"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj158_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj159
-            objectName: "obj159"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj159_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj16
-            objectName: "obj16"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj16_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj160
-            objectName: "obj160"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj160_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj161
-            objectName: "obj161"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj161_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj162
-            objectName: "obj162"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj162_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj163
-            objectName: "obj163"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj163_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj164
-            objectName: "obj164"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj164_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj165
-            objectName: "obj165"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj165_mesh.mesh"
-            materials: [
-                mat41_material
-            ]
-        }
-        Model {
-            id: obj166
-            objectName: "obj166"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj166_mesh.mesh"
-            materials: [
-                mat42_material
-            ]
-        }
-        Model {
-            id: obj167
-            objectName: "obj167"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj167_mesh.mesh"
-            materials: [
-                mat42_material
-            ]
-        }
-        Model {
-            id: obj168
-            objectName: "obj168"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj168_mesh.mesh"
-            materials: [
-                mat42_material
-            ]
-        }
-        Model {
-            id: obj169
-            objectName: "obj169"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj169_mesh.mesh"
-            materials: [
-                mat42_material
-            ]
-        }
-        Model {
-            id: obj17
-            objectName: "obj17"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj17_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj170
-            objectName: "obj170"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj170_mesh.mesh"
-            materials: [
-                mat8_material
-            ]
-        }
-        Model {
-            id: obj171
-            objectName: "obj171"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj171_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj172
-            objectName: "obj172"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj172_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj173
-            objectName: "obj173"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj173_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj174
-            objectName: "obj174"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj174_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj175
-            objectName: "obj175"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj175_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj176
-            objectName: "obj176"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj176_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj177
-            objectName: "obj177"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj177_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj178
-            objectName: "obj178"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj178_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj179
-            objectName: "obj179"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj179_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj18
-            objectName: "obj18"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj18_mesh.mesh"
-            materials: [
-                mat11_material,
-                mat14_material
-            ]
-        }
-        Model {
-            id: obj180
-            objectName: "obj180"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj180_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj181
-            objectName: "obj181"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj181_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj182
-            objectName: "obj182"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj182_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj183
-            objectName: "obj183"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj183_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj184
-            objectName: "obj184"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj184_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj185
-            objectName: "obj185"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj185_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj186
-            objectName: "obj186"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj186_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj187
-            objectName: "obj187"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj187_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj188
-            objectName: "obj188"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj188_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj189
-            objectName: "obj189"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj189_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj19
-            objectName: "obj19"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj19_mesh.mesh"
-            materials: [
-                mat15_material
-            ]
-        }
-        Model {
-            id: obj190
-            objectName: "obj190"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj190_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj191
-            objectName: "obj191"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj191_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj192
-            objectName: "obj192"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj192_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj193
-            objectName: "obj193"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj193_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj194
-            objectName: "obj194"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj194_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj195
-            objectName: "obj195"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj195_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj196
-            objectName: "obj196"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj196_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj197
-            objectName: "obj197"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj197_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj198
-            objectName: "obj198"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj198_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj199
-            objectName: "obj199"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj199_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj2
-            objectName: "obj2"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj2_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat5_material,
-                mat6_material,
-                mat7_material
-            ]
-        }
-        Model {
-            id: obj20
-            objectName: "obj20"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj20_mesh.mesh"
-            materials: [
-                mat16_material
-            ]
-        }
-        Model {
-            id: obj200
-            objectName: "obj200"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj200_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj201
-            objectName: "obj201"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj201_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj202
-            objectName: "obj202"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj202_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj203
-            objectName: "obj203"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj203_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj204
-            objectName: "obj204"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj204_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj205
-            objectName: "obj205"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj205_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj206
-            objectName: "obj206"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj206_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj207
-            objectName: "obj207"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj207_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj208
-            objectName: "obj208"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj208_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj209
-            objectName: "obj209"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj209_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj21
-            objectName: "obj21"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj21_mesh.mesh"
-            materials: [
-                mat17_material
-            ]
-        }
-        Model {
-            id: obj210
-            objectName: "obj210"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj210_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj211
-            objectName: "obj211"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj211_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj212
-            objectName: "obj212"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj212_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj213
-            objectName: "obj213"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj213_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj214
-            objectName: "obj214"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj214_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj215
-            objectName: "obj215"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj215_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj216
-            objectName: "obj216"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj216_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj217
-            objectName: "obj217"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj217_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj218
-            objectName: "obj218"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj218_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj219
-            objectName: "obj219"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj219_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj22
-            objectName: "obj22"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj22_mesh.mesh"
-            materials: [
-                mat18_material
-            ]
-        }
-        Model {
-            id: obj220
-            objectName: "obj220"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj220_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj221
-            objectName: "obj221"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj221_mesh.mesh"
-            materials: [
-                mat43_material
-            ]
-        }
-        Model {
-            id: obj222
-            objectName: "obj222"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj222_mesh.mesh"
-            materials: [
-                mat8_material
-            ]
-        }
-        Model {
-            id: obj223
-            objectName: "obj223"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj223_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat6_material
-            ]
-        }
-        Model {
-            id: obj224
-            objectName: "obj224"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj224_mesh.mesh"
-            materials: [
-                mat4_material
-            ]
-        }
-        Model {
-            id: obj225
-            objectName: "obj225"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj225_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat6_material
-            ]
-        }
-        Model {
-            id: obj226
-            objectName: "obj226"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj226_mesh.mesh"
-            materials: [
-                mat28_material
-            ]
-        }
-        Model {
-            id: obj227
-            objectName: "obj227"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj227_mesh.mesh"
-            materials: [
-                mat24_material,
-                mat28_material
-            ]
-        }
-        Model {
-            id: obj228
-            objectName: "obj228"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj228_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat40_material
-            ]
-        }
-        Model {
-            id: obj229
-            objectName: "obj229"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj229_mesh.mesh"
-            materials: [
-                mat44_material
-            ]
-        }
-        Model {
-            id: obj23
-            objectName: "obj23"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj23_mesh.mesh"
-            materials: [
-                mat17_material
-            ]
-        }
-        Model {
-            id: obj230
-            objectName: "obj230"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj230_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj231
-            objectName: "obj231"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj231_mesh.mesh"
-            materials: [
-                mat42_material
-            ]
-        }
-        Model {
-            id: obj232
-            objectName: "obj232"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj232_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj233
-            objectName: "obj233"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj233_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj234
-            objectName: "obj234"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj234_mesh.mesh"
-            materials: [
-                mat9_material
-            ]
-        }
-        Model {
-            id: obj235
-            objectName: "obj235"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj235_mesh.mesh"
-            materials: [
-                mat9_material
-            ]
-        }
-        Model {
-            id: obj236
-            objectName: "obj236"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj236_mesh.mesh"
-            materials: [
-                mat9_material
-            ]
-        }
-        Model {
-            id: obj237
-            objectName: "obj237"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj237_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj238
-            objectName: "obj238"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj238_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj239
-            objectName: "obj239"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj239_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj24
-            objectName: "obj24"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj24_mesh.mesh"
-            materials: [
-                mat18_material
-            ]
-        }
-        Model {
-            id: obj240
-            objectName: "obj240"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj240_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj241
-            objectName: "obj241"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj241_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj242
-            objectName: "obj242"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj242_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj243
-            objectName: "obj243"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj243_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat39_material
-            ]
-        }
-        Model {
-            id: obj244
-            objectName: "obj244"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj244_mesh.mesh"
-            materials: [
-                mat33_material
-            ]
-        }
-        Model {
-            id: obj245
-            objectName: "obj245"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj245_mesh.mesh"
-            materials: [
-                mat8_material
-            ]
-        }
-        Model {
-            id: obj246
-            objectName: "obj246"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj246_mesh.mesh"
-            materials: [
-                mat8_material
-            ]
-        }
-        Model {
-            id: obj247
-            objectName: "obj247"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj247_mesh.mesh"
-            materials: [
-                mat32_material
-            ]
-        }
-        Model {
-            id: obj248
-            objectName: "obj248"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj248_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj249
-            objectName: "obj249"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj249_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj25
-            objectName: "obj25"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj25_mesh.mesh"
-            materials: [
-                mat16_material
-            ]
-        }
-        Model {
-            id: obj250
-            objectName: "obj250"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj250_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj251
-            objectName: "obj251"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj251_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj252
-            objectName: "obj252"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj252_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj253
-            objectName: "obj253"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj253_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj254
-            objectName: "obj254"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj254_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj255
-            objectName: "obj255"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj255_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj256
-            objectName: "obj256"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj256_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj257
-            objectName: "obj257"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj257_mesh.mesh"
-            materials: [
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj258
-            objectName: "obj258"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj258_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat6_material
-            ]
-        }
-        Model {
-            id: obj259
-            objectName: "obj259"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj259_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat6_material
-            ]
-        }
-        Model {
-            id: obj26
-            objectName: "obj26"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj26_mesh.mesh"
-            materials: [
-                mat19_material
-            ]
-        }
-        Model {
-            id: obj260
-            objectName: "obj260"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj260_mesh.mesh"
-            materials: [
-                mat28_material
-            ]
-        }
-        Model {
-            id: obj261
-            objectName: "obj261"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj261_mesh.mesh"
-            materials: [
-                mat28_material
-            ]
-        }
-        Model {
-            id: obj262
-            objectName: "obj262"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj262_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj263
-            objectName: "obj263"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj263_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj264
-            objectName: "obj264"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj264_mesh.mesh"
-            materials: [
-                mat45_material
-            ]
-        }
-        Model {
-            id: obj265
-            objectName: "obj265"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj265_mesh.mesh"
-            materials: [
-                mat45_material
-            ]
-        }
-        Model {
-            id: obj266
-            objectName: "obj266"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj266_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj267
-            objectName: "obj267"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj267_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj27
-            objectName: "obj27"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj27_mesh.mesh"
-            materials: [
-                mat20_material
-            ]
-        }
-        Model {
-            id: obj28
-            objectName: "obj28"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj28_mesh.mesh"
-            materials: [
-                mat20_material
-            ]
-        }
-        Model {
-            id: obj29
-            objectName: "obj29"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj29_mesh.mesh"
-            materials: [
-                mat20_material
-            ]
-        }
-        Model {
-            id: obj3
-            objectName: "obj3"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj3_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat6_material
-            ]
-        }
-        Model {
-            id: obj30
-            objectName: "obj30"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj30_mesh.mesh"
-            materials: [
-                mat4_material
-            ]
-        }
-        Model {
-            id: obj31
-            objectName: "obj31"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj31_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat6_material
-            ]
-        }
-        Model {
-            id: obj32
-            objectName: "obj32"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj32_mesh.mesh"
-            materials: [
-                mat21_material
-            ]
-        }
-        Model {
-            id: obj33
-            objectName: "obj33"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj33_mesh.mesh"
-            materials: [
-                mat21_material
-            ]
-        }
-        Model {
-            id: obj34
-            objectName: "obj34"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj34_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj35
-            objectName: "obj35"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj35_mesh.mesh"
-            materials: [
-                mat23_material
-            ]
-        }
-        Model {
-            id: obj36
-            objectName: "obj36"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj36_mesh.mesh"
-            materials: [
-                mat24_material
-            ]
-        }
-        Model {
-            id: obj37
-            objectName: "obj37"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj37_mesh.mesh"
-            materials: [
-                mat21_material
-            ]
-        }
-        Model {
-            id: obj38
-            objectName: "obj38"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj38_mesh.mesh"
-            materials: [
-                mat24_material
-            ]
-        }
-        Model {
-            id: obj39
-            objectName: "obj39"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj39_mesh.mesh"
-            materials: [
-                mat24_material
-            ]
-        }
-        Model {
-            id: obj4
-            objectName: "obj4"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj4_mesh.mesh"
-            materials: [
-                mat8_material
-            ]
-        }
-        Model {
-            id: obj40
-            objectName: "obj40"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj40_mesh.mesh"
-            materials: [
-                mat4_material
-            ]
-        }
-        Model {
-            id: obj41
-            objectName: "obj41"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj41_mesh.mesh"
-            materials: [
-                mat4_material,
-                mat6_material
-            ]
-        }
-        Model {
-            id: obj42
-            objectName: "obj42"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj42_mesh.mesh"
-            materials: [
-                mat25_material
-            ]
-        }
-        Model {
-            id: obj43
-            objectName: "obj43"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj43_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj44
-            objectName: "obj44"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj44_mesh.mesh"
-            materials: [
-                mat16_material
-            ]
-        }
-        Model {
-            id: obj45
-            objectName: "obj45"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj45_mesh.mesh"
-            materials: [
-                mat16_material
-            ]
-        }
-        Model {
-            id: obj46
-            objectName: "obj46"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj46_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj47
-            objectName: "obj47"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj47_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj48
-            objectName: "obj48"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj48_mesh.mesh"
-            materials: [
-                mat16_material
-            ]
-        }
-        Model {
-            id: obj49
-            objectName: "obj49"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj49_mesh.mesh"
-            materials: [
-                mat16_material
-            ]
-        }
-        Model {
-            id: obj5
-            objectName: "obj5"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj5_mesh.mesh"
-            materials: [
-                mat9_material
-            ]
-        }
-        Model {
-            id: obj50
-            objectName: "obj50"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj50_mesh.mesh"
-            materials: [
-                mat21_material
-            ]
-        }
-        Model {
-            id: obj51
-            objectName: "obj51"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj51_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj52
-            objectName: "obj52"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj52_mesh.mesh"
-            materials: [
-                mat24_material
-            ]
-        }
-        Model {
-            id: obj53
-            objectName: "obj53"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj53_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj54
-            objectName: "obj54"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj54_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj55
-            objectName: "obj55"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj55_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj56
-            objectName: "obj56"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj56_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj57
-            objectName: "obj57"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj57_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj58
-            objectName: "obj58"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj58_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj59
-            objectName: "obj59"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj59_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj6
-            objectName: "obj6"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj6_mesh.mesh"
-            materials: [
-                mat10_material,
-                mat11_material,
-                mat12_material
-            ]
-        }
-        Model {
-            id: obj60
-            objectName: "obj60"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj60_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj61
-            objectName: "obj61"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj61_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj62
-            objectName: "obj62"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj62_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat27_material
-            ]
-        }
-        Model {
-            id: obj63
-            objectName: "obj63"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj63_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj64
-            objectName: "obj64"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj64_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj65
-            objectName: "obj65"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj65_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj66
-            objectName: "obj66"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj66_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj67
-            objectName: "obj67"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj67_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj68
-            objectName: "obj68"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj68_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj69
-            objectName: "obj69"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj69_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj7
-            objectName: "obj7"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj7_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj70
-            objectName: "obj70"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj70_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj71
-            objectName: "obj71"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj71_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj72
-            objectName: "obj72"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj72_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj73
-            objectName: "obj73"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj73_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj74
-            objectName: "obj74"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj74_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj75
-            objectName: "obj75"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj75_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj76
-            objectName: "obj76"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj76_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj77
-            objectName: "obj77"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj77_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj78
-            objectName: "obj78"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj78_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj79
-            objectName: "obj79"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj79_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj8
-            objectName: "obj8"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj8_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj80
-            objectName: "obj80"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj80_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj81
-            objectName: "obj81"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj81_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj82
-            objectName: "obj82"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj82_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj83
-            objectName: "obj83"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj83_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj84
-            objectName: "obj84"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj84_mesh.mesh"
-            materials: [
-                mat22_material
-            ]
-        }
-        Model {
-            id: obj85
-            objectName: "obj85"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj85_mesh.mesh"
-            materials: [
-                mat20_material
-            ]
-        }
-        Model {
-            id: obj86
-            objectName: "obj86"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj86_mesh.mesh"
-            materials: [
-                mat24_material,
-                mat28_material
-            ]
-        }
-        Model {
-            id: obj87
-            objectName: "obj87"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj87_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj88
-            objectName: "obj88"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj88_mesh.mesh"
-            materials: [
-                mat13_material,
-                mat19_material
-            ]
-        }
-        Model {
-            id: obj89
-            objectName: "obj89"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj89_mesh.mesh"
-            materials: [
-                mat28_material
-            ]
-        }
-        Model {
-            id: obj9
-            objectName: "obj9"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj9_mesh.mesh"
-            materials: [
-                mat11_material
-            ]
-        }
-        Model {
-            id: obj90
-            objectName: "obj90"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj90_mesh.mesh"
-            materials: [
-                mat28_material
-            ]
-        }
-        Model {
-            id: obj91
-            objectName: "obj91"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj91_mesh.mesh"
-            materials: [
-                mat28_material
-            ]
-        }
-        Model {
-            id: obj92
-            objectName: "obj92"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj92_mesh.mesh"
-            materials: [
-                mat29_material
-            ]
-        }
-        Model {
-            id: obj93
-            objectName: "obj93"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj93_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj94
-            objectName: "obj94"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj94_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj95
-            objectName: "obj95"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj95_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj96
-            objectName: "obj96"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj96_mesh.mesh"
-            materials: [
-                mat13_material
-            ]
-        }
-        Model {
-            id: obj97
-            objectName: "obj97"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj97_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj98
-            objectName: "obj98"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj98_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
-        }
-        Model {
-            id: obj99
-            objectName: "obj99"
-            rotation: Qt.quaternion(0.707107, 0.707107, 0, 0)
-            scale: Qt.vector3d(1, 1, 1)
-            source: "../../resources/meshes/obj99_mesh.mesh"
-            materials: [
-                mat26_material
-            ]
+            id: mainBase
+            objectName: "MainBase"
+            position: Qt.vector3d(-0.00665526, 2.82167, 1.61977)
+            rotation: Qt.quaternion(-1.62921e-07, 1, 0, 0)
+            scale: Qt.vector3d(0.000999999, 0.000999999, 0.000999999)
+            source: "../../resources/meshes/caterpillar_390F_LME__UNDERCARRIAGE_FRAME_390F_mesh.mesh"
+            materials: [
+                level_1_material
+            ]
+            Node {
+                id: armature
+                objectName: "Armature"
+                position: Qt.vector3d(6.6553, -3720.32, -2691.99)
+                rotation: Qt.quaternion(1.62921e-07, 1, 0, 0)
+                scale: Qt.vector3d(1000, 1000, 1000)
+                Node {
+                    id: bone_007
+                    objectName: "Bone.007"
+                    position: Qt.vector3d(-0.0066553, -3.72031, -2.69199)
+                    Node {
+                        id: bottom_
+                        objectName: "bottom"
+                        position: Qt.vector3d(0.00262427, 0.947969, 1.24945)
+                        rotation: Qt.quaternion(0.707107, -2.66925e-08, -2.66925e-08, -0.707107)
+                        scale: Qt.vector3d(1, 1, 1)
+                        Node {
+                            id: bottom1
+                            objectName: "bottom1"
+                            position: Qt.vector3d(-2.60217e-07, -4.65661e-10, 2.846e-07)
+                            rotation: Qt.quaternion(-0.166287, -0.685881, 0.688123, 0.168529)
+                            scale: Qt.vector3d(1, 1, 1)
+                            Model {
+                                id: caterpillar_390F_LME__BOOM_CYLINDER_BORE_390F_LME
+                                objectName: "Caterpillar_390F_LME:_BOOM_CYLINDER_BORE_390F_LME"
+                                position: Qt.vector3d(4.65661e-10, 3.82535e-07, -3.65522e-07)
+                                rotation: Qt.quaternion(-0.00187059, 0.000770314, 0.99781, 0.0661224)
+                                scale: Qt.vector3d(1, 1, 1)
+                                source: "../../resources/meshes/caterpillar_390F_LME__BOOM_CYLINDER_BORE_390F_LME_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                            }
+                        }
+                    }
+                    Node {
+                        id: bone
+                        objectName: "Bone"
+                        position: Qt.vector3d(0.00653788, 1.64764, 0.198732)
+
+                        // BOOM ROTATION - IMU'dan gelen boomAngle değeriyle kontrol edilecek
+                        rotation: Qt.quaternion(0.802259 + boomAngle * 0.01, 0.596976, 0.000129593, 0.000129569)
+
+                        // Smooth animasyon için Behavior ekle
+                        Behavior on rotation {
+                            QuaternionAnimation {
+                                duration: 50
+                                easing.type: Easing.OutQuad
+                            }
+                        }
+
+                        Node {
+                            id: top_
+                            objectName: "top"
+                            position: Qt.vector3d(0.000736282, 2.98354, -1.26916)
+                            rotation: Qt.quaternion(0.567191, -0.422035, -0.422218, -0.567374)
+                            Node {
+                                id: top1
+                                objectName: "top1"
+                                position: Qt.vector3d(-5.68173e-07, -5.96047e-08, 2.1157e-08)
+                                rotation: Qt.quaternion(-0.168426, 0.686394, 0.687349, -0.167471)
+                                scale: Qt.vector3d(1, 1, 1)
+                                Model {
+                                    id: caterpillar_390F_LME__BOOM_PISTON_ROB_390F_LME__BOOM_ROB_CLEVIS
+                                    objectName: "Caterpillar_390F_LME:_BOOM_PISTON_ROB_390F_LME:_BOOM_ROB_CLEVIS"
+                                    position: Qt.vector3d(-6.5255e-10, 3.57585e-07, 7.74834e-07)
+                                    rotation: Qt.quaternion(0.237596, 0.971364, -0.000744172, 0.000328117)
+                                    scale: Qt.vector3d(1, 1, 1)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__BOOM_PISTON_ROB_390F_LME__BOOM_ROB_CLEVIS_mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                    Model {
+                                        id: caterpillar_390F_LME__BOOM_390F_LME__BOOM_CYLINDER_PIN_390F
+                                        objectName: "Caterpillar_390F_LME:_BOOM_390F_LME:_BOOM_CYLINDER_PIN_390F"
+                                        rotation: Qt.quaternion(-5.1659e-07, 1, 0, 0)
+                                        scale: Qt.vector3d(0.000999999, 0.000999999, 0.000999999)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BOOM_390F_LME__BOOM_CYLINDER_PIN_390F_mesh.mesh"
+                                        materials: [
+                                            level_1_material
+                                        ]
+                                    }
+                                    Model {
+                                        id: caterpillar_390F_LME__BOOM_390F_LME__BOOM_CYLINDER_PIN_390F__PI
+                                        objectName: "Caterpillar_390F_LME:_BOOM_390F_LME:_BOOM_CYLINDER_PIN_390F:_PI"
+                                        position: Qt.vector3d(0.000635513, 0.000184923, 0.000442439)
+                                        rotation: Qt.quaternion(-5.1659e-07, 1, 0, 0)
+                                        scale: Qt.vector3d(0.000999999, 0.000999999, 0.000999999)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BOOM_390F_LME__BOOM_CYLINDER_PIN_390F__PI_mesh.mesh"
+                                        materials: [
+                                            metal_material
+                                        ]
+                                    }
+                                    Model {
+                                        id: caterpillar_390F_LME__BOOM_PISTON_ROB_390F_LME
+                                        objectName: "Caterpillar_390F_LME:_BOOM_PISTON_ROB_390F_LME"
+                                        position: Qt.vector3d(0.00245119, -1.3318, -0.692694)
+                                        rotation: Qt.quaternion(-5.1659e-07, 1, 0, 0)
+                                        scale: Qt.vector3d(0.000999999, 0.000999999, 0.000999999)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BOOM_PISTON_ROB_390F_LME_mesh.mesh"
+                                        materials: [
+                                            metal_material
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                        Node {
+                            id: b1c
+                            objectName: "b1c"
+                            position: Qt.vector3d(0.00105774, 3.47948, -2.08301)
+                            rotation: Qt.quaternion(0.567191, -0.422034, -0.422218, -0.567374)
+                            Node {
+                                id: b1
+                                objectName: "b1"
+                                position: Qt.vector3d(6.59264e-08, 5.96048e-08, 1.58546e-07)
+                                rotation: Qt.quaternion(0.508798, 0.494409, -0.491093, -0.505482)
+                                scale: Qt.vector3d(1, 1, 1)
+                                Model {
+                                    id: caterpillar_390F_LME__ARM_CYLINDER_BORE_390F_LME
+                                    objectName: "Caterpillar_390F_LME:_ARM_CYLINDER_BORE_390F_LME"
+                                    position: Qt.vector3d(-0.00020796, 2.29553, -0.00167447)
+                                    rotation: Qt.quaternion(0.00237754, 0.00231171, 0.71695, -0.697117)
+                                    scale: Qt.vector3d(0.000999999, 0.001, 0.000999999)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__ARM_CYLINDER_BORE_390F_LME_mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                }
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__ARM_CYLINDER_PIN_390F_LME_001
+                                objectName: "Caterpillar_390F_LME:_ARM_CYLINDER_PIN_390F_LME.001"
+                                position: Qt.vector3d(0.0667304, 0.000278098, 2.41318)
+                                rotation: Qt.quaternion(5.69511e-05, 0.707109, 0.707104, 7.22573e-05)
+                                scale: Qt.vector3d(0.000999999, 0.001, 0.000999999)
+                                source: "../../resources/meshes/caterpillar_390F_LME__ARM_CYLINDER_PIN_390F_LME_001_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__ARM_CYLINDER_PIN_390F_LME__PIN_BOLT_3
+                                objectName: "Caterpillar_390F_LME:_ARM_CYLINDER_PIN_390F_LME:_PIN_BOLT_3"
+                                position: Qt.vector3d(0.0670012, -0.000253329, 2.41721)
+                                rotation: Qt.quaternion(5.69511e-05, 0.707109, 0.707104, 7.22573e-05)
+                                scale: Qt.vector3d(0.000999999, 0.001, 0.000999999)
+                                source: "../../resources/meshes/caterpillar_390F_LME__ARM_CYLINDER_PIN_390F_LME__PIN_BOLT_3_mesh.mesh"
+                                materials: [
+                                    metal_material
+                                ]
+                            }
+                        }
+                        Node {
+                            id: bone_001
+                            objectName: "Bone.001"
+                            position: Qt.vector3d(1.45519e-10, 6.98916, -1.77318e-07)
+
+                            // ARM ROTATION - IMU'dan gelen armAngle değeriyle kontrol edilecek
+                            rotation: Qt.quaternion(0.505364 + armAngle * 0.01, 0.862906, 0.000107602, 0.000354555)
+
+                            // Smooth animasyon için Behavior ekle
+                            Behavior on rotation {
+                                QuaternionAnimation {
+                                    duration: 50
+                                    easing.type: Easing.OutQuad
+                                }
+                            }
+
+                            scale: Qt.vector3d(1, 1, 1)
+                            Node {
+                                id: bone_002
+                                objectName: "Bone.002"
+                                position: Qt.vector3d(-5.5298e-10, 2.88263, 7.7486e-07)
+
+                                // BUCKET ROTATION - IMU'dan gelen bucketAngle değeriyle kontrol edilecek
+                                rotation: Qt.quaternion(0.81802 + bucketAngle * 0.01, -0.575189, -2.93699e-08, -0.000304044)
+
+                                // Smooth animasyon için Behavior ekle
+                                Behavior on rotation {
+                                    QuaternionAnimation {
+                                        duration: 50
+                                        easing.type: Easing.OutQuad
+                                    }
+                                }
+
+                                scale: Qt.vector3d(1, 1, 1)
+                                Model {
+                                    id: caterpillar_390F_LME__BUCKET_390F_LME
+                                    objectName: "Caterpillar_390F_LME:_BUCKET_390F_LME"
+                                    position: Qt.vector3d(-0.00206844, 0.339205, 1.65607)
+                                    rotation: Qt.quaternion(0.876183, 0.481979, -0.000310527, 0.000170818)
+                                    scale: Qt.vector3d(0.000999999, 0.001, 0.000999999)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_390F_LME_mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                    Model {
+                                        id: caterpillar_390F_LME__BUCKET_390F_LME__BUCKET_BOLT_390F
+                                        objectName: "Caterpillar_390F_LME:_BUCKET_390F_LME:_BUCKET_BOLT_390F"
+                                        position: Qt.vector3d(0.69155, -80.2353, 417.3)
+                                        rotation: Qt.quaternion(0.999999, 0.0010576, -0.000134365, -8.18506e-05)
+                                        scale: Qt.vector3d(1, 1, 1)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_390F_LME__BUCKET_BOLT_390F_mesh.mesh"
+                                        materials: [
+                                            level_1_material
+                                        ]
+                                    }
+                                    Model {
+                                        id: caterpillar_390F_LME__BUCKET_PIN_390F_LME_001
+                                        objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME.001"
+                                        position: Qt.vector3d(0.573625, -1696.91, -1006.43)
+                                        rotation: Qt.quaternion(0.999999, 0.0010576, -0.000134365, -8.18506e-05)
+                                        scale: Qt.vector3d(1, 1, 1)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PIN_390F_LME_001_mesh.mesh"
+                                        materials: [
+                                            level_1_material
+                                        ]
+                                        Model {
+                                            id: caterpillar_390F_LME__BUCKET_PIN_390F_LME__PIN_BOLT_390F_002
+                                            objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME:_PIN_BOLT_390F.002"
+                                            position: Qt.vector3d(0.642499, 0.155141, -0.0879661)
+                                            source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PIN_390F_LME__PIN_BOLT_390F_002_mesh.mesh"
+                                            materials: [
+                                                metal_material
+                                            ]
+                                        }
+                                    }
+                                    Model {
+                                        id: caterpillar_390F_LME__BUCKET_PIN_390F_LME_002
+                                        objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME.002"
+                                        position: Qt.vector3d(0.573625, -1696.91, -1006.43)
+                                        rotation: Qt.quaternion(0.999999, 0.0010576, -0.000134365, -8.18506e-05)
+                                        scale: Qt.vector3d(1, 1, 1)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PIN_390F_LME_002_mesh.mesh"
+                                        materials: [
+                                            level_1_material
+                                        ]
+                                        Model {
+                                            id: caterpillar_390F_LME__BUCKET_PIN_390F_LME__PIN_BOLT_390F_003
+                                            objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME:_PIN_BOLT_390F.003"
+                                            position: Qt.vector3d(0.642499, 0.155141, -0.0879661)
+                                            source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PIN_390F_LME__PIN_BOLT_390F_003_mesh.mesh"
+                                            materials: [
+                                                metal_material
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                            Node {
+                                id: t1c
+                                objectName: "t1c"
+                                position: Qt.vector3d(0.00105584, -1.02164, -0.667503)
+                                rotation: Qt.quaternion(0.0777851, 0.702802, 0.702876, -0.0773576)
+                                scale: Qt.vector3d(1, 1, 1)
+                                Node {
+                                    id: t1
+                                    objectName: "t1"
+                                    position: Qt.vector3d(5.85035e-07, 5.96046e-08, -2.40202e-07)
+                                    rotation: Qt.quaternion(0.506708, -0.493201, -0.493201, 0.506708)
+                                    scale: Qt.vector3d(1, 1, 1)
+                                    Model {
+                                        id: caterpillar_390F_LME__ARM_PISTON_ROB_390F_LME__ARM_ROB_CLEVIS_3
+                                        objectName: "Caterpillar_390F_LME:_ARM_PISTON_ROB_390F_LME:_ARM_ROB_CLEVIS_3"
+                                        position: Qt.vector3d(-0.000131843, 0.0860066, 0.00149551)
+                                        rotation: Qt.quaternion(0.697044, -0.717028, 1.40266e-05, 3.17258e-07)
+                                        scale: Qt.vector3d(0.000999999, 0.001, 0.001)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__ARM_PISTON_ROB_390F_LME__ARM_ROB_CLEVIS_3_mesh.mesh"
+                                        materials: [
+                                            level_1_material
+                                        ]
+                                        Model {
+                                            id: caterpillar_390F_LME__ARM_PISTON_ROB_390F_LME
+                                            objectName: "Caterpillar_390F_LME:_ARM_PISTON_ROB_390F_LME"
+                                            position: Qt.vector3d(-0.000205949, -52.4471, 1944)
+                                            source: "../../resources/meshes/caterpillar_390F_LME__ARM_PISTON_ROB_390F_LME_mesh.mesh"
+                                            materials: [
+                                                metal_material
+                                            ]
+                                        }
+                                    }
+                                }
+                                Model {
+                                    id: caterpillar_390F_LME__ARM_CYLINDER_PIN_390F_LME
+                                    objectName: "Caterpillar_390F_LME:_ARM_CYLINDER_PIN_390F_LME"
+                                    position: Qt.vector3d(-0.0686386, 0.000290569, -2.42131)
+                                    rotation: Qt.quaternion(0.000117861, 0.707114, 0.707099, 0.000133066)
+                                    scale: Qt.vector3d(0.000999999, 0.001, 0.001)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__ARM_CYLINDER_PIN_390F_LME_mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                }
+                                Model {
+                                    id: caterpillar_390F_LME__ARM_CYLINDER_PIN_390F_LME__PIN_BOLT_390F
+                                    objectName: "Caterpillar_390F_LME:_ARM_CYLINDER_PIN_390F_LME:_PIN_BOLT_390F"
+                                    position: Qt.vector3d(-0.0683692, -0.000240863, -2.41729)
+                                    rotation: Qt.quaternion(0.000117861, 0.707114, 0.707099, 0.000133066)
+                                    scale: Qt.vector3d(0.000999999, 0.001, 0.001)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__ARM_CYLINDER_PIN_390F_LME__PIN_BOLT_390F_mesh.mesh"
+                                    materials: [
+                                        metal_material
+                                    ]
+                                }
+                            }
+                            Node {
+                                id: bone_003
+                                objectName: "Bone.003"
+                                position: Qt.vector3d(0.000158719, 2.35573, -0.117419)
+                                rotation: Qt.quaternion(0.736328, -0.67661, -0.00296278, 0.00321845)
+                                Node {
+                                    id: bone_005
+                                    objectName: "Bone.005"
+                                    position: Qt.vector3d(1.10595e-09, 0.720088, 5.86629e-07)
+                                    rotation: Qt.quaternion(0.569177, 0.822189, 2.04533e-08, -0.00658536)
+                                    scale: Qt.vector3d(1, 1, 1)
+                                    Model {
+                                        id: caterpillar_390F_LME__BUCKET_LINK_390F_LME
+                                        objectName: "Caterpillar_390F_LME:_BUCKET_LINK_390F_LME"
+                                        position: Qt.vector3d(0.000570237, 0.24018, 0.00662743)
+                                        rotation: Qt.quaternion(0.945936, -0.324334, 0.00322139, 0.00149809)
+                                        scale: Qt.vector3d(0.000999999, 0.001, 0.000999999)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_LINK_390F_LME_mesh.mesh"
+                                        materials: [
+                                            level_1_material
+                                        ]
+                                        Model {
+                                            id: caterpillar_390F_LME__BUCKET_PIN_390F_LME
+                                            objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME"
+                                            position: Qt.vector3d(-0.398945, -30.5747, 357.935)
+                                            source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PIN_390F_LME_mesh.mesh"
+                                            materials: [
+                                                level_1_material
+                                            ]
+                                            Model {
+                                                id: caterpillar_390F_LME__BUCKET_PIN_390F_LME__PIN_BOLT_390F
+                                                objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME:_PIN_BOLT_390F"
+                                                position: Qt.vector3d(0.642499, 0.155062, -0.0891523)
+                                                source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PIN_390F_LME__PIN_BOLT_390F_mesh.mesh"
+                                                materials: [
+                                                    metal_material
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                                Node {
+                                    id: b2c
+                                    objectName: "b2c"
+                                    position: Qt.vector3d(1.10595e-09, 0.720088, 5.86629e-07)
+                                    rotation: Qt.quaternion(-0.420579, 0.572156, 0.567857, 0.41628)
+                                    scale: Qt.vector3d(1, 1, 1)
+                                    Node {
+                                        id: b2
+                                        objectName: "b2"
+                                        position: Qt.vector3d(3.33609e-07, 2.38493e-07, 2.34632e-07)
+                                        rotation: Qt.quaternion(-0.128173, -0.69504, 0.695636, 0.128769)
+                                        scale: Qt.vector3d(1, 1, 1)
+                                        Model {
+                                            id: caterpillar_390F_LME__BUCKET_PISTON_ROB_390F_LME
+                                            objectName: "Caterpillar_390F_LME:_BUCKET_PISTON_ROB_390F_LME"
+                                            position: Qt.vector3d(-6.10774e-05, 1.39163, 0.000820818)
+                                            rotation: Qt.quaternion(0.000226238, 0.000281927, -0.181983, 0.983302)
+                                            scale: Qt.vector3d(0.000999998, 0.001, 0.000999999)
+                                            source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PISTON_ROB_390F_LME_mesh.mesh"
+                                            materials: [
+                                                metal_material
+                                            ]
+                                        }
+                                        Model {
+                                            id: caterpillar_390F_LME__BUCKET_PISTON_ROB_390F_LME__BUCKET_ROB_CL
+                                            objectName: "Caterpillar_390F_LME:_BUCKET_PISTON_ROB_390F_LME:_BUCKET_ROB_CL"
+                                            position: Qt.vector3d(-0.000340511, 0.103617, -0.000157159)
+                                            rotation: Qt.quaternion(0.000226238, 0.000281927, -0.181983, 0.983302)
+                                            scale: Qt.vector3d(0.000999998, 0.001, 0.000999999)
+                                            source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PISTON_ROB_390F_LME__BUCKET_ROB_CL_mesh.mesh"
+                                            materials: [
+                                                level_1_material
+                                            ]
+                                        }
+                                    }
+                                }
+                                Model {
+                                    id: caterpillar_390F_LME__TIPPING_LINK_390F_LME
+                                    objectName: "Caterpillar_390F_LME:_TIPPING_LINK_390F_LME"
+                                    position: Qt.vector3d(-0.00211514, 0.360877, -0.0021516)
+                                    rotation: Qt.quaternion(0.806245, 0.591567, 0.00295921, -0.00278216)
+                                    scale: Qt.vector3d(0.000999999, 0.001, 0.000999999)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__TIPPING_LINK_390F_LME_mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                }
+                            }
+                            Node {
+                                id: t2c
+                                objectName: "t2c"
+                                position: Qt.vector3d(0.00137122, -0.0739095, -1.20065)
+                                rotation: Qt.quaternion(0.0777851, 0.702802, 0.702876, -0.0773576)
+                                Node {
+                                    id: t2
+                                    objectName: "t2"
+                                    position: Qt.vector3d(1.50293e-08, -2.38401e-07, 1.10742e-06)
+                                    rotation: Qt.quaternion(-0.128515, 0.695401, 0.695227, -0.128689)
+                                    scale: Qt.vector3d(1, 1, 1)
+                                    Model {
+                                        id: caterpillar_390F_LME__BUCKET_CYLINDER_BORE_390F_LME
+                                        objectName: "Caterpillar_390F_LME:_BUCKET_CYLINDER_BORE_390F_LME"
+                                        position: Qt.vector3d(-7.27721e-05, 1.60483, 0.00049801)
+                                        rotation: Qt.quaternion(0.983302, -0.181983, 0.000141637, -0.000147898)
+                                        scale: Qt.vector3d(0.000999999, 0.001, 0.001)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_CYLINDER_BORE_390F_LME_mesh.mesh"
+                                        materials: [
+                                            level_1_material
+                                        ]
+                                    }
+                                }
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__ARM_390F_LME
+                                objectName: "Caterpillar_390F_LME:_ARM_390F_LME"
+                                position: Qt.vector3d(0.00130689, 0.428133, -0.55311)
+                                rotation: Qt.quaternion(0.993964, -0.109702, -0.000302333, 5.19608e-05)
+                                scale: Qt.vector3d(0.000999999, 0.001, 0.000999999)
+                                source: "../../resources/meshes/caterpillar_390F_LME__ARM_390F_LME_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                                Model {
+                                    id: caterpillar_390F_LME__BUCKET_CYLINDER_PIN_390F_LME
+                                    objectName: "Caterpillar_390F_LME:_BUCKET_CYLINDER_PIN_390F_LME"
+                                    position: Qt.vector3d(-0.0751127, -352.509, -740.86)
+                                    rotation: Qt.quaternion(1, -0.00017754, 1.10227e-05, 1.03254e-05)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_CYLINDER_PIN_390F_LME_mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                }
+                                Model {
+                                    id: caterpillar_390F_LME__BUCKET_CYLINDER_PIN_390F_LME__PIN_BOLT_39
+                                    objectName: "Caterpillar_390F_LME:_BUCKET_CYLINDER_PIN_390F_LME:_PIN_BOLT_39"
+                                    position: Qt.vector3d(-0.10693, -351.938, -741.061)
+                                    rotation: Qt.quaternion(1, -0.00017754, 1.10227e-05, 1.03254e-05)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_CYLINDER_PIN_390F_LME__PIN_BOLT_39_mesh.mesh"
+                                    materials: [
+                                        metal_material
+                                    ]
+                                }
+                                Model {
+                                    id: caterpillar_390F_LME__BUCKET_PIN_390F_LME_004
+                                    objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME.004"
+                                    position: Qt.vector3d(-0.981896, 2157.21, 669.09)
+                                    rotation: Qt.quaternion(1, -0.00017754, 1.10227e-05, 1.03254e-05)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PIN_390F_LME_004_mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                    Model {
+                                        id: caterpillar_390F_LME__BUCKET_PIN_390F_LME__PIN_BOLT_390F_001
+                                        objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME:_PIN_BOLT_390F.001"
+                                        position: Qt.vector3d(0.642499, 0.154464, -0.0895012)
+                                        source: "../../resources/meshes/caterpillar_390F_LME__BUCKET_PIN_390F_LME__PIN_BOLT_390F_001_mesh.mesh"
+                                        materials: [
+                                            metal_material
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__BOOM_390F_LME
+                            objectName: "Caterpillar_390F_LME:_BOOM_390F_LME"
+                            position: Qt.vector3d(0.000117625, 0.000228763, -0.000641465)
+                            rotation: Qt.quaternion(0.596976, 0.802259, -0.000129569, 0.000129593)
+                            scale: Qt.vector3d(0.000999999, 0.001, 0.000999999)
+                            source: "../../resources/meshes/caterpillar_390F_LME__BOOM_390F_LME_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                            Model {
+                                id: caterpillar_390F_LME__ARM_PIN_390F_LME
+                                objectName: "Caterpillar_390F_LME:_ARM_PIN_390F_LME"
+                                position: Qt.vector3d(-0.488975, -2006.88, -6694.6)
+                                source: "../../resources/meshes/caterpillar_390F_LME__ARM_PIN_390F_LME_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__ARM_PIN_390F_LME__PIN_BOLT_390F
+                                objectName: "Caterpillar_390F_LME:_ARM_PIN_390F_LME:_PIN_BOLT_390F"
+                                position: Qt.vector3d(-0.00485976, -2007.26, -6694.81)
+                                source: "../../resources/meshes/caterpillar_390F_LME__ARM_PIN_390F_LME__PIN_BOLT_390F_mesh.mesh"
+                                materials: [
+                                    metal_material
+                                ]
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__BOOM_PIN_390F
+                                objectName: "Caterpillar_390F_LME:_BOOM_PIN_390F"
+                                position: Qt.vector3d(-0.11138, 0.669593, 0.118124)
+                                rotation: Qt.quaternion(1, -9.10237e-05, 1.26771e-05, 5.24809e-06)
+                                source: "../../resources/meshes/caterpillar_390F_LME__BOOM_PIN_390F_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__BOOM_PIN_390F__PIN_BOLT_390F
+                                objectName: "Caterpillar_390F_LME:_BOOM_PIN_390F:_PIN_BOLT_390F"
+                                position: Qt.vector3d(0.00601559, -0.0379262, 0.374594)
+                                rotation: Qt.quaternion(1, -9.10237e-05, 1.26771e-05, 5.24809e-06)
+                                source: "../../resources/meshes/caterpillar_390F_LME__BOOM_PIN_390F__PIN_BOLT_390F_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                            }
+                        }
+                    }
+                    Node {
+                        id: bone_004
+                        objectName: "Bone.004"
+                        position: Qt.vector3d(0.00665526, 0.542544, 6.73705)
+                        rotation: Qt.quaternion(3.39807e-08, 6.74184e-08, 0.450088, 0.892984)
+                        scale: Qt.vector3d(1, 1, 1)
+                    }
+                    Model {
+                        id: base
+                        objectName: "base"
+                        position: Qt.vector3d(0.00830829, 1.18383, 0.73331)
+                        rotation: Qt.quaternion(-1.62921e-07, 1, 0, 0)
+                        scale: Qt.vector3d(0.000999999, 0.000999999, 0.000999999)
+                        source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__SUPERSTRUCTURE_FRAME_mesh.mesh"
+                        materials: [
+                            level_1_material
+                        ]
+                        Model {
+                            id: caterpillar_390F_LME__BOOM_BORE_PIN_390F
+                            objectName: "Caterpillar_390F_LME:_BOOM_BORE_PIN_390F"
+                            position: Qt.vector3d(-1.6912, 235.526, -515.115)
+                            source: "../../resources/meshes/caterpillar_390F_LME__BOOM_BORE_PIN_390F_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__BOOM_BORE_PIN_390F__PIN_BOLT_390F
+                            objectName: "Caterpillar_390F_LME:_BOOM_BORE_PIN_390F:_PIN_BOLT_390F"
+                            position: Qt.vector3d(-1.76023, 235.411, -515.548)
+                            source: "../../resources/meshes/caterpillar_390F_LME__BOOM_BORE_PIN_390F__PIN_BOLT_390F_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__BONNET_390F
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_BONNET_390F"
+                            position: Qt.vector3d(1751.46, -1011.78, 3815.69)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__BONNET_390F_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                            Model {
+                                id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__FUEL_TANK_390F
+                                objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_FUEL_TANK_390F"
+                                position: Qt.vector3d(-3253.18, 648.23, -3347.95)
+                                source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__FUEL_TANK_390F_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__RIGHT_DOOR_390F_01
+                                objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_RIGHT_DOOR_390F_01"
+                                position: Qt.vector3d(-3745.78, 671.45, -1250.9)
+                                source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__RIGHT_DOOR_390F_01_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__RIGHT_DOOR_390F_02
+                                objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_RIGHT_DOOR_390F_02"
+                                position: Qt.vector3d(-3745.84, 797.116, 288.769)
+                                source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__RIGHT_DOOR_390F_02_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                            }
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__COUGHTERWEIGHT_390F
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_COUGHTERWEIGHT_390F"
+                            position: Qt.vector3d(8.79341, -94.0914, 5159.82)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__COUGHTERWEIGHT_390F_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__COUGHTERWEIGHT_390F_
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_COUGHTERWEIGHT_390F:"
+                            position: Qt.vector3d(-1.74222, -344.734, 5381.97)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__COUGHTERWEIGHT_390F__mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__LEFT_DOOR_390F_01
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_LEFT_DOOR_390F_01"
+                            position: Qt.vector3d(1988.31, -210.476, 2706.34)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__LEFT_DOOR_390F_01_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__LEFT_DOOR_390F_02
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_LEFT_DOOR_390F_02"
+                            position: Qt.vector3d(1988.28, -210.31, 4106.6)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__LEFT_DOOR_390F_02_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__LEFT_MODULE_390F
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_LEFT_MODULE_390F"
+                            position: Qt.vector3d(1498.33, 15.4647, 1274.51)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__LEFT_MODULE_390F_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                            Model {
+                                id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F
+                                objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_CABINE_390F"
+                                position: Qt.vector3d(13.7908, -458.468, -1610.11)
+                                rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                                source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F_mesh.mesh"
+                                materials: [
+                                    level_1_material
+                                ]
+                                Model {
+                                    id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__CABINE_
+                                    objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_CABINE_390F:_CABINE_"
+                                    position: Qt.vector3d(473.643, 249.803, -3.63031)
+                                    rotation: Qt.quaternion(1, -2.51765e-05, 8.66816e-06, 2.86611e-06)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__CABINE__mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                }
+                                Model {
+                                    id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_003
+                                    objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_CABINE_390F:_GLA.003"
+                                    position: Qt.vector3d(-498.791, -27.2443, -37.3992)
+                                    rotation: Qt.quaternion(1, -2.51765e-05, 8.66816e-06, 2.86611e-06)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_003_mesh.mesh"
+                                    materials: [
+                                        master_Glass_material
+                                    ]
+                                }
+                                Model {
+                                    id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_004
+                                    objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_CABINE_390F:_GLA.004"
+                                    position: Qt.vector3d(-498.779, -47.5064, 620.125)
+                                    rotation: Qt.quaternion(1, -2.51765e-05, 8.66816e-06, 2.86611e-06)
+                                    source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_004_mesh.mesh"
+                                    materials: [
+                                        level_1_material
+                                    ]
+                                }
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA
+                                objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_CABINE_390F:_GLA"
+                                position: Qt.vector3d(20.0229, 124.924, -2215.03)
+                                rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                                source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_mesh.mesh"
+                                materials: [
+                                    master_Glass_material
+                                ]
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_001
+                                objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_CABINE_390F:_GLA.001"
+                                position: Qt.vector3d(484.998, -554.154, -968.06)
+                                rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                                source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_001_mesh.mesh"
+                                materials: [
+                                    master_Glass_material
+                                ]
+                            }
+                            Model {
+                                id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLASS_3
+                                objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_CABINE_390F:_GLASS_3"
+                                position: Qt.vector3d(20.0182, -516.679, -2123.41)
+                                rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                                source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLASS_3_mesh.mesh"
+                                materials: [
+                                    master_Glass_material
+                                ]
+                            }
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__MAIN_EXHAUST_390F
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_MAIN_EXHAUST_390F"
+                            position: Qt.vector3d(-659.459, -1286.02, 4004.41)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__MAIN_EXHAUST_390F_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__MAIN_EXHAUST_390F__S
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_MAIN_EXHAUST_390F:_S"
+                            position: Qt.vector3d(-659.462, -1492.76, 4079.4)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__MAIN_EXHAUST_390F__S_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__RIGHT_MODULE_390F
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_RIGHT_MODULE_390F"
+                            position: Qt.vector3d(-1501.64, 132.958, -541.524)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__RIGHT_MODULE_390F_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                        Model {
+                            id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__TOP_SIDEWALK_390F
+                            objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_TOP_SIDEWALK_390F"
+                            position: Qt.vector3d(562.138, -671.01, 2156.89)
+                            rotation: Qt.quaternion(1, 2.51765e-05, -8.66816e-06, -2.86611e-06)
+                            source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__TOP_SIDEWALK_390F_mesh.mesh"
+                            materials: [
+                                level_1_material
+                            ]
+                        }
+                    }
+                }
+            }
+            Model {
+                id: caterpillar_390F_LME__CENTER_BEARING_390F
+                objectName: "Caterpillar_390F_LME:_CENTER_BEARING_390F"
+                position: Qt.vector3d(7.34523, -577.781, 5.21327)
+                source: "../../resources/meshes/caterpillar_390F_LME__CENTER_BEARING_390F_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__CENTER_BEARING_390F__BEARING_BOLT_390F
+                objectName: "Caterpillar_390F_LME:_CENTER_BEARING_390F:_BEARING_BOLT_390F"
+                position: Qt.vector3d(5.0789, -500.806, 1.92332)
+                source: "../../resources/meshes/caterpillar_390F_LME__CENTER_BEARING_390F__BEARING_BOLT_390F_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__LEFT_TRACK_390F__DRIVE_SPROCKET_390F
+                objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_DRIVE_SPROCKET_390F"
+                position: Qt.vector3d(1766.67, 371.369, 2451.13)
+                rotation: Qt.quaternion(0.998507, 0.0546209, 0, 0)
+                scale: Qt.vector3d(1, 1, 1)
+                source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__DRIVE_SPROCKET_390F_mesh.mesh"
+                materials: [
+                    material_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__LEFT_TRACK_390F__DRIVE_SPROCKET_390F__DRI
+                objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_DRIVE_SPROCKET_390F:_DRI"
+                position: Qt.vector3d(2032.62, 371.424, 2451.3)
+                source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__DRIVE_SPROCKET_390F__DRI_mesh.mesh"
+                materials: [
+                    dynamic_Rust_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__LEFT_TRACK_390F__FRONT_IDLER_390F
+                objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_FRONT_IDLER_390F"
+                position: Qt.vector3d(1707.26, 370.382, -2421.2)
+                source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__FRONT_IDLER_390F_mesh.mesh"
+                materials: [
+                    material_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_FRAME_390F
+                objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_TRACK_FRAME_390F"
+                position: Qt.vector3d(1430.37, 271.185, 1538.16)
+                source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_FRAME_390F_mesh.mesh"
+                materials: [
+                    material_material
+                ]
+                Model {
+                    id: caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_ROLLER_390F
+                    objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_TRACK_ROLLER_390F"
+                    position: Qt.vector3d(276.28, 390.229, -1536.93)
+                    source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_ROLLER_390F_mesh.mesh"
+                    materials: [
+                        dynamic_Rust_material
+                    ]
+                }
+                Model {
+                    id: caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_ROLLER_390F__ROLLE
+                    objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_TRACK_ROLLER_390F:_ROLLE"
+                    position: Qt.vector3d(276.236, 430.684, -1537.78)
+                    source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_ROLLER_390F__ROLLE_mesh.mesh"
+                    materials: [
+                        level_1_material
+                    ]
+                }
+                Model {
+                    id: caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_ROLLER_390F__TRACK
+                    objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_TRACK_ROLLER_390F:_TRACK"
+                    position: Qt.vector3d(276.324, 361.528, -1536.97)
+                    source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_ROLLER_390F__TRACK_mesh.mesh"
+                    materials: [
+                        level_1_material
+                    ]
+                }
+            }
+            Model {
+                id: caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_FRAME_390F__TRACK_
+                objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_TRACK_FRAME_390F:_TRACK_"
+                position: Qt.vector3d(1318.37, 342.76, 2323.89)
+                source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__TRACK_FRAME_390F__TRACK__mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__CARRIER_ROLLER_390F
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_CARRIER_ROLLER_390F"
+                position: Qt.vector3d(-1666.12, -158.158, 4.35205)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__CARRIER_ROLLER_390F_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__CHAIN_390F__TRACK_BUSH_
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_CHAIN_390F:_TRACK_BUSH_"
+                position: Qt.vector3d(-1693.35, 300.976, 14.9956)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__CHAIN_390F__TRACK_BUSH__mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__CHAIN_390F__TRACK_S_001
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_CHAIN_390F:_TRACK_S.001"
+                position: Qt.vector3d(-1824.47, 517.658, 3801)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__CHAIN_390F__TRACK_S_001_mesh.mesh"
+                materials: [
+                    material_001_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__DRIVE_SPROCKET_390F
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_DRIVE_SPROCKET_390F"
+                position: Qt.vector3d(-1753.36, 371.371, 2451.13)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__DRIVE_SPROCKET_390F_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__DRIVE_SPROCKET_390F__DR
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_DRIVE_SPROCKET_390F:_DR"
+                position: Qt.vector3d(-2019.25, 371.672, 2451.23)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__DRIVE_SPROCKET_390F__DR_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__FRONT_IDLER_390F
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_FRONT_IDLER_390F"
+                position: Qt.vector3d(-1693.34, 371.673, -2421.61)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__FRONT_IDLER_390F_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__RIGHT_TRACK_FRAME_390F
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_RIGHT_TRACK_FRAME_390F"
+                position: Qt.vector3d(-1413.5, 265.985, 1583.5)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__RIGHT_TRACK_FRAME_390F_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+                Model {
+                    id: caterpillar_390F_LME__RIGHT_TRACK_390F__CHAIN_390F__TRACK_LINK_
+                    objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_CHAIN_390F:_TRACK_LINK_"
+                    position: Qt.vector3d(-279.65, 33.896, -1570.39)
+                    source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__CHAIN_390F__TRACK_LINK__mesh.mesh"
+                    materials: [
+                        level_1_material
+                    ]
+                }
+                Model {
+                    id: caterpillar_390F_LME__RIGHT_TRACK_390F__CHAIN_390F__TRACK_S
+                    objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_CHAIN_390F:_TRACK_S"
+                    position: Qt.vector3d(-279.789, 34.9719, -1567.81)
+                    source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__CHAIN_390F__TRACK_S_mesh.mesh"
+                    materials: [
+                        level_1_material
+                    ]
+                }
+                Model {
+                    id: caterpillar_390F_LME__RIGHT_TRACK_390F__TRACK_ROLLER_390F
+                    objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_TRACK_ROLLER_390F"
+                    position: Qt.vector3d(-279.848, 395.268, -1582.27)
+                    source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__TRACK_ROLLER_390F_mesh.mesh"
+                    materials: [
+                        level_1_material
+                    ]
+                }
+                Model {
+                    id: caterpillar_390F_LME__RIGHT_TRACK_390F__TRACK_ROLLER_390F__TRAC
+                    objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_TRACK_ROLLER_390F:_TRAC"
+                    position: Qt.vector3d(-280.182, 366.62, -1579.8)
+                    source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__TRACK_ROLLER_390F__TRAC_mesh.mesh"
+                    materials: [
+                        level_1_material
+                    ]
+                }
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__RIGHT_TRACK_FRAME_390F_
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_RIGHT_TRACK_FRAME_390F:"
+                position: Qt.vector3d(-1305.07, 342.626, 2323.51)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__RIGHT_TRACK_FRAME_390F__mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__RIGHT_TRACK_390F__TRACK_ROLLER_390F__ROLL
+                objectName: "Caterpillar_390F_LME:_RIGHT_TRACK_390F:_TRACK_ROLLER_390F:_ROLL"
+                position: Qt.vector3d(-1693.36, 701.598, 1.51766)
+                source: "../../resources/meshes/caterpillar_390F_LME__RIGHT_TRACK_390F__TRACK_ROLLER_390F__ROLL_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_002
+                objectName: "Caterpillar_390F_LME:_SUPERSTRUCTURE_390F:_CABINE_390F:_GLA.002"
+                position: Qt.vector3d(1506.66, -1848.33, -203.767)
+                source: "../../resources/meshes/caterpillar_390F_LME__SUPERSTRUCTURE_390F__CABINE_390F__GLA_002_mesh.mesh"
+                materials: [
+                    master_Glass_material
+                ]
+            }
+            Model {
+                id: caterpillar_390F_LME__UNDERCARRIAGE_FRAME_390F__UNDERCARRIAGE_F
+                objectName: "Caterpillar_390F_LME:_UNDERCARRIAGE_FRAME_390F:_UNDERCARRIAGE_F"
+                position: Qt.vector3d(0.16784, -3.58622, 1.59699)
+                source: "../../resources/meshes/caterpillar_390F_LME__UNDERCARRIAGE_FRAME_390F__UNDERCARRIAGE_F_mesh.mesh"
+                materials: [
+                    level_1_material
+                ]
+            }
+            Node {
+                id: trackPath
+                objectName: "TrackPath"
+                position: Qt.vector3d(1707.26, 370.382, -2421.2)
+                rotation: Qt.quaternion(1.15202e-07, 0.707107, 0.707107, 0)
+                scale: Qt.vector3d(1000, 1000, 1000)
+            }
+            Node {
+                id: trackPath2
+                objectName: "TrackPath2"
+                position: Qt.vector3d(-1678.11, 370.382, -2421.2)
+                rotation: Qt.quaternion(1.15202e-07, 0.707107, 0.707107, 0)
+                scale: Qt.vector3d(1000, 1000, 1000)
+            }
+        }
+        Node {
+            id: caterpillar_390F_LME__BUCKET_PIN_390F_LME_003
+            objectName: "Caterpillar_390F_LME:_BUCKET_PIN_390F_LME.003"
+            position: Qt.vector3d(-0.000235012, 3.78007, 8.85135)
+            rotation: Qt.quaternion(-1.62921e-07, 1, 0, 0)
+            scale: Qt.vector3d(0.000999999, 0.000999999, 0.000999999)
+        }
+        Node {
+            id: empty
+            objectName: "Empty"
+            position: Qt.vector3d(1.5451, 2.37381, 2.18)
+        }
+        Model {
+            id: caterpillar_390F_LME__LEFT_TRACK_390F__CHAIN_390F__TRACK_SH
+            objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_CHAIN_390F:_TRACK_SH"
+            position: Qt.vector3d(1.7, 2.55216, 0.593266)
+            source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__CHAIN_390F__TRACK_SH_mesh.mesh"
+            materials: [
+                material_001_material
+            ]
+        }
+        Model {
+            id: caterpillar_390F_LME__LEFT_TRACK_390F__CHAIN_390F__TRACK_BU
+            objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_CHAIN_390F:_TRACK_BU"
+            position: Qt.vector3d(1.69997, 2.5208, 2.16612)
+            rotation: Qt.quaternion(-1.62921e-07, 1, 0, 0)
+            scale: Qt.vector3d(0.000999999, 0.000999999, 0.000999999)
+            source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__CHAIN_390F__TRACK_BU_mesh.mesh"
+            materials: [
+                level_1_material
+            ]
+        }
+        Model {
+            id: caterpillar_390F_LME__LEFT_TRACK_390F__CHAIN_390F__TRACK_SH_001
+            objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_CHAIN_390F:_TRACK_SH.001"
+            position: Qt.vector3d(2.32929, 2.51478, 0)
+            source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__CHAIN_390F__TRACK_SH_001_mesh.mesh"
+            materials: [
+                material_001_material
+            ]
+            Model {
+                id: caterpillar_390F_LME__LEFT_TRACK_390F__CHAIN_390F__TRACK_LI
+                objectName: "Caterpillar_390F_LME:_LEFT_TRACK_390F:_CHAIN_390F:_TRACK_LI"
+                position: Qt.vector3d(-2.46499, -2.94245, -2.21978)
+                source: "../../resources/meshes/caterpillar_390F_LME__LEFT_TRACK_390F__CHAIN_390F__TRACK_LI_mesh.mesh"
+                materials: [
+                    material_001_material
+                ]
+            }
         }
     }
 

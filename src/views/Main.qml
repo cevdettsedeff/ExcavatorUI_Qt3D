@@ -12,10 +12,33 @@ ApplicationWindow {
     title: qsTr("Excavator Dashboard - 3D Model & Map")
     color: "#1a1a1a"
 
+    property bool contentLoaded: false
+
+    // İLK FRAME'DEN İTİBAREN GÖRÜNMESİ GEREKEN ARKAPLAN
+    Rectangle {
+        anchors.fill: parent
+        color: "#1a1a1a"
+        z: -1
+    }
+
     // Ana container - dikey layout
     ColumnLayout {
+        id: mainContent
         anchors.fill: parent
         spacing: 0
+        opacity: 0
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        Component.onCompleted: {
+            // İçerik yüklendi, loading ekranını kapat
+            loadingCompleteTimer.start()
+        }
 
         // Üst menü bar
         Rectangle {
@@ -274,11 +297,15 @@ ApplicationWindow {
                             }
 
                             Node {
-                                scale: Qt.vector3d(1.5, 1.5, 1.5)
+                                scale: Qt.vector3d(4.0, 4.0, 4.0)
                                 eulerRotation.y: mainExcavatorView.excavatorRotation
 
                                 Excavator {
                                     id: excavatorTopView
+                                    // IMU servisinden açı verilerini al
+                                    boomAngle: imuService ? imuService.boomAngle : 0.0
+                                    armAngle: imuService ? imuService.armAngle : 0.0
+                                    bucketAngle: imuService ? imuService.bucketAngle : 0.0
                                 }
                             }
                         }
@@ -429,10 +456,14 @@ ApplicationWindow {
                             }
 
                             Node {
-                                scale: Qt.vector3d(1.8, 1.8, 1.8)
+                                scale: Qt.vector3d(4.0, 4.0, 4.0)
 
                                 Excavator {
                                     id: excavatorSideView
+                                    // IMU servisinden açı verilerini al
+                                    boomAngle: imuService ? imuService.boomAngle : 0.0
+                                    armAngle: imuService ? imuService.armAngle : 0.0
+                                    bucketAngle: imuService ? imuService.bucketAngle : 0.0
                                 }
                             }
                         }
@@ -764,7 +795,149 @@ ApplicationWindow {
                             }
                         }
                     }
+
+                    // Kazı Simülasyonu Kontrolü
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: "#404040"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Button {
+                        width: parent.width - 20
+                        height: 50
+                        anchors.horizontalCenter: parent.horizontalCenter
+
+                        background: Rectangle {
+                            color: imuService && imuService.isDigging ? "#f44336" : "#4CAF50"
+                            radius: 5
+                            border.color: imuService && imuService.isDigging ? "#e53935" : "#66BB6A"
+                            border.width: 2
+
+                            Behavior on color {
+                                ColorAnimation { duration: 200 }
+                            }
+                        }
+
+                        contentItem: Row {
+                            anchors.centerIn: parent
+                            spacing: 10
+
+                            Text {
+                                text: imuService && imuService.isDigging ? "⏸" : "▶"
+                                font.pixelSize: 20
+                                color: "#ffffff"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Text {
+                                text: imuService && imuService.isDigging ? "KAZI DURDUR" : "KAZI BAŞLAT"
+                                font.pixelSize: 13
+                                font.bold: true
+                                color: "#ffffff"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        onClicked: {
+                            if (imuService) {
+                                if (imuService.isDigging) {
+                                    imuService.stopDigging()
+                                } else {
+                                    imuService.startDigging()
+                                }
+                            }
+                        }
+                    }
                 }
+            }
+        }
+    }
+
+    // Timer - Ana içerik yüklendiğinde tetiklenir
+    Timer {
+        id: loadingCompleteTimer
+        interval: 200
+        onTriggered: {
+            root.contentLoaded = true
+        }
+    }
+
+    property real loadingStartTime: 0
+
+    Component.onCompleted: {
+        loadingStartTime = Date.now()
+    }
+
+    // Sürekli kontrol eden timer
+    Timer {
+        id: checkReadyTimer
+        interval: 100
+        repeat: true
+        running: true
+
+        onTriggered: {
+            var elapsedTime = Date.now() - root.loadingStartTime
+            var minTimeElapsed = elapsedTime >= 2000
+            var progressComplete = loadingScreen.progress >= 0.99
+
+            if (root.contentLoaded && minTimeElapsed && progressComplete) {
+                stop()
+                mainContent.opacity = 1.0
+                fadeOutAnimation.start()
+            }
+        }
+    }
+
+    // Loading Screen overlay - İLK GÖRÜNEN EKRAN
+    LoadingScreen {
+        id: loadingScreen
+        anchors.fill: parent
+        z: 1000
+        visible: true
+        opacity: 1.0
+
+        // Progress otomatik olarak artacak
+        property real loadProgress: 0.0
+        property real targetProgress: 0.0
+
+        Timer {
+            interval: 30
+            repeat: true
+            running: true
+
+            onTriggered: {
+                // İçerik yüklendiyse hedef %100
+                if (root.contentLoaded) {
+                    loadingScreen.targetProgress = 1.0
+                } else {
+                    // Yüklenmiyorsa yavaşça %90'a kadar
+                    if (loadingScreen.targetProgress < 0.9) {
+                        loadingScreen.targetProgress += 0.01
+                    }
+                }
+
+                // Smooth progress artışı
+                if (loadingScreen.loadProgress < loadingScreen.targetProgress) {
+                    var diff = loadingScreen.targetProgress - loadingScreen.loadProgress
+                    loadingScreen.loadProgress += diff * 0.15
+                }
+
+                loadingScreen.progress = loadingScreen.loadProgress
+            }
+        }
+
+        OpacityAnimator {
+            id: fadeOutAnimation
+            target: loadingScreen
+            from: 1.0
+            to: 0.0
+            duration: 500
+            easing.type: Easing.InOutQuad
+
+            onFinished: {
+                loadingScreen.visible = false
             }
         }
     }
