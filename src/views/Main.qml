@@ -861,23 +861,31 @@ ApplicationWindow {
         interval: 200
         onTriggered: {
             root.contentLoaded = true
-            // Minimum 2 saniye göster + %100'e ulaş
-            loadingMinTimeTimer.start()
         }
     }
 
-    // Minimum gösterim süresi timer
+    property real loadingStartTime: 0
+
+    Component.onCompleted: {
+        loadingStartTime = Date.now()
+    }
+
+    // Sürekli kontrol eden timer
     Timer {
-        id: loadingMinTimeTimer
-        interval: 2000
+        id: checkReadyTimer
+        interval: 100
+        repeat: true
+        running: true
+
         onTriggered: {
-            // Progress %100'e ulaştığında fade out
-            if (loadingScreen.progress >= 1.0) {
+            var elapsedTime = Date.now() - root.loadingStartTime
+            var minTimeElapsed = elapsedTime >= 2000
+            var progressComplete = loadingScreen.progress >= 0.99
+
+            if (root.contentLoaded && minTimeElapsed && progressComplete) {
+                stop()
                 mainContent.opacity = 1.0
                 fadeOutAnimation.start()
-            } else {
-                // Henüz %100 değilse bekle
-                loadingMinTimeTimer.start()
             }
         }
     }
