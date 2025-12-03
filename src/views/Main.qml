@@ -274,7 +274,7 @@ ApplicationWindow {
                             }
 
                             Node {
-                                scale: Qt.vector3d(2.5, 2.5, 2.5)
+                                scale: Qt.vector3d(4.0, 4.0, 4.0)
                                 eulerRotation.y: mainExcavatorView.excavatorRotation
 
                                 Excavator {
@@ -433,7 +433,7 @@ ApplicationWindow {
                             }
 
                             Node {
-                                scale: Qt.vector3d(2.8, 2.8, 2.8)
+                                scale: Qt.vector3d(4.0, 4.0, 4.0)
 
                                 Excavator {
                                     id: excavatorSideView
@@ -828,6 +828,33 @@ ApplicationWindow {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    // Loading Screen overlay
+    LoadingScreen {
+        id: loadingScreen
+        anchors.fill: parent
+        z: 1000
+        visible: true
+        opacity: 1.0
+
+        onLoadingComplete: {
+            // Fade out animation
+            fadeOutAnimation.start()
+        }
+
+        OpacityAnimator {
+            id: fadeOutAnimation
+            target: loadingScreen
+            from: 1.0
+            to: 0.0
+            duration: 500
+            easing.type: Easing.InOutQuad
+
+            onFinished: {
+                loadingScreen.visible = false
             }
         }
     }

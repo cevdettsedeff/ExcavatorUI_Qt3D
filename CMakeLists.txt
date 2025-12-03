@@ -72,6 +72,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/components/Excavator.qml
         src/components/Grid3D.qml
         src/components/BathymetricPlane.qml
+        src/components/LoadingScreen.qml
     RESOURCES
         ${MESH_FILES}
         resources/textures/deniz.png
