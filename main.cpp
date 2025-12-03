@@ -5,6 +5,7 @@
 #include <QQuickStyle>
 #include <QIcon>
 #include <QColor>
+#include <QTimer>
 #include "src/database/DatabaseManager.h"
 #include "src/auth/AuthService.h"
 #include "src/sensors/IMUMockService.h"
@@ -60,20 +61,19 @@ int main(int argc, char *argv[])
         // Dashboard URL'i
         const QUrl dashboardUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/views/Main.qml"));
 
-        // Window oluşturulduğunda background'u hemen ayarla
-        QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                        [](QObject *obj, const QUrl &) {
-            if (obj) {
+        // Dashboard'u yükle
+        engine.load(dashboardUrl);
+
+        // Window oluşturulduğunda background'u ayarla
+        QTimer::singleShot(0, [&engine]() {
+            auto rootObjects = engine.rootObjects();
+            for (auto obj : rootObjects) {
                 QQuickWindow *window = qobject_cast<QQuickWindow*>(obj);
                 if (window) {
-                    // Loading screen ile aynı renk
                     window->setColor(QColor("#1a1a1a"));
                 }
             }
-        }, Qt::DirectConnection);
-
-        // Dashboard'u yükle
-        engine.load(dashboardUrl);
+        });
     });
 
     // Logout olduğunda login ekranına dön
