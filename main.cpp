@@ -66,11 +66,11 @@ int main(int argc, char *argv[])
 
         // Window oluşturulduğunda background'u ayarla
         QTimer::singleShot(0, [&engine]() {
-            auto rootObjects = engine.rootObjects();
+            const auto rootObjects = engine.rootObjects();
             for (auto obj : rootObjects) {
                 QQuickWindow *window = qobject_cast<QQuickWindow*>(obj);
                 if (window) {
-                    window->setColor(QColor("#1a1a1a"));
+                    window->setColor(QColor(0x1a, 0x1a, 0x1a));
                 }
             }
         });
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
         qDebug() << "Logout yapıldı, login ekranına dönülüyor...";
 
         // Tüm mevcut QML objelerini temizle
-        auto rootObjects = engine.rootObjects();
+        const auto rootObjects = engine.rootObjects();
         for (auto obj : rootObjects) {
             if (obj) {
                 obj->deleteLater();
