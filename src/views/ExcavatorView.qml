@@ -67,7 +67,7 @@ Rectangle {
             position: Qt.vector3d(0, 0, 0)  // Grid üzerinde (y=0 seviyesi)
 
             // Scale ve rotation bu node'a uygulanacak
-            property real currentScale: 2.5
+            property real currentScale: 5.0
             scale: Qt.vector3d(currentScale, currentScale, currentScale)
 
             Excavator {
