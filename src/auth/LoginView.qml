@@ -218,38 +218,6 @@ Item {
                     }
                 }
 
-                // Bilgi mesajı
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 110
-                    color: "#2c3e50"
-                    radius: 8
-                    border.color: "#34495e"
-                    border.width: 1
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 18
-                        spacing: 12
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: "ℹ️ Varsayılan Kullanıcı"
-                            font.pixelSize: 12
-                            font.bold: true
-                            color: "#ecf0f1"
-                        }
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: "Kullanıcı Adı: admin\nŞifre: admin"
-                            font.pixelSize: 11
-                            color: "#bdc3c7"
-                            lineHeight: 1.6
-                        }
-                    }
-                }
-
                 // Üye Ol bölümü
                 RowLayout {
                     Layout.fillWidth: true
