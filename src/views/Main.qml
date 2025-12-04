@@ -566,15 +566,15 @@ ApplicationWindow {
                 }
             }
 
-            // Sensör Durumu Paneli (Üstte Yatay - Kompakt)
+            // Sensör Durumu Paneli (Açılır Menü)
             Rectangle {
                 id: sensorStatusPanel
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.topMargin: 60
                 anchors.leftMargin: 20
-                width: 680
-                height: 90
+                width: sensorExpanded ? 680 : 180
+                height: sensorExpanded ? 90 : 50
                 color: "#1a1a1a"
                 radius: 10
                 border.color: "#4CAF50"
@@ -582,40 +582,80 @@ ApplicationWindow {
                 opacity: 0.95
                 z: 10
 
-                Row {
-                    id: sensorRow
-                    anchors.fill: parent
-                    anchors.margins: 15
-                    spacing: 15
+                property bool sensorExpanded: false
 
-                    // Başlık
-                    Rectangle {
-                        width: 140
-                        height: parent.height
-                        color: "#0d0d0d"
-                        radius: 5
-                        anchors.verticalCenter: parent.verticalCenter
+                Behavior on width {
+                    NumberAnimation { duration: 300; easing.type: Easing.InOutQuad }
+                }
+
+                Behavior on height {
+                    NumberAnimation { duration: 300; easing.type: Easing.InOutQuad }
+                }
+
+                // Başlık/Toggle Butonu
+                Rectangle {
+                    id: sensorHeader
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.margins: 5
+                    width: 170
+                    height: 40
+                    color: "#0d0d0d"
+                    radius: 5
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            sensorStatusPanel.sensorExpanded = !sensorStatusPanel.sensorExpanded
+                        }
+                    }
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 10
 
                         Text {
-                            anchors.centerIn: parent
-                            text: "SENSÖR\nDURUM"
-                            font.pixelSize: 13
+                            text: "SENSÖR DURUM"
+                            font.pixelSize: 12
                             font.bold: true
                             color: "#4CAF50"
-                            horizontalAlignment: Text.AlignHCenter
-                            lineHeight: 1.2
+                            anchors.verticalCenter: parent.verticalCenter
                         }
+
+                        Text {
+                            text: sensorStatusPanel.sensorExpanded ? "▲" : "▼"
+                            font.pixelSize: 12
+                            color: "#4CAF50"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
+
+                // Sensör İçerik Alanı (Açık Durumda Görünür)
+                Row {
+                    id: sensorRow
+                    anchors.top: parent.top
+                    anchors.left: sensorHeader.right
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.margins: 5
+                    spacing: 10
+                    visible: sensorStatusPanel.sensorExpanded
+                    opacity: sensorStatusPanel.sensorExpanded ? 1 : 0
+
+                    Behavior on opacity {
+                        NumberAnimation { duration: 200 }
                     }
 
                     // RTK Sensör
                     Rectangle {
-                        width: 140
+                        width: 110
                         height: parent.height
                         color: "#252525"
                         radius: 5
                         border.color: "#404040"
                         border.width: 1
-                        anchors.verticalCenter: parent.verticalCenter
 
                         Row {
                             anchors.centerIn: parent
@@ -657,13 +697,12 @@ ApplicationWindow {
 
                     // IMU 1
                     Rectangle {
-                        width: 100
+                        width: 85
                         height: parent.height
                         color: "#252525"
                         radius: 5
                         border.color: "#404040"
                         border.width: 1
-                        anchors.verticalCenter: parent.verticalCenter
 
                         Row {
                             anchors.centerIn: parent
@@ -705,13 +744,12 @@ ApplicationWindow {
 
                     // IMU 2
                     Rectangle {
-                        width: 100
+                        width: 85
                         height: parent.height
                         color: "#252525"
                         radius: 5
                         border.color: "#404040"
                         border.width: 1
-                        anchors.verticalCenter: parent.verticalCenter
 
                         Row {
                             anchors.centerIn: parent
@@ -753,13 +791,12 @@ ApplicationWindow {
 
                     // IMU 3
                     Rectangle {
-                        width: 100
+                        width: 85
                         height: parent.height
                         color: "#252525"
                         radius: 5
                         border.color: "#404040"
                         border.width: 1
-                        anchors.verticalCenter: parent.verticalCenter
 
                         Row {
                             anchors.centerIn: parent
@@ -804,14 +841,12 @@ ApplicationWindow {
                         width: 2
                         height: parent.height - 10
                         color: "#404040"
-                        anchors.verticalCenter: parent.verticalCenter
                     }
 
                     // Kazı Simülasyonu Kontrolü
                     Button {
-                        width: 180
-                        height: parent.height - 5
-                        anchors.verticalCenter: parent.verticalCenter
+                        width: 150
+                        height: parent.height - 10
 
                         background: Rectangle {
                             color: imuService && imuService.isDigging ? "#f44336" : "#4CAF50"
