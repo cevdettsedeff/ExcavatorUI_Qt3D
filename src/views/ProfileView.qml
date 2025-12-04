@@ -223,26 +223,56 @@ Rectangle {
                             color: "#cccccc"
                         }
 
-                        TextField {
-                            id: newPasswordField
+                        Item {
                             width: parent.width
                             height: 50
-                            placeholderText: "Yeni şifrenizi girin (en az 6 karakter)"
-                            echoMode: TextInput.Password
-                            font.pixelSize: 14
 
-                            background: Rectangle {
-                                color: "#1a1a1a"
-                                radius: 8
-                                border.color: newPasswordField.activeFocus ? "#3498db" : "#404040"
-                                border.width: 2
+                            property bool showPassword: false
 
-                                Behavior on border.color {
-                                    ColorAnimation { duration: 200 }
+                            TextField {
+                                id: newPasswordField
+                                anchors.fill: parent
+                                placeholderText: "Yeni şifrenizi girin (en az 6 karakter)"
+                                echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
+                                font.pixelSize: 14
+                                color: "#ffffff"
+                                rightPadding: 45
+
+                                background: Rectangle {
+                                    color: "#1a1a1a"
+                                    radius: 8
+                                    border.color: newPasswordField.activeFocus ? "#3498db" : "#404040"
+                                    border.width: 2
+
+                                    Behavior on border.color {
+                                        ColorAnimation { duration: 200 }
+                                    }
                                 }
                             }
 
-                            color: "#ffffff"
+                            Button {
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 35
+                                height: 35
+
+                                background: Rectangle {
+                                    color: "transparent"
+                                    radius: 5
+                                }
+
+                                contentItem: Text {
+                                    text: parent.parent.showPassword ? "👁️" : "👁️‍🗨️"
+                                    font.pixelSize: 20
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: {
+                                    parent.showPassword = !parent.showPassword
+                                }
+                            }
                         }
                     }
 
@@ -258,26 +288,56 @@ Rectangle {
                             color: "#cccccc"
                         }
 
-                        TextField {
-                            id: confirmPasswordField
+                        Item {
                             width: parent.width
                             height: 50
-                            placeholderText: "Şifrenizi tekrar girin"
-                            echoMode: TextInput.Password
-                            font.pixelSize: 14
 
-                            background: Rectangle {
-                                color: "#1a1a1a"
-                                radius: 8
-                                border.color: confirmPasswordField.activeFocus ? "#3498db" : "#404040"
-                                border.width: 2
+                            property bool showConfirmPassword: false
 
-                                Behavior on border.color {
-                                    ColorAnimation { duration: 200 }
+                            TextField {
+                                id: confirmPasswordField
+                                anchors.fill: parent
+                                placeholderText: "Şifrenizi tekrar girin"
+                                echoMode: parent.showConfirmPassword ? TextInput.Normal : TextInput.Password
+                                font.pixelSize: 14
+                                color: "#ffffff"
+                                rightPadding: 45
+
+                                background: Rectangle {
+                                    color: "#1a1a1a"
+                                    radius: 8
+                                    border.color: confirmPasswordField.activeFocus ? "#3498db" : "#404040"
+                                    border.width: 2
+
+                                    Behavior on border.color {
+                                        ColorAnimation { duration: 200 }
+                                    }
                                 }
                             }
 
-                            color: "#ffffff"
+                            Button {
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 35
+                                height: 35
+
+                                background: Rectangle {
+                                    color: "transparent"
+                                    radius: 5
+                                }
+
+                                contentItem: Text {
+                                    text: parent.parent.showConfirmPassword ? "👁️" : "👁️‍🗨️"
+                                    font.pixelSize: 20
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: {
+                                    parent.showConfirmPassword = !parent.showConfirmPassword
+                                }
+                            }
                         }
                     }
 

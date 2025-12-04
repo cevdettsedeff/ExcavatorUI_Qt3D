@@ -117,23 +117,54 @@ Item {
                         color: "#cccccc"
                     }
 
-                    TextField {
-                        id: passwordField
+                    Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: "Şifrenizi belirleyin"
-                        echoMode: TextInput.Password
-                        font.pixelSize: 14
-                        color: "#ffffff"
 
-                        background: Rectangle {
-                            color: "#2a2a2a"
-                            border.color: passwordField.activeFocus ? "#2ecc71" : "#404040"
-                            border.width: 2
-                            radius: 5
+                        property bool showPassword: false
+
+                        TextField {
+                            id: passwordField
+                            anchors.fill: parent
+                            placeholderText: "Şifrenizi belirleyin"
+                            echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
+                            font.pixelSize: 14
+                            color: "#ffffff"
+                            rightPadding: 45
+
+                            background: Rectangle {
+                                color: "#2a2a2a"
+                                border.color: passwordField.activeFocus ? "#2ecc71" : "#404040"
+                                border.width: 2
+                                radius: 5
+                            }
+
+                            Keys.onReturnPressed: confirmPasswordField.forceActiveFocus()
                         }
 
-                        Keys.onReturnPressed: confirmPasswordField.forceActiveFocus()
+                        Button {
+                            anchors.right: parent.right
+                            anchors.rightMargin: 5
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 35
+                            height: 35
+
+                            background: Rectangle {
+                                color: "transparent"
+                                radius: 5
+                            }
+
+                            contentItem: Text {
+                                text: parent.parent.showPassword ? "👁️" : "👁️‍🗨️"
+                                font.pixelSize: 20
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                parent.showPassword = !parent.showPassword
+                            }
+                        }
                     }
                 }
 
@@ -148,23 +179,54 @@ Item {
                         color: "#cccccc"
                     }
 
-                    TextField {
-                        id: confirmPasswordField
+                    Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: "Şifrenizi tekrar girin"
-                        echoMode: TextInput.Password
-                        font.pixelSize: 14
-                        color: "#ffffff"
 
-                        background: Rectangle {
-                            color: "#2a2a2a"
-                            border.color: confirmPasswordField.activeFocus ? "#2ecc71" : "#404040"
-                            border.width: 2
-                            radius: 5
+                        property bool showConfirmPassword: false
+
+                        TextField {
+                            id: confirmPasswordField
+                            anchors.fill: parent
+                            placeholderText: "Şifrenizi tekrar girin"
+                            echoMode: parent.showConfirmPassword ? TextInput.Normal : TextInput.Password
+                            font.pixelSize: 14
+                            color: "#ffffff"
+                            rightPadding: 45
+
+                            background: Rectangle {
+                                color: "#2a2a2a"
+                                border.color: confirmPasswordField.activeFocus ? "#2ecc71" : "#404040"
+                                border.width: 2
+                                radius: 5
+                            }
+
+                            Keys.onReturnPressed: registerButton.clicked()
                         }
 
-                        Keys.onReturnPressed: registerButton.clicked()
+                        Button {
+                            anchors.right: parent.right
+                            anchors.rightMargin: 5
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 35
+                            height: 35
+
+                            background: Rectangle {
+                                color: "transparent"
+                                radius: 5
+                            }
+
+                            contentItem: Text {
+                                text: parent.parent.showConfirmPassword ? "👁️" : "👁️‍🗨️"
+                                font.pixelSize: 20
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                parent.showConfirmPassword = !parent.showConfirmPassword
+                            }
+                        }
                     }
                 }
 

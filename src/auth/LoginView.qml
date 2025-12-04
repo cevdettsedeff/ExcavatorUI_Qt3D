@@ -115,23 +115,54 @@ Item {
                         color: "#cccccc"
                     }
 
-                    TextField {
-                        id: passwordField
+                    Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: "Şifrenizi girin"
-                        echoMode: TextInput.Password
-                        font.pixelSize: 14
-                        color: "#ffffff"
 
-                        background: Rectangle {
-                            color: "#2a2a2a"
-                            border.color: passwordField.activeFocus ? "#3498db" : "#404040"
-                            border.width: 2
-                            radius: 5
+                        property bool showPassword: false
+
+                        TextField {
+                            id: passwordField
+                            anchors.fill: parent
+                            placeholderText: "Şifrenizi girin"
+                            echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
+                            font.pixelSize: 14
+                            color: "#ffffff"
+                            rightPadding: 45
+
+                            background: Rectangle {
+                                color: "#2a2a2a"
+                                border.color: passwordField.activeFocus ? "#3498db" : "#404040"
+                                border.width: 2
+                                radius: 5
+                            }
+
+                            Keys.onReturnPressed: loginButton.clicked()
                         }
 
-                        Keys.onReturnPressed: loginButton.clicked()
+                        Button {
+                            anchors.right: parent.right
+                            anchors.rightMargin: 5
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 35
+                            height: 35
+
+                            background: Rectangle {
+                                color: "transparent"
+                                radius: 5
+                            }
+
+                            contentItem: Text {
+                                text: parent.parent.showPassword ? "👁️" : "👁️‍🗨️"
+                                font.pixelSize: 20
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                parent.showPassword = !parent.showPassword
+                            }
+                        }
                     }
                 }
 
