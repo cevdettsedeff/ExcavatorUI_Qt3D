@@ -146,17 +146,17 @@ Item {
                             anchors.right: parent.right
                             anchors.rightMargin: 5
                             anchors.verticalCenter: parent.verticalCenter
-                            width: 35
-                            height: 35
+                            width: 50
+                            height: 30
 
                             background: Rectangle {
                                 color: "transparent"
-                                radius: 5
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showPassword ? "👀" : "👁"
-                                font.pixelSize: 20
+                                text: parent.parent.showPassword ? "Gizle" : "Göster"
+                                font.pixelSize: 11
+                                color: "#2ecc71"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
@@ -208,17 +208,17 @@ Item {
                             anchors.right: parent.right
                             anchors.rightMargin: 5
                             anchors.verticalCenter: parent.verticalCenter
-                            width: 35
-                            height: 35
+                            width: 50
+                            height: 30
 
                             background: Rectangle {
                                 color: "transparent"
-                                radius: 5
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showConfirmPassword ? "👀" : "👁"
-                                font.pixelSize: 20
+                                text: parent.parent.showConfirmPassword ? "Gizle" : "Göster"
+                                font.pixelSize: 11
+                                color: "#2ecc71"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
