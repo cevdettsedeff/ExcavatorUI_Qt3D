@@ -66,6 +66,13 @@ bool DatabaseManager::initialize()
     if (getUserCount() == 0) {
         qDebug() << "İlk admin kullanıcı oluşturuluyor: admin/admin";
         createUser("admin", "admin", true, true);
+    } else {
+        // Mevcut admin kullanıcının admin yetkisini güncelle (eski veritabanları için)
+        QSqlQuery query;
+        query.prepare("UPDATE users SET is_admin = 1 WHERE username = 'admin' AND is_admin = 0");
+        if (query.exec() && query.numRowsAffected() > 0) {
+            qDebug() << "Admin kullanıcı yetkisi güncellendi";
+        }
     }
 
     return true;

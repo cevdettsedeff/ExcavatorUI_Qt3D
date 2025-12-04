@@ -77,9 +77,10 @@ ApplicationWindow {
                     }
 
                     Text {
-                        text: authService && authService.currentUser ? "Hoşgeldin, " + authService.currentUser : ""
+                        text: authService && authService.currentUser ?
+                              "Hoşgeldin, " + authService.currentUser + (authService.isAdmin ? " (Admin)" : "") : ""
                         font.pixelSize: 14
-                        color: "#888888"
+                        color: authService && authService.isAdmin ? "#ba68c8" : "#888888"
                     }
 
                     Rectangle {
