@@ -269,6 +269,332 @@ ApplicationWindow {
                         }
                     }
 
+                    // Sensör Durumu Paneli (Aşağı Açılan Menü) - Sadece Ekskavatör Görünümünde
+                    Rectangle {
+                        id: sensorStatusPanel
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.topMargin: 60
+                        anchors.leftMargin: 20
+                        width: 200
+                        height: sensorExpanded ? 380 : 50
+                        color: "#1a1a1a"
+                        radius: 10
+                        border.color: "#4CAF50"
+                        border.width: 2
+                        opacity: 0.95
+                        z: 10
+
+                        property bool sensorExpanded: false
+
+                        Behavior on height {
+                            NumberAnimation { duration: 300; easing.type: Easing.InOutQuad }
+                        }
+
+                        // Başlık/Toggle Butonu
+                        Rectangle {
+                            id: sensorHeader
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.margins: 5
+                            height: 40
+                            color: "#0d0d0d"
+                            radius: 5
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    sensorStatusPanel.sensorExpanded = !sensorStatusPanel.sensorExpanded
+                                }
+                            }
+
+                            Row {
+                                anchors.centerIn: parent
+                                spacing: 10
+
+                                Text {
+                                    text: "SENSÖR DURUM"
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: "#4CAF50"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                Text {
+                                    text: sensorStatusPanel.sensorExpanded ? "▲" : "▼"
+                                    font.pixelSize: 12
+                                    color: "#4CAF50"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+                        }
+
+                        // Sensör İçerik Alanı (Açık Durumda Görünür - Dikey)
+                        Column {
+                            id: sensorColumn
+                            anchors.top: sensorHeader.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.margins: 10
+                            spacing: 8
+                            visible: sensorStatusPanel.sensorExpanded
+                            opacity: sensorStatusPanel.sensorExpanded ? 1 : 0
+
+                            Behavior on opacity {
+                                NumberAnimation { duration: 200 }
+                            }
+
+                            // RTK Sensör
+                            Rectangle {
+                                width: parent.width
+                                height: 55
+                                color: "#252525"
+                                radius: 5
+                                border.color: "#404040"
+                                border.width: 1
+
+                                Row {
+                                    anchors.fill: parent
+                                    anchors.margins: 10
+                                    spacing: 12
+
+                                    Rectangle {
+                                        width: 12
+                                        height: 12
+                                        radius: 6
+                                        color: "#4CAF50"
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        SequentialAnimation on opacity {
+                                            running: true
+                                            loops: Animation.Infinite
+                                            NumberAnimation { from: 1.0; to: 0.3; duration: 800 }
+                                            NumberAnimation { from: 0.3; to: 1.0; duration: 800 }
+                                        }
+                                    }
+
+                                    Column {
+                                        spacing: 3
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Text {
+                                            text: "RTK SENSÖR"
+                                            font.pixelSize: 12
+                                            font.bold: true
+                                            color: "#ffffff"
+                                        }
+                                        Text {
+                                            text: "Bağlantı: Aktif"
+                                            font.pixelSize: 10
+                                            color: "#4CAF50"
+                                        }
+                                    }
+                                }
+                            }
+
+                            // IMU 1
+                            Rectangle {
+                                width: parent.width
+                                height: 55
+                                color: "#252525"
+                                radius: 5
+                                border.color: "#404040"
+                                border.width: 1
+
+                                Row {
+                                    anchors.fill: parent
+                                    anchors.margins: 10
+                                    spacing: 12
+
+                                    Rectangle {
+                                        width: 12
+                                        height: 12
+                                        radius: 6
+                                        color: "#4CAF50"
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        SequentialAnimation on opacity {
+                                            running: true
+                                            loops: Animation.Infinite
+                                            NumberAnimation { from: 1.0; to: 0.3; duration: 800 }
+                                            NumberAnimation { from: 0.3; to: 1.0; duration: 800 }
+                                        }
+                                    }
+
+                                    Column {
+                                        spacing: 3
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Text {
+                                            text: "IMU 1"
+                                            font.pixelSize: 12
+                                            font.bold: true
+                                            color: "#ffffff"
+                                        }
+                                        Text {
+                                            text: "Bağlantı: Aktif"
+                                            font.pixelSize: 10
+                                            color: "#4CAF50"
+                                        }
+                                    }
+                                }
+                            }
+
+                            // IMU 2
+                            Rectangle {
+                                width: parent.width
+                                height: 55
+                                color: "#252525"
+                                radius: 5
+                                border.color: "#404040"
+                                border.width: 1
+
+                                Row {
+                                    anchors.fill: parent
+                                    anchors.margins: 10
+                                    spacing: 12
+
+                                    Rectangle {
+                                        width: 12
+                                        height: 12
+                                        radius: 6
+                                        color: "#4CAF50"
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        SequentialAnimation on opacity {
+                                            running: true
+                                            loops: Animation.Infinite
+                                            NumberAnimation { from: 1.0; to: 0.3; duration: 800 }
+                                            NumberAnimation { from: 0.3; to: 1.0; duration: 800 }
+                                        }
+                                    }
+
+                                    Column {
+                                        spacing: 3
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Text {
+                                            text: "IMU 2"
+                                            font.pixelSize: 12
+                                            font.bold: true
+                                            color: "#ffffff"
+                                        }
+                                        Text {
+                                            text: "Bağlantı: Aktif"
+                                            font.pixelSize: 10
+                                            color: "#4CAF50"
+                                        }
+                                    }
+                                }
+                            }
+
+                            // IMU 3
+                            Rectangle {
+                                width: parent.width
+                                height: 55
+                                color: "#252525"
+                                radius: 5
+                                border.color: "#404040"
+                                border.width: 1
+
+                                Row {
+                                    anchors.fill: parent
+                                    anchors.margins: 10
+                                    spacing: 12
+
+                                    Rectangle {
+                                        width: 12
+                                        height: 12
+                                        radius: 6
+                                        color: "#4CAF50"
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        SequentialAnimation on opacity {
+                                            running: true
+                                            loops: Animation.Infinite
+                                            NumberAnimation { from: 1.0; to: 0.3; duration: 800 }
+                                            NumberAnimation { from: 0.3; to: 1.0; duration: 800 }
+                                        }
+                                    }
+
+                                    Column {
+                                        spacing: 3
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Text {
+                                            text: "IMU 3"
+                                            font.pixelSize: 12
+                                            font.bold: true
+                                            color: "#ffffff"
+                                        }
+                                        Text {
+                                            text: "Bağlantı: Aktif"
+                                            font.pixelSize: 10
+                                            color: "#4CAF50"
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Ayırıcı
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: "#404040"
+                            }
+
+                            // Kazı Simülasyonu Kontrolü
+                            Button {
+                                width: parent.width
+                                height: 55
+
+                                background: Rectangle {
+                                    color: imuService && imuService.isDigging ? "#f44336" : "#4CAF50"
+                                    radius: 5
+                                    border.color: imuService && imuService.isDigging ? "#e53935" : "#66BB6A"
+                                    border.width: 2
+
+                                    Behavior on color {
+                                        ColorAnimation { duration: 200 }
+                                    }
+                                }
+
+                                contentItem: Row {
+                                    anchors.centerIn: parent
+                                    spacing: 10
+
+                                    Text {
+                                        text: imuService && imuService.isDigging ? "⏸" : "▶"
+                                        font.pixelSize: 18
+                                        color: "#ffffff"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Text {
+                                        text: imuService && imuService.isDigging ? "DURDUR" : "KAZI BAŞLAT"
+                                        font.pixelSize: 12
+                                        font.bold: true
+                                        color: "#ffffff"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                onClicked: {
+                                    if (imuService) {
+                                        if (imuService.isDigging) {
+                                            imuService.stopDigging()
+                                        } else {
+                                            imuService.startDigging()
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
                     // Mini kamera görünümü (sağ üst köşe - üstten)
                     Rectangle {
                         id: miniCameraView
@@ -607,332 +933,6 @@ ApplicationWindow {
                     UserManagementView {
                         anchors.fill: parent
                     }
-                }
-            }
-
-            // Sensör Durumu Paneli (Aşağı Açılan Menü)
-            Rectangle {
-                id: sensorStatusPanel
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.topMargin: 60
-                anchors.leftMargin: 20
-                width: 200
-                height: sensorExpanded ? 380 : 50
-                color: "#1a1a1a"
-                radius: 10
-                border.color: "#4CAF50"
-                border.width: 2
-                opacity: 0.95
-                z: 10
-
-                property bool sensorExpanded: false
-
-                Behavior on height {
-                    NumberAnimation { duration: 300; easing.type: Easing.InOutQuad }
-                }
-
-                // Başlık/Toggle Butonu
-                Rectangle {
-                    id: sensorHeader
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.margins: 5
-                    height: 40
-                    color: "#0d0d0d"
-                    radius: 5
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            sensorStatusPanel.sensorExpanded = !sensorStatusPanel.sensorExpanded
-                        }
-                    }
-
-                    Row {
-                        anchors.centerIn: parent
-                        spacing: 10
-
-                        Text {
-                            text: "SENSÖR DURUM"
-                            font.pixelSize: 12
-                            font.bold: true
-                            color: "#4CAF50"
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Text {
-                            text: sensorStatusPanel.sensorExpanded ? "▲" : "▼"
-                            font.pixelSize: 12
-                            color: "#4CAF50"
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-                    }
-                }
-
-                // Sensör İçerik Alanı (Açık Durumda Görünür - Dikey)
-                Column {
-                    id: sensorColumn
-                    anchors.top: sensorHeader.bottom
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.margins: 10
-                    spacing: 8
-                    visible: sensorStatusPanel.sensorExpanded
-                    opacity: sensorStatusPanel.sensorExpanded ? 1 : 0
-
-                    Behavior on opacity {
-                        NumberAnimation { duration: 200 }
-                    }
-
-                    // RTK Sensör
-                    Rectangle {
-                        width: parent.width
-                        height: 55
-                        color: "#252525"
-                        radius: 5
-                        border.color: "#404040"
-                        border.width: 1
-
-                        Row {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 12
-
-                            Rectangle {
-                                width: 12
-                                height: 12
-                                radius: 6
-                                color: "#4CAF50"
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                SequentialAnimation on opacity {
-                                    running: true
-                                    loops: Animation.Infinite
-                                    NumberAnimation { from: 1.0; to: 0.3; duration: 800 }
-                                    NumberAnimation { from: 0.3; to: 1.0; duration: 800 }
-                                }
-                            }
-
-                            Column {
-                                spacing: 3
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                Text {
-                                    text: "RTK SENSÖR"
-                                    font.pixelSize: 12
-                                    font.bold: true
-                                    color: "#ffffff"
-                                }
-                                Text {
-                                    text: "Bağlantı: Aktif"
-                                    font.pixelSize: 10
-                                    color: "#4CAF50"
-                                }
-                            }
-                        }
-                    }
-
-                    // IMU 1
-                    Rectangle {
-                        width: parent.width
-                        height: 55
-                        color: "#252525"
-                        radius: 5
-                        border.color: "#404040"
-                        border.width: 1
-
-                        Row {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 12
-
-                            Rectangle {
-                                width: 12
-                                height: 12
-                                radius: 6
-                                color: "#4CAF50"
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                SequentialAnimation on opacity {
-                                    running: true
-                                    loops: Animation.Infinite
-                                    NumberAnimation { from: 1.0; to: 0.3; duration: 800 }
-                                    NumberAnimation { from: 0.3; to: 1.0; duration: 800 }
-                                }
-                            }
-
-                            Column {
-                                spacing: 3
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                Text {
-                                    text: "IMU 1"
-                                    font.pixelSize: 12
-                                    font.bold: true
-                                    color: "#ffffff"
-                                }
-                                Text {
-                                    text: "Bağlantı: Aktif"
-                                    font.pixelSize: 10
-                                    color: "#4CAF50"
-                                }
-                            }
-                        }
-                    }
-
-                    // IMU 2
-                    Rectangle {
-                        width: parent.width
-                        height: 55
-                        color: "#252525"
-                        radius: 5
-                        border.color: "#404040"
-                        border.width: 1
-
-                        Row {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 12
-
-                            Rectangle {
-                                width: 12
-                                height: 12
-                                radius: 6
-                                color: "#4CAF50"
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                SequentialAnimation on opacity {
-                                    running: true
-                                    loops: Animation.Infinite
-                                    NumberAnimation { from: 1.0; to: 0.3; duration: 800 }
-                                    NumberAnimation { from: 0.3; to: 1.0; duration: 800 }
-                                }
-                            }
-
-                            Column {
-                                spacing: 3
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                Text {
-                                    text: "IMU 2"
-                                    font.pixelSize: 12
-                                    font.bold: true
-                                    color: "#ffffff"
-                                }
-                                Text {
-                                    text: "Bağlantı: Aktif"
-                                    font.pixelSize: 10
-                                    color: "#4CAF50"
-                                }
-                            }
-                        }
-                    }
-
-                    // IMU 3
-                    Rectangle {
-                        width: parent.width
-                        height: 55
-                        color: "#252525"
-                        radius: 5
-                        border.color: "#404040"
-                        border.width: 1
-
-                        Row {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 12
-
-                            Rectangle {
-                                width: 12
-                                height: 12
-                                radius: 6
-                                color: "#4CAF50"
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                SequentialAnimation on opacity {
-                                    running: true
-                                    loops: Animation.Infinite
-                                    NumberAnimation { from: 1.0; to: 0.3; duration: 800 }
-                                    NumberAnimation { from: 0.3; to: 1.0; duration: 800 }
-                                }
-                            }
-
-                            Column {
-                                spacing: 3
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                Text {
-                                    text: "IMU 3"
-                                    font.pixelSize: 12
-                                    font.bold: true
-                                    color: "#ffffff"
-                                }
-                                Text {
-                                    text: "Bağlantı: Aktif"
-                                    font.pixelSize: 10
-                                    color: "#4CAF50"
-                                }
-                            }
-                        }
-                    }
-
-                    // Ayırıcı
-                    Rectangle {
-                        width: parent.width
-                        height: 1
-                        color: "#404040"
-                    }
-
-                    // Kazı Simülasyonu Kontrolü
-                    Button {
-                        width: parent.width
-                        height: 55
-
-                        background: Rectangle {
-                            color: imuService && imuService.isDigging ? "#f44336" : "#4CAF50"
-                            radius: 5
-                            border.color: imuService && imuService.isDigging ? "#e53935" : "#66BB6A"
-                            border.width: 2
-
-                            Behavior on color {
-                                ColorAnimation { duration: 200 }
-                            }
-                        }
-
-                        contentItem: Row {
-                            anchors.centerIn: parent
-                            spacing: 10
-
-                            Text {
-                                text: imuService && imuService.isDigging ? "⏸" : "▶"
-                                font.pixelSize: 18
-                                color: "#ffffff"
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            Text {
-                                text: imuService && imuService.isDigging ? "DURDUR" : "KAZI BAŞLAT"
-                                font.pixelSize: 12
-                                font.bold: true
-                                color: "#ffffff"
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-
-                        onClicked: {
-                            if (imuService) {
-                                if (imuService.isDigging) {
-                                    imuService.stopDigging()
-                                } else {
-                                    imuService.startDigging()
-                                }
-                            }
-                        }
-                    }
-
                 }
             }
         }

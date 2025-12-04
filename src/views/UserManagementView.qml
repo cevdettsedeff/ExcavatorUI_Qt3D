@@ -1,10 +1,11 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Effects
 
 Rectangle {
     id: root
-    color: "#2a2a2a"
+    color: "#1a1a1a"
 
     property var pendingUsers: []
     property var allUsers: []
@@ -27,21 +28,60 @@ Rectangle {
         }
     }
 
+    // Gradient background
+    Rectangle {
+        anchors.fill: parent
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#1a1a1a" }
+            GradientStop { position: 1.0; color: "#0d0d0d" }
+        }
+    }
+
     // Ana başlık
     Rectangle {
         id: header
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 60
-        color: "#1a1a1a"
+        height: 80
+        color: "transparent"
 
-        Text {
+        Rectangle {
+            anchors.fill: parent
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "#2d2d2d" }
+                GradientStop { position: 1.0; color: "#1a1a1a" }
+            }
+        }
+
+        RowLayout {
             anchors.centerIn: parent
-            text: "Kullanıcı Yönetimi"
-            font.pixelSize: 24
-            font.bold: true
-            color: "#ffffff"
+            spacing: 15
+
+            Text {
+                text: "👥"
+                font.pixelSize: 32
+            }
+
+            Text {
+                text: "Kullanıcı Yönetimi"
+                font.pixelSize: 28
+                font.bold: true
+                color: "#ffffff"
+                font.family: "Segoe UI"
+            }
+        }
+
+        Rectangle {
+            anchors.bottom: parent.bottom
+            width: parent.width
+            height: 2
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.5; color: "#9c27b0" }
+                GradientStop { position: 1.0; color: "transparent" }
+            }
         }
     }
 
@@ -51,164 +91,300 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.margins: 20
+        anchors.margins: 30
+        clip: true
+
+        ScrollBar.vertical: ScrollBar {
+            policy: ScrollBar.AsNeeded
+            width: 8
+
+            contentItem: Rectangle {
+                radius: 4
+                color: parent.pressed ? "#9c27b0" : "#505050"
+
+                Behavior on color {
+                    ColorAnimation { duration: 200 }
+                }
+            }
+        }
 
         ColumnLayout {
             width: parent.width
-            spacing: 20
+            spacing: 30
 
             // Onay Bekleyen Kullanıcılar
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: pendingSection.height + 40
-                color: "#1a1a1a"
-                radius: 10
-                border.color: "#ff9800"
-                border.width: 2
+                Layout.preferredHeight: pendingContent.height + 50
+                color: "#252525"
+                radius: 15
+                border.width: 0
+
+                // Glow effect
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowColor: "#ff9800"
+                    shadowBlur: 0.4
+                    shadowOpacity: 0.3
+                }
 
                 Column {
-                    id: pendingSection
+                    id: pendingContent
                     anchors.fill: parent
-                    anchors.margins: 20
-                    spacing: 15
+                    anchors.margins: 25
+                    spacing: 20
 
                     // Başlık
                     Row {
                         width: parent.width
-                        spacing: 10
+                        spacing: 15
 
                         Rectangle {
-                            width: 8
-                            height: 30
-                            color: "#ff9800"
-                            radius: 4
+                            width: 5
+                            height: 35
+                            radius: 2.5
+                            gradient: Gradient {
+                                GradientStop { position: 0.0; color: "#ffb74d" }
+                                GradientStop { position: 1.0; color: "#ff9800" }
+                            }
                         }
 
-                        Text {
-                            text: "Onay Bekleyen Kullanıcılar (" + pendingUsers.length + ")"
-                            font.pixelSize: 18
-                            font.bold: true
-                            color: "#ff9800"
+                        Column {
+                            spacing: 3
                             anchors.verticalCenter: parent.verticalCenter
+
+                            Text {
+                                text: "Onay Bekleyen Kullanıcılar"
+                                font.pixelSize: 20
+                                font.bold: true
+                                color: "#ffffff"
+                                font.family: "Segoe UI"
+                            }
+
+                            Text {
+                                text: pendingUsers.length + " kullanıcı onay bekliyor"
+                                font.pixelSize: 13
+                                color: "#ff9800"
+                                font.family: "Segoe UI"
+                            }
                         }
                     }
 
                     Rectangle {
                         width: parent.width
                         height: 1
-                        color: "#404040"
+                        gradient: Gradient {
+                            orientation: Gradient.Horizontal
+                            GradientStop { position: 0.0; color: "transparent" }
+                            GradientStop { position: 0.5; color: "#404040" }
+                            GradientStop { position: 1.0; color: "transparent" }
+                        }
                     }
 
                     // Pending user listesi
-                    Repeater {
-                        model: pendingUsers
+                    Column {
+                        width: parent.width
+                        spacing: 12
 
-                        Rectangle {
-                            width: parent.width
-                            height: 70
-                            color: "#252525"
-                            radius: 8
+                        Repeater {
+                            model: pendingUsers
 
-                            Row {
-                                anchors.fill: parent
-                                anchors.margins: 15
-                                spacing: 15
+                            Rectangle {
+                                width: parent.width
+                                height: 85
+                                color: "#2a2a2a"
+                                radius: 10
 
-                                // Kullanıcı bilgileri
-                                Column {
-                                    spacing: 5
-                                    anchors.verticalCenter: parent.verticalCenter
-
-                                    Text {
-                                        text: modelData.username
-                                        font.pixelSize: 16
-                                        font.bold: true
-                                        color: "#ffffff"
-                                    }
-
-                                    Text {
-                                        text: "Kayıt: " + Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
-                                        font.pixelSize: 12
-                                        color: "#888888"
-                                    }
+                                layer.enabled: true
+                                layer.effect: MultiEffect {
+                                    shadowEnabled: true
+                                    shadowColor: "#000000"
+                                    shadowBlur: 0.2
+                                    shadowOpacity: 0.5
                                 }
 
-                                Item { Layout.fillWidth: true }
-
-                                // Onay butonu
-                                Button {
-                                    text: "✓ Onayla"
-                                    width: 100
-                                    height: 40
-                                    anchors.verticalCenter: parent.verticalCenter
-
-                                    background: Rectangle {
-                                        color: parent.pressed ? "#45a049" : (parent.hovered ? "#5cb85c" : "#4CAF50")
-                                        radius: 5
-
-                                        Behavior on color {
-                                            ColorAnimation { duration: 150 }
-                                        }
-                                    }
-
-                                    contentItem: Text {
-                                        text: parent.text
-                                        font.pixelSize: 13
-                                        font.bold: true
-                                        color: "#ffffff"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-
-                                    onClicked: {
-                                        if (authService.approveUser(modelData.id)) {
-                                            console.log("Kullanıcı onaylandı:", modelData.username)
-                                        }
-                                    }
+                                Rectangle {
+                                    anchors.left: parent.left
+                                    width: 4
+                                    height: parent.height
+                                    radius: 10
+                                    color: "#ff9800"
                                 }
 
-                                // Reddet butonu
-                                Button {
-                                    text: "✗ Reddet"
-                                    width: 100
-                                    height: 40
-                                    anchors.verticalCenter: parent.verticalCenter
+                                Row {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 20
+                                    anchors.rightMargin: 15
+                                    spacing: 15
 
-                                    background: Rectangle {
-                                        color: parent.pressed ? "#c0392b" : (parent.hovered ? "#e74c3c" : "#d32f2f")
-                                        radius: 5
+                                    // User icon
+                                    Rectangle {
+                                        width: 50
+                                        height: 50
+                                        radius: 25
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        gradient: Gradient {
+                                            GradientStop { position: 0.0; color: "#ffb74d" }
+                                            GradientStop { position: 1.0; color: "#ff9800" }
+                                        }
 
-                                        Behavior on color {
-                                            ColorAnimation { duration: 150 }
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "👤"
+                                            font.pixelSize: 24
                                         }
                                     }
 
-                                    contentItem: Text {
-                                        text: parent.text
-                                        font.pixelSize: 13
-                                        font.bold: true
-                                        color: "#ffffff"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
+                                    // Kullanıcı bilgileri
+                                    Column {
+                                        spacing: 5
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Text {
+                                            text: modelData.username
+                                            font.pixelSize: 17
+                                            font.bold: true
+                                            color: "#ffffff"
+                                            font.family: "Segoe UI"
+                                        }
+
+                                        Row {
+                                            spacing: 8
+
+                                            Text {
+                                                text: "🕐"
+                                                font.pixelSize: 12
+                                            }
+
+                                            Text {
+                                                text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
+                                                font.pixelSize: 13
+                                                color: "#999999"
+                                                font.family: "Segoe UI"
+                                            }
+                                        }
                                     }
 
-                                    onClicked: {
-                                        if (authService.rejectUser(modelData.id)) {
-                                            console.log("Kullanıcı reddedildi:", modelData.username)
+                                    Item { Layout.fillWidth: true; width: 1 }
+
+                                    // Action buttons
+                                    Row {
+                                        spacing: 10
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Button {
+                                            text: "✓ Onayla"
+                                            width: 110
+                                            height: 42
+
+                                            background: Rectangle {
+                                                radius: 8
+                                                gradient: Gradient {
+                                                    GradientStop { position: 0.0; color: parent.parent.pressed ? "#45a049" : (parent.parent.hovered ? "#5cb85c" : "#4CAF50") }
+                                                    GradientStop { position: 1.0; color: parent.parent.pressed ? "#388e3c" : (parent.parent.hovered ? "#4CAF50" : "#43a047") }
+                                                }
+
+                                                Behavior on opacity {
+                                                    NumberAnimation { duration: 150 }
+                                                }
+
+                                                layer.enabled: true
+                                                layer.effect: MultiEffect {
+                                                    shadowEnabled: true
+                                                    shadowColor: "#4CAF50"
+                                                    shadowBlur: 0.3
+                                                    shadowOpacity: parent.parent.hovered ? 0.5 : 0.2
+                                                }
+                                            }
+
+                                            contentItem: Text {
+                                                text: parent.text
+                                                font.pixelSize: 13
+                                                font.bold: true
+                                                color: "#ffffff"
+                                                horizontalAlignment: Text.AlignHCenter
+                                                verticalAlignment: Text.AlignVCenter
+                                                font.family: "Segoe UI"
+                                            }
+
+                                            onClicked: {
+                                                if (authService.approveUser(modelData.id)) {
+                                                    console.log("Kullanıcı onaylandı:", modelData.username)
+                                                }
+                                            }
+                                        }
+
+                                        Button {
+                                            text: "✗ Reddet"
+                                            width: 110
+                                            height: 42
+
+                                            background: Rectangle {
+                                                radius: 8
+                                                gradient: Gradient {
+                                                    GradientStop { position: 0.0; color: parent.parent.pressed ? "#c0392b" : (parent.parent.hovered ? "#e74c3c" : "#d32f2f") }
+                                                    GradientStop { position: 1.0; color: parent.parent.pressed ? "#a93226" : (parent.parent.hovered ? "#d32f2f" : "#c62828") }
+                                                }
+
+                                                layer.enabled: true
+                                                layer.effect: MultiEffect {
+                                                    shadowEnabled: true
+                                                    shadowColor: "#d32f2f"
+                                                    shadowBlur: 0.3
+                                                    shadowOpacity: parent.parent.hovered ? 0.5 : 0.2
+                                                }
+                                            }
+
+                                            contentItem: Text {
+                                                text: parent.text
+                                                font.pixelSize: 13
+                                                font.bold: true
+                                                color: "#ffffff"
+                                                horizontalAlignment: Text.AlignHCenter
+                                                verticalAlignment: Text.AlignVCenter
+                                                font.family: "Segoe UI"
+                                            }
+
+                                            onClicked: {
+                                                if (authService.rejectUser(modelData.id)) {
+                                                    console.log("Kullanıcı reddedildi:", modelData.username)
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    // Boş mesajı
-                    Text {
-                        visible: pendingUsers.length === 0
-                        text: "Onay bekleyen kullanıcı bulunmuyor"
-                        font.pixelSize: 14
-                        color: "#888888"
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        // Boş mesajı
+                        Rectangle {
+                            visible: pendingUsers.length === 0
+                            width: parent.width
+                            height: 80
+                            color: "#2a2a2a"
+                            radius: 10
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 8
+
+                                Text {
+                                    text: "✓"
+                                    font.pixelSize: 32
+                                    color: "#4CAF50"
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+
+                                Text {
+                                    text: "Tüm kayıt istekleri işlendi"
+                                    font.pixelSize: 14
+                                    color: "#888888"
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    font.family: "Segoe UI"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -216,57 +392,91 @@ Rectangle {
             // Tüm Kullanıcılar
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: allUsersSection.height + 40
-                color: "#1a1a1a"
-                radius: 10
-                border.color: "#00bcd4"
-                border.width: 2
+                Layout.preferredHeight: allUsersContent.height + 50
+                color: "#252525"
+                radius: 15
+
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowColor: "#00bcd4"
+                    shadowBlur: 0.4
+                    shadowOpacity: 0.3
+                }
 
                 Column {
-                    id: allUsersSection
+                    id: allUsersContent
                     anchors.fill: parent
-                    anchors.margins: 20
-                    spacing: 15
+                    anchors.margins: 25
+                    spacing: 20
 
                     // Başlık ve Yeni Kullanıcı butonu
                     Row {
                         width: parent.width
-                        spacing: 10
+                        spacing: 15
 
                         Rectangle {
-                            width: 8
-                            height: 30
-                            color: "#00bcd4"
-                            radius: 4
+                            width: 5
+                            height: 35
+                            radius: 2.5
+                            gradient: Gradient {
+                                GradientStop { position: 0.0; color: "#4dd0e1" }
+                                GradientStop { position: 1.0; color: "#00bcd4" }
+                            }
                         }
 
-                        Text {
-                            text: "Tüm Kullanıcılar (" + allUsers.length + ")"
-                            font.pixelSize: 18
-                            font.bold: true
-                            color: "#00bcd4"
+                        Column {
+                            spacing: 3
                             anchors.verticalCenter: parent.verticalCenter
+
+                            Text {
+                                text: "Tüm Kullanıcılar"
+                                font.pixelSize: 20
+                                font.bold: true
+                                color: "#ffffff"
+                                font.family: "Segoe UI"
+                            }
+
+                            Text {
+                                text: allUsers.length + " kayıtlı kullanıcı"
+                                font.pixelSize: 13
+                                color: "#00bcd4"
+                                font.family: "Segoe UI"
+                            }
                         }
 
-                        Item { width: parent.width - 300 }
+                        Item { Layout.fillWidth: true; width: 1 }
 
                         Button {
                             text: "+ Yeni Kullanıcı Ekle"
-                            width: 180
-                            height: 35
+                            width: 200
+                            height: 42
+                            anchors.verticalCenter: parent.verticalCenter
 
                             background: Rectangle {
-                                color: parent.pressed ? "#0097a7" : (parent.hovered ? "#00acc1" : "#00bcd4")
-                                radius: 5
+                                radius: 8
+                                gradient: Gradient {
+                                    GradientStop { position: 0.0; color: parent.parent.pressed ? "#0097a7" : (parent.parent.hovered ? "#00acc1" : "#00bcd4") }
+                                    GradientStop { position: 1.0; color: parent.parent.pressed ? "#00838f" : (parent.parent.hovered ? "#0097a7" : "#00acc1") }
+                                }
+
+                                layer.enabled: true
+                                layer.effect: MultiEffect {
+                                    shadowEnabled: true
+                                    shadowColor: "#00bcd4"
+                                    shadowBlur: 0.3
+                                    shadowOpacity: parent.parent.hovered ? 0.6 : 0.3
+                                }
                             }
 
                             contentItem: Text {
                                 text: parent.text
-                                font.pixelSize: 13
+                                font.pixelSize: 14
                                 font.bold: true
                                 color: "#ffffff"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
+                                font.family: "Segoe UI"
                             }
 
                             onClicked: {
@@ -278,137 +488,230 @@ Rectangle {
                     Rectangle {
                         width: parent.width
                         height: 1
-                        color: "#404040"
+                        gradient: Gradient {
+                            orientation: Gradient.Horizontal
+                            GradientStop { position: 0.0; color: "transparent" }
+                            GradientStop { position: 0.5; color: "#404040" }
+                            GradientStop { position: 1.0; color: "transparent" }
+                        }
                     }
 
                     // Kullanıcı listesi
-                    Repeater {
-                        model: allUsers
+                    Column {
+                        width: parent.width
+                        spacing: 12
 
-                        Rectangle {
-                            width: parent.width
-                            height: 80
-                            color: "#252525"
-                            radius: 8
+                        Repeater {
+                            model: allUsers
 
-                            Row {
-                                anchors.fill: parent
-                                anchors.margins: 15
-                                spacing: 15
+                            Rectangle {
+                                width: parent.width
+                                height: 90
+                                color: "#2a2a2a"
+                                radius: 10
 
-                                // Kullanıcı bilgileri
-                                Column {
-                                    spacing: 5
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    width: 200
+                                layer.enabled: true
+                                layer.effect: MultiEffect {
+                                    shadowEnabled: true
+                                    shadowColor: "#000000"
+                                    shadowBlur: 0.2
+                                    shadowOpacity: 0.5
+                                }
 
-                                    Row {
-                                        spacing: 10
+                                Rectangle {
+                                    anchors.left: parent.left
+                                    width: 4
+                                    height: parent.height
+                                    radius: 10
+                                    color: modelData.isAdmin ? "#9c27b0" : "#00bcd4"
+                                }
+
+                                Row {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 20
+                                    anchors.rightMargin: 15
+                                    spacing: 15
+
+                                    // User icon
+                                    Rectangle {
+                                        width: 55
+                                        height: 55
+                                        radius: 27.5
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        gradient: Gradient {
+                                            GradientStop { position: 0.0; color: modelData.isAdmin ? "#ba68c8" : "#4dd0e1" }
+                                            GradientStop { position: 1.0; color: modelData.isAdmin ? "#9c27b0" : "#00bcd4" }
+                                        }
 
                                         Text {
-                                            text: modelData.username
-                                            font.pixelSize: 16
-                                            font.bold: true
-                                            color: "#ffffff"
+                                            anchors.centerIn: parent
+                                            text: modelData.isAdmin ? "👑" : "👤"
+                                            font.pixelSize: 28
                                         }
+                                    }
 
-                                        Rectangle {
-                                            visible: modelData.isAdmin
-                                            width: 60
-                                            height: 20
-                                            color: "#9c27b0"
-                                            radius: 3
+                                    // Kullanıcı bilgileri
+                                    Column {
+                                        spacing: 6
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: 250
+
+                                        Row {
+                                            spacing: 10
 
                                             Text {
-                                                text: "ADMIN"
-                                                font.pixelSize: 10
+                                                text: modelData.username
+                                                font.pixelSize: 17
                                                 font.bold: true
                                                 color: "#ffffff"
-                                                anchors.centerIn: parent
+                                                font.family: "Segoe UI"
+                                            }
+
+                                            Rectangle {
+                                                visible: modelData.isAdmin
+                                                width: 65
+                                                height: 22
+                                                radius: 11
+                                                gradient: Gradient {
+                                                    GradientStop { position: 0.0; color: "#ba68c8" }
+                                                    GradientStop { position: 1.0; color: "#9c27b0" }
+                                                }
+
+                                                Text {
+                                                    text: "ADMIN"
+                                                    font.pixelSize: 10
+                                                    font.bold: true
+                                                    color: "#ffffff"
+                                                    anchors.centerIn: parent
+                                                    font.family: "Segoe UI"
+                                                }
+                                            }
+
+                                            Rectangle {
+                                                visible: !modelData.approved
+                                                width: 80
+                                                height: 22
+                                                radius: 11
+                                                color: "#ff9800"
+
+                                                Text {
+                                                    text: "BEKLEMEDE"
+                                                    font.pixelSize: 9
+                                                    font.bold: true
+                                                    color: "#ffffff"
+                                                    anchors.centerIn: parent
+                                                    font.family: "Segoe UI"
+                                                }
                                             }
                                         }
 
-                                        Rectangle {
-                                            visible: !modelData.approved
-                                            width: 60
-                                            height: 20
-                                            color: "#ff9800"
-                                            radius: 3
+                                        Row {
+                                            spacing: 8
 
                                             Text {
-                                                text: "BEKLEMEDE"
-                                                font.pixelSize: 8
-                                                font.bold: true
-                                                color: "#ffffff"
-                                                anchors.centerIn: parent
+                                                text: "📅"
+                                                font.pixelSize: 12
+                                            }
+
+                                            Text {
+                                                text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
+                                                font.pixelSize: 12
+                                                color: "#888888"
+                                                font.family: "Segoe UI"
                                             }
                                         }
                                     }
 
-                                    Text {
-                                        text: "Kayıt: " + Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
-                                        font.pixelSize: 11
-                                        color: "#888888"
-                                    }
-                                }
+                                    Item { Layout.fillWidth: true; width: 1 }
 
-                                Item { Layout.fillWidth: true }
+                                    // Action buttons
+                                    Row {
+                                        spacing: 10
+                                        anchors.verticalCenter: parent.verticalCenter
 
-                                // Düzenle butonu
-                                Button {
-                                    text: "✎ Düzenle"
-                                    width: 90
-                                    height: 35
-                                    anchors.verticalCenter: parent.verticalCenter
+                                        Button {
+                                            text: "✎ Düzenle"
+                                            width: 100
+                                            height: 38
 
-                                    background: Rectangle {
-                                        color: parent.pressed ? "#1976d2" : (parent.hovered ? "#2196F3" : "#1565c0")
-                                        radius: 5
-                                    }
+                                            background: Rectangle {
+                                                radius: 8
+                                                gradient: Gradient {
+                                                    GradientStop { position: 0.0; color: parent.parent.pressed ? "#1976d2" : (parent.parent.hovered ? "#2196F3" : "#1565c0") }
+                                                    GradientStop { position: 1.0; color: parent.parent.pressed ? "#1565c0" : (parent.parent.hovered ? "#1976d2" : "#0d47a1") }
+                                                }
 
-                                    contentItem: Text {
-                                        text: parent.text
-                                        font.pixelSize: 12
-                                        font.bold: true
-                                        color: "#ffffff"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
+                                                layer.enabled: true
+                                                layer.effect: MultiEffect {
+                                                    shadowEnabled: true
+                                                    shadowColor: "#2196F3"
+                                                    shadowBlur: 0.2
+                                                    shadowOpacity: parent.parent.hovered ? 0.4 : 0.2
+                                                }
+                                            }
 
-                                    onClicked: {
-                                        editUserDialog.currentUserId = modelData.id
-                                        editUserDialog.currentUsername = modelData.username
-                                        editUserDialog.currentIsAdmin = modelData.isAdmin
-                                        editUserDialog.open()
-                                    }
-                                }
+                                            contentItem: Text {
+                                                text: parent.text
+                                                font.pixelSize: 13
+                                                font.bold: true
+                                                color: "#ffffff"
+                                                horizontalAlignment: Text.AlignHCenter
+                                                verticalAlignment: Text.AlignVCenter
+                                                font.family: "Segoe UI"
+                                            }
 
-                                // Sil butonu
-                                Button {
-                                    text: "✗ Sil"
-                                    width: 70
-                                    height: 35
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    enabled: modelData.username !== authService.currentUser
+                                            onClicked: {
+                                                editUserDialog.currentUserId = modelData.id
+                                                editUserDialog.currentUsername = modelData.username
+                                                editUserDialog.currentIsAdmin = modelData.isAdmin
+                                                editUserDialog.open()
+                                            }
+                                        }
 
-                                    background: Rectangle {
-                                        color: parent.enabled ? (parent.pressed ? "#c0392b" : (parent.hovered ? "#e74c3c" : "#d32f2f")) : "#555555"
-                                        radius: 5
-                                    }
+                                        Button {
+                                            text: "✗ Sil"
+                                            width: 80
+                                            height: 38
+                                            enabled: modelData.username !== authService.currentUser
 
-                                    contentItem: Text {
-                                        text: parent.text
-                                        font.pixelSize: 12
-                                        font.bold: true
-                                        color: "#ffffff"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
+                                            background: Rectangle {
+                                                radius: 8
+                                                gradient: Gradient {
+                                                    GradientStop {
+                                                        position: 0.0
+                                                        color: parent.parent.enabled ? (parent.parent.pressed ? "#c0392b" : (parent.parent.hovered ? "#e74c3c" : "#d32f2f")) : "#404040"
+                                                    }
+                                                    GradientStop {
+                                                        position: 1.0
+                                                        color: parent.parent.enabled ? (parent.parent.pressed ? "#a93226" : (parent.parent.hovered ? "#d32f2f" : "#c62828")) : "#303030"
+                                                    }
+                                                }
 
-                                    onClicked: {
-                                        deleteConfirmDialog.userIdToDelete = modelData.id
-                                        deleteConfirmDialog.usernameToDelete = modelData.username
-                                        deleteConfirmDialog.open()
+                                                layer.enabled: parent.parent.enabled
+                                                layer.effect: MultiEffect {
+                                                    shadowEnabled: true
+                                                    shadowColor: "#d32f2f"
+                                                    shadowBlur: 0.2
+                                                    shadowOpacity: parent.parent.hovered ? 0.4 : 0.2
+                                                }
+                                            }
+
+                                            contentItem: Text {
+                                                text: parent.text
+                                                font.pixelSize: 13
+                                                font.bold: true
+                                                color: parent.enabled ? "#ffffff" : "#666666"
+                                                horizontalAlignment: Text.AlignHCenter
+                                                verticalAlignment: Text.AlignVCenter
+                                                font.family: "Segoe UI"
+                                            }
+
+                                            onClicked: {
+                                                deleteConfirmDialog.userIdToDelete = modelData.id
+                                                deleteConfirmDialog.usernameToDelete = modelData.username
+                                                deleteConfirmDialog.open()
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -425,35 +728,136 @@ Rectangle {
         title: "Yeni Kullanıcı Ekle"
         modal: true
         anchors.centerIn: parent
-        width: 400
+        width: 450
 
         property alias username: usernameInput.text
         property alias password: passwordInput.text
         property alias isAdmin: adminCheckbox.checked
 
+        background: Rectangle {
+            color: "#2a2a2a"
+            radius: 12
+            border.color: "#00bcd4"
+            border.width: 2
+
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "#00bcd4"
+                shadowBlur: 0.5
+                shadowOpacity: 0.4
+            }
+        }
+
+        header: Rectangle {
+            height: 60
+            color: "transparent"
+            radius: 12
+
+            Rectangle {
+                anchors.fill: parent
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "#00bcd4" }
+                    GradientStop { position: 1.0; color: "#0097a7" }
+                }
+                radius: 12
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: "➕ Yeni Kullanıcı Ekle"
+                font.pixelSize: 18
+                font.bold: true
+                color: "#ffffff"
+                font.family: "Segoe UI"
+            }
+        }
+
         ColumnLayout {
-            spacing: 15
+            spacing: 20
             width: parent.width
+            anchors.margins: 20
 
             TextField {
                 id: usernameInput
                 Layout.fillWidth: true
                 placeholderText: "Kullanıcı Adı"
                 font.pixelSize: 14
+                font.family: "Segoe UI"
+                height: 45
+
+                background: Rectangle {
+                    color: "#1a1a1a"
+                    radius: 8
+                    border.color: usernameInput.activeFocus ? "#00bcd4" : "#404040"
+                    border.width: 2
+
+                    Behavior on border.color {
+                        ColorAnimation { duration: 200 }
+                    }
+                }
+
+                color: "#ffffff"
             }
 
             TextField {
                 id: passwordInput
                 Layout.fillWidth: true
-                placeholderText: "Şifre"
+                placeholderText: "Şifre (minimum 6 karakter)"
                 echoMode: TextInput.Password
                 font.pixelSize: 14
+                font.family: "Segoe UI"
+                height: 45
+
+                background: Rectangle {
+                    color: "#1a1a1a"
+                    radius: 8
+                    border.color: passwordInput.activeFocus ? "#00bcd4" : "#404040"
+                    border.width: 2
+
+                    Behavior on border.color {
+                        ColorAnimation { duration: 200 }
+                    }
+                }
+
+                color: "#ffffff"
             }
 
             CheckBox {
                 id: adminCheckbox
                 text: "Admin Yetkisi Ver"
                 font.pixelSize: 14
+                font.family: "Segoe UI"
+
+                indicator: Rectangle {
+                    width: 22
+                    height: 22
+                    radius: 4
+                    border.color: adminCheckbox.checked ? "#9c27b0" : "#505050"
+                    border.width: 2
+                    color: adminCheckbox.checked ? "#9c27b0" : "transparent"
+
+                    Text {
+                        visible: adminCheckbox.checked
+                        text: "✓"
+                        anchors.centerIn: parent
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: "#ffffff"
+                    }
+
+                    Behavior on color {
+                        ColorAnimation { duration: 150 }
+                    }
+                }
+
+                contentItem: Text {
+                    text: adminCheckbox.text
+                    font: adminCheckbox.font
+                    color: "#ffffff"
+                    leftPadding: adminCheckbox.indicator.width + 8
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
         }
 
@@ -479,21 +883,76 @@ Rectangle {
         title: "Kullanıcı Düzenle"
         modal: true
         anchors.centerIn: parent
-        width: 400
+        width: 450
 
         property int currentUserId: 0
         property alias currentUsername: editUsernameInput.text
         property alias currentIsAdmin: editAdminCheckbox.checked
 
+        background: Rectangle {
+            color: "#2a2a2a"
+            radius: 12
+            border.color: "#2196F3"
+            border.width: 2
+
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "#2196F3"
+                shadowBlur: 0.5
+                shadowOpacity: 0.4
+            }
+        }
+
+        header: Rectangle {
+            height: 60
+            color: "transparent"
+            radius: 12
+
+            Rectangle {
+                anchors.fill: parent
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "#2196F3" }
+                    GradientStop { position: 1.0; color: "#1976d2" }
+                }
+                radius: 12
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: "✎ Kullanıcı Düzenle"
+                font.pixelSize: 18
+                font.bold: true
+                color: "#ffffff"
+                font.family: "Segoe UI"
+            }
+        }
+
         ColumnLayout {
-            spacing: 15
+            spacing: 20
             width: parent.width
+            anchors.margins: 20
 
             TextField {
                 id: editUsernameInput
                 Layout.fillWidth: true
                 placeholderText: "Kullanıcı Adı"
                 font.pixelSize: 14
+                font.family: "Segoe UI"
+                height: 45
+
+                background: Rectangle {
+                    color: "#1a1a1a"
+                    radius: 8
+                    border.color: editUsernameInput.activeFocus ? "#2196F3" : "#404040"
+                    border.width: 2
+
+                    Behavior on border.color {
+                        ColorAnimation { duration: 200 }
+                    }
+                }
+
+                color: "#ffffff"
             }
 
             TextField {
@@ -502,12 +961,58 @@ Rectangle {
                 placeholderText: "Yeni Şifre (boş bırakılabilir)"
                 echoMode: TextInput.Password
                 font.pixelSize: 14
+                font.family: "Segoe UI"
+                height: 45
+
+                background: Rectangle {
+                    color: "#1a1a1a"
+                    radius: 8
+                    border.color: editPasswordInput.activeFocus ? "#2196F3" : "#404040"
+                    border.width: 2
+
+                    Behavior on border.color {
+                        ColorAnimation { duration: 200 }
+                    }
+                }
+
+                color: "#ffffff"
             }
 
             CheckBox {
                 id: editAdminCheckbox
                 text: "Admin Yetkisi"
                 font.pixelSize: 14
+                font.family: "Segoe UI"
+
+                indicator: Rectangle {
+                    width: 22
+                    height: 22
+                    radius: 4
+                    border.color: editAdminCheckbox.checked ? "#9c27b0" : "#505050"
+                    border.width: 2
+                    color: editAdminCheckbox.checked ? "#9c27b0" : "transparent"
+
+                    Text {
+                        visible: editAdminCheckbox.checked
+                        text: "✓"
+                        anchors.centerIn: parent
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: "#ffffff"
+                    }
+
+                    Behavior on color {
+                        ColorAnimation { duration: 150 }
+                    }
+                }
+
+                contentItem: Text {
+                    text: editAdminCheckbox.text
+                    font: editAdminCheckbox.font
+                    color: "#ffffff"
+                    leftPadding: editAdminCheckbox.indicator.width + 8
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
         }
 
@@ -529,17 +1034,89 @@ Rectangle {
         title: "Kullanıcı Sil"
         modal: true
         anchors.centerIn: parent
-        width: 350
+        width: 400
 
         property int userIdToDelete: 0
         property string usernameToDelete: ""
 
-        Text {
-            text: "'" + deleteConfirmDialog.usernameToDelete + "' kullanıcısını silmek istediğinize emin misiniz?"
-            font.pixelSize: 14
-            color: "#ffffff"
-            wrapMode: Text.WordWrap
+        background: Rectangle {
+            color: "#2a2a2a"
+            radius: 12
+            border.color: "#d32f2f"
+            border.width: 2
+
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "#d32f2f"
+                shadowBlur: 0.5
+                shadowOpacity: 0.5
+            }
+        }
+
+        header: Rectangle {
+            height: 60
+            color: "transparent"
+            radius: 12
+
+            Rectangle {
+                anchors.fill: parent
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "#e74c3c" }
+                    GradientStop { position: 1.0; color: "#d32f2f" }
+                }
+                radius: 12
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: "⚠️ Kullanıcı Sil"
+                font.pixelSize: 18
+                font.bold: true
+                color: "#ffffff"
+                font.family: "Segoe UI"
+            }
+        }
+
+        Column {
+            spacing: 15
             width: parent.width
+
+            Text {
+                text: "Aşağıdaki kullanıcıyı silmek istediğinize emin misiniz?"
+                font.pixelSize: 14
+                color: "#cccccc"
+                wrapMode: Text.WordWrap
+                width: parent.width
+                font.family: "Segoe UI"
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 50
+                color: "#1a1a1a"
+                radius: 8
+                border.color: "#d32f2f"
+                border.width: 1
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "👤 " + deleteConfirmDialog.usernameToDelete
+                    font.pixelSize: 16
+                    font.bold: true
+                    color: "#ffffff"
+                    font.family: "Segoe UI"
+                }
+            }
+
+            Text {
+                text: "Bu işlem geri alınamaz!"
+                font.pixelSize: 12
+                color: "#ff9800"
+                font.italic: true
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.family: "Segoe UI"
+            }
         }
 
         standardButtons: Dialog.Yes | Dialog.No
