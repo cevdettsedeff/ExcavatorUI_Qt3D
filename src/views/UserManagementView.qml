@@ -126,7 +126,7 @@ Rectangle {
                     spacing: 20
 
                     // Başlık
-                    Row {
+                    RowLayout {
                         width: parent.width
                         spacing: 15
 
@@ -142,21 +142,23 @@ Rectangle {
 
                         Column {
                             spacing: 3
-                            anchors.verticalCenter: parent.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter
 
                             Text {
                                 text: "Onay Bekleyen Kullanıcılar"
-                                font.pixelSize: 20
+                                font.pixelSize: 22
                                 font.bold: true
                                 color: "#ffffff"
                             }
 
                             Text {
                                 text: pendingUsers.length + " kullanıcı onay bekliyor"
-                                font.pixelSize: 13
+                                font.pixelSize: 14
                                 color: "#ff9800"
                             }
                         }
+
+                        Item { Layout.fillWidth: true }
                     }
 
                     Rectangle {
@@ -194,7 +196,7 @@ Rectangle {
                                     color: "#ff9800"
                                 }
 
-                                Row {
+                                RowLayout {
                                     anchors.fill: parent
                                     anchors.leftMargin: 20
                                     anchors.rightMargin: 15
@@ -205,7 +207,7 @@ Rectangle {
                                         width: 50
                                         height: 50
                                         radius: 25
-                                        anchors.verticalCenter: parent.verticalCenter
+                                        Layout.alignment: Qt.AlignVCenter
                                         gradient: Gradient {
                                             GradientStop { position: 0.0; color: "#ffb74d" }
                                             GradientStop { position: 1.0; color: "#ff9800" }
@@ -221,7 +223,7 @@ Rectangle {
                                     // Kullanıcı bilgileri
                                     Column {
                                         spacing: 5
-                                        anchors.verticalCenter: parent.verticalCenter
+                                        Layout.alignment: Qt.AlignVCenter
 
                                         Text {
                                             text: modelData.username
@@ -246,12 +248,12 @@ Rectangle {
                                         }
                                     }
 
-                                    Item { Layout.fillWidth: true; width: 1 }
+                                    Item { Layout.fillWidth: true }
 
                                     // Action buttons
                                     Row {
                                         spacing: 10
-                                        anchors.verticalCenter: parent.verticalCenter
+                                        Layout.alignment: Qt.AlignVCenter
 
                                         Button {
                                             text: "✓ Onayla"
@@ -372,7 +374,7 @@ Rectangle {
                     spacing: 20
 
                     // Başlık ve Yeni Kullanıcı butonu
-                    Row {
+                    RowLayout {
                         width: parent.width
                         spacing: 15
 
@@ -388,29 +390,29 @@ Rectangle {
 
                         Column {
                             spacing: 3
-                            anchors.verticalCenter: parent.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter
 
                             Text {
                                 text: "Tüm Kullanıcılar"
-                                font.pixelSize: 20
+                                font.pixelSize: 22
                                 font.bold: true
                                 color: "#ffffff"
                             }
 
                             Text {
                                 text: allUsers.length + " kayıtlı kullanıcı"
-                                font.pixelSize: 13
+                                font.pixelSize: 14
                                 color: "#00bcd4"
                             }
                         }
 
-                        Item { Layout.fillWidth: true; width: 1 }
+                        Item { Layout.fillWidth: true }
 
                         Button {
                             text: "+ Yeni Kullanıcı Ekle"
                             width: 200
                             height: 42
-                            anchors.verticalCenter: parent.verticalCenter
+                            Layout.alignment: Qt.AlignVCenter
 
                             background: Rectangle {
                                 radius: 8
@@ -472,7 +474,7 @@ Rectangle {
                                     color: modelData.isAdmin ? "#9c27b0" : "#00bcd4"
                                 }
 
-                                Row {
+                                RowLayout {
                                     anchors.fill: parent
                                     anchors.leftMargin: 20
                                     anchors.rightMargin: 15
@@ -483,7 +485,7 @@ Rectangle {
                                         width: 55
                                         height: 55
                                         radius: 27.5
-                                        anchors.verticalCenter: parent.verticalCenter
+                                        Layout.alignment: Qt.AlignVCenter
                                         gradient: Gradient {
                                             GradientStop { position: 0.0; color: modelData.isAdmin ? "#ba68c8" : "#4dd0e1" }
                                             GradientStop { position: 1.0; color: modelData.isAdmin ? "#9c27b0" : "#00bcd4" }
@@ -499,8 +501,8 @@ Rectangle {
                                     // Kullanıcı bilgileri
                                     Column {
                                         spacing: 6
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        width: 250
+                                        Layout.alignment: Qt.AlignVCenter
+                                        Layout.preferredWidth: 250
 
                                         Row {
                                             spacing: 10
@@ -564,12 +566,12 @@ Rectangle {
                                         }
                                     }
 
-                                    Item { Layout.fillWidth: true; width: 1 }
+                                    Item { Layout.fillWidth: true }
 
                                     // Action buttons
                                     Row {
                                         spacing: 10
-                                        anchors.verticalCenter: parent.verticalCenter
+                                        Layout.alignment: Qt.AlignVCenter
 
                                         Button {
                                             text: "✎ Düzenle"
