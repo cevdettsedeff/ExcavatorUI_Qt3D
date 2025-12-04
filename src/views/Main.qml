@@ -566,15 +566,14 @@ ApplicationWindow {
                 }
             }
 
-            // Sensör Durumu Paneli (Üstte Yatay)
+            // Sensör Durumu Paneli (Üstte Yatay - Kompakt)
             Rectangle {
                 id: sensorStatusPanel
                 anchors.top: parent.top
                 anchors.left: parent.left
-                anchors.right: parent.right
                 anchors.topMargin: 60
                 anchors.leftMargin: 20
-                anchors.rightMargin: 20
+                width: 680
                 height: 90
                 color: "#1a1a1a"
                 radius: 10
