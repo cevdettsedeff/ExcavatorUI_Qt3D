@@ -566,15 +566,16 @@ ApplicationWindow {
                 }
             }
 
-            // Sensör Durumu Paneli (Sol Üst Köşe)
+            // Sensör Durumu Paneli (Üstte Yatay)
             Rectangle {
                 id: sensorStatusPanel
                 anchors.top: parent.top
                 anchors.left: parent.left
+                anchors.right: parent.right
                 anchors.topMargin: 60
                 anchors.leftMargin: 20
-                width: 280
-                height: sensorColumn.height + 30
+                anchors.rightMargin: 20
+                height: 90
                 color: "#1a1a1a"
                 radius: 10
                 border.color: "#4CAF50"
@@ -582,46 +583,49 @@ ApplicationWindow {
                 opacity: 0.95
                 z: 10
 
-                Column {
-                    id: sensorColumn
-                    anchors.centerIn: parent
-                    spacing: 12
-                    width: parent.width - 20
+                Row {
+                    id: sensorRow
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
 
                     // Başlık
                     Rectangle {
-                        width: parent.width
-                        height: 35
+                        width: 140
+                        height: parent.height
                         color: "#0d0d0d"
                         radius: 5
+                        anchors.verticalCenter: parent.verticalCenter
 
                         Text {
                             anchors.centerIn: parent
-                            text: "SENSÖR DURUM"
-                            font.pixelSize: 14
+                            text: "SENSÖR\nDURUM"
+                            font.pixelSize: 13
                             font.bold: true
                             color: "#4CAF50"
+                            horizontalAlignment: Text.AlignHCenter
+                            lineHeight: 1.2
                         }
                     }
 
                     // RTK Sensör
                     Rectangle {
-                        width: parent.width
-                        height: 50
+                        width: 140
+                        height: parent.height
                         color: "#252525"
                         radius: 5
                         border.color: "#404040"
                         border.width: 1
+                        anchors.verticalCenter: parent.verticalCenter
 
                         Row {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 15
+                            anchors.centerIn: parent
+                            spacing: 10
 
                             Rectangle {
-                                width: 12
-                                height: 12
-                                radius: 6
+                                width: 10
+                                height: 10
+                                radius: 5
                                 color: "#4CAF50"
                                 anchors.verticalCenter: parent.verticalCenter
 
@@ -639,13 +643,13 @@ ApplicationWindow {
 
                                 Text {
                                     text: "RTK SENSÖR"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 11
                                     font.bold: true
                                     color: "#ffffff"
                                 }
                                 Text {
-                                    text: "Bağlantı: Aktif"
-                                    font.pixelSize: 10
+                                    text: "Aktif"
+                                    font.pixelSize: 9
                                     color: "#4CAF50"
                                 }
                             }
@@ -654,22 +658,22 @@ ApplicationWindow {
 
                     // IMU 1
                     Rectangle {
-                        width: parent.width
-                        height: 50
+                        width: 100
+                        height: parent.height
                         color: "#252525"
                         radius: 5
                         border.color: "#404040"
                         border.width: 1
+                        anchors.verticalCenter: parent.verticalCenter
 
                         Row {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 15
+                            anchors.centerIn: parent
+                            spacing: 8
 
                             Rectangle {
-                                width: 12
-                                height: 12
-                                radius: 6
+                                width: 10
+                                height: 10
+                                radius: 5
                                 color: "#4CAF50"
                                 anchors.verticalCenter: parent.verticalCenter
 
@@ -687,13 +691,13 @@ ApplicationWindow {
 
                                 Text {
                                     text: "IMU 1"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 11
                                     font.bold: true
                                     color: "#ffffff"
                                 }
                                 Text {
-                                    text: "Bağlantı: Aktif"
-                                    font.pixelSize: 10
+                                    text: "Aktif"
+                                    font.pixelSize: 9
                                     color: "#4CAF50"
                                 }
                             }
@@ -702,22 +706,22 @@ ApplicationWindow {
 
                     // IMU 2
                     Rectangle {
-                        width: parent.width
-                        height: 50
+                        width: 100
+                        height: parent.height
                         color: "#252525"
                         radius: 5
                         border.color: "#404040"
                         border.width: 1
+                        anchors.verticalCenter: parent.verticalCenter
 
                         Row {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 15
+                            anchors.centerIn: parent
+                            spacing: 8
 
                             Rectangle {
-                                width: 12
-                                height: 12
-                                radius: 6
+                                width: 10
+                                height: 10
+                                radius: 5
                                 color: "#4CAF50"
                                 anchors.verticalCenter: parent.verticalCenter
 
@@ -735,13 +739,13 @@ ApplicationWindow {
 
                                 Text {
                                     text: "IMU 2"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 11
                                     font.bold: true
                                     color: "#ffffff"
                                 }
                                 Text {
-                                    text: "Bağlantı: Aktif"
-                                    font.pixelSize: 10
+                                    text: "Aktif"
+                                    font.pixelSize: 9
                                     color: "#4CAF50"
                                 }
                             }
@@ -750,22 +754,22 @@ ApplicationWindow {
 
                     // IMU 3
                     Rectangle {
-                        width: parent.width
-                        height: 50
+                        width: 100
+                        height: parent.height
                         color: "#252525"
                         radius: 5
                         border.color: "#404040"
                         border.width: 1
+                        anchors.verticalCenter: parent.verticalCenter
 
                         Row {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 15
+                            anchors.centerIn: parent
+                            spacing: 8
 
                             Rectangle {
-                                width: 12
-                                height: 12
-                                radius: 6
+                                width: 10
+                                height: 10
+                                radius: 5
                                 color: "#4CAF50"
                                 anchors.verticalCenter: parent.verticalCenter
 
@@ -783,31 +787,32 @@ ApplicationWindow {
 
                                 Text {
                                     text: "IMU 3"
-                                    font.pixelSize: 13
+                                    font.pixelSize: 11
                                     font.bold: true
                                     color: "#ffffff"
                                 }
                                 Text {
-                                    text: "Bağlantı: Aktif"
-                                    font.pixelSize: 10
+                                    text: "Aktif"
+                                    font.pixelSize: 9
                                     color: "#4CAF50"
                                 }
                             }
                         }
                     }
 
-                    // Kazı Simülasyonu Kontrolü
+                    // Ayırıcı
                     Rectangle {
-                        width: parent.width
-                        height: 1
+                        width: 2
+                        height: parent.height - 10
                         color: "#404040"
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
                     }
 
+                    // Kazı Simülasyonu Kontrolü
                     Button {
-                        width: parent.width - 20
-                        height: 50
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: 180
+                        height: parent.height - 5
+                        anchors.verticalCenter: parent.verticalCenter
 
                         background: Rectangle {
                             color: imuService && imuService.isDigging ? "#f44336" : "#4CAF50"
@@ -822,18 +827,18 @@ ApplicationWindow {
 
                         contentItem: Row {
                             anchors.centerIn: parent
-                            spacing: 10
+                            spacing: 8
 
                             Text {
                                 text: imuService && imuService.isDigging ? "⏸" : "▶"
-                                font.pixelSize: 20
+                                font.pixelSize: 16
                                 color: "#ffffff"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             Text {
                                 text: imuService && imuService.isDigging ? "KAZI DURDUR" : "KAZI BAŞLAT"
-                                font.pixelSize: 13
+                                font.pixelSize: 11
                                 font.bold: true
                                 color: "#ffffff"
                                 anchors.verticalCenter: parent.verticalCenter
@@ -850,6 +855,7 @@ ApplicationWindow {
                             }
                         }
                     }
+
                 }
             }
         }
