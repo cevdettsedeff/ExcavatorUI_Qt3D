@@ -5,6 +5,7 @@
 AuthService::AuthService(QObject *parent)
     : QObject(parent)
     , m_isAuthenticated(false)
+    , m_isAdmin(false)
 {
 }
 
@@ -28,10 +29,18 @@ bool AuthService::login(const QString& username, const QString& password)
     if (db.validateUser(username, password)) {
         m_isAuthenticated = true;
         m_currentUser = username;
+        m_isAdmin = db.isUserAdmin(username);
         emit authenticationChanged();
         emit loginSucceeded();
-        qDebug() << "Login başarılı:" << username;
+        qDebug() << "Login başarılı:" << username << "(Admin:" << m_isAdmin << ")";
         return true;
+    }
+
+    // Onay bekliyor mu kontrol et
+    if (db.userExists(username) && !db.isUserApproved(username)) {
+        qWarning() << "Login başarısız - onay bekliyor:" << username;
+        emit loginFailed("Hesabınız henüz onaylanmadı. Lütfen admin onayını bekleyin.");
+        return false;
     }
 
     qWarning() << "Login başarısız:" << username;
@@ -45,6 +54,7 @@ void AuthService::logout()
         qDebug() << "Logout:" << m_currentUser;
         m_isAuthenticated = false;
         m_currentUser.clear();
+        m_isAdmin = false;
         emit authenticationChanged();
         emit loggedOut();
     }
@@ -77,5 +87,104 @@ bool AuthService::registerUser(const QString& username, const QString& password)
         return false;
     }
 
-    return db.createUser(username, password);
+    // Normal kayıt - onay bekleyecek (approved = false)
+    return db.createUser(username, password, false, false);
+}
+
+// Admin metodları
+QVariantList AuthService::getAllUsers()
+{
+    if (!m_isAdmin) {
+        qWarning() << "Yetkisiz erişim denemesi: getAllUsers";
+        return QVariantList();
+    }
+
+    DatabaseManager& db = DatabaseManager::instance();
+    return db.getAllUsers();
+}
+
+QVariantList AuthService::getPendingUsers()
+{
+    if (!m_isAdmin) {
+        qWarning() << "Yetkisiz erişim denemesi: getPendingUsers";
+        return QVariantList();
+    }
+
+    DatabaseManager& db = DatabaseManager::instance();
+    return db.getPendingUsers();
+}
+
+bool AuthService::approveUser(int userId)
+{
+    if (!m_isAdmin) {
+        qWarning() << "Yetkisiz erişim denemesi: approveUser";
+        return false;
+    }
+
+    DatabaseManager& db = DatabaseManager::instance();
+    bool result = db.approveUser(userId);
+    if (result) {
+        emit userListChanged();
+    }
+    return result;
+}
+
+bool AuthService::rejectUser(int userId)
+{
+    if (!m_isAdmin) {
+        qWarning() << "Yetkisiz erişim denemesi: rejectUser";
+        return false;
+    }
+
+    DatabaseManager& db = DatabaseManager::instance();
+    bool result = db.rejectUser(userId);
+    if (result) {
+        emit userListChanged();
+    }
+    return result;
+}
+
+bool AuthService::deleteUser(int userId)
+{
+    if (!m_isAdmin) {
+        qWarning() << "Yetkisiz erişim denemesi: deleteUser";
+        return false;
+    }
+
+    DatabaseManager& db = DatabaseManager::instance();
+    bool result = db.deleteUser(userId);
+    if (result) {
+        emit userListChanged();
+    }
+    return result;
+}
+
+bool AuthService::updateUser(int userId, const QString& username, const QString& password, bool isAdmin)
+{
+    if (!m_isAdmin) {
+        qWarning() << "Yetkisiz erişim denemesi: updateUser";
+        return false;
+    }
+
+    DatabaseManager& db = DatabaseManager::instance();
+    bool result = db.updateUser(userId, username, password, isAdmin);
+    if (result) {
+        emit userListChanged();
+    }
+    return result;
+}
+
+bool AuthService::createUserByAdmin(const QString& username, const QString& password, bool isAdmin)
+{
+    if (!m_isAdmin) {
+        qWarning() << "Yetkisiz erişim denemesi: createUserByAdmin";
+        return false;
+    }
+
+    DatabaseManager& db = DatabaseManager::instance();
+    bool result = db.createUser(username, password, isAdmin, true); // Admin tarafından oluşturulduğu için direkt onaylı
+    if (result) {
+        emit userListChanged();
+    }
+    return result;
 }

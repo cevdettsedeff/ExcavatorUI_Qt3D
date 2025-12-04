@@ -153,6 +153,39 @@ ApplicationWindow {
                                 contentStack.currentIndex = 1
                             }
                         }
+
+                        // Admin butonu (sadece admin görebilir)
+                        Button {
+                            id: adminViewButton
+                            text: "Kullanıcı Yönetimi"
+                            width: 160
+                            height: 35
+                            visible: authService && authService.isAdmin
+
+                            background: Rectangle {
+                                color: contentStack.currentIndex === 2 ? "#9c27b0" : "#34495e"
+                                radius: 5
+                                border.color: contentStack.currentIndex === 2 ? "#ba68c8" : "#505050"
+                                border.width: 2
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 150 }
+                                }
+                            }
+
+                            contentItem: Text {
+                                text: adminViewButton.text
+                                font.pixelSize: 13
+                                font.bold: true
+                                color: "#ffffff"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                contentStack.currentIndex = 2
+                            }
+                        }
                     }
                 }
 
@@ -562,6 +595,16 @@ ApplicationWindow {
                             font.bold: true
                             color: "#ffffff"
                         }
+                    }
+                }
+
+                // Kullanıcı Yönetimi Görünümü (Sadece Admin)
+                Rectangle {
+                    color: "#2a2a2a"
+                    visible: authService && authService.isAdmin
+
+                    UserManagementView {
+                        anchors.fill: parent
                     }
                 }
             }
