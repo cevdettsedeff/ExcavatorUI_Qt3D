@@ -23,6 +23,7 @@ public:
     Q_INVOKABLE bool login(const QString& username, const QString& password);
     Q_INVOKABLE void logout();
     Q_INVOKABLE bool registerUser(const QString& username, const QString& password);
+    Q_INVOKABLE bool updateProfile(const QString& newUsername, const QString& newPassword);
 
     // Admin metodları
     Q_INVOKABLE QVariantList getAllUsers();

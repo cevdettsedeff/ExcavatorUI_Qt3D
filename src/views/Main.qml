@@ -187,6 +187,39 @@ ApplicationWindow {
                                 contentStack.currentIndex = 2
                             }
                         }
+
+                        // Profilim butonu (sadece admin değilse görebilir)
+                        Button {
+                            id: profileViewButton
+                            text: "Profilim"
+                            width: 100
+                            height: 35
+                            visible: authService && !authService.isAdmin
+
+                            background: Rectangle {
+                                color: contentStack.currentIndex === 3 ? "#3498db" : "#34495e"
+                                radius: 5
+                                border.color: contentStack.currentIndex === 3 ? "#5dade2" : "#505050"
+                                border.width: 2
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 150 }
+                                }
+                            }
+
+                            contentItem: Text {
+                                text: profileViewButton.text
+                                font.pixelSize: 13
+                                font.bold: true
+                                color: "#ffffff"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                contentStack.currentIndex = 3
+                            }
+                        }
                     }
                 }
 
@@ -989,6 +1022,16 @@ ApplicationWindow {
                     visible: authService && authService.isAdmin
 
                     UserManagementView {
+                        anchors.fill: parent
+                    }
+                }
+
+                // Profil Görünümü (Sadece Admin Değilse)
+                Rectangle {
+                    color: "#2a2a2a"
+                    visible: authService && !authService.isAdmin
+
+                    ProfileView {
                         anchors.fill: parent
                     }
                 }

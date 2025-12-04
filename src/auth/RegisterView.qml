@@ -440,12 +440,12 @@ Item {
         header: Rectangle {
             width: parent.width
             height: 60
-            color: "#2ecc71"
+            color: "#ff9800"
             radius: 10
 
             Text {
                 anchors.centerIn: parent
-                text: "✓ Kayıt Başarılı!"
+                text: "✓ Kayıt İsteğiniz Alındı!"
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
@@ -459,7 +459,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 Layout.margins: 20
-                text: "Hesabınız başarıyla oluşturuldu!\n\nGiriş sayfasına yönlendiriliyorsunuz..."
+                text: "Kayıt isteğiniz yetkili kişiye gönderildi.\n\nOnay beklerken giriş sayfasına yönlendiriliyorsunuz..."
                 font.pixelSize: 14
                 color: "#ffffff"
                 wrapMode: Text.WordWrap

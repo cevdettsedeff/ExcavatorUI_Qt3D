@@ -188,3 +188,62 @@ bool AuthService::createUserByAdmin(const QString& username, const QString& pass
     }
     return result;
 }
+
+bool AuthService::updateProfile(const QString& newUsername, const QString& newPassword)
+{
+    if (!m_isAuthenticated) {
+        qWarning() << "Kullanıcı giriş yapmamış";
+        return false;
+    }
+
+    qDebug() << "Profil güncelleme denemesi:" << m_currentUser;
+
+    DatabaseManager& db = DatabaseManager::instance();
+    if (!db.isInitialized()) {
+        qCritical() << "Veritabanı başlatılmamış";
+        return false;
+    }
+
+    // Mevcut kullanıcının ID'sini al
+    QVariantList users = db.getAllUsers();
+    int currentUserId = -1;
+
+    for (const QVariant& userVar : users) {
+        QVariantMap user = userVar.toMap();
+        if (user["username"].toString() == m_currentUser) {
+            currentUserId = user["id"].toInt();
+            break;
+        }
+    }
+
+    if (currentUserId == -1) {
+        qWarning() << "Kullanıcı bulunamadı:" << m_currentUser;
+        return false;
+    }
+
+    // Kullanıcı adı veya şifre güncelleme
+    QString finalUsername = newUsername.isEmpty() ? m_currentUser : newUsername;
+    QString finalPassword = newPassword; // Boşsa DatabaseManager işlemez
+
+    // Kullanıcı adı kontrolü
+    if (!newUsername.isEmpty() && newUsername.length() < 3) {
+        qWarning() << "Kullanıcı adı çok kısa";
+        return false;
+    }
+
+    // Şifre kontrolü
+    if (!newPassword.isEmpty() && newPassword.length() < 6) {
+        qWarning() << "Şifre çok kısa (minimum 6 karakter)";
+        return false;
+    }
+
+    // Profil güncelleme (admin yetkisi korunur)
+    bool result = db.updateUser(currentUserId, finalUsername, finalPassword, m_isAdmin);
+
+    if (result) {
+        qDebug() << "Profil güncellendi:" << finalUsername;
+        // Başarılı olursa logout yapılacak (QML tarafında)
+    }
+
+    return result;
+}
