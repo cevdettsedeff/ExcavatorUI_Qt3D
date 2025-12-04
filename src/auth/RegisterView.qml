@@ -427,6 +427,7 @@ Item {
         id: successDialog
         anchors.centerIn: parent
         width: Math.min(parent.width * 0.8, 350)
+        height: Math.min(parent.height * 0.5, 280)
         modal: true
         standardButtons: Dialog.Ok
 
@@ -459,6 +460,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 Layout.margins: 20
+                Layout.preferredHeight: implicitHeight
                 text: "Kayıt isteğiniz yetkili kişiye gönderildi.\n\nOnay beklerken giriş sayfasına yönlendiriliyorsunuz..."
                 font.pixelSize: 14
                 color: "#ffffff"
@@ -479,6 +481,7 @@ Item {
         id: errorDialog
         anchors.centerIn: parent
         width: Math.min(parent.width * 0.8, 350)
+        height: Math.min(parent.height * 0.5, 280)
         modal: true
         standardButtons: Dialog.Ok
 
@@ -513,6 +516,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 Layout.margins: 20
+                Layout.preferredHeight: implicitHeight
                 text: errorDialog.errorText
                 font.pixelSize: 14
                 color: "#ffffff"

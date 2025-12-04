@@ -63,7 +63,7 @@ Item {
                         text: "Lütfen giriş yapın"
                         font.pixelSize: 14
                         color: "#888888"
-                        Layout.bottomMargin: 15
+                        Layout.bottomMargin: 30
                     }
                 }
             }

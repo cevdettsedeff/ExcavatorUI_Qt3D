@@ -26,23 +26,28 @@ bool AuthService::login(const QString& username, const QString& password)
         return false;
     }
 
-    if (db.validateUser(username, password)) {
-        m_isAuthenticated = true;
-        m_currentUser = username;
-        m_isAdmin = db.isUserAdmin(username);
-        emit authenticationChanged();
-        emit loginSucceeded();
-        qDebug() << "Login başarılı:" << username << "(Admin:" << m_isAdmin << ")";
-        return true;
+    // Önce kullanıcı var mı kontrol et
+    if (db.userExists(username)) {
+        // Kullanıcı onaylanmış mı kontrol et
+        if (!db.isUserApproved(username)) {
+            qWarning() << "Login başarısız - onay bekliyor:" << username;
+            emit loginFailed("Hesabınız henüz onaylanmadı. Lütfen admin onayını bekleyin.");
+            return false;
+        }
+
+        // Onaylı kullanıcı, şifre kontrolü yap
+        if (db.validateUser(username, password)) {
+            m_isAuthenticated = true;
+            m_currentUser = username;
+            m_isAdmin = db.isUserAdmin(username);
+            emit authenticationChanged();
+            emit loginSucceeded();
+            qDebug() << "Login başarılı:" << username << "(Admin:" << m_isAdmin << ")";
+            return true;
+        }
     }
 
-    // Onay bekliyor mu kontrol et
-    if (db.userExists(username) && !db.isUserApproved(username)) {
-        qWarning() << "Login başarısız - onay bekliyor:" << username;
-        emit loginFailed("Hesabınız henüz onaylanmadı. Lütfen admin onayını bekleyin.");
-        return false;
-    }
-
+    // Kullanıcı bulunamadı veya şifre hatalı
     qWarning() << "Login başarısız:" << username;
     emit loginFailed("Kullanıcı adı veya şifre hatalı");
     return false;
