@@ -107,13 +107,13 @@ Rectangle {
         }
 
         ColumnLayout {
-            width: parent.width
+            width: parent.width - 20
             spacing: 30
 
             // Onay Bekleyen Kullanıcılar
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: pendingContent.height + 50
+                Layout.minimumHeight: pendingContent.implicitHeight + 50
                 color: "#252525"
                 radius: 15
                 border.color: "#ff9800"
@@ -361,7 +361,7 @@ Rectangle {
             // Tüm Kullanıcılar
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: allUsersContent.height + 50
+                Layout.minimumHeight: allUsersContent.implicitHeight + 50
                 color: "#252525"
                 radius: 15
                 border.color: "#00bcd4"
