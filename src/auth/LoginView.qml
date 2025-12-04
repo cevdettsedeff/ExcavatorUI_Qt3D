@@ -209,12 +209,8 @@ Item {
 
                     onClicked: {
                         errorMessage.text = ""
-
-                        if (authService.login(usernameField.text, passwordField.text)) {
-                            // Login başarılı - main.cpp'de handle edilecek
-                        } else {
-                            errorMessage.text = "Kullanıcı adı veya şifre hatalı"
-                        }
+                        authService.login(usernameField.text, passwordField.text)
+                        // Hata mesajları AuthService'ten loginFailed sinyali ile gelecek
                     }
                 }
 
