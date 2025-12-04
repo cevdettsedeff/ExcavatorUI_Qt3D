@@ -71,6 +71,7 @@ Item {
             // Form bölümü
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.topMargin: 30
                 spacing: 15
 
                 // Kullanıcı adı
@@ -114,23 +115,54 @@ Item {
                         color: "#cccccc"
                     }
 
-                    TextField {
-                        id: passwordField
+                    Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: "Şifrenizi girin"
-                        echoMode: TextInput.Password
-                        font.pixelSize: 14
-                        color: "#ffffff"
 
-                        background: Rectangle {
-                            color: "#2a2a2a"
-                            border.color: passwordField.activeFocus ? "#3498db" : "#404040"
-                            border.width: 2
-                            radius: 5
+                        property bool showPassword: false
+
+                        TextField {
+                            id: passwordField
+                            anchors.fill: parent
+                            placeholderText: "Şifrenizi girin"
+                            echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
+                            font.pixelSize: 14
+                            color: "#ffffff"
+                            rightPadding: 45
+
+                            background: Rectangle {
+                                color: "#2a2a2a"
+                                border.color: passwordField.activeFocus ? "#3498db" : "#404040"
+                                border.width: 2
+                                radius: 5
+                            }
+
+                            Keys.onReturnPressed: loginButton.clicked()
                         }
 
-                        Keys.onReturnPressed: loginButton.clicked()
+                        Button {
+                            anchors.right: parent.right
+                            anchors.rightMargin: 5
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 50
+                            height: 30
+
+                            background: Rectangle {
+                                color: "transparent"
+                            }
+
+                            contentItem: Text {
+                                text: parent.parent.showPassword ? "Gizle" : "Göster"
+                                font.pixelSize: 11
+                                color: "#3498db"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                parent.showPassword = !parent.showPassword
+                            }
+                        }
                     }
                 }
 
@@ -209,44 +241,8 @@ Item {
 
                     onClicked: {
                         errorMessage.text = ""
-
-                        if (authService.login(usernameField.text, passwordField.text)) {
-                            // Login başarılı - main.cpp'de handle edilecek
-                        } else {
-                            errorMessage.text = "Kullanıcı adı veya şifre hatalı"
-                        }
-                    }
-                }
-
-                // Bilgi mesajı
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 110
-                    color: "#2c3e50"
-                    radius: 8
-                    border.color: "#34495e"
-                    border.width: 1
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 18
-                        spacing: 12
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: "ℹ️ Varsayılan Kullanıcı"
-                            font.pixelSize: 12
-                            font.bold: true
-                            color: "#ecf0f1"
-                        }
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: "Kullanıcı Adı: admin\nŞifre: admin"
-                            font.pixelSize: 11
-                            color: "#bdc3c7"
-                            lineHeight: 1.6
-                        }
+                        authService.login(usernameField.text, passwordField.text)
+                        // Hata mesajları AuthService'ten loginFailed sinyali ile gelecek
                     }
                 }
 
