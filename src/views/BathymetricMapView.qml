@@ -11,7 +11,7 @@ Rectangle {
     View3D {
         id: view3D
         anchors.fill: parent
-        anchors.topMargin: 60
+        anchors.topMargin: 90
         anchors.bottomMargin: 20
         anchors.margins: 20
 
@@ -401,7 +401,7 @@ Rectangle {
         id: topViewPanel
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.topMargin: 60
+        anchors.topMargin: 90
         anchors.rightMargin: 20
         width: 350
         height: 260
