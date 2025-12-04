@@ -257,15 +257,44 @@ ApplicationWindow {
                         anchors.top: parent.top
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        height: 50
-                        color: "#1a1a1a"
+                        height: 80
+                        color: "transparent"
 
-                        Text {
+                        Rectangle {
+                            anchors.fill: parent
+                            gradient: Gradient {
+                                GradientStop { position: 0.0; color: "#2d2d2d" }
+                                GradientStop { position: 1.0; color: "#1a1a1a" }
+                            }
+                        }
+
+                        RowLayout {
                             anchors.centerIn: parent
-                            text: "3D Ekskavatör Görünümü"
-                            font.pixelSize: 20
-                            font.bold: true
-                            color: "#ffffff"
+                            spacing: 15
+
+                            Text {
+                                text: "🚜"
+                                font.pixelSize: 32
+                            }
+
+                            Text {
+                                text: "3D Ekskavatör Görünümü"
+                                font.pixelSize: 28
+                                font.bold: true
+                                color: "#ffffff"
+                            }
+                        }
+
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            width: parent.width
+                            height: 2
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: "transparent" }
+                                GradientStop { position: 0.5; color: "#00bcd4" }
+                                GradientStop { position: 1.0; color: "transparent" }
+                            }
                         }
                     }
 
@@ -274,7 +303,7 @@ ApplicationWindow {
                         id: sensorStatusPanel
                         anchors.top: parent.top
                         anchors.left: parent.left
-                        anchors.topMargin: 60
+                        anchors.topMargin: 90
                         anchors.leftMargin: 20
                         width: 200
                         height: sensorExpanded ? 380 : 50
@@ -600,7 +629,7 @@ ApplicationWindow {
                         id: miniCameraView
                         anchors.top: parent.top
                         anchors.right: parent.right
-                        anchors.topMargin: 60
+                        anchors.topMargin: 90
                         anchors.rightMargin: 20
                         width: 350
                         height: 260
@@ -912,15 +941,44 @@ ApplicationWindow {
                         anchors.top: parent.top
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        height: 50
-                        color: "#1a1a1a"
+                        height: 80
+                        color: "transparent"
 
-                        Text {
+                        Rectangle {
+                            anchors.fill: parent
+                            gradient: Gradient {
+                                GradientStop { position: 0.0; color: "#2d2d2d" }
+                                GradientStop { position: 1.0; color: "#1a1a1a" }
+                            }
+                        }
+
+                        RowLayout {
                             anchors.centerIn: parent
-                            text: "Batimetrik Harita - Liman Bölgesi"
-                            font.pixelSize: 20
-                            font.bold: true
-                            color: "#ffffff"
+                            spacing: 15
+
+                            Text {
+                                text: "🗺️"
+                                font.pixelSize: 32
+                            }
+
+                            Text {
+                                text: "Batimetrik Harita - Liman Bölgesi"
+                                font.pixelSize: 28
+                                font.bold: true
+                                color: "#ffffff"
+                            }
+                        }
+
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            width: parent.width
+                            height: 2
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: "transparent" }
+                                GradientStop { position: 0.5; color: "#4CAF50" }
+                                GradientStop { position: 1.0; color: "transparent" }
+                            }
                         }
                     }
                 }

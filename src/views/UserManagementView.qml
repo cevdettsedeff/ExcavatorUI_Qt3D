@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Effects
 
 Rectangle {
     id: root
@@ -68,7 +67,6 @@ Rectangle {
                 font.pixelSize: 28
                 font.bold: true
                 color: "#ffffff"
-                font.family: "Segoe UI"
             }
         }
 
@@ -118,16 +116,8 @@ Rectangle {
                 Layout.preferredHeight: pendingContent.height + 50
                 color: "#252525"
                 radius: 15
-                border.width: 0
-
-                // Glow effect
-                layer.enabled: true
-                layer.effect: MultiEffect {
-                    shadowEnabled: true
-                    shadowColor: "#ff9800"
-                    shadowBlur: 0.4
-                    shadowOpacity: 0.3
-                }
+                border.color: "#ff9800"
+                border.width: 3
 
                 Column {
                     id: pendingContent
@@ -159,14 +149,12 @@ Rectangle {
                                 font.pixelSize: 20
                                 font.bold: true
                                 color: "#ffffff"
-                                font.family: "Segoe UI"
                             }
 
                             Text {
                                 text: pendingUsers.length + " kullanıcı onay bekliyor"
                                 font.pixelSize: 13
                                 color: "#ff9800"
-                                font.family: "Segoe UI"
                             }
                         }
                     }
@@ -195,14 +183,8 @@ Rectangle {
                                 height: 85
                                 color: "#2a2a2a"
                                 radius: 10
-
-                                layer.enabled: true
-                                layer.effect: MultiEffect {
-                                    shadowEnabled: true
-                                    shadowColor: "#000000"
-                                    shadowBlur: 0.2
-                                    shadowOpacity: 0.5
-                                }
+                                border.color: "#404040"
+                                border.width: 1
 
                                 Rectangle {
                                     anchors.left: parent.left
@@ -246,7 +228,6 @@ Rectangle {
                                             font.pixelSize: 17
                                             font.bold: true
                                             color: "#ffffff"
-                                            font.family: "Segoe UI"
                                         }
 
                                         Row {
@@ -261,7 +242,6 @@ Rectangle {
                                                 text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
                                                 font.pixelSize: 13
                                                 color: "#999999"
-                                                font.family: "Segoe UI"
                                             }
                                         }
                                     }
@@ -284,17 +264,11 @@ Rectangle {
                                                     GradientStop { position: 0.0; color: parent.parent.pressed ? "#45a049" : (parent.parent.hovered ? "#5cb85c" : "#4CAF50") }
                                                     GradientStop { position: 1.0; color: parent.parent.pressed ? "#388e3c" : (parent.parent.hovered ? "#4CAF50" : "#43a047") }
                                                 }
+                                                border.color: parent.parent.hovered ? "#66BB6A" : "transparent"
+                                                border.width: 2
 
                                                 Behavior on opacity {
                                                     NumberAnimation { duration: 150 }
-                                                }
-
-                                                layer.enabled: true
-                                                layer.effect: MultiEffect {
-                                                    shadowEnabled: true
-                                                    shadowColor: "#4CAF50"
-                                                    shadowBlur: 0.3
-                                                    shadowOpacity: parent.parent.hovered ? 0.5 : 0.2
                                                 }
                                             }
 
@@ -305,7 +279,6 @@ Rectangle {
                                                 color: "#ffffff"
                                                 horizontalAlignment: Text.AlignHCenter
                                                 verticalAlignment: Text.AlignVCenter
-                                                font.family: "Segoe UI"
                                             }
 
                                             onClicked: {
@@ -326,14 +299,8 @@ Rectangle {
                                                     GradientStop { position: 0.0; color: parent.parent.pressed ? "#c0392b" : (parent.parent.hovered ? "#e74c3c" : "#d32f2f") }
                                                     GradientStop { position: 1.0; color: parent.parent.pressed ? "#a93226" : (parent.parent.hovered ? "#d32f2f" : "#c62828") }
                                                 }
-
-                                                layer.enabled: true
-                                                layer.effect: MultiEffect {
-                                                    shadowEnabled: true
-                                                    shadowColor: "#d32f2f"
-                                                    shadowBlur: 0.3
-                                                    shadowOpacity: parent.parent.hovered ? 0.5 : 0.2
-                                                }
+                                                border.color: parent.parent.hovered ? "#e74c3c" : "transparent"
+                                                border.width: 2
                                             }
 
                                             contentItem: Text {
@@ -343,7 +310,6 @@ Rectangle {
                                                 color: "#ffffff"
                                                 horizontalAlignment: Text.AlignHCenter
                                                 verticalAlignment: Text.AlignVCenter
-                                                font.family: "Segoe UI"
                                             }
 
                                             onClicked: {
@@ -364,6 +330,8 @@ Rectangle {
                             height: 80
                             color: "#2a2a2a"
                             radius: 10
+                            border.color: "#404040"
+                            border.width: 1
 
                             Column {
                                 anchors.centerIn: parent
@@ -381,7 +349,6 @@ Rectangle {
                                     font.pixelSize: 14
                                     color: "#888888"
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    font.family: "Segoe UI"
                                 }
                             }
                         }
@@ -395,14 +362,8 @@ Rectangle {
                 Layout.preferredHeight: allUsersContent.height + 50
                 color: "#252525"
                 radius: 15
-
-                layer.enabled: true
-                layer.effect: MultiEffect {
-                    shadowEnabled: true
-                    shadowColor: "#00bcd4"
-                    shadowBlur: 0.4
-                    shadowOpacity: 0.3
-                }
+                border.color: "#00bcd4"
+                border.width: 3
 
                 Column {
                     id: allUsersContent
@@ -434,14 +395,12 @@ Rectangle {
                                 font.pixelSize: 20
                                 font.bold: true
                                 color: "#ffffff"
-                                font.family: "Segoe UI"
                             }
 
                             Text {
                                 text: allUsers.length + " kayıtlı kullanıcı"
                                 font.pixelSize: 13
                                 color: "#00bcd4"
-                                font.family: "Segoe UI"
                             }
                         }
 
@@ -459,14 +418,8 @@ Rectangle {
                                     GradientStop { position: 0.0; color: parent.parent.pressed ? "#0097a7" : (parent.parent.hovered ? "#00acc1" : "#00bcd4") }
                                     GradientStop { position: 1.0; color: parent.parent.pressed ? "#00838f" : (parent.parent.hovered ? "#0097a7" : "#00acc1") }
                                 }
-
-                                layer.enabled: true
-                                layer.effect: MultiEffect {
-                                    shadowEnabled: true
-                                    shadowColor: "#00bcd4"
-                                    shadowBlur: 0.3
-                                    shadowOpacity: parent.parent.hovered ? 0.6 : 0.3
-                                }
+                                border.color: parent.parent.hovered ? "#4dd0e1" : "transparent"
+                                border.width: 2
                             }
 
                             contentItem: Text {
@@ -476,7 +429,6 @@ Rectangle {
                                 color: "#ffffff"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
-                                font.family: "Segoe UI"
                             }
 
                             onClicked: {
@@ -509,14 +461,8 @@ Rectangle {
                                 height: 90
                                 color: "#2a2a2a"
                                 radius: 10
-
-                                layer.enabled: true
-                                layer.effect: MultiEffect {
-                                    shadowEnabled: true
-                                    shadowColor: "#000000"
-                                    shadowBlur: 0.2
-                                    shadowOpacity: 0.5
-                                }
+                                border.color: "#404040"
+                                border.width: 1
 
                                 Rectangle {
                                     anchors.left: parent.left
@@ -564,7 +510,6 @@ Rectangle {
                                                 font.pixelSize: 17
                                                 font.bold: true
                                                 color: "#ffffff"
-                                                font.family: "Segoe UI"
                                             }
 
                                             Rectangle {
@@ -583,7 +528,6 @@ Rectangle {
                                                     font.bold: true
                                                     color: "#ffffff"
                                                     anchors.centerIn: parent
-                                                    font.family: "Segoe UI"
                                                 }
                                             }
 
@@ -600,7 +544,6 @@ Rectangle {
                                                     font.bold: true
                                                     color: "#ffffff"
                                                     anchors.centerIn: parent
-                                                    font.family: "Segoe UI"
                                                 }
                                             }
                                         }
@@ -617,7 +560,6 @@ Rectangle {
                                                 text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
                                                 font.pixelSize: 12
                                                 color: "#888888"
-                                                font.family: "Segoe UI"
                                             }
                                         }
                                     }
@@ -640,14 +582,8 @@ Rectangle {
                                                     GradientStop { position: 0.0; color: parent.parent.pressed ? "#1976d2" : (parent.parent.hovered ? "#2196F3" : "#1565c0") }
                                                     GradientStop { position: 1.0; color: parent.parent.pressed ? "#1565c0" : (parent.parent.hovered ? "#1976d2" : "#0d47a1") }
                                                 }
-
-                                                layer.enabled: true
-                                                layer.effect: MultiEffect {
-                                                    shadowEnabled: true
-                                                    shadowColor: "#2196F3"
-                                                    shadowBlur: 0.2
-                                                    shadowOpacity: parent.parent.hovered ? 0.4 : 0.2
-                                                }
+                                                border.color: parent.parent.hovered ? "#42a5f5" : "transparent"
+                                                border.width: 2
                                             }
 
                                             contentItem: Text {
@@ -657,7 +593,6 @@ Rectangle {
                                                 color: "#ffffff"
                                                 horizontalAlignment: Text.AlignHCenter
                                                 verticalAlignment: Text.AlignVCenter
-                                                font.family: "Segoe UI"
                                             }
 
                                             onClicked: {
@@ -686,14 +621,8 @@ Rectangle {
                                                         color: parent.parent.enabled ? (parent.parent.pressed ? "#a93226" : (parent.parent.hovered ? "#d32f2f" : "#c62828")) : "#303030"
                                                     }
                                                 }
-
-                                                layer.enabled: parent.parent.enabled
-                                                layer.effect: MultiEffect {
-                                                    shadowEnabled: true
-                                                    shadowColor: "#d32f2f"
-                                                    shadowBlur: 0.2
-                                                    shadowOpacity: parent.parent.hovered ? 0.4 : 0.2
-                                                }
+                                                border.color: parent.parent.enabled && parent.parent.hovered ? "#e74c3c" : "transparent"
+                                                border.width: 2
                                             }
 
                                             contentItem: Text {
@@ -703,7 +632,6 @@ Rectangle {
                                                 color: parent.enabled ? "#ffffff" : "#666666"
                                                 horizontalAlignment: Text.AlignHCenter
                                                 verticalAlignment: Text.AlignVCenter
-                                                font.family: "Segoe UI"
                                             }
 
                                             onClicked: {
@@ -738,15 +666,7 @@ Rectangle {
             color: "#2a2a2a"
             radius: 12
             border.color: "#00bcd4"
-            border.width: 2
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#00bcd4"
-                shadowBlur: 0.5
-                shadowOpacity: 0.4
-            }
+            border.width: 3
         }
 
         header: Rectangle {
@@ -769,7 +689,6 @@ Rectangle {
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
-                font.family: "Segoe UI"
             }
         }
 
@@ -783,7 +702,6 @@ Rectangle {
                 Layout.fillWidth: true
                 placeholderText: "Kullanıcı Adı"
                 font.pixelSize: 14
-                font.family: "Segoe UI"
                 height: 45
 
                 background: Rectangle {
@@ -806,7 +724,6 @@ Rectangle {
                 placeholderText: "Şifre (minimum 6 karakter)"
                 echoMode: TextInput.Password
                 font.pixelSize: 14
-                font.family: "Segoe UI"
                 height: 45
 
                 background: Rectangle {
@@ -827,7 +744,6 @@ Rectangle {
                 id: adminCheckbox
                 text: "Admin Yetkisi Ver"
                 font.pixelSize: 14
-                font.family: "Segoe UI"
 
                 indicator: Rectangle {
                     width: 22
@@ -893,15 +809,7 @@ Rectangle {
             color: "#2a2a2a"
             radius: 12
             border.color: "#2196F3"
-            border.width: 2
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#2196F3"
-                shadowBlur: 0.5
-                shadowOpacity: 0.4
-            }
+            border.width: 3
         }
 
         header: Rectangle {
@@ -924,7 +832,6 @@ Rectangle {
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
-                font.family: "Segoe UI"
             }
         }
 
@@ -938,7 +845,6 @@ Rectangle {
                 Layout.fillWidth: true
                 placeholderText: "Kullanıcı Adı"
                 font.pixelSize: 14
-                font.family: "Segoe UI"
                 height: 45
 
                 background: Rectangle {
@@ -961,7 +867,6 @@ Rectangle {
                 placeholderText: "Yeni Şifre (boş bırakılabilir)"
                 echoMode: TextInput.Password
                 font.pixelSize: 14
-                font.family: "Segoe UI"
                 height: 45
 
                 background: Rectangle {
@@ -982,7 +887,6 @@ Rectangle {
                 id: editAdminCheckbox
                 text: "Admin Yetkisi"
                 font.pixelSize: 14
-                font.family: "Segoe UI"
 
                 indicator: Rectangle {
                     width: 22
@@ -1043,15 +947,7 @@ Rectangle {
             color: "#2a2a2a"
             radius: 12
             border.color: "#d32f2f"
-            border.width: 2
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#d32f2f"
-                shadowBlur: 0.5
-                shadowOpacity: 0.5
-            }
+            border.width: 3
         }
 
         header: Rectangle {
@@ -1074,7 +970,6 @@ Rectangle {
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
-                font.family: "Segoe UI"
             }
         }
 
@@ -1088,7 +983,6 @@ Rectangle {
                 color: "#cccccc"
                 wrapMode: Text.WordWrap
                 width: parent.width
-                font.family: "Segoe UI"
             }
 
             Rectangle {
@@ -1105,7 +999,6 @@ Rectangle {
                     font.pixelSize: 16
                     font.bold: true
                     color: "#ffffff"
-                    font.family: "Segoe UI"
                 }
             }
 
@@ -1115,7 +1008,6 @@ Rectangle {
                 color: "#ff9800"
                 font.italic: true
                 anchors.horizontalCenter: parent.horizontalCenter
-                font.family: "Segoe UI"
             }
         }
 
