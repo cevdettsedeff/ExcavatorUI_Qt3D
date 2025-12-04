@@ -90,18 +90,36 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 30
+        anchors.rightMargin: 10
         clip: true
 
         ScrollBar.vertical: ScrollBar {
-            policy: ScrollBar.AsNeeded
-            width: 8
+            policy: ScrollBar.AlwaysOn
+            width: 12
+            anchors.right: parent.right
+            anchors.rightMargin: 5
+
+            background: Rectangle {
+                color: "#1a1a1a"
+                radius: 6
+                border.color: "#404040"
+                border.width: 1
+            }
 
             contentItem: Rectangle {
-                radius: 4
-                color: parent.pressed ? "#9c27b0" : "#505050"
+                implicitWidth: 12
+                radius: 6
+                color: parent.pressed ? "#ba68c8" : (parent.hovered ? "#9c27b0" : "#7b1fa2")
 
                 Behavior on color {
                     ColorAnimation { duration: 200 }
+                }
+
+                // Glow effect simulation with gradient
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: parent.pressed ? "#ba68c8" : (parent.hovered ? "#ab47bc" : "#8e24aa") }
+                    GradientStop { position: 0.5; color: parent.pressed ? "#9c27b0" : (parent.hovered ? "#9c27b0" : "#7b1fa2") }
+                    GradientStop { position: 1.0; color: parent.pressed ? "#7b1fa2" : (parent.hovered ? "#8e24aa" : "#6a1b9a") }
                 }
             }
         }
