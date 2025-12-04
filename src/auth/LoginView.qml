@@ -153,7 +153,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showPassword ? "👁️" : "👁️‍🗨️"
+                                text: parent.parent.showPassword ? "👀" : "👁"
                                 font.pixelSize: 20
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter

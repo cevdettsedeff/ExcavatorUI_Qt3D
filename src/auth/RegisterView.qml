@@ -155,7 +155,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showPassword ? "👁️" : "👁️‍🗨️"
+                                text: parent.parent.showPassword ? "👀" : "👁"
                                 font.pixelSize: 20
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
@@ -217,7 +217,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showConfirmPassword ? "👁️" : "👁️‍🗨️"
+                                text: parent.parent.showConfirmPassword ? "👀" : "👁"
                                 font.pixelSize: 20
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
