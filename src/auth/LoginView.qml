@@ -63,7 +63,7 @@ Item {
                         text: "Lütfen giriş yapın"
                         font.pixelSize: 14
                         color: "#888888"
-                        Layout.bottomMargin: 30
+                        Layout.bottomMargin: 15
                     }
                 }
             }
@@ -71,6 +71,7 @@ Item {
             // Form bölümü
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.topMargin: 30
                 spacing: 15
 
                 // Kullanıcı adı
