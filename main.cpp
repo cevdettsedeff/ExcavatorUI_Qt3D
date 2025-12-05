@@ -9,7 +9,9 @@
 #include "src/database/DatabaseManager.h"
 #include "src/auth/AuthService.h"
 #include "src/sensors/IMUMockService.h"
+#include "src/config/ConfigManager.h"
 #include "src/bathymetry/BathymetricDataLoader.h"
+#include "src/bathymetry/BathymetricMeshGenerator.h"
 
 int main(int argc, char *argv[])
 {
@@ -35,17 +37,33 @@ int main(int argc, char *argv[])
     // IMU Mock Service oluştur
     IMUMockService imuService;
 
+    // ConfigManager oluştur ve yükle
+    ConfigManager configManager;
+    configManager.setConfigPath("config/bathymetry_config.json");
+    configManager.loadConfig();
+
     // BathymetricDataLoader oluştur
     BathymetricDataLoader bathymetryLoader;
+    // Config'den ayarları uygula
+    if (configManager.isLoaded()) {
+        bathymetryLoader.setTileSize(configManager.tileSize());
+        // VRT path QML'den set edilecek
+    }
 
     // QML Engine oluştur
     QQmlApplicationEngine engine;
+
+    // QML types'ı kaydet
+    qmlRegisterType<BathymetricMeshGenerator>("BathymetryComponents", 1, 0, "BathymetricMeshGenerator");
 
     // AuthService'i QML'e expose et
     engine.rootContext()->setContextProperty("authService", &authService);
 
     // IMU Mock Service'i QML'e expose et
     engine.rootContext()->setContextProperty("imuService", &imuService);
+
+    // ConfigManager'ı QML'e expose et
+    engine.rootContext()->setContextProperty("configManager", &configManager);
 
     // BathymetricDataLoader'ı QML'e expose et
     engine.rootContext()->setContextProperty("bathymetryLoader", &bathymetryLoader);

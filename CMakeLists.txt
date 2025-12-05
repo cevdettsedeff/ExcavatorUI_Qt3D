@@ -48,8 +48,14 @@ qt_add_executable(ExcavatorUI_Qt3DApp
     src/auth/AuthService.cpp
     src/sensors/IMUMockService.h
     src/sensors/IMUMockService.cpp
+    src/config/ConfigManager.h
+    src/config/ConfigManager.cpp
     src/bathymetry/BathymetricDataLoader.h
     src/bathymetry/BathymetricDataLoader.cpp
+    src/bathymetry/TileLoadTask.h
+    src/bathymetry/TileLoadTask.cpp
+    src/bathymetry/BathymetricMeshGenerator.h
+    src/bathymetry/BathymetricMeshGenerator.cpp
     ${APP_ICON}
 )
 
@@ -81,6 +87,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/MapView.qml
         src/views/BathymetricMapView.qml
         src/views/BathymetricMapView_V2.qml
+        src/views/BathymetricMapView_V3.qml
         src/views/UserManagementView.qml
         src/views/ProfileView.qml
         # 3D Components
