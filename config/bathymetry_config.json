@@ -1,6 +1,6 @@
 {
   "bathymetry": {
-    "vrt_path": "/path/to/gebco_world_bathymetry.vrt",
+    "vrt_path": "static_maps/gebco_world_bathymetry.vrt",
     "tile_size": 256,
     "cache_size": 100,
     "default_lod": 0,
