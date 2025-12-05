@@ -9,6 +9,7 @@
 #include "src/database/DatabaseManager.h"
 #include "src/auth/AuthService.h"
 #include "src/sensors/IMUMockService.h"
+#include "src/bathymetry/BathymetricDataLoader.h"
 
 int main(int argc, char *argv[])
 {
@@ -34,6 +35,9 @@ int main(int argc, char *argv[])
     // IMU Mock Service oluştur
     IMUMockService imuService;
 
+    // BathymetricDataLoader oluştur
+    BathymetricDataLoader bathymetryLoader;
+
     // QML Engine oluştur
     QQmlApplicationEngine engine;
 
@@ -42,6 +46,9 @@ int main(int argc, char *argv[])
 
     // IMU Mock Service'i QML'e expose et
     engine.rootContext()->setContextProperty("imuService", &imuService);
+
+    // BathymetricDataLoader'ı QML'e expose et
+    engine.rootContext()->setContextProperty("bathymetryLoader", &bathymetryLoader);
 
     // Login window'u yükle
     const QUrl loginUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/auth/LoginWindow.qml"));

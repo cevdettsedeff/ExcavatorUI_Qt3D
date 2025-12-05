@@ -14,6 +14,16 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Sql
 )
 
+# Find GDAL library for bathymetric data processing
+find_package(GDAL REQUIRED)
+if(GDAL_FOUND)
+    message(STATUS "GDAL found: ${GDAL_VERSION}")
+    message(STATUS "GDAL include: ${GDAL_INCLUDE_DIRS}")
+    message(STATUS "GDAL libraries: ${GDAL_LIBRARIES}")
+else()
+    message(FATAL_ERROR "GDAL not found. Please install GDAL development libraries.")
+endif()
+
 # Platform-specific icon
 set(APP_ICON "")
 if(WIN32)
@@ -38,6 +48,8 @@ qt_add_executable(ExcavatorUI_Qt3DApp
     src/auth/AuthService.cpp
     src/sensors/IMUMockService.h
     src/sensors/IMUMockService.cpp
+    src/bathymetry/BathymetricDataLoader.h
+    src/bathymetry/BathymetricDataLoader.cpp
     ${APP_ICON}
 )
 
@@ -68,6 +80,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/ExcavatorView.qml
         src/views/MapView.qml
         src/views/BathymetricMapView.qml
+        src/views/BathymetricMapView_V2.qml
         src/views/UserManagementView.qml
         src/views/ProfileView.qml
         # 3D Components
@@ -89,6 +102,11 @@ target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::Quick3D
     Qt6::QuickControls2
     Qt6::Sql
+    ${GDAL_LIBRARIES}
+)
+
+target_include_directories(ExcavatorUI_Qt3DApp PRIVATE
+    ${GDAL_INCLUDE_DIRS}
 )
 
 set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES
