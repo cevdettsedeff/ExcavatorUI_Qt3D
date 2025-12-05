@@ -15,13 +15,53 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
 )
 
 # Find GDAL library for bathymetric data processing
-find_package(GDAL REQUIRED)
+# Windows: Set GDAL_ROOT environment variable or use -DGDAL_ROOT=C:/OSGeo4W64
+if(WIN32)
+    # Try common Windows GDAL installation paths
+    if(NOT DEFINED GDAL_ROOT)
+        set(GDAL_ROOT_HINTS
+            "C:/OSGeo4W64"
+            "C:/OSGeo4W"
+            "$ENV{GDAL_ROOT}"
+            "$ENV{CONDA_PREFIX}"
+            "$ENV{VCPKG_ROOT}/installed/x64-windows"
+        )
+        foreach(hint ${GDAL_ROOT_HINTS})
+            if(EXISTS "${hint}")
+                set(GDAL_ROOT "${hint}")
+                message(STATUS "Found potential GDAL installation at: ${hint}")
+                break()
+            endif()
+        endforeach()
+    endif()
+
+    # Set hints for FindGDAL
+    if(DEFINED GDAL_ROOT)
+        set(GDAL_INCLUDE_DIR "${GDAL_ROOT}/include" CACHE PATH "GDAL include directory")
+        set(GDAL_LIBRARY "${GDAL_ROOT}/lib/gdal_i.lib" CACHE FILEPATH "GDAL library")
+        list(APPEND CMAKE_PREFIX_PATH "${GDAL_ROOT}")
+    endif()
+endif()
+
+find_package(GDAL)
+
 if(GDAL_FOUND)
-    message(STATUS "GDAL found: ${GDAL_VERSION}")
-    message(STATUS "GDAL include: ${GDAL_INCLUDE_DIRS}")
-    message(STATUS "GDAL libraries: ${GDAL_LIBRARIES}")
+    message(STATUS "✓ GDAL found: ${GDAL_VERSION}")
+    message(STATUS "  Include: ${GDAL_INCLUDE_DIRS}")
+    message(STATUS "  Libraries: ${GDAL_LIBRARIES}")
 else()
-    message(FATAL_ERROR "GDAL not found. Please install GDAL development libraries.")
+    message(WARNING "✗ GDAL not found - Bathymetric features will be disabled")
+    message(WARNING "  ")
+    message(WARNING "  To install GDAL on Windows:")
+    message(WARNING "  1. Download OSGeo4W: https://trac.osgeo.org/osgeo4w/")
+    message(WARNING "  2. Install GDAL and GDAL-devel packages")
+    message(WARNING "  3. Set environment variable: GDAL_ROOT=C:/OSGeo4W64")
+    message(WARNING "  4. Or use CMake option: -DGDAL_ROOT=C:/OSGeo4W64")
+    message(WARNING "  ")
+    message(WARNING "  Alternative: Use conda: conda install -c conda-forge gdal")
+    message(WARNING "  Alternative: Use vcpkg: vcpkg install gdal:x64-windows")
+    message(WARNING "  ")
+    message(FATAL_ERROR "GDAL is required for bathymetric map features")
 endif()
 
 # Platform-specific icon
