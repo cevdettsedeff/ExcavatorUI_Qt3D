@@ -31,6 +31,9 @@ if(WIN32)
     # Try common Windows GDAL installation paths
     if(NOT DEFINED GDAL_ROOT)
         set(GDAL_ROOT_HINTS
+            "C:/Program Files/QGISQT6 3.40.13"
+            "C:/Program Files/QGIS 3.40.13"
+            "C:/Program Files/QGIS LTR"
             "C:/OSGeo4W64"
             "C:/OSGeo4W"
             "$ENV{GDAL_ROOT}"
@@ -48,8 +51,18 @@ if(WIN32)
 
     # Set hints for FindGDAL
     if(DEFINED GDAL_ROOT)
-        set(GDAL_INCLUDE_DIR "${GDAL_ROOT}/include" CACHE PATH "GDAL include directory")
-        set(GDAL_LIBRARY "${GDAL_ROOT}/lib/gdal_i.lib" CACHE FILEPATH "GDAL library")
+        # QGIS has a different structure than OSGeo4W
+        if(EXISTS "${GDAL_ROOT}/include")
+            set(GDAL_INCLUDE_DIR "${GDAL_ROOT}/include" CACHE PATH "GDAL include directory")
+        endif()
+
+        # Try different library locations (QGIS vs OSGeo4W)
+        if(EXISTS "${GDAL_ROOT}/lib/gdal_i.lib")
+            set(GDAL_LIBRARY "${GDAL_ROOT}/lib/gdal_i.lib" CACHE FILEPATH "GDAL library")
+        elseif(EXISTS "${GDAL_ROOT}/lib/gdal.lib")
+            set(GDAL_LIBRARY "${GDAL_ROOT}/lib/gdal.lib" CACHE FILEPATH "GDAL library")
+        endif()
+
         list(APPEND CMAKE_PREFIX_PATH "${GDAL_ROOT}")
     endif()
 endif()
