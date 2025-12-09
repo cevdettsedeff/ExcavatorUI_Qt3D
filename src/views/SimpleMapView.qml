@@ -58,8 +58,18 @@ Rectangle {
 
         // Center on initial position
         Component.onCompleted: {
-            loadVisibleTiles()
-            centerOnPosition()
+            // Delay initial load to ensure width/height are properly set
+            initTimer.start()
+        }
+
+        Timer {
+            id: initTimer
+            interval: 100
+            repeat: false
+            onTriggered: {
+                centerOnPosition()
+                loadVisibleTiles()
+            }
         }
 
         function centerOnPosition() {
@@ -73,7 +83,11 @@ Rectangle {
 
         // Load tiles visible in current viewport
         function loadVisibleTiles() {
-            var tileBuffer = 2  // Load 2 extra tiles in each direction
+            if (width === 0 || height === 0) {
+                return  // Not initialized yet
+            }
+
+            var tileBuffer = 3  // Load 3 extra tiles in each direction
 
             // Calculate visible tile range based on viewport position
             var startX = Math.floor(contentX / tileSize) - tileBuffer
@@ -82,6 +96,8 @@ Rectangle {
             var endY = Math.ceil((contentY + height) / tileSize) + tileBuffer
 
             var maxTiles = Math.pow(2, zoomLevel)
+
+            console.log("Loading tiles:", "X:", startX, "-", endX, "Y:", startY, "-", endY, "ViewportW:", width, "ViewportH:", height)
 
             // Load all visible tiles
             for (var ty = startY; ty <= endY; ty++) {
