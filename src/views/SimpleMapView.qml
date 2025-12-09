@@ -219,6 +219,23 @@ Rectangle {
         }
     }
 
+    // Safely change zoom level
+    function changeZoomLevel(newZoom) {
+        if (mapFlickable.updating) {
+            console.log("Update already in progress, skipping zoom change...")
+            return
+        }
+
+        // Set updating flag BEFORE changing zoom level
+        mapFlickable.updating = true
+
+        // Update zoom level
+        zoomLevel = newZoom
+
+        // Now update the map with new zoom
+        updateMapTilesInternal()
+    }
+
     function updateMapTiles() {
         if (mapFlickable.updating) {
             console.log("Update already in progress, skipping...")
@@ -226,7 +243,10 @@ Rectangle {
         }
 
         mapFlickable.updating = true  // Prevent recursive calls
+        updateMapTilesInternal()
+    }
 
+    function updateMapTilesInternal() {
         // Clear old tiles
         for (var key in loadedTiles) {
             if (loadedTiles[key]) {
@@ -336,12 +356,11 @@ Rectangle {
                     height: 40
                     font.pixelSize: 20
                     font.bold: true
-                    enabled: zoomLevel < 18
+                    enabled: zoomLevel < 18 && !mapFlickable.updating
 
                     onClicked: {
-                        if (zoomLevel < 18) {
-                            zoomLevel++
-                            updateMapTiles()
+                        if (zoomLevel < 18 && !mapFlickable.updating) {
+                            changeZoomLevel(zoomLevel + 1)
                         }
                     }
                 }
@@ -352,12 +371,11 @@ Rectangle {
                     height: 40
                     font.pixelSize: 24
                     font.bold: true
-                    enabled: zoomLevel > 3
+                    enabled: zoomLevel > 3 && !mapFlickable.updating
 
                     onClicked: {
-                        if (zoomLevel > 3) {
-                            zoomLevel--
-                            updateMapTiles()
+                        if (zoomLevel > 3 && !mapFlickable.updating) {
+                            changeZoomLevel(zoomLevel - 1)
                         }
                     }
                 }
@@ -369,9 +387,12 @@ Rectangle {
                 width: 120
                 height: 85
                 anchors.verticalCenter: parent.verticalCenter
+                enabled: !mapFlickable.updating
 
                 onClicked: {
-                    updateMapTiles()
+                    if (!mapFlickable.updating) {
+                        updateMapTiles()
+                    }
                 }
             }
 
@@ -383,11 +404,15 @@ Rectangle {
                     text: "Tuzla Limanı"
                     width: 100
                     height: 40
+                    enabled: !mapFlickable.updating
                     onClicked: {
-                        centerLat = 40.8078
-                        centerLon = 29.2936
-                        zoomLevel = 15
-                        updateMapTiles()
+                        if (!mapFlickable.updating) {
+                            mapFlickable.updating = true
+                            centerLat = 40.8078
+                            centerLon = 29.2936
+                            zoomLevel = 15
+                            updateMapTilesInternal()
+                        }
                     }
                 }
 
@@ -395,11 +420,15 @@ Rectangle {
                     text: "İstanbul"
                     width: 100
                     height: 40
+                    enabled: !mapFlickable.updating
                     onClicked: {
-                        centerLat = 41.0082
-                        centerLon = 28.9784
-                        zoomLevel = 13
-                        updateMapTiles()
+                        if (!mapFlickable.updating) {
+                            mapFlickable.updating = true
+                            centerLat = 41.0082
+                            centerLon = 28.9784
+                            zoomLevel = 13
+                            updateMapTilesInternal()
+                        }
                     }
                 }
             }
