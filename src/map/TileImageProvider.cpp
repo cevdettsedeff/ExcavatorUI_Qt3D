@@ -10,7 +10,6 @@
 
 TileImageProvider::TileImageProvider()
     : QQuickImageProvider(QQuickImageProvider::Pixmap)
-    , m_networkManager(new QNetworkAccessManager())
     , m_userAgent("ExcavatorUI/1.0 (Qt6 Application; https://github.com/yourcompany/excavator)")
     , m_memoryCache(50)  // Cache 50 tiles in memory (about 3MB at 256x256)
 {
@@ -28,7 +27,7 @@ TileImageProvider::TileImageProvider()
 
 TileImageProvider::~TileImageProvider()
 {
-    delete m_networkManager;
+    // No need to delete anything - thread_local QNetworkAccessManager handles itself
 }
 
 void TileImageProvider::setUserAgent(const QString &userAgent)
@@ -145,6 +144,10 @@ QString TileImageProvider::getCachePath(int z, int x, int y)
 
 QPixmap TileImageProvider::downloadTile(const QString &url)
 {
+    // Use thread_local QNetworkAccessManager to avoid cross-thread issues
+    // Each thread (including QQuickPixmapReader) gets its own instance
+    static thread_local QNetworkAccessManager networkManager;
+
     QNetworkRequest request(url);
 
     // CRITICAL: Set proper headers to comply with OSM tile usage policy
@@ -152,7 +155,7 @@ QPixmap TileImageProvider::downloadTile(const QString &url)
     request.setHeader(QNetworkRequest::UserAgentHeader, m_userAgent);
     request.setRawHeader("Referer", "https://github.com/yourcompany/excavator");
 
-    QNetworkReply *reply = m_networkManager->get(request);
+    QNetworkReply *reply = networkManager.get(request);
 
     // Wait for download to complete (synchronous in image provider)
     QEventLoop loop;

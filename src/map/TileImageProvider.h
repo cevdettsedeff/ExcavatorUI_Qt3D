@@ -45,14 +45,10 @@ private:
     QString getTileUrl(int z, int x, int y);
     QString getCachePath(int z, int x, int y);
 
-    QNetworkAccessManager *m_networkManager;
     QString m_userAgent;
     QString m_cacheDirectory;
     QCache<QString, QPixmap> m_memoryCache;
     QMutex m_cacheMutex;
-
-    // For synchronous download in requestPixmap
-    QHash<QNetworkReply*, QPixmap*> m_pendingDownloads;
 };
 
 #endif // TILEIMAGEPROVIDER_H
