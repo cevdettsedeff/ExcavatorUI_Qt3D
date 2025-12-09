@@ -14,6 +14,17 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Sql
 )
 
+# QtLocation for OpenStreetMap (optional, for simplified map view)
+find_package(Qt6 COMPONENTS Location QUIET)
+if(Qt6Location_FOUND)
+    message(STATUS "✓ Qt6 Location found - Map features enabled")
+    set(HAVE_QTLOCATION TRUE)
+else()
+    message(WARNING "✗ Qt6 Location not found - Map features will be limited")
+    message(WARNING "  Install: Qt Maintenance Tool → Add Components → Qt Location")
+    set(HAVE_QTLOCATION FALSE)
+endif()
+
 # Find GDAL library for bathymetric data processing
 # Windows: Set GDAL_ROOT environment variable or use -DGDAL_ROOT=C:/OSGeo4W64
 if(WIN32)
@@ -49,19 +60,13 @@ if(GDAL_FOUND)
     message(STATUS "✓ GDAL found: ${GDAL_VERSION}")
     message(STATUS "  Include: ${GDAL_INCLUDE_DIRS}")
     message(STATUS "  Libraries: ${GDAL_LIBRARIES}")
+    set(HAVE_GDAL TRUE)
+    add_compile_definitions(HAVE_GDAL)
 else()
     message(WARNING "✗ GDAL not found - Bathymetric features will be disabled")
-    message(WARNING "  ")
-    message(WARNING "  To install GDAL on Windows:")
-    message(WARNING "  1. Download OSGeo4W: https://trac.osgeo.org/osgeo4w/")
-    message(WARNING "  2. Install GDAL and GDAL-devel packages")
-    message(WARNING "  3. Set environment variable: GDAL_ROOT=C:/OSGeo4W64")
-    message(WARNING "  4. Or use CMake option: -DGDAL_ROOT=C:/OSGeo4W64")
-    message(WARNING "  ")
-    message(WARNING "  Alternative: Use conda: conda install -c conda-forge gdal")
-    message(WARNING "  Alternative: Use vcpkg: vcpkg install gdal:x64-windows")
-    message(WARNING "  ")
-    message(FATAL_ERROR "GDAL is required for bathymetric map features")
+    message(WARNING "  Advanced bathymetric visualization will not be available")
+    message(WARNING "  Using simplified OpenStreetMap view instead")
+    set(HAVE_GDAL FALSE)
 endif()
 
 # Platform-specific icon
@@ -125,6 +130,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/Main.qml
         src/views/ExcavatorView.qml
         src/views/MapView.qml
+        src/views/SimpleMapView.qml
         src/views/BathymetricMapView.qml
         src/views/BathymetricMapView_V2.qml
         src/views/BathymetricMapView_V3.qml
@@ -149,12 +155,18 @@ target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::Quick3D
     Qt6::QuickControls2
     Qt6::Sql
-    ${GDAL_LIBRARIES}
 )
 
-target_include_directories(ExcavatorUI_Qt3DApp PRIVATE
-    ${GDAL_INCLUDE_DIRS}
-)
+# Link QtLocation if available
+if(Qt6Location_FOUND)
+    target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE Qt6::Location)
+endif()
+
+# Link GDAL if available
+if(GDAL_FOUND)
+    target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE ${GDAL_LIBRARIES})
+    target_include_directories(ExcavatorUI_Qt3DApp PRIVATE ${GDAL_INCLUDE_DIRS})
+endif()
 
 set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES
     WIN32_EXECUTABLE TRUE
