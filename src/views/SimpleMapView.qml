@@ -147,30 +147,34 @@ Rectangle {
                         return  // Already loaded
                     }
 
-                    // Use image provider with proper HTTP headers (complies with OSM policy)
-                    var tileUrl = "image://osmtiles/" + z + "/" + x + "/" + y
+                    try {
+                        // Use image provider with proper HTTP headers (complies with OSM policy)
+                        var tileUrl = "image://osmtiles/" + z + "/" + x + "/" + y
 
-                    var component = Qt.createQmlObject(
-                        'import QtQuick; ' +
-                        'Image { ' +
-                        '    x: ' + (x * tileSize) + '; ' +
-                        '    y: ' + (y * tileSize) + '; ' +
-                        '    width: ' + tileSize + '; ' +
-                        '    height: ' + tileSize + '; ' +
-                        '    source: "' + tileUrl + '"; ' +
-                        '    asynchronous: true; ' +
-                        '    cache: true; ' +
-                        '    fillMode: Image.PreserveAspectFit; ' +
-                        '    onStatusChanged: { ' +
-                        '        if (status === Image.Error) { ' +
-                        '            console.warn("Failed to load tile: ' + tileKey + '"); ' +
-                        '        } ' +
-                        '    } ' +
-                        '}',
-                        tileGrid
-                    )
+                        var component = Qt.createQmlObject(
+                            'import QtQuick; ' +
+                            'Image { ' +
+                            '    x: ' + (x * tileSize) + '; ' +
+                            '    y: ' + (y * tileSize) + '; ' +
+                            '    width: ' + tileSize + '; ' +
+                            '    height: ' + tileSize + '; ' +
+                            '    source: "' + tileUrl + '"; ' +
+                            '    asynchronous: true; ' +
+                            '    cache: true; ' +
+                            '    fillMode: Image.PreserveAspectFit; ' +
+                            '    onStatusChanged: { ' +
+                            '        if (status === Image.Error) { ' +
+                            '            console.warn("Failed to load tile: ' + tileKey + '"); ' +
+                            '        } ' +
+                            '    } ' +
+                            '}',
+                            tileGrid
+                        )
 
-                    loadedTiles[tileKey] = component
+                        loadedTiles[tileKey] = component
+                    } catch (e) {
+                        console.error("Failed to create tile", tileKey, ":", e)
+                    }
                 }
             }
 
@@ -243,6 +247,20 @@ Rectangle {
         }
     }
 
+    // Timer for delayed tile loading after resize
+    Timer {
+        id: tileLoadTimer
+        interval: 100
+        repeat: false
+
+        onTriggered: {
+            console.log("Loading new tiles...")
+            mapFlickable.updating = false  // Re-enable updates BEFORE loading tiles
+            mapFlickable.loadVisibleTiles()
+            console.log("Update complete")
+        }
+    }
+
     // Safely change zoom level
     function changeZoomLevel(newZoom) {
         if (mapFlickable.updating) {
@@ -305,13 +323,9 @@ Rectangle {
         loadedTiles = {}
         console.log("Cleared", clearedCount, "old tiles")
 
-        // Reload visible tiles with a small delay to ensure everything is settled
-        Qt.callLater(function() {
-            console.log("Loading new tiles...")
-            mapFlickable.updating = false  // Re-enable updates BEFORE loading tiles
-            mapFlickable.loadVisibleTiles()
-            console.log("Update complete")
-        })
+        // Reload visible tiles with a delay to ensure container resize is complete
+        console.log("Scheduling tile load in 100ms...")
+        tileLoadTimer.start()
     }
 
     // Info panel (top-left)
