@@ -52,9 +52,13 @@ Rectangle {
         contentHeight: mapContainer.height
         clip: true
 
+        // Load more tiles when user pans the map
+        onContentXChanged: loadVisibleTiles()
+        onContentYChanged: loadVisibleTiles()
+
         // Center on initial position
         Component.onCompleted: {
-            updateMapTiles()
+            loadVisibleTiles()
             centerOnPosition()
         }
 
@@ -67,6 +71,28 @@ Rectangle {
             contentY = tilePy - height / 2
         }
 
+        // Load tiles visible in current viewport
+        function loadVisibleTiles() {
+            var tileBuffer = 2  // Load 2 extra tiles in each direction
+
+            // Calculate visible tile range based on viewport position
+            var startX = Math.floor(contentX / tileSize) - tileBuffer
+            var endX = Math.ceil((contentX + width) / tileSize) + tileBuffer
+            var startY = Math.floor(contentY / tileSize) - tileBuffer
+            var endY = Math.ceil((contentY + height) / tileSize) + tileBuffer
+
+            var maxTiles = Math.pow(2, zoomLevel)
+
+            // Load all visible tiles
+            for (var ty = startY; ty <= endY; ty++) {
+                for (var tx = startX; tx <= endX; tx++) {
+                    if (tx >= 0 && ty >= 0 && tx < maxTiles && ty < maxTiles) {
+                        tileGrid.createTile(tx, ty, zoomLevel)
+                    }
+                }
+            }
+        }
+
         Rectangle {
             id: mapContainer
             width: tileSize * Math.pow(2, zoomLevel)
@@ -77,28 +103,6 @@ Rectangle {
             Item {
                 id: tileGrid
                 anchors.fill: parent
-
-                Component.onCompleted: {
-                    createVisibleTiles()
-                }
-
-                function createVisibleTiles() {
-                    // Calculate visible tile range
-                    var centerTile = latLonToTile(centerLat, centerLon, zoomLevel)
-                    var tilesX = 3  // Show 3x3 grid of tiles
-                    var tilesY = 3
-
-                    for (var dy = -1; dy <= 1; dy++) {
-                        for (var dx = -1; dx <= 1; dx++) {
-                            var tx = centerTile.x + dx
-                            var ty = centerTile.y + dy
-
-                            if (tx >= 0 && ty >= 0 && tx < Math.pow(2, zoomLevel) && ty < Math.pow(2, zoomLevel)) {
-                                createTile(tx, ty, zoomLevel)
-                            }
-                        }
-                    }
-                }
 
                 function createTile(x, y, z) {
                     var tileKey = x + "_" + y + "_" + z
@@ -185,8 +189,8 @@ Rectangle {
         }
         loadedTiles = {}
 
-        // Recreate tiles
-        tileGrid.createVisibleTiles()
+        // Reload visible tiles
+        mapFlickable.loadVisibleTiles()
     }
 
     // Info panel (top-left)
