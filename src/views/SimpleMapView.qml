@@ -52,15 +52,14 @@ Rectangle {
         contentHeight: mapContainer.height
         clip: true
 
-        // Load more tiles when user pans the map
-        onContentXChanged: Qt.callLater(loadVisibleTiles)
-        onContentYChanged: Qt.callLater(loadVisibleTiles)
+        property bool initialized: false
 
-        // Center on initial position
-        Component.onCompleted: {
-            // Delay initial load to ensure width/height are properly set
-            Qt.callLater(function() {
+        // Initialize map when width becomes available
+        onWidthChanged: {
+            if (width > 0 && height > 0 && !initialized) {
+                initialized = true
                 console.log("Initializing map - Viewport:", width, "x", height)
+
                 var tile = latLonToTile(centerLat, centerLon, zoomLevel)
                 var tilePx = tileSize * tile.x
                 var tilePy = tileSize * tile.y
@@ -72,7 +71,19 @@ Rectangle {
                 contentY = tilePy - height / 2
 
                 loadVisibleTiles()
-            })
+            }
+        }
+
+        // Load more tiles when user pans the map
+        onContentXChanged: {
+            if (initialized) {
+                Qt.callLater(loadVisibleTiles)
+            }
+        }
+        onContentYChanged: {
+            if (initialized) {
+                Qt.callLater(loadVisibleTiles)
+            }
         }
 
         // Load tiles visible in current viewport
