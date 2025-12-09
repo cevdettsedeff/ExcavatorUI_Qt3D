@@ -130,8 +130,9 @@ Rectangle {
 
         Rectangle {
             id: mapContainer
-            width: tileSize * Math.pow(2, zoomLevel)
-            height: tileSize * Math.pow(2, zoomLevel)
+            // Don't bind to zoomLevel - we'll set size manually in updateMapTilesInternal
+            width: tileSize * Math.pow(2, 15)  // Initial size at zoom 15
+            height: tileSize * Math.pow(2, 15)
             color: "#E5E3DF"
 
             // Tile grid container
@@ -272,6 +273,12 @@ Rectangle {
     function updateMapTilesInternal() {
         console.log("updateMapTilesInternal: Starting update at zoom", zoomLevel)
 
+        // Manually set mapContainer size for new zoom level (avoiding binding issues)
+        var newSize = tileSize * Math.pow(2, zoomLevel)
+        console.log("Setting mapContainer size to:", newSize, "x", newSize)
+        mapContainer.width = newSize
+        mapContainer.height = newSize
+
         // Recalculate center position for new zoom level
         var tile = latLonToTile(centerLat, centerLon, zoomLevel)
         var tilePx = tileSize * tile.x
@@ -279,7 +286,7 @@ Rectangle {
 
         console.log("New tile position:", tile.x, tile.y, "Pixel:", tilePx, tilePy)
 
-        // Set new content position FIRST before clearing tiles
+        // Set new content position AFTER resizing container
         mapFlickable.contentX = tilePx - mapFlickable.width / 2
         mapFlickable.contentY = tilePy - mapFlickable.height / 2
 
