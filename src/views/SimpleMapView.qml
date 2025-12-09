@@ -301,8 +301,8 @@ Rectangle {
         // Reload visible tiles with a small delay to ensure everything is settled
         Qt.callLater(function() {
             console.log("Loading new tiles...")
+            mapFlickable.updating = false  // Re-enable updates BEFORE loading tiles
             mapFlickable.loadVisibleTiles()
-            mapFlickable.updating = false  // Re-enable updates
             console.log("Update complete")
         })
     }
