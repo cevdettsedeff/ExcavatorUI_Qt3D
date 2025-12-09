@@ -53,32 +53,26 @@ Rectangle {
         clip: true
 
         // Load more tiles when user pans the map
-        onContentXChanged: loadVisibleTiles()
-        onContentYChanged: loadVisibleTiles()
+        onContentXChanged: Qt.callLater(loadVisibleTiles)
+        onContentYChanged: Qt.callLater(loadVisibleTiles)
 
         // Center on initial position
         Component.onCompleted: {
             // Delay initial load to ensure width/height are properly set
-            initTimer.start()
-        }
+            Qt.callLater(function() {
+                console.log("Initializing map - Viewport:", width, "x", height)
+                var tile = latLonToTile(centerLat, centerLon, zoomLevel)
+                var tilePx = tileSize * tile.x
+                var tilePy = tileSize * tile.y
 
-        Timer {
-            id: initTimer
-            interval: 100
-            repeat: false
-            onTriggered: {
-                centerOnPosition()
+                console.log("Centering on tile:", tile.x, tile.y, "at zoom", zoomLevel)
+                console.log("Pixel position:", tilePx, tilePy)
+
+                contentX = tilePx - width / 2
+                contentY = tilePy - height / 2
+
                 loadVisibleTiles()
-            }
-        }
-
-        function centerOnPosition() {
-            var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-            var tilePx = tileSize * tile.x
-            var tilePy = tileSize * tile.y
-
-            contentX = tilePx - width / 2
-            contentY = tilePy - height / 2
+            })
         }
 
         // Load tiles visible in current viewport
@@ -97,7 +91,9 @@ Rectangle {
 
             var maxTiles = Math.pow(2, zoomLevel)
 
-            console.log("Loading tiles:", "X:", startX, "-", endX, "Y:", startY, "-", endY, "ViewportW:", width, "ViewportH:", height)
+            console.log("Loading tiles: X:", startX, "-", endX, "Y:", startY, "-", endY,
+                        "ContentPos:", Math.floor(contentX), Math.floor(contentY),
+                        "Viewport:", width, "x", height)
 
             // Load all visible tiles
             for (var ty = startY; ty <= endY; ty++) {
@@ -205,6 +201,14 @@ Rectangle {
         }
         loadedTiles = {}
 
+        // Recenter and reload visible tiles
+        var tile = latLonToTile(centerLat, centerLon, zoomLevel)
+        var tilePx = tileSize * tile.x
+        var tilePy = tileSize * tile.y
+
+        mapFlickable.contentX = tilePx - mapFlickable.width / 2
+        mapFlickable.contentY = tilePy - mapFlickable.height / 2
+
         // Reload visible tiles
         mapFlickable.loadVisibleTiles()
     }
@@ -297,7 +301,6 @@ Rectangle {
                         if (zoomLevel < 18) {
                             zoomLevel++
                             updateMapTiles()
-                            mapFlickable.centerOnPosition()
                         }
                     }
                 }
@@ -314,7 +317,6 @@ Rectangle {
                         if (zoomLevel > 3) {
                             zoomLevel--
                             updateMapTiles()
-                            mapFlickable.centerOnPosition()
                         }
                     }
                 }
@@ -328,7 +330,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
 
                 onClicked: {
-                    mapFlickable.centerOnPosition()
+                    updateMapTiles()
                 }
             }
 
@@ -345,7 +347,6 @@ Rectangle {
                         centerLon = 29.2936
                         zoomLevel = 15
                         updateMapTiles()
-                        mapFlickable.centerOnPosition()
                     }
                 }
 
@@ -358,7 +359,6 @@ Rectangle {
                         centerLon = 28.9784
                         zoomLevel = 13
                         updateMapTiles()
-                        mapFlickable.centerOnPosition()
                     }
                 }
             }
