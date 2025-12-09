@@ -10,9 +10,9 @@ Rectangle {
     color: "#E5E3DF"
 
     // Map state
-    property real centerLat: 41.0082  // Istanbul
-    property real centerLon: 28.9784
-    property int zoomLevel: 13
+    property real centerLat: 40.8078  // Tuzla Limanı (Port)
+    property real centerLon: 29.2936
+    property int zoomLevel: 15
     property real tileSize: 256
 
     // Tile loading
@@ -47,8 +47,6 @@ Rectangle {
     Flickable {
         id: mapFlickable
         anchors.fill: parent
-        anchors.topMargin: 60
-        anchors.margins: 10
 
         contentWidth: mapContainer.width
         contentHeight: mapContainer.height
@@ -200,8 +198,8 @@ Rectangle {
     Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
-        anchors.topMargin: 70
-        anchors.leftMargin: 20
+        anchors.topMargin: 10
+        anchors.leftMargin: 10
         width: infoColumn.width + 30
         height: infoColumn.height + 30
         color: "#1a1a1a"
@@ -242,7 +240,7 @@ Rectangle {
             }
 
             Text {
-                text: "📍 İstanbul, Türkiye"
+                text: "📍 Tuzla Limanı, İstanbul"
                 font.pixelSize: 10
                 color: "#aaaaaa"
             }
@@ -324,25 +322,25 @@ Rectangle {
                 spacing: 5
 
                 Button {
-                    text: "İstanbul"
+                    text: "Tuzla Limanı"
                     width: 100
                     height: 40
                     onClicked: {
-                        centerLat = 41.0082
-                        centerLon = 28.9784
-                        zoomLevel = 13
+                        centerLat = 40.8078
+                        centerLon = 29.2936
+                        zoomLevel = 15
                         updateMapTiles()
                         mapFlickable.centerOnPosition()
                     }
                 }
 
                 Button {
-                    text: "Ankara"
+                    text: "İstanbul"
                     width: 100
                     height: 40
                     onClicked: {
-                        centerLat = 39.9334
-                        centerLon = 32.8597
+                        centerLat = 41.0082
+                        centerLon = 28.9784
                         zoomLevel = 13
                         updateMapTiles()
                         mapFlickable.centerOnPosition()
@@ -367,8 +365,8 @@ Rectangle {
     Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.topMargin: 70
-        anchors.rightMargin: 20
+        anchors.topMargin: 10
+        anchors.rightMargin: 10
         width: helpText.width + 20
         height: helpText.height + 20
         color: "#1a1a1a"
