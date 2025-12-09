@@ -961,11 +961,11 @@ ApplicationWindow {
                     }
                 }
 
-                // Batimetrik Harita Görünümü
+                // Harita Görünümü
                 Rectangle {
                     color: "#2a2a2a"
 
-                    BathymetricMapView {
+                    SimpleMapView {
                         anchors.fill: parent
                     }
 
@@ -995,7 +995,7 @@ ApplicationWindow {
                             }
 
                             Text {
-                                text: "Batimetrik Harita - Liman Bölgesi"
+                                text: "Harita Görünümü"
                                 font.pixelSize: 28
                                 font.bold: true
                                 color: "#ffffff"
