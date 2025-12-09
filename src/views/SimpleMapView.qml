@@ -134,42 +134,6 @@ Rectangle {
                 }
             }
 
-            // Center marker (excavator position)
-            Rectangle {
-                id: centerMarker
-                width: 30
-                height: 30
-                radius: 15
-                color: "#FF6B35"
-                border.color: "#ffffff"
-                border.width: 3
-
-                x: {
-                    var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-                    return tile.x * tileSize - width / 2
-                }
-
-                y: {
-                    var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-                    return tile.y * tileSize - height / 2
-                }
-
-                Rectangle {
-                    anchors.centerIn: parent
-                    width: 10
-                    height: 10
-                    radius: 5
-                    color: "#ffffff"
-                }
-
-                // Pulse animation
-                SequentialAnimation on scale {
-                    running: true
-                    loops: Animation.Infinite
-                    NumberAnimation { from: 1.0; to: 1.2; duration: 800; easing.type: Easing.InOutQuad }
-                    NumberAnimation { from: 1.2; to: 1.0; duration: 800; easing.type: Easing.InOutQuad }
-                }
-            }
         }
 
         // Scroll indicator
@@ -178,6 +142,37 @@ Rectangle {
         }
         ScrollBar.horizontal: ScrollBar {
             policy: ScrollBar.AsNeeded
+        }
+    }
+
+    // Center marker (excavator position) - positioned at viewport center
+    Rectangle {
+        id: centerMarker
+        width: 30
+        height: 30
+        radius: 15
+        color: "#FF6B35"
+        border.color: "#ffffff"
+        border.width: 3
+
+        // Always at the center of the visible viewport
+        anchors.centerIn: mapFlickable
+        z: 20  // Above map tiles
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: 10
+            height: 10
+            radius: 5
+            color: "#ffffff"
+        }
+
+        // Pulse animation
+        SequentialAnimation on scale {
+            running: true
+            loops: Animation.Infinite
+            NumberAnimation { from: 1.0; to: 1.2; duration: 800; easing.type: Easing.InOutQuad }
+            NumberAnimation { from: 1.2; to: 1.0; duration: 800; easing.type: Easing.InOutQuad }
         }
     }
 
@@ -198,8 +193,8 @@ Rectangle {
     Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
-        anchors.topMargin: 10
-        anchors.leftMargin: 10
+        anchors.topMargin: 90  // Below the "Harita Görünümü" header (80px + 10px spacing)
+        anchors.leftMargin: 20
         width: infoColumn.width + 30
         height: infoColumn.height + 30
         color: "#1a1a1a"
@@ -365,8 +360,8 @@ Rectangle {
     Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.topMargin: 10
-        anchors.rightMargin: 10
+        anchors.topMargin: 90  // Below the "Harita Görünümü" header (80px + 10px spacing)
+        anchors.rightMargin: 20
         width: helpText.width + 20
         height: helpText.height + 20
         color: "#1a1a1a"
