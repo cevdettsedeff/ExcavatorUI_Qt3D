@@ -53,11 +53,13 @@ Rectangle {
         clip: true
 
         property bool initialized: false
+        property bool updating: false
 
         // Initialize map when width becomes available
         onWidthChanged: {
             if (width > 0 && height > 0 && !initialized) {
                 initialized = true
+                updating = true
                 console.log("Initializing map - Viewport:", width, "x", height)
 
                 var tile = latLonToTile(centerLat, centerLon, zoomLevel)
@@ -71,17 +73,18 @@ Rectangle {
                 contentY = tilePy - height / 2
 
                 loadVisibleTiles()
+                updating = false
             }
         }
 
         // Load more tiles when user pans the map
         onContentXChanged: {
-            if (initialized) {
+            if (initialized && !updating) {
                 Qt.callLater(loadVisibleTiles)
             }
         }
         onContentYChanged: {
-            if (initialized) {
+            if (initialized && !updating) {
                 Qt.callLater(loadVisibleTiles)
             }
         }
@@ -172,7 +175,7 @@ Rectangle {
         }
     }
 
-    // Center marker (excavator position) - positioned at viewport center
+    // Center marker (excavator position) - positioned at fixed map coordinates
     Rectangle {
         id: centerMarker
         width: 30
@@ -181,10 +184,22 @@ Rectangle {
         color: "#FF6B35"
         border.color: "#ffffff"
         border.width: 3
-
-        // Always at the center of the visible viewport
-        anchors.centerIn: mapFlickable
         z: 20  // Above map tiles
+
+        // Calculate position based on fixed map coordinates (centerLat, centerLon)
+        x: {
+            if (!mapFlickable.initialized) return 0
+            var tile = latLonToTile(centerLat, centerLon, zoomLevel)
+            var pixelX = tile.x * tileSize
+            return pixelX - mapFlickable.contentX - width / 2
+        }
+
+        y: {
+            if (!mapFlickable.initialized) return 0
+            var tile = latLonToTile(centerLat, centerLon, zoomLevel)
+            var pixelY = tile.y * tileSize
+            return pixelY - mapFlickable.contentY - height / 2
+        }
 
         Rectangle {
             anchors.centerIn: parent
@@ -204,6 +219,8 @@ Rectangle {
     }
 
     function updateMapTiles() {
+        mapFlickable.updating = true  // Prevent recursive calls
+
         // Clear old tiles
         for (var key in loadedTiles) {
             if (loadedTiles[key]) {
@@ -222,6 +239,8 @@ Rectangle {
 
         // Reload visible tiles
         mapFlickable.loadVisibleTiles()
+
+        mapFlickable.updating = false  // Re-enable updates
     }
 
     // Info panel (top-left)
