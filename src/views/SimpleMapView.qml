@@ -185,17 +185,18 @@ Rectangle {
         border.color: "#ffffff"
         border.width: 3
         z: 20  // Above map tiles
+        visible: mapFlickable.initialized && !mapFlickable.updating
 
         // Calculate position based on fixed map coordinates (centerLat, centerLon)
         x: {
-            if (!mapFlickable.initialized) return 0
+            if (!mapFlickable.initialized || mapFlickable.updating) return 0
             var tile = latLonToTile(centerLat, centerLon, zoomLevel)
             var pixelX = tile.x * tileSize
             return pixelX - mapFlickable.contentX - width / 2
         }
 
         y: {
-            if (!mapFlickable.initialized) return 0
+            if (!mapFlickable.initialized || mapFlickable.updating) return 0
             var tile = latLonToTile(centerLat, centerLon, zoomLevel)
             var pixelY = tile.y * tileSize
             return pixelY - mapFlickable.contentY - height / 2
@@ -219,12 +220,21 @@ Rectangle {
     }
 
     function updateMapTiles() {
+        if (mapFlickable.updating) {
+            console.log("Update already in progress, skipping...")
+            return  // Prevent overlapping updates
+        }
+
         mapFlickable.updating = true  // Prevent recursive calls
 
         // Clear old tiles
         for (var key in loadedTiles) {
             if (loadedTiles[key]) {
-                loadedTiles[key].destroy()
+                try {
+                    loadedTiles[key].destroy()
+                } catch (e) {
+                    console.warn("Error destroying tile:", key, e)
+                }
             }
         }
         loadedTiles = {}
@@ -237,10 +247,11 @@ Rectangle {
         mapFlickable.contentX = tilePx - mapFlickable.width / 2
         mapFlickable.contentY = tilePy - mapFlickable.height / 2
 
-        // Reload visible tiles
-        mapFlickable.loadVisibleTiles()
-
-        mapFlickable.updating = false  // Re-enable updates
+        // Reload visible tiles with a small delay to ensure everything is settled
+        Qt.callLater(function() {
+            mapFlickable.loadVisibleTiles()
+            mapFlickable.updating = false  // Re-enable updates
+        })
     }
 
     // Info panel (top-left)
