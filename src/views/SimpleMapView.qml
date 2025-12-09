@@ -92,7 +92,13 @@ Rectangle {
         // Load tiles visible in current viewport
         function loadVisibleTiles() {
             if (width === 0 || height === 0) {
+                console.log("loadVisibleTiles: Skipping - viewport not initialized")
                 return  // Not initialized yet
+            }
+
+            if (updating) {
+                console.log("loadVisibleTiles: Skipping - update in progress")
+                return  // Update in progress
             }
 
             var tileBuffer = 3  // Load 3 extra tiles in each direction
@@ -107,16 +113,19 @@ Rectangle {
 
             console.log("Loading tiles: X:", startX, "-", endX, "Y:", startY, "-", endY,
                         "ContentPos:", Math.floor(contentX), Math.floor(contentY),
-                        "Viewport:", width, "x", height)
+                        "Viewport:", width, "x", height, "Zoom:", zoomLevel)
 
             // Load all visible tiles
+            var loadedCount = 0
             for (var ty = startY; ty <= endY; ty++) {
                 for (var tx = startX; tx <= endX; tx++) {
                     if (tx >= 0 && ty >= 0 && tx < maxTiles && ty < maxTiles) {
                         tileGrid.createTile(tx, ty, zoomLevel)
+                        loadedCount++
                     }
                 }
             }
+            console.log("Loaded", loadedCount, "tiles at zoom", zoomLevel)
         }
 
         Rectangle {
@@ -219,6 +228,20 @@ Rectangle {
         }
     }
 
+    // Timer for safe zoom level changes
+    Timer {
+        id: zoomChangeTimer
+        interval: 50
+        repeat: false
+        property int targetZoom: 15
+
+        onTriggered: {
+            console.log("Applying zoom change to:", targetZoom)
+            zoomLevel = targetZoom
+            updateMapTilesInternal()
+        }
+    }
+
     // Safely change zoom level
     function changeZoomLevel(newZoom) {
         if (mapFlickable.updating) {
@@ -226,14 +249,14 @@ Rectangle {
             return
         }
 
-        // Set updating flag BEFORE changing zoom level
+        console.log("Requesting zoom change from", zoomLevel, "to", newZoom)
+
+        // Set updating flag to disable all interactions
         mapFlickable.updating = true
 
-        // Update zoom level
-        zoomLevel = newZoom
-
-        // Now update the map with new zoom
-        updateMapTilesInternal()
+        // Schedule zoom change with a slight delay to ensure updating flag is processed
+        zoomChangeTimer.targetZoom = newZoom
+        zoomChangeTimer.start()
     }
 
     function updateMapTiles() {
@@ -247,30 +270,40 @@ Rectangle {
     }
 
     function updateMapTilesInternal() {
-        // Clear old tiles
+        console.log("updateMapTilesInternal: Starting update at zoom", zoomLevel)
+
+        // Recalculate center position for new zoom level
+        var tile = latLonToTile(centerLat, centerLon, zoomLevel)
+        var tilePx = tileSize * tile.x
+        var tilePy = tileSize * tile.y
+
+        console.log("New tile position:", tile.x, tile.y, "Pixel:", tilePx, tilePy)
+
+        // Set new content position FIRST before clearing tiles
+        mapFlickable.contentX = tilePx - mapFlickable.width / 2
+        mapFlickable.contentY = tilePy - mapFlickable.height / 2
+
+        // Now clear old tiles
+        var clearedCount = 0
         for (var key in loadedTiles) {
             if (loadedTiles[key]) {
                 try {
                     loadedTiles[key].destroy()
+                    clearedCount++
                 } catch (e) {
                     console.warn("Error destroying tile:", key, e)
                 }
             }
         }
         loadedTiles = {}
-
-        // Recenter and reload visible tiles
-        var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-        var tilePx = tileSize * tile.x
-        var tilePy = tileSize * tile.y
-
-        mapFlickable.contentX = tilePx - mapFlickable.width / 2
-        mapFlickable.contentY = tilePy - mapFlickable.height / 2
+        console.log("Cleared", clearedCount, "old tiles")
 
         // Reload visible tiles with a small delay to ensure everything is settled
         Qt.callLater(function() {
+            console.log("Loading new tiles...")
             mapFlickable.loadVisibleTiles()
             mapFlickable.updating = false  // Re-enable updates
+            console.log("Update complete")
         })
     }
 
