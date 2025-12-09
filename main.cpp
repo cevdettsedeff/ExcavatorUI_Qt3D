@@ -10,6 +10,7 @@
 #include "src/auth/AuthService.h"
 #include "src/sensors/IMUMockService.h"
 #include "src/config/ConfigManager.h"
+#include "src/map/TileImageProvider.h"
 
 // GDAL-dependent features (optional)
 #ifdef HAVE_GDAL
@@ -58,6 +59,9 @@ int main(int argc, char *argv[])
 
     // QML Engine oluştur
     QQmlApplicationEngine engine;
+
+    // Register OSM tile image provider (with proper HTTP headers)
+    engine.addImageProvider("osmtiles", new TileImageProvider());
 
 #ifdef HAVE_GDAL
     // QML types'ı kaydet (sadece GDAL varsa)

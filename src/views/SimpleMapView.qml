@@ -109,7 +109,8 @@ Rectangle {
                         return  // Already loaded
                     }
 
-                    var tileUrl = getTileUrl(x, y, z)
+                    // Use image provider with proper HTTP headers (complies with OSM policy)
+                    var tileUrl = "image://osmtiles/" + z + "/" + x + "/" + y
 
                     var component = Qt.createQmlObject(
                         'import QtQuick; ' +

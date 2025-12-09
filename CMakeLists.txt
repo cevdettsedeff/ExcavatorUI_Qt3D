@@ -12,6 +12,7 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Quick3D
     QuickControls2
     Sql
+    Network
 )
 
 # QtLocation for OpenStreetMap (optional, for simplified map view)
@@ -109,6 +110,8 @@ set(BASE_SOURCES
     src/sensors/IMUMockService.cpp
     src/config/ConfigManager.h
     src/config/ConfigManager.cpp
+    src/map/TileImageProvider.h
+    src/map/TileImageProvider.cpp
     ${APP_ICON}
 )
 
@@ -184,6 +187,7 @@ target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::Quick3D
     Qt6::QuickControls2
     Qt6::Sql
+    Qt6::Network
 )
 
 # Link QtLocation if available
