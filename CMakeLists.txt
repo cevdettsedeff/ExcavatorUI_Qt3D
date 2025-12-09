@@ -85,7 +85,8 @@ elseif(APPLE)
     set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app_icon.icns")
 endif()
 
-qt_add_executable(ExcavatorUI_Qt3DApp
+# Base source files (always included)
+set(BASE_SOURCES
     main.cpp
     src/database/DatabaseManager.h
     src/database/DatabaseManager.cpp
@@ -95,13 +96,28 @@ qt_add_executable(ExcavatorUI_Qt3DApp
     src/sensors/IMUMockService.cpp
     src/config/ConfigManager.h
     src/config/ConfigManager.cpp
-    src/bathymetry/BathymetricDataLoader.h
-    src/bathymetry/BathymetricDataLoader.cpp
-    src/bathymetry/TileLoadTask.h
-    src/bathymetry/TileLoadTask.cpp
-    src/bathymetry/BathymetricMeshGenerator.h
-    src/bathymetry/BathymetricMeshGenerator.cpp
     ${APP_ICON}
+)
+
+# GDAL-dependent bathymetry sources (optional)
+if(GDAL_FOUND)
+    set(BATHYMETRY_SOURCES
+        src/bathymetry/BathymetricDataLoader.h
+        src/bathymetry/BathymetricDataLoader.cpp
+        src/bathymetry/TileLoadTask.h
+        src/bathymetry/TileLoadTask.cpp
+        src/bathymetry/BathymetricMeshGenerator.h
+        src/bathymetry/BathymetricMeshGenerator.cpp
+    )
+    message(STATUS "✓ Including GDAL bathymetry sources")
+else()
+    set(BATHYMETRY_SOURCES "")
+    message(STATUS "✗ Skipping GDAL bathymetry sources (GDAL not found)")
+endif()
+
+qt_add_executable(ExcavatorUI_Qt3DApp
+    ${BASE_SOURCES}
+    ${BATHYMETRY_SOURCES}
 )
 
 # Tüm mesh dosyalarını bul

@@ -10,8 +10,12 @@
 #include "src/auth/AuthService.h"
 #include "src/sensors/IMUMockService.h"
 #include "src/config/ConfigManager.h"
+
+// GDAL-dependent features (optional)
+#ifdef HAVE_GDAL
 #include "src/bathymetry/BathymetricDataLoader.h"
 #include "src/bathymetry/BathymetricMeshGenerator.h"
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -42,19 +46,23 @@ int main(int argc, char *argv[])
     configManager.setConfigPath("config/bathymetry_config.json");
     configManager.loadConfig();
 
-    // BathymetricDataLoader oluştur
+#ifdef HAVE_GDAL
+    // BathymetricDataLoader oluştur (sadece GDAL varsa)
     BathymetricDataLoader bathymetryLoader;
     // Config'den ayarları uygula
     if (configManager.isLoaded()) {
         bathymetryLoader.setTileSize(configManager.tileSize());
         // VRT path QML'den set edilecek
     }
+#endif
 
     // QML Engine oluştur
     QQmlApplicationEngine engine;
 
-    // QML types'ı kaydet
+#ifdef HAVE_GDAL
+    // QML types'ı kaydet (sadece GDAL varsa)
     qmlRegisterType<BathymetricMeshGenerator>("BathymetryComponents", 1, 0, "BathymetricMeshGenerator");
+#endif
 
     // AuthService'i QML'e expose et
     engine.rootContext()->setContextProperty("authService", &authService);
@@ -65,8 +73,10 @@ int main(int argc, char *argv[])
     // ConfigManager'ı QML'e expose et
     engine.rootContext()->setContextProperty("configManager", &configManager);
 
-    // BathymetricDataLoader'ı QML'e expose et
+#ifdef HAVE_GDAL
+    // BathymetricDataLoader'ı QML'e expose et (sadece GDAL varsa)
     engine.rootContext()->setContextProperty("bathymetryLoader", &bathymetryLoader);
+#endif
 
     // Login window'u yükle
     const QUrl loginUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/auth/LoginWindow.qml"));
