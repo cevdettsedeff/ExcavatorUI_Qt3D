@@ -366,15 +366,20 @@ Rectangle {
         }
     }
 
-    // Download area preview rectangle
+    // Download area preview rectangle (draggable)
     Rectangle {
         id: downloadPreview
         visible: showDownloadPreview && offlinePanel.offlinePanelExpanded
         z: 15
-        color: "transparent"
-        border.color: "#ff9800"
+        color: downloadPreviewDrag.drag.active ? "#22ff9800" : "transparent"
+        border.color: downloadPreviewDrag.drag.active ? "#ffcc00" : "#ff9800"
         border.width: 3
         opacity: 0.8
+
+        // Custom center position (can be dragged)
+        property real customCenterX: excavatorMarker.x + excavatorMarker.width / 2
+        property real customCenterY: excavatorMarker.y + excavatorMarker.height / 2
+        property bool isDragged: false
 
         // Calculate size based on radius selection
         property real radiusKm: radiusCombo.selectedRadius
@@ -386,13 +391,61 @@ Rectangle {
         }
         property real radiusPixels: radiusKm / kmPerPixel
 
+        // Calculate the lat/lon of the download center
+        property real downloadCenterLat: {
+            if (!isDragged) return excavatorLat
+            // Convert pixel offset to lat/lon
+            var centerPixelY = y + height / 2
+            var excavatorPixelY = excavatorMarker.y + excavatorMarker.height / 2
+            var pixelDiffY = centerPixelY - excavatorPixelY
+            var tileDiffY = pixelDiffY / tileSize
+            var newTileY = latLonToTile(excavatorLat, excavatorLon, zoomLevel).y + tileDiffY
+            return tileToLatLon(0, newTileY, zoomLevel).lat
+        }
+        property real downloadCenterLon: {
+            if (!isDragged) return excavatorLon
+            var centerPixelX = x + width / 2
+            var excavatorPixelX = excavatorMarker.x + excavatorMarker.width / 2
+            var pixelDiffX = centerPixelX - excavatorPixelX
+            var tileDiffX = pixelDiffX / tileSize
+            var newTileX = latLonToTile(excavatorLat, excavatorLon, zoomLevel).x + tileDiffX
+            return tileToLatLon(newTileX, 0, zoomLevel).lon
+        }
+
         width: radiusPixels * 2
         height: radiusPixels * 2
         radius: 10
 
-        // Center on excavator position
-        x: excavatorMarker.x + excavatorMarker.width / 2 - width / 2
-        y: excavatorMarker.y + excavatorMarker.height / 2 - height / 2
+        // Position: follow excavator if not dragged, otherwise use custom position
+        x: isDragged ? x : (excavatorMarker.x + excavatorMarker.width / 2 - width / 2)
+        y: isDragged ? y : (excavatorMarker.y + excavatorMarker.height / 2 - height / 2)
+
+        // Reset position when preview is hidden
+        onVisibleChanged: {
+            if (!visible) {
+                isDragged = false
+            }
+        }
+
+        // Drag handle
+        MouseArea {
+            id: downloadPreviewDrag
+            anchors.fill: parent
+            cursorShape: Qt.SizeAllCursor
+            drag.target: downloadPreview
+            drag.axis: Drag.XAndYAxis
+
+            onPressed: {
+                downloadPreview.isDragged = true
+            }
+
+            onDoubleClicked: {
+                // Reset to excavator position on double-click
+                downloadPreview.isDragged = false
+                downloadPreview.x = excavatorMarker.x + excavatorMarker.width / 2 - downloadPreview.width / 2
+                downloadPreview.y = excavatorMarker.y + excavatorMarker.height / 2 - downloadPreview.height / 2
+            }
+        }
 
         // Dashed border effect with inner rectangle
         Rectangle {
@@ -405,22 +458,75 @@ Rectangle {
             radius: 7
         }
 
-        // Label showing the area size
+        // Drag indicator icon
+        Rectangle {
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: 5
+            width: 24
+            height: 24
+            radius: 12
+            color: "#ff9800"
+            opacity: 0.9
+
+            Text {
+                anchors.centerIn: parent
+                text: "✥"
+                font.pixelSize: 14
+                color: "#ffffff"
+            }
+        }
+
+        // Label showing the area size and position
         Rectangle {
             anchors.top: parent.bottom
             anchors.topMargin: 5
             anchors.horizontalCenter: parent.horizontalCenter
-            width: areaLabel.width + 16
-            height: areaLabel.height + 8
+            width: areaLabelColumn.width + 16
+            height: areaLabelColumn.height + 8
             color: "#ff9800"
             radius: 4
 
-            Text {
-                id: areaLabel
+            Column {
+                id: areaLabelColumn
                 anchors.centerIn: parent
-                text: radiusCombo.selectedRadius + " km"
-                font.pixelSize: 11
-                font.bold: true
+                spacing: 2
+
+                Text {
+                    id: areaLabel
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: radiusCombo.selectedRadius + " km"
+                    font.pixelSize: 11
+                    font.bold: true
+                    color: "#ffffff"
+                }
+
+                Text {
+                    visible: downloadPreview.isDragged
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: downloadPreview.downloadCenterLat.toFixed(4) + ", " + downloadPreview.downloadCenterLon.toFixed(4)
+                    font.pixelSize: 8
+                    color: "#ffffffcc"
+                }
+            }
+        }
+
+        // Reset button (visible when dragged)
+        Rectangle {
+            visible: downloadPreview.isDragged
+            anchors.bottom: parent.top
+            anchors.bottomMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: resetLabel.width + 12
+            height: 20
+            color: "#555555"
+            radius: 3
+
+            Text {
+                id: resetLabel
+                anchors.centerIn: parent
+                text: "Sifirla (2x tik)"
+                font.pixelSize: 8
                 color: "#ffffff"
             }
         }
@@ -498,81 +604,238 @@ Rectangle {
         }
     }
 
-    // Control panel (bottom)
+    // Control panel (bottom) - Modern design
     Rectangle {
+        id: controlPanel
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: 20
-        width: controlRow.width + 40
-        height: controlRow.height + 30
+        anchors.bottomMargin: 15
+        width: controlRow.width + 30
+        height: controlRow.height + 20
         color: "#1a1a1a"
         opacity: 0.95
-        radius: 10
-        border.color: "#404040"
-        border.width: 2
+        radius: 25
+        border.color: "#333333"
+        border.width: 1
         z: 10
+
+        // Subtle shadow effect
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: -2
+            z: -1
+            radius: 27
+            color: "#00000044"
+        }
 
         Row {
             id: controlRow
             anchors.centerIn: parent
-            spacing: 15
+            spacing: 8
 
-            // Zoom controls
-            Column {
-                spacing: 5
+            // Zoom out button
+            Rectangle {
+                width: 44
+                height: 44
+                radius: 22
+                color: zoomOutArea.pressed ? "#333333" : (zoomLevel > 3 && !isUpdating ? "#252525" : "#1a1a1a")
+                border.color: zoomLevel > 3 && !isUpdating ? "#00bcd4" : "#333333"
+                border.width: 1
 
-                Button {
-                    text: "+"
-                    width: 50
-                    height: 40
-                    font.pixelSize: 20
-                    font.bold: true
-                    enabled: zoomLevel < 18 && !isUpdating
-
-                    onClicked: changeZoom(1)
-                }
-
-                Button {
-                    text: "-"
-                    width: 50
-                    height: 40
+                Text {
+                    anchors.centerIn: parent
+                    text: "−"
                     font.pixelSize: 24
                     font.bold: true
-                    enabled: zoomLevel > 3 && !isUpdating
+                    color: zoomLevel > 3 && !isUpdating ? "#00bcd4" : "#555555"
+                }
 
+                MouseArea {
+                    id: zoomOutArea
+                    anchors.fill: parent
+                    enabled: zoomLevel > 3 && !isUpdating
                     onClicked: changeZoom(-1)
                 }
             }
 
-            // Reset button - go back to excavator
-            Button {
-                text: "Ekskavatöre Git"
-                width: 120
-                height: 85
-                anchors.verticalCenter: parent.verticalCenter
-                enabled: !isUpdating
+            // Zoom level indicator
+            Rectangle {
+                width: 50
+                height: 44
+                radius: 8
+                color: "#252525"
 
-                onClicked: goToLocation(excavatorLat, excavatorLon, 15)
+                Column {
+                    anchors.centerIn: parent
+                    spacing: 1
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "ZOOM"
+                        font.pixelSize: 8
+                        color: "#666666"
+                    }
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: zoomLevel
+                        font.pixelSize: 16
+                        font.bold: true
+                        color: "#00bcd4"
+                    }
+                }
             }
 
-            // Location presets
-            Column {
-                spacing: 5
+            // Zoom in button
+            Rectangle {
+                width: 44
+                height: 44
+                radius: 22
+                color: zoomInArea.pressed ? "#333333" : (zoomLevel < 18 && !isUpdating ? "#252525" : "#1a1a1a")
+                border.color: zoomLevel < 18 && !isUpdating ? "#00bcd4" : "#333333"
+                border.width: 1
 
-                Button {
-                    text: "Tuzla Limani"
-                    width: 100
-                    height: 40
+                Text {
+                    anchors.centerIn: parent
+                    text: "+"
+                    font.pixelSize: 22
+                    font.bold: true
+                    color: zoomLevel < 18 && !isUpdating ? "#00bcd4" : "#555555"
+                }
+
+                MouseArea {
+                    id: zoomInArea
+                    anchors.fill: parent
+                    enabled: zoomLevel < 18 && !isUpdating
+                    onClicked: changeZoom(1)
+                }
+            }
+
+            // Separator
+            Rectangle {
+                width: 1
+                height: 30
+                color: "#404040"
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            // Home/excavator button
+            Rectangle {
+                width: 44
+                height: 44
+                radius: 22
+                color: homeArea.pressed ? "#FF6B35" : "#252525"
+                border.color: "#FF6B35"
+                border.width: 2
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "⌂"
+                    font.pixelSize: 20
+                    color: "#FF6B35"
+                }
+
+                MouseArea {
+                    id: homeArea
+                    anchors.fill: parent
                     enabled: !isUpdating
                     onClicked: goToLocation(excavatorLat, excavatorLon, 15)
                 }
 
-                Button {
-                    text: "Istanbul"
-                    width: 100
-                    height: 40
+                // Tooltip
+                Rectangle {
+                    visible: homeArea.containsMouse
+                    anchors.bottom: parent.top
+                    anchors.bottomMargin: 8
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: tooltipText1.width + 16
+                    height: 24
+                    radius: 4
+                    color: "#333333"
+                    border.color: "#555555"
+                    border.width: 1
+
+                    Text {
+                        id: tooltipText1
+                        anchors.centerIn: parent
+                        text: "Ekskavatör"
+                        font.pixelSize: 10
+                        color: "#ffffff"
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: goToLocation(excavatorLat, excavatorLon, 15)
                     enabled: !isUpdating
-                    onClicked: goToLocation(41.0082, 28.9784, 13)
+                    property bool containsMouse: false
+                    onEntered: containsMouse = true
+                    onExited: containsMouse = false
+                }
+            }
+
+            // Separator
+            Rectangle {
+                width: 1
+                height: 30
+                color: "#404040"
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            // Location presets
+            Row {
+                spacing: 6
+                anchors.verticalCenter: parent.verticalCenter
+
+                // Tuzla button
+                Rectangle {
+                    width: 70
+                    height: 36
+                    radius: 18
+                    color: tuzlaArea.pressed ? "#00bcd4" : "#252525"
+                    border.color: "#00bcd4"
+                    border.width: 1
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Tuzla"
+                        font.pixelSize: 11
+                        font.bold: true
+                        color: tuzlaArea.pressed ? "#ffffff" : "#00bcd4"
+                    }
+
+                    MouseArea {
+                        id: tuzlaArea
+                        anchors.fill: parent
+                        enabled: !isUpdating
+                        onClicked: goToLocation(excavatorLat, excavatorLon, 15)
+                    }
+                }
+
+                // Istanbul button
+                Rectangle {
+                    width: 70
+                    height: 36
+                    radius: 18
+                    color: istanbulArea.pressed ? "#4CAF50" : "#252525"
+                    border.color: "#4CAF50"
+                    border.width: 1
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Istanbul"
+                        font.pixelSize: 11
+                        font.bold: true
+                        color: istanbulArea.pressed ? "#ffffff" : "#4CAF50"
+                    }
+
+                    MouseArea {
+                        id: istanbulArea
+                        anchors.fill: parent
+                        enabled: !isUpdating
+                        onClicked: goToLocation(41.0082, 28.9784, 13)
+                    }
                 }
             }
         }
@@ -842,9 +1105,12 @@ Rectangle {
                             if (offlineTileManager.isDownloading) {
                                 offlineTileManager.cancelDownload()
                             } else {
-                                // Download around excavator's fixed position
+                                // Download around preview center (draggable) or excavator position
+                                var downloadLat = downloadPreview.isDragged ? downloadPreview.downloadCenterLat : excavatorLat
+                                var downloadLon = downloadPreview.isDragged ? downloadPreview.downloadCenterLon : excavatorLon
+                                console.log("Downloading region at:", downloadLat, downloadLon)
                                 offlineTileManager.downloadRegion(
-                                    excavatorLat, excavatorLon,
+                                    downloadLat, downloadLon,
                                     radiusCombo.selectedRadius,
                                     zoomRangeCombo.selectedMinZoom,
                                     zoomRangeCombo.selectedMaxZoom
