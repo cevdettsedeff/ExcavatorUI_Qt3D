@@ -9,9 +9,13 @@ Rectangle {
     id: simpleMapRoot
     color: "#87CEEB"  // Sky blue as fallback
 
-    // Map state
-    property real centerLat: 40.8078  // Tuzla Limanı
-    property real centerLon: 29.2936
+    // Excavator fixed position (never changes)
+    property real excavatorLat: 40.8078  // Tuzla Limanı
+    property real excavatorLon: 29.2936
+
+    // Map view state (can change with pan/zoom)
+    property real centerLat: excavatorLat
+    property real centerLon: excavatorLon
     property int zoomLevel: 15
     property real tileSize: 256
 
@@ -30,6 +34,9 @@ Rectangle {
     // State management
     property bool isUpdating: false
     property bool isInitialized: false
+
+    // Download preview visibility
+    property bool showDownloadPreview: false
 
     // Initialize on load
     Component.onCompleted: {
@@ -249,11 +256,12 @@ Rectangle {
             }
         }
 
-        // Pan handling
+        // Pan and zoom handling
         MouseArea {
             id: panArea
             anchors.fill: parent
             enabled: !isUpdating
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
 
             property real lastX: 0
             property real lastY: 0
@@ -300,12 +308,24 @@ Rectangle {
                     populateTileModel()
                 }
             }
+
+            // Mouse wheel zoom
+            onWheel: (wheel) => {
+                if (isUpdating) return
+
+                // Zoom in with scroll up, zoom out with scroll down
+                if (wheel.angleDelta.y > 0) {
+                    changeZoom(1)  // Zoom in
+                } else if (wheel.angleDelta.y < 0) {
+                    changeZoom(-1)  // Zoom out
+                }
+            }
         }
     }
 
-    // Center marker (excavator position)
+    // Excavator marker (fixed GPS position - never moves relative to map)
     Rectangle {
-        id: centerMarker
+        id: excavatorMarker
         width: 30
         height: 30
         radius: 15
@@ -315,15 +335,18 @@ Rectangle {
         z: 20
         visible: isInitialized
 
-        // Position at the excavator's fixed location
+        // Position at the excavator's FIXED GPS location
         x: {
-            var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-            var tileDiffX = tile.x - centerTileX
+            // Get excavator's tile coordinates
+            var excavatorTile = latLonToTile(excavatorLat, excavatorLon, zoomLevel)
+            // Calculate difference from current map center tile
+            var tileDiffX = excavatorTile.x - centerTileX
+            // Position relative to viewport center + tile difference + pan offset
             return mapViewport.width / 2 + tileDiffX * tileSize + offsetX - width / 2
         }
         y: {
-            var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-            var tileDiffY = tile.y - centerTileY
+            var excavatorTile = latLonToTile(excavatorLat, excavatorLon, zoomLevel)
+            var tileDiffY = excavatorTile.y - centerTileY
             return mapViewport.height / 2 + tileDiffY * tileSize + offsetY - height / 2
         }
 
@@ -340,6 +363,66 @@ Rectangle {
             loops: Animation.Infinite
             NumberAnimation { from: 1.0; to: 1.2; duration: 800 }
             NumberAnimation { from: 1.2; to: 1.0; duration: 800 }
+        }
+    }
+
+    // Download area preview rectangle
+    Rectangle {
+        id: downloadPreview
+        visible: showDownloadPreview && offlinePanel.offlinePanelExpanded
+        z: 15
+        color: "transparent"
+        border.color: "#ff9800"
+        border.width: 3
+        opacity: 0.8
+
+        // Calculate size based on radius selection
+        property real radiusKm: radiusCombo.selectedRadius
+        // At equator, 1 degree ≈ 111 km. Adjust for latitude
+        property real kmPerPixel: {
+            // meters per pixel at current zoom
+            var metersPerPixel = 156543.03 * Math.cos(excavatorLat * Math.PI / 180) / Math.pow(2, zoomLevel)
+            return metersPerPixel / 1000  // convert to km
+        }
+        property real radiusPixels: radiusKm / kmPerPixel
+
+        width: radiusPixels * 2
+        height: radiusPixels * 2
+        radius: 10
+
+        // Center on excavator position
+        x: excavatorMarker.x + excavatorMarker.width / 2 - width / 2
+        y: excavatorMarker.y + excavatorMarker.height / 2 - height / 2
+
+        // Dashed border effect with inner rectangle
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: 3
+            color: "transparent"
+            border.color: "#ff9800"
+            border.width: 1
+            opacity: 0.5
+            radius: 7
+        }
+
+        // Label showing the area size
+        Rectangle {
+            anchors.top: parent.bottom
+            anchors.topMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: areaLabel.width + 16
+            height: areaLabel.height + 8
+            color: "#ff9800"
+            radius: 4
+
+            Text {
+                id: areaLabel
+                anchors.centerIn: parent
+                text: radiusCombo.selectedRadius + " km"
+                font.pixelSize: 11
+                font.bold: true
+                color: "#ffffff"
+            }
         }
     }
 
@@ -383,7 +466,7 @@ Rectangle {
             spacing: 8
 
             Text {
-                text: "KONUM BİLGİSİ"
+                text: "EKSKAVATOR KONUMU"
                 font.pixelSize: 12
                 font.bold: true
                 color: "#00bcd4"
@@ -392,13 +475,13 @@ Rectangle {
             Row {
                 spacing: 5
                 Text { text: "Lat:"; font.pixelSize: 11; color: "#ffffff"; width: 40 }
-                Text { text: centerLat.toFixed(6); font.pixelSize: 11; color: "#00ff00" }
+                Text { text: excavatorLat.toFixed(6); font.pixelSize: 11; color: "#00ff00" }
             }
 
             Row {
                 spacing: 5
                 Text { text: "Lon:"; font.pixelSize: 11; color: "#ffffff"; width: 40 }
-                Text { text: centerLon.toFixed(6); font.pixelSize: 11; color: "#00ff00" }
+                Text { text: excavatorLon.toFixed(6); font.pixelSize: 11; color: "#00ff00" }
             }
 
             Row {
@@ -461,15 +544,15 @@ Rectangle {
                 }
             }
 
-            // Reset button
+            // Reset button - go back to excavator
             Button {
-                text: "Merkeze Don"
+                text: "Ekskavatöre Git"
                 width: 120
                 height: 85
                 anchors.verticalCenter: parent.verticalCenter
                 enabled: !isUpdating
 
-                onClicked: goToLocation(40.8078, 29.2936, 15)
+                onClicked: goToLocation(excavatorLat, excavatorLon, 15)
             }
 
             // Location presets
@@ -481,7 +564,7 @@ Rectangle {
                     width: 100
                     height: 40
                     enabled: !isUpdating
-                    onClicked: goToLocation(40.8078, 29.2936, 15)
+                    onClicked: goToLocation(excavatorLat, excavatorLon, 15)
                 }
 
                 Button {
@@ -651,18 +734,54 @@ Rectangle {
                     }
                 }
 
+                // Preview toggle
+                Row {
+                    width: parent.width
+                    spacing: 8
+
+                    CheckBox {
+                        id: previewCheck
+                        checked: showDownloadPreview
+                        onCheckedChanged: showDownloadPreview = checked
+
+                        indicator: Rectangle {
+                            width: 18
+                            height: 18
+                            radius: 3
+                            color: previewCheck.checked ? "#ff9800" : "#333333"
+                            border.color: "#ff9800"
+                            border.width: 1
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: previewCheck.checked ? "✓" : ""
+                                color: "#ffffff"
+                                font.pixelSize: 12
+                                font.bold: true
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: "Alani Onizle"
+                        font.pixelSize: 10
+                        color: "#ffffff"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+
                 // Estimated tile count
                 Text {
                     width: parent.width
                     text: {
                         if (offlineTileManager) {
                             var count = offlineTileManager.estimateTileCount(
-                                centerLat, centerLon,
+                                excavatorLat, excavatorLon,
                                 radiusCombo.selectedRadius,
                                 zoomRangeCombo.selectedMinZoom,
                                 zoomRangeCombo.selectedMaxZoom
                             )
-                            return "Tahmini: ~" + count + " tile"
+                            return "Tahmini: ~" + count + " tile (~" + Math.round(count * 30 / 1024) + " MB)"
                         }
                         return ""
                     }
@@ -723,8 +842,9 @@ Rectangle {
                             if (offlineTileManager.isDownloading) {
                                 offlineTileManager.cancelDownload()
                             } else {
+                                // Download around excavator's fixed position
                                 offlineTileManager.downloadRegion(
-                                    centerLat, centerLon,
+                                    excavatorLat, excavatorLon,
                                     radiusCombo.selectedRadius,
                                     zoomRangeCombo.selectedMinZoom,
                                     zoomRangeCombo.selectedMaxZoom
