@@ -3,7 +3,7 @@ import QtQuick.Controls
 
 /**
  * Simple OpenStreetMap View - Top-down view
- * No dependencies required, works out of the box
+ * Uses virtual scrolling to handle large zoom levels efficiently
  */
 Rectangle {
     id: simpleMapRoot
@@ -15,9 +15,13 @@ Rectangle {
     property int zoomLevel: 15
     property real tileSize: 256
 
+    // Virtual scrolling - track the actual world position
+    property real virtualCenterX: 0  // Center tile X coordinate (fractional)
+    property real virtualCenterY: 0  // Center tile Y coordinate (fractional)
+
     // Tile loading
     property var loadedTiles: ({})
-    property int maxCachedTiles: 50
+    property int maxCachedTiles: 100
 
     // OpenStreetMap tile URL template
     function getTileUrl(x, y, z) {
@@ -43,49 +47,43 @@ Rectangle {
         return {lat: lat, lon: lon}
     }
 
-    // Map canvas
-    Flickable {
-        id: mapFlickable
+    // Map container with virtual scrolling
+    Item {
+        id: mapViewport
         anchors.fill: parent
-
-        contentWidth: mapContainer.width
-        contentHeight: mapContainer.height
         clip: true
 
         property bool initialized: false
         property bool updating: false
 
-        // Initialize map when width becomes available
-        onWidthChanged: {
-            if (width > 0 && height > 0 && !initialized) {
-                initialized = true
-                updating = true
-                console.log("Initializing map - Viewport:", width, "x", height)
+        // Drag handling
+        property real dragStartX: 0
+        property real dragStartY: 0
+        property real dragStartVirtualX: 0
+        property real dragStartVirtualY: 0
 
-                var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-                var tilePx = tileSize * tile.x
-                var tilePy = tileSize * tile.y
-
-                console.log("Centering on tile:", tile.x, tile.y, "at zoom", zoomLevel)
-                console.log("Pixel position:", tilePx, tilePy)
-
-                contentX = tilePx - width / 2
-                contentY = tilePy - height / 2
-
-                loadVisibleTiles()
-                updating = false
-            }
+        // Initialize map when size becomes available
+        Component.onCompleted: {
+            initTimer.start()
         }
 
-        // Load more tiles when user pans the map
-        onContentXChanged: {
-            if (initialized && !updating) {
-                Qt.callLater(loadVisibleTiles)
-            }
-        }
-        onContentYChanged: {
-            if (initialized && !updating) {
-                Qt.callLater(loadVisibleTiles)
+        Timer {
+            id: initTimer
+            interval: 100
+            repeat: false
+            onTriggered: {
+                if (mapViewport.width > 0 && mapViewport.height > 0 && !mapViewport.initialized) {
+                    mapViewport.initialized = true
+                    console.log("Initializing map - Viewport:", mapViewport.width, "x", mapViewport.height)
+
+                    // Calculate initial center position
+                    var tile = latLonToTile(centerLat, centerLon, zoomLevel)
+                    virtualCenterX = tile.x + 0.5  // Center of the tile
+                    virtualCenterY = tile.y + 0.5
+
+                    console.log("Initial virtual center:", virtualCenterX, virtualCenterY, "at zoom", zoomLevel)
+                    loadVisibleTiles()
+                }
             }
         }
 
@@ -93,27 +91,30 @@ Rectangle {
         function loadVisibleTiles() {
             if (width === 0 || height === 0) {
                 console.log("loadVisibleTiles: Skipping - viewport not initialized")
-                return  // Not initialized yet
+                return
             }
 
             if (updating) {
                 console.log("loadVisibleTiles: Skipping - update in progress")
-                return  // Update in progress
+                return
             }
 
-            var tileBuffer = 3  // Load 3 extra tiles in each direction
+            var tileBuffer = 2  // Load 2 extra tiles in each direction
 
-            // Calculate visible tile range based on viewport position
-            var startX = Math.floor(contentX / tileSize) - tileBuffer
-            var endX = Math.ceil((contentX + width) / tileSize) + tileBuffer
-            var startY = Math.floor(contentY / tileSize) - tileBuffer
-            var endY = Math.ceil((contentY + height) / tileSize) + tileBuffer
+            // Calculate visible tile range based on virtual center
+            var tilesWide = Math.ceil(width / tileSize) + tileBuffer * 2
+            var tilesHigh = Math.ceil(height / tileSize) + tileBuffer * 2
+
+            var startX = Math.floor(virtualCenterX - tilesWide / 2)
+            var endX = Math.ceil(virtualCenterX + tilesWide / 2)
+            var startY = Math.floor(virtualCenterY - tilesHigh / 2)
+            var endY = Math.ceil(virtualCenterY + tilesHigh / 2)
 
             var maxTiles = Math.pow(2, zoomLevel)
 
             console.log("Loading tiles: X:", startX, "-", endX, "Y:", startY, "-", endY,
-                        "ContentPos:", Math.floor(contentX), Math.floor(contentY),
-                        "Viewport:", width, "x", height, "Zoom:", zoomLevel)
+                        "VirtualCenter:", virtualCenterX.toFixed(2), virtualCenterY.toFixed(2),
+                        "Zoom:", zoomLevel)
 
             // Load all visible tiles
             var loadedCount = 0
@@ -128,34 +129,37 @@ Rectangle {
             console.log("Loaded", loadedCount, "tiles at zoom", zoomLevel)
         }
 
-        Rectangle {
+        // Tile container - positioned relative to viewport center
+        Item {
             id: mapContainer
-            // Don't bind to zoomLevel - we'll set size manually in updateMapTilesInternal
-            width: tileSize * Math.pow(2, 15)  // Initial size at zoom 15
-            height: tileSize * Math.pow(2, 15)
-            color: "#E5E3DF"
+            // Size covers the visible area plus buffer
+            width: parent.width + tileSize * 6
+            height: parent.height + tileSize * 6
+            x: -tileSize * 3
+            y: -tileSize * 3
 
             // Tile grid container
             Item {
                 id: tileGrid
                 anchors.fill: parent
 
-                function createTile(x, y, z) {
-                    var tileKey = x + "_" + y + "_" + z
+                function createTile(tileX, tileY, z) {
+                    var tileKey = tileX + "_" + tileY + "_" + z
 
                     if (loadedTiles[tileKey]) {
-                        return  // Already loaded
+                        // Update position of existing tile
+                        updateTilePosition(loadedTiles[tileKey], tileX, tileY)
+                        return
                     }
 
                     try {
-                        // Use image provider with proper HTTP headers (complies with OSM policy)
-                        var tileUrl = "image://osmtiles/" + z + "/" + x + "/" + y
+                        var tileUrl = "image://osmtiles/" + z + "/" + tileX + "/" + tileY
 
                         var component = Qt.createQmlObject(
                             'import QtQuick; ' +
                             'Image { ' +
-                            '    x: ' + (x * tileSize) + '; ' +
-                            '    y: ' + (y * tileSize) + '; ' +
+                            '    property int tileX: ' + tileX + '; ' +
+                            '    property int tileY: ' + tileY + '; ' +
                             '    width: ' + tileSize + '; ' +
                             '    height: ' + tileSize + '; ' +
                             '    source: "' + tileUrl + '"; ' +
@@ -171,21 +175,78 @@ Rectangle {
                             tileGrid
                         )
 
+                        // Position tile relative to virtual center
+                        updateTilePosition(component, tileX, tileY)
                         loadedTiles[tileKey] = component
                     } catch (e) {
                         console.error("Failed to create tile", tileKey, ":", e)
                     }
                 }
+
+                function updateTilePosition(tile, tileX, tileY) {
+                    // Calculate position relative to viewport center
+                    var viewportCenterX = mapViewport.width / 2
+                    var viewportCenterY = mapViewport.height / 2
+
+                    // Offset from virtual center (in pixels)
+                    var offsetX = (tileX - virtualCenterX) * tileSize
+                    var offsetY = (tileY - virtualCenterY) * tileSize
+
+                    // Position in mapContainer coordinates (which is offset by -tileSize*3)
+                    tile.x = viewportCenterX + tileSize * 3 + offsetX
+                    tile.y = viewportCenterY + tileSize * 3 + offsetY
+                }
+
+                function updateAllTilePositions() {
+                    for (var key in loadedTiles) {
+                        if (loadedTiles[key]) {
+                            var tile = loadedTiles[key]
+                            updateTilePosition(tile, tile.tileX, tile.tileY)
+                        }
+                    }
+                }
+            }
+        }
+
+        // Mouse handling for pan
+        MouseArea {
+            id: mapMouseArea
+            anchors.fill: parent
+
+            onPressed: (mouse) => {
+                mapViewport.dragStartX = mouse.x
+                mapViewport.dragStartY = mouse.y
+                mapViewport.dragStartVirtualX = virtualCenterX
+                mapViewport.dragStartVirtualY = virtualCenterY
             }
 
-        }
+            onPositionChanged: (mouse) => {
+                if (pressed && !mapViewport.updating) {
+                    var deltaX = mouse.x - mapViewport.dragStartX
+                    var deltaY = mouse.y - mapViewport.dragStartY
 
-        // Scroll indicator
-        ScrollBar.vertical: ScrollBar {
-            policy: ScrollBar.AsNeeded
-        }
-        ScrollBar.horizontal: ScrollBar {
-            policy: ScrollBar.AsNeeded
+                    // Convert pixel delta to tile delta (negative because dragging right should move map left)
+                    virtualCenterX = mapViewport.dragStartVirtualX - deltaX / tileSize
+                    virtualCenterY = mapViewport.dragStartVirtualY - deltaY / tileSize
+
+                    // Clamp to valid tile range
+                    var maxTiles = Math.pow(2, zoomLevel)
+                    virtualCenterX = Math.max(0, Math.min(maxTiles, virtualCenterX))
+                    virtualCenterY = Math.max(0, Math.min(maxTiles, virtualCenterY))
+
+                    // Update tile positions
+                    tileGrid.updateAllTilePositions()
+                }
+            }
+
+            onReleased: {
+                // Load any new tiles that became visible
+                Qt.callLater(mapViewport.loadVisibleTiles)
+            }
+
+            onWheel: (wheel) => {
+                // Zoom with mouse wheel is handled by buttons for stability
+            }
         }
     }
 
@@ -199,21 +260,21 @@ Rectangle {
         border.color: "#ffffff"
         border.width: 3
         z: 20  // Above map tiles
-        visible: mapFlickable.initialized && !mapFlickable.updating
+        visible: mapViewport.initialized && !mapViewport.updating
 
         // Calculate position based on fixed map coordinates (centerLat, centerLon)
         x: {
-            if (!mapFlickable.initialized || mapFlickable.updating) return 0
+            if (!mapViewport.initialized || mapViewport.updating) return mapViewport.width / 2 - width / 2
             var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-            var pixelX = tile.x * tileSize
-            return pixelX - mapFlickable.contentX - width / 2
+            var offsetX = (tile.x + 0.5 - virtualCenterX) * tileSize
+            return mapViewport.width / 2 + offsetX - width / 2
         }
 
         y: {
-            if (!mapFlickable.initialized || mapFlickable.updating) return 0
+            if (!mapViewport.initialized || mapViewport.updating) return mapViewport.height / 2 - height / 2
             var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-            var pixelY = tile.y * tileSize
-            return pixelY - mapFlickable.contentY - height / 2
+            var offsetY = (tile.y + 0.5 - virtualCenterY) * tileSize
+            return mapViewport.height / 2 + offsetY - height / 2
         }
 
         Rectangle {
@@ -242,73 +303,46 @@ Rectangle {
 
         onTriggered: {
             console.log("Applying zoom change to:", targetZoom)
-            zoomLevel = targetZoom
-            updateMapTilesInternal()
+            applyZoomChange(targetZoom)
         }
     }
 
-    // Timer for delayed tile loading after resize
+    // Timer for delayed tile loading after zoom
     Timer {
         id: tileLoadTimer
         interval: 100
         repeat: false
 
         onTriggered: {
-            console.log("Loading new tiles...")
-            mapFlickable.updating = false  // Re-enable updates BEFORE loading tiles
-            mapFlickable.loadVisibleTiles()
-            console.log("Update complete")
+            console.log("Loading new tiles after zoom...")
+            mapViewport.updating = false
+            mapViewport.loadVisibleTiles()
+            console.log("Zoom update complete")
         }
     }
 
     // Safely change zoom level
     function changeZoomLevel(newZoom) {
-        if (mapFlickable.updating) {
+        if (mapViewport.updating) {
             console.log("Update already in progress, skipping zoom change...")
             return
         }
 
         console.log("Requesting zoom change from", zoomLevel, "to", newZoom)
-
-        // Set updating flag to disable all interactions
-        mapFlickable.updating = true
-
-        // Schedule zoom change with a slight delay to ensure updating flag is processed
+        mapViewport.updating = true
         zoomChangeTimer.targetZoom = newZoom
         zoomChangeTimer.start()
     }
 
-    function updateMapTiles() {
-        if (mapFlickable.updating) {
-            console.log("Update already in progress, skipping...")
-            return  // Prevent overlapping updates
-        }
+    // Apply the zoom change
+    function applyZoomChange(newZoom) {
+        console.log("applyZoomChange: from", zoomLevel, "to", newZoom)
 
-        mapFlickable.updating = true  // Prevent recursive calls
-        updateMapTilesInternal()
-    }
+        // Get current center in lat/lon before zoom change
+        var currentCenterLatLon = tileToLatLon(virtualCenterX, virtualCenterY, zoomLevel)
+        console.log("Current center lat/lon:", currentCenterLatLon.lat.toFixed(6), currentCenterLatLon.lon.toFixed(6))
 
-    function updateMapTilesInternal() {
-        console.log("updateMapTilesInternal: Starting update at zoom", zoomLevel)
-
-        // Manually set mapContainer size for new zoom level (avoiding binding issues)
-        var newSize = tileSize * Math.pow(2, zoomLevel)
-        console.log("Setting mapContainer size to:", newSize, "x", newSize)
-        mapContainer.width = newSize
-        mapContainer.height = newSize
-
-        // Recalculate center position for new zoom level
-        var tile = latLonToTile(centerLat, centerLon, zoomLevel)
-        var tilePx = tileSize * tile.x
-        var tilePy = tileSize * tile.y
-
-        console.log("New tile position:", tile.x, tile.y, "Pixel:", tilePx, tilePy)
-
-        // Set new content position AFTER resizing container
-        mapFlickable.contentX = tilePx - mapFlickable.width / 2
-        mapFlickable.contentY = tilePy - mapFlickable.height / 2
-
-        // Now clear old tiles
+        // Clear old tiles first
         var clearedCount = 0
         for (var key in loadedTiles) {
             if (loadedTiles[key]) {
@@ -323,8 +357,54 @@ Rectangle {
         loadedTiles = {}
         console.log("Cleared", clearedCount, "old tiles")
 
-        // Reload visible tiles with a delay to ensure container resize is complete
-        console.log("Scheduling tile load in 100ms...")
+        // Update zoom level
+        zoomLevel = newZoom
+
+        // Recalculate virtual center for new zoom level
+        var newTile = latLonToTile(currentCenterLatLon.lat, currentCenterLatLon.lon, newZoom)
+        virtualCenterX = newTile.x + 0.5
+        virtualCenterY = newTile.y + 0.5
+        console.log("New virtual center:", virtualCenterX.toFixed(2), virtualCenterY.toFixed(2), "at zoom", newZoom)
+
+        // Load new tiles with delay
+        tileLoadTimer.start()
+    }
+
+    function updateMapTiles() {
+        if (mapViewport.updating) {
+            console.log("Update already in progress, skipping...")
+            return
+        }
+
+        mapViewport.updating = true
+        updateMapTilesInternal()
+    }
+
+    function updateMapTilesInternal() {
+        console.log("updateMapTilesInternal: Centering on", centerLat, centerLon, "at zoom", zoomLevel)
+
+        // Clear old tiles
+        var clearedCount = 0
+        for (var key in loadedTiles) {
+            if (loadedTiles[key]) {
+                try {
+                    loadedTiles[key].destroy()
+                    clearedCount++
+                } catch (e) {
+                    console.warn("Error destroying tile:", key, e)
+                }
+            }
+        }
+        loadedTiles = {}
+        console.log("Cleared", clearedCount, "old tiles")
+
+        // Recalculate virtual center
+        var tile = latLonToTile(centerLat, centerLon, zoomLevel)
+        virtualCenterX = tile.x + 0.5
+        virtualCenterY = tile.y + 0.5
+        console.log("Virtual center set to:", virtualCenterX.toFixed(2), virtualCenterY.toFixed(2))
+
+        // Load new tiles with delay
         tileLoadTimer.start()
     }
 
@@ -410,10 +490,10 @@ Rectangle {
                     height: 40
                     font.pixelSize: 20
                     font.bold: true
-                    enabled: zoomLevel < 18 && !mapFlickable.updating
+                    enabled: zoomLevel < 18 && !mapViewport.updating
 
                     onClicked: {
-                        if (zoomLevel < 18 && !mapFlickable.updating) {
+                        if (zoomLevel < 18 && !mapViewport.updating) {
                             changeZoomLevel(zoomLevel + 1)
                         }
                     }
@@ -425,10 +505,10 @@ Rectangle {
                     height: 40
                     font.pixelSize: 24
                     font.bold: true
-                    enabled: zoomLevel > 3 && !mapFlickable.updating
+                    enabled: zoomLevel > 3 && !mapViewport.updating
 
                     onClicked: {
-                        if (zoomLevel > 3 && !mapFlickable.updating) {
+                        if (zoomLevel > 3 && !mapViewport.updating) {
                             changeZoomLevel(zoomLevel - 1)
                         }
                     }
@@ -441,10 +521,10 @@ Rectangle {
                 width: 120
                 height: 85
                 anchors.verticalCenter: parent.verticalCenter
-                enabled: !mapFlickable.updating
+                enabled: !mapViewport.updating
 
                 onClicked: {
-                    if (!mapFlickable.updating) {
+                    if (!mapViewport.updating) {
                         updateMapTiles()
                     }
                 }
@@ -458,10 +538,10 @@ Rectangle {
                     text: "Tuzla Limanı"
                     width: 100
                     height: 40
-                    enabled: !mapFlickable.updating
+                    enabled: !mapViewport.updating
                     onClicked: {
-                        if (!mapFlickable.updating) {
-                            mapFlickable.updating = true
+                        if (!mapViewport.updating) {
+                            mapViewport.updating = true
                             centerLat = 40.8078
                             centerLon = 29.2936
                             zoomLevel = 15
@@ -474,10 +554,10 @@ Rectangle {
                     text: "İstanbul"
                     width: 100
                     height: 40
-                    enabled: !mapFlickable.updating
+                    enabled: !mapViewport.updating
                     onClicked: {
-                        if (!mapFlickable.updating) {
-                            mapFlickable.updating = true
+                        if (!mapViewport.updating) {
+                            mapViewport.updating = true
                             centerLat = 41.0082
                             centerLon = 28.9784
                             zoomLevel = 13
