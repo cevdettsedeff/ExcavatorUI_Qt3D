@@ -74,3 +74,19 @@ convert_to_glb.py
 ExcavatorUI
 *.app
 *.exe
+
+# Bathymetric data files (large, not for Git)
+static_maps/*.tif
+static_maps/*.tiff
+static_maps/*.vrt
+static_maps/*.ovr
+static_maps/*.aux.xml
+*.tif
+*.tiff
+*.ovr
+*.aux.xml
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3

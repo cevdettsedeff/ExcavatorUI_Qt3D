@@ -1,0 +1,27 @@
+{
+  "bathymetry": {
+    "vrt_path": "static_maps/gebco_world_bathymetry.vrt",
+    "tile_size": 256,
+    "cache_size": 100,
+    "default_lod": 0,
+    "color_scheme": {
+      "shallow": "#90EE90",
+      "shallow_mid": "#4DB8A8",
+      "mid": "#3EADC4",
+      "mid_deep": "#2E8BC0",
+      "deep": "#1F5F8B"
+    },
+    "depth_ranges": {
+      "shallow": [0, 5],
+      "shallow_mid": [5, 15],
+      "mid": [15, 30],
+      "mid_deep": [30, 45],
+      "deep": [45, 60]
+    }
+  },
+  "rendering": {
+    "vertical_exaggeration": 2.0,
+    "grid_visible": true,
+    "legend_visible": true
+  }
+}

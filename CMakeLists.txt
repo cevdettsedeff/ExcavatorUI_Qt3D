@@ -12,7 +12,76 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Quick3D
     QuickControls2
     Sql
+    Network
 )
+
+# QtLocation for OpenStreetMap (optional, for simplified map view)
+find_package(Qt6 COMPONENTS Location QUIET)
+if(Qt6Location_FOUND)
+    message(STATUS "✓ Qt6 Location found - Map features enabled")
+    set(HAVE_QTLOCATION TRUE)
+else()
+    message(WARNING "✗ Qt6 Location not found - Map features will be limited")
+    message(WARNING "  Install: Qt Maintenance Tool → Add Components → Qt Location")
+    set(HAVE_QTLOCATION FALSE)
+endif()
+
+# Find GDAL library for bathymetric data processing
+# Windows: Set GDAL_ROOT environment variable or use -DGDAL_ROOT=C:/OSGeo4W64
+if(WIN32)
+    # Try common Windows GDAL installation paths
+    if(NOT DEFINED GDAL_ROOT)
+        set(GDAL_ROOT_HINTS
+            "C:/Program Files/QGISQT6 3.40.13"
+            "C:/Program Files/QGIS 3.40.13"
+            "C:/Program Files/QGIS LTR"
+            "C:/OSGeo4W64"
+            "C:/OSGeo4W"
+            "$ENV{GDAL_ROOT}"
+            "$ENV{CONDA_PREFIX}"
+            "$ENV{VCPKG_ROOT}/installed/x64-windows"
+        )
+        foreach(hint ${GDAL_ROOT_HINTS})
+            if(EXISTS "${hint}")
+                set(GDAL_ROOT "${hint}")
+                message(STATUS "Found potential GDAL installation at: ${hint}")
+                break()
+            endif()
+        endforeach()
+    endif()
+
+    # Set hints for FindGDAL
+    if(DEFINED GDAL_ROOT)
+        # QGIS has a different structure than OSGeo4W
+        if(EXISTS "${GDAL_ROOT}/include")
+            set(GDAL_INCLUDE_DIR "${GDAL_ROOT}/include" CACHE PATH "GDAL include directory")
+        endif()
+
+        # Try different library locations (QGIS vs OSGeo4W)
+        if(EXISTS "${GDAL_ROOT}/lib/gdal_i.lib")
+            set(GDAL_LIBRARY "${GDAL_ROOT}/lib/gdal_i.lib" CACHE FILEPATH "GDAL library")
+        elseif(EXISTS "${GDAL_ROOT}/lib/gdal.lib")
+            set(GDAL_LIBRARY "${GDAL_ROOT}/lib/gdal.lib" CACHE FILEPATH "GDAL library")
+        endif()
+
+        list(APPEND CMAKE_PREFIX_PATH "${GDAL_ROOT}")
+    endif()
+endif()
+
+find_package(GDAL)
+
+if(GDAL_FOUND)
+    message(STATUS "✓ GDAL found: ${GDAL_VERSION}")
+    message(STATUS "  Include: ${GDAL_INCLUDE_DIRS}")
+    message(STATUS "  Libraries: ${GDAL_LIBRARIES}")
+    set(HAVE_GDAL TRUE)
+    add_compile_definitions(HAVE_GDAL)
+else()
+    message(WARNING "✗ GDAL not found - Bathymetric features will be disabled")
+    message(WARNING "  Advanced bathymetric visualization will not be available")
+    message(WARNING "  Using simplified OpenStreetMap view instead")
+    set(HAVE_GDAL FALSE)
+endif()
 
 # Platform-specific icon
 set(APP_ICON "")
@@ -30,7 +99,8 @@ elseif(APPLE)
     set(APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icons/app_icon.icns")
 endif()
 
-qt_add_executable(ExcavatorUI_Qt3DApp
+# Base source files (always included)
+set(BASE_SOURCES
     main.cpp
     src/database/DatabaseManager.h
     src/database/DatabaseManager.cpp
@@ -38,7 +108,32 @@ qt_add_executable(ExcavatorUI_Qt3DApp
     src/auth/AuthService.cpp
     src/sensors/IMUMockService.h
     src/sensors/IMUMockService.cpp
+    src/config/ConfigManager.h
+    src/config/ConfigManager.cpp
+    src/map/TileImageProvider.h
+    src/map/TileImageProvider.cpp
     ${APP_ICON}
+)
+
+# GDAL-dependent bathymetry sources (optional)
+if(GDAL_FOUND)
+    set(BATHYMETRY_SOURCES
+        src/bathymetry/BathymetricDataLoader.h
+        src/bathymetry/BathymetricDataLoader.cpp
+        src/bathymetry/TileLoadTask.h
+        src/bathymetry/TileLoadTask.cpp
+        src/bathymetry/BathymetricMeshGenerator.h
+        src/bathymetry/BathymetricMeshGenerator.cpp
+    )
+    message(STATUS "✓ Including GDAL bathymetry sources")
+else()
+    set(BATHYMETRY_SOURCES "")
+    message(STATUS "✗ Skipping GDAL bathymetry sources (GDAL not found)")
+endif()
+
+qt_add_executable(ExcavatorUI_Qt3DApp
+    ${BASE_SOURCES}
+    ${BATHYMETRY_SOURCES}
 )
 
 # Tüm mesh dosyalarını bul
@@ -67,7 +162,10 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/Main.qml
         src/views/ExcavatorView.qml
         src/views/MapView.qml
+        src/views/SimpleMapView.qml
         src/views/BathymetricMapView.qml
+        src/views/BathymetricMapView_V2.qml
+        src/views/BathymetricMapView_V3.qml
         src/views/UserManagementView.qml
         src/views/ProfileView.qml
         # 3D Components
@@ -89,7 +187,19 @@ target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
     Qt6::Quick3D
     Qt6::QuickControls2
     Qt6::Sql
+    Qt6::Network
 )
+
+# Link QtLocation if available
+if(Qt6Location_FOUND)
+    target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE Qt6::Location)
+endif()
+
+# Link GDAL if available
+if(GDAL_FOUND)
+    target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE ${GDAL_LIBRARIES})
+    target_include_directories(ExcavatorUI_Qt3DApp PRIVATE ${GDAL_INCLUDE_DIRS})
+endif()
 
 set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES
     WIN32_EXECUTABLE TRUE
