@@ -506,28 +506,328 @@ Rectangle {
         z: 15
     }
 
-    // Help text (top-right)
+    // Offline download panel (top-right)
     Rectangle {
+        id: offlinePanel
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.topMargin: 90
         anchors.rightMargin: 20
-        width: helpText.width + 20
-        height: helpText.height + 20
+        width: 220
+        height: offlinePanelExpanded ? offlineColumn.height + 30 : 45
         color: "#1a1a1a"
-        opacity: 0.9
-        radius: 5
-        border.color: "#404040"
-        border.width: 1
+        opacity: 0.95
+        radius: 10
+        border.color: "#ff9800"
+        border.width: 2
         z: 10
+        clip: true
 
-        Text {
-            id: helpText
+        property bool offlinePanelExpanded: false
+
+        Behavior on height {
+            NumberAnimation { duration: 200 }
+        }
+
+        Column {
+            id: offlineColumn
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 10
+            spacing: 8
+
+            // Header (clickable to expand/collapse)
+            Rectangle {
+                width: parent.width
+                height: 25
+                color: "transparent"
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: offlinePanel.offlinePanelExpanded = !offlinePanel.offlinePanelExpanded
+                }
+
+                Row {
+                    anchors.centerIn: parent
+                    spacing: 8
+
+                    Text {
+                        text: "OFFLINE HARITA"
+                        font.pixelSize: 11
+                        font.bold: true
+                        color: "#ff9800"
+                    }
+
+                    Text {
+                        text: offlinePanel.offlinePanelExpanded ? "▲" : "▼"
+                        font.pixelSize: 10
+                        color: "#ff9800"
+                    }
+                }
+            }
+
+            // Expanded content
+            Column {
+                width: parent.width
+                spacing: 8
+                visible: offlinePanel.offlinePanelExpanded
+                opacity: offlinePanel.offlinePanelExpanded ? 1 : 0
+
+                Behavior on opacity {
+                    NumberAnimation { duration: 150 }
+                }
+
+                // Cache info
+                Rectangle {
+                    width: parent.width
+                    height: 35
+                    color: "#252525"
+                    radius: 5
+
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: 2
+
+                        Text {
+                            text: "Onbellek: " + (offlineTileManager ? offlineTileManager.formatCacheSize() : "0 MB")
+                            font.pixelSize: 10
+                            color: "#aaaaaa"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                    }
+                }
+
+                // Radius selection
+                Row {
+                    width: parent.width
+                    spacing: 5
+
+                    Text {
+                        text: "Alan:"
+                        font.pixelSize: 10
+                        color: "#ffffff"
+                        width: 35
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    ComboBox {
+                        id: radiusCombo
+                        width: parent.width - 40
+                        height: 30
+                        model: ["1 km", "2 km", "5 km", "10 km"]
+                        currentIndex: 1
+
+                        property var radiusValues: [1, 2, 5, 10]
+                        property real selectedRadius: radiusValues[currentIndex]
+                    }
+                }
+
+                // Zoom range selection
+                Row {
+                    width: parent.width
+                    spacing: 5
+
+                    Text {
+                        text: "Zoom:"
+                        font.pixelSize: 10
+                        color: "#ffffff"
+                        width: 35
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    ComboBox {
+                        id: zoomRangeCombo
+                        width: parent.width - 40
+                        height: 30
+                        model: ["13-15 (Hizli)", "13-16 (Normal)", "13-17 (Detayli)", "13-18 (Maksimum)"]
+                        currentIndex: 1
+
+                        property var minZooms: [13, 13, 13, 13]
+                        property var maxZooms: [15, 16, 17, 18]
+                        property int selectedMinZoom: minZooms[currentIndex]
+                        property int selectedMaxZoom: maxZooms[currentIndex]
+                    }
+                }
+
+                // Estimated tile count
+                Text {
+                    width: parent.width
+                    text: {
+                        if (offlineTileManager) {
+                            var count = offlineTileManager.estimateTileCount(
+                                centerLat, centerLon,
+                                radiusCombo.selectedRadius,
+                                zoomRangeCombo.selectedMinZoom,
+                                zoomRangeCombo.selectedMaxZoom
+                            )
+                            return "Tahmini: ~" + count + " tile"
+                        }
+                        return ""
+                    }
+                    font.pixelSize: 9
+                    color: "#888888"
+                    horizontalAlignment: Text.AlignCenter
+                }
+
+                // Progress bar (visible during download)
+                Rectangle {
+                    width: parent.width
+                    height: 20
+                    color: "#333333"
+                    radius: 3
+                    visible: offlineTileManager && offlineTileManager.isDownloading
+
+                    Rectangle {
+                        width: parent.width * (offlineTileManager ? offlineTileManager.progress : 0)
+                        height: parent.height
+                        color: "#4CAF50"
+                        radius: 3
+                    }
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: offlineTileManager ?
+                              offlineTileManager.downloadedTiles + " / " + offlineTileManager.totalTiles :
+                              ""
+                        font.pixelSize: 9
+                        color: "#ffffff"
+                    }
+                }
+
+                // Download button
+                Button {
+                    width: parent.width
+                    height: 35
+                    text: offlineTileManager && offlineTileManager.isDownloading ? "Iptal Et" : "Bolgeyi Indir"
+                    enabled: offlineTileManager !== null
+
+                    background: Rectangle {
+                        color: offlineTileManager && offlineTileManager.isDownloading ?
+                               "#f44336" : "#ff9800"
+                        radius: 5
+                    }
+
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 11
+                        font.bold: true
+                        color: "#ffffff"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    onClicked: {
+                        if (offlineTileManager) {
+                            if (offlineTileManager.isDownloading) {
+                                offlineTileManager.cancelDownload()
+                            } else {
+                                offlineTileManager.downloadRegion(
+                                    centerLat, centerLon,
+                                    radiusCombo.selectedRadius,
+                                    zoomRangeCombo.selectedMinZoom,
+                                    zoomRangeCombo.selectedMaxZoom
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // Clear cache button
+                Button {
+                    width: parent.width
+                    height: 30
+                    text: "Onbellegi Temizle"
+                    enabled: offlineTileManager && !offlineTileManager.isDownloading
+
+                    background: Rectangle {
+                        color: "#555555"
+                        radius: 5
+                    }
+
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 10
+                        color: "#ffffff"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    onClicked: {
+                        if (offlineTileManager) {
+                            offlineTileManager.clearCache()
+                        }
+                    }
+                }
+
+                // Help text
+                Text {
+                    width: parent.width
+                    text: "Indirilen haritalar\noffline kullanilabilir"
+                    font.pixelSize: 8
+                    color: "#666666"
+                    horizontalAlignment: Text.AlignCenter
+                    lineHeight: 1.3
+                }
+            }
+        }
+    }
+
+    // Download complete notification
+    Connections {
+        target: offlineTileManager
+
+        function onDownloadComplete() {
+            console.log("Offline download complete!")
+            downloadCompletePopup.open()
+        }
+
+        function onDownloadError(error) {
+            console.log("Download error:", error)
+        }
+    }
+
+    // Download complete popup
+    Popup {
+        id: downloadCompletePopup
+        anchors.centerIn: parent
+        width: 250
+        height: 80
+        modal: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        background: Rectangle {
+            color: "#1a1a1a"
+            radius: 10
+            border.color: "#4CAF50"
+            border.width: 2
+        }
+
+        Column {
             anchors.centerIn: parent
-            text: "Surukle: Kaydir\nButonlar: Zoom"
-            color: "#ffffff"
-            font.pixelSize: 10
-            lineHeight: 1.4
+            spacing: 10
+
+            Text {
+                text: "Indirme Tamamlandi!"
+                font.pixelSize: 14
+                font.bold: true
+                color: "#4CAF50"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Text {
+                text: "Harita offline kullanilabilir"
+                font.pixelSize: 11
+                color: "#aaaaaa"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+
+        Timer {
+            running: downloadCompletePopup.visible
+            interval: 3000
+            onTriggered: downloadCompletePopup.close()
         }
     }
 }

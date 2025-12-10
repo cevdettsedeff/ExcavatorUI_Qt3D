@@ -112,6 +112,8 @@ set(BASE_SOURCES
     src/config/ConfigManager.cpp
     src/map/TileImageProvider.h
     src/map/TileImageProvider.cpp
+    src/map/OfflineTileManager.h
+    src/map/OfflineTileManager.cpp
     ${APP_ICON}
 )
 
