@@ -165,6 +165,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/ExcavatorView.qml
         src/views/MapView.qml
         src/views/SimpleMapView.qml
+        src/views/OfflineMapView.qml
         src/views/BathymetricMapView.qml
         src/views/BathymetricMapView_V2.qml
         src/views/BathymetricMapView_V3.qml

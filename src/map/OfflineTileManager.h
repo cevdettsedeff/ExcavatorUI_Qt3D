@@ -29,6 +29,7 @@ class OfflineTileManager : public QObject
     Q_PROPERTY(double progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(QString cacheDirectory READ cacheDirectory WRITE setCacheDirectory NOTIFY cacheDirectoryChanged)
     Q_PROPERTY(qint64 cacheSize READ cacheSize NOTIFY cacheSizeChanged)
+    Q_PROPERTY(int cachedTileCount READ cachedTileCount NOTIFY cacheSizeChanged)
 
 public:
     explicit OfflineTileManager(QObject *parent = nullptr);
@@ -42,6 +43,7 @@ public:
     QString cacheDirectory() const { return m_cacheDirectory; }
     void setCacheDirectory(const QString &path);
     qint64 cacheSize() const;
+    int cachedTileCount() const;
 
     // Q_INVOKABLE methods for QML
     Q_INVOKABLE void downloadRegion(double centerLat, double centerLon,
@@ -54,6 +56,7 @@ public:
     Q_INVOKABLE int estimateTileCount(double centerLat, double centerLon,
                                        double radiusKm, int minZoom, int maxZoom);
     Q_INVOKABLE QString formatCacheSize() const;
+    Q_INVOKABLE bool isTileCached(int z, int x, int y) const;
 
 signals:
     void isDownloadingChanged();
@@ -84,7 +87,6 @@ private:
     // Tile management
     QString getTileUrl(int z, int x, int y);
     QString getTileCachePath(int z, int x, int y);
-    bool isTileCached(int z, int x, int y);
     void downloadTile(int z, int x, int y);
     void calculateTilesToDownload(double minLat, double maxLat,
                                    double minLon, double maxLon,

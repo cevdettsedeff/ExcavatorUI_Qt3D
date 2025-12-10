@@ -961,21 +961,19 @@ ApplicationWindow {
                     }
                 }
 
-                // Harita Görünümü
+                // Harita Görünümü (Online/Offline sekmeli)
                 Rectangle {
                     color: "#2a2a2a"
 
-                    SimpleMapView {
-                        anchors.fill: parent
-                    }
-
-                    // Panel başlığı
+                    // Panel başlığı ve alt sekmeler
                     Rectangle {
+                        id: mapHeader
                         anchors.top: parent.top
                         anchors.left: parent.left
                         anchors.right: parent.right
                         height: 80
                         color: "transparent"
+                        z: 10
 
                         Rectangle {
                             anchors.fill: parent
@@ -1000,6 +998,111 @@ ApplicationWindow {
                                 font.bold: true
                                 color: "#ffffff"
                             }
+
+                            // Alt sekme butonları
+                            Rectangle {
+                                width: 2
+                                height: 40
+                                color: "#404040"
+                                Layout.leftMargin: 20
+                            }
+
+                            Row {
+                                spacing: 8
+                                Layout.leftMargin: 10
+
+                                // Online Harita butonu
+                                Rectangle {
+                                    width: 110
+                                    height: 36
+                                    radius: 18
+                                    color: mapSubStack.currentIndex === 0 ? "#4CAF50" : "#252525"
+                                    border.color: "#4CAF50"
+                                    border.width: 2
+
+                                    Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+
+                                        Text {
+                                            text: "●"
+                                            font.pixelSize: 10
+                                            color: mapSubStack.currentIndex === 0 ? "#ffffff" : "#4CAF50"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+
+                                        Text {
+                                            text: "Online"
+                                            font.pixelSize: 12
+                                            font.bold: true
+                                            color: mapSubStack.currentIndex === 0 ? "#ffffff" : "#4CAF50"
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: mapSubStack.currentIndex = 0
+                                    }
+                                }
+
+                                // Offline Harita butonu
+                                Rectangle {
+                                    width: 110
+                                    height: 36
+                                    radius: 18
+                                    color: mapSubStack.currentIndex === 1 ? "#ff9800" : "#252525"
+                                    border.color: "#ff9800"
+                                    border.width: 2
+
+                                    Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+
+                                        Text {
+                                            text: "◉"
+                                            font.pixelSize: 10
+                                            color: mapSubStack.currentIndex === 1 ? "#ffffff" : "#ff9800"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+
+                                        Text {
+                                            text: "Offline"
+                                            font.pixelSize: 12
+                                            font.bold: true
+                                            color: mapSubStack.currentIndex === 1 ? "#ffffff" : "#ff9800"
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: mapSubStack.currentIndex = 1
+                                    }
+
+                                    // Cache boyutu badge
+                                    Rectangle {
+                                        anchors.top: parent.top
+                                        anchors.right: parent.right
+                                        anchors.topMargin: -5
+                                        anchors.rightMargin: -5
+                                        width: cacheBadgeText.width + 8
+                                        height: 16
+                                        radius: 8
+                                        color: "#f44336"
+                                        visible: offlineTileManager && offlineTileManager.cacheSize > 0
+
+                                        Text {
+                                            id: cacheBadgeText
+                                            anchors.centerIn: parent
+                                            text: offlineTileManager ? offlineTileManager.formatCacheSize() : ""
+                                            font.pixelSize: 8
+                                            font.bold: true
+                                            color: "#ffffff"
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         Rectangle {
@@ -1009,9 +1112,29 @@ ApplicationWindow {
                             gradient: Gradient {
                                 orientation: Gradient.Horizontal
                                 GradientStop { position: 0.0; color: "transparent" }
-                                GradientStop { position: 0.5; color: "#4CAF50" }
+                                GradientStop { position: 0.5; color: mapSubStack.currentIndex === 0 ? "#4CAF50" : "#ff9800" }
                                 GradientStop { position: 1.0; color: "transparent" }
                             }
+                        }
+                    }
+
+                    // Alt sekme içerikleri
+                    StackLayout {
+                        id: mapSubStack
+                        anchors.top: mapHeader.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        currentIndex: 0
+
+                        // Online Harita
+                        SimpleMapView {
+                            id: simpleMapView
+                        }
+
+                        // Offline Harita
+                        OfflineMapView {
+                            id: offlineMapView
                         }
                     }
                 }

@@ -104,9 +104,21 @@ QString OfflineTileManager::getTileCachePath(int z, int x, int y)
     return QString("%1/%2/%3/%4.png").arg(m_cacheDirectory).arg(z).arg(x).arg(y);
 }
 
-bool OfflineTileManager::isTileCached(int z, int x, int y)
+bool OfflineTileManager::isTileCached(int z, int x, int y) const
 {
-    return QFile::exists(getTileCachePath(z, x, y));
+    QString path = QString("%1/%2/%3/%4.png").arg(m_cacheDirectory).arg(z).arg(x).arg(y);
+    return QFile::exists(path);
+}
+
+int OfflineTileManager::cachedTileCount() const
+{
+    int count = 0;
+    QDirIterator it(m_cacheDirectory, QStringList() << "*.png", QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        it.next();
+        count++;
+    }
+    return count;
 }
 
 int OfflineTileManager::estimateTileCount(double centerLat, double centerLon,
