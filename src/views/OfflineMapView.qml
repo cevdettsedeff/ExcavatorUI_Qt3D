@@ -252,7 +252,7 @@ Rectangle {
 
                             Text {
                                 anchors.horizontalCenter: parent.horizontalCenter
-                                text: "Indirilmemis"
+                                text: "İndirilmemiş"
                                 font.pixelSize: 10
                                 color: "#444444"
                             }
@@ -380,7 +380,7 @@ Rectangle {
             }
 
             Text {
-                text: "OFFLINE MOD - Sadece indirilen haritalar gosteriliyor"
+                text: "OFFLINE MOD - Sadece indirilen haritalar gösteriliyor"
                 font.pixelSize: 12
                 font.bold: true
                 color: "#ffffff"
@@ -409,7 +409,7 @@ Rectangle {
             spacing: 8
 
             Text {
-                text: "ONBELLEK DURUMU"
+                text: "ÖNBELLEK DURUMU"
                 font.pixelSize: 12
                 font.bold: true
                 color: "#ff9800"
@@ -462,7 +462,7 @@ Rectangle {
 
                 Text {
                     anchors.centerIn: parent
-                    text: "Onbellegi Temizle"
+                    text: "Önbelleği Temizle"
                     font.pixelSize: 11
                     font.bold: true
                     color: "#ffffff"
@@ -631,7 +631,7 @@ Rectangle {
         Text {
             id: helpText
             anchors.centerIn: parent
-            text: "Online sekmeden bolge indirin"
+            text: "Online sekmeden bölge indirin"
             font.pixelSize: 10
             color: "#888888"
         }

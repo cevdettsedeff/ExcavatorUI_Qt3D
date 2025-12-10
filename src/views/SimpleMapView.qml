@@ -525,7 +525,7 @@ Rectangle {
             Text {
                 id: resetLabel
                 anchors.centerIn: parent
-                text: "Sifirla (2x tik)"
+                text: "Sıfırla (2x tık)"
                 font.pixelSize: 8
                 color: "#ffffff"
             }
@@ -597,7 +597,7 @@ Rectangle {
             }
 
             Text {
-                text: "Tuzla Limani, Istanbul"
+                text: "Tuzla Limanı, İstanbul"
                 font.pixelSize: 10
                 color: "#aaaaaa"
             }
@@ -937,7 +937,7 @@ Rectangle {
                         spacing: 2
 
                         Text {
-                            text: "Onbellek: " + (offlineTileManager ? offlineTileManager.formatCacheSize() : "0 MB")
+                            text: "Önbellek: " + (offlineTileManager ? offlineTileManager.formatCacheSize() : "0 MB")
                             font.pixelSize: 10
                             color: "#aaaaaa"
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -987,7 +987,7 @@ Rectangle {
                         id: zoomRangeCombo
                         width: parent.width - 40
                         height: 30
-                        model: ["13-15 (Hizli)", "13-16 (Normal)", "13-17 (Detayli)", "13-18 (Maksimum)"]
+                        model: ["13-15 (Hızlı)", "13-16 (Normal)", "13-17 (Detaylı)", "13-18 (Maksimum)"]
                         currentIndex: 1
 
                         property var minZooms: [13, 13, 13, 13]
@@ -1026,7 +1026,7 @@ Rectangle {
                     }
 
                     Text {
-                        text: "Alani Onizle"
+                        text: "Alanı Önizle"
                         font.pixelSize: 10
                         color: "#ffffff"
                         anchors.verticalCenter: parent.verticalCenter
@@ -1082,7 +1082,7 @@ Rectangle {
                 Button {
                     width: parent.width
                     height: 35
-                    text: offlineTileManager && offlineTileManager.isDownloading ? "Iptal Et" : "Bolgeyi Indir"
+                    text: offlineTileManager && offlineTileManager.isDownloading ? "İptal Et" : "Bölgeyi İndir"
                     enabled: offlineTileManager !== null
 
                     background: Rectangle {
@@ -1124,7 +1124,7 @@ Rectangle {
                 Button {
                     width: parent.width
                     height: 30
-                    text: "Onbellegi Temizle"
+                    text: "Önbelleği Temizle"
                     enabled: offlineTileManager && !offlineTileManager.isDownloading
 
                     background: Rectangle {
@@ -1150,7 +1150,7 @@ Rectangle {
                 // Help text
                 Text {
                     width: parent.width
-                    text: "Indirilen haritalar\noffline kullanilabilir"
+                    text: "İndirilen haritalar\noffline kullanılabilir"
                     font.pixelSize: 8
                     color: "#666666"
                     horizontalAlignment: Text.AlignCenter
@@ -1195,7 +1195,7 @@ Rectangle {
             spacing: 10
 
             Text {
-                text: "Indirme Tamamlandi!"
+                text: "İndirme Tamamlandı!"
                 font.pixelSize: 14
                 font.bold: true
                 color: "#4CAF50"
@@ -1203,7 +1203,7 @@ Rectangle {
             }
 
             Text {
-                text: "Harita offline kullanilabilir"
+                text: "Harita offline kullanılabilir"
                 font.pixelSize: 11
                 color: "#aaaaaa"
                 anchors.horizontalCenter: parent.horizontalCenter
