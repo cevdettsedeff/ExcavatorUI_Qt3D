@@ -45,6 +45,8 @@ public:
     double progress() const { return m_totalTiles > 0 ? (double)m_downloadedTiles / m_totalTiles : 0; }
     QString cacheDirectory() const { return m_cacheDirectory; }
     void setCacheDirectory(const QString &path);
+    QString staticTileDirectory() const { return m_staticTileDirectory; }
+    void setStaticTileDirectory(const QString &path);
     qint64 cacheSize() const;
     int cachedTileCount() const;
     QString tileProvider() const { return m_tileProvider; }
@@ -103,6 +105,7 @@ private:
     int m_totalTiles;
     int m_downloadedTiles;
     QString m_cacheDirectory;
+    QString m_staticTileDirectory;  // Pre-downloaded tiles directory
     QString m_userAgent;
     QString m_tileProvider;  // "osm" or "cartodb"
 

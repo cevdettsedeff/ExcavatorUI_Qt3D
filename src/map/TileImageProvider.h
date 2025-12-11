@@ -39,6 +39,7 @@ public:
     // Configuration
     void setUserAgent(const QString &userAgent);
     void setCacheDirectory(const QString &path);
+    void setStaticTileDirectory(const QString &path);
     void setMaxCacheSize(int megabytes);
     void setTileProvider(const QString &provider);
 
@@ -50,6 +51,7 @@ private:
 
     QString m_userAgent;
     QString m_cacheDirectory;
+    QString m_staticTileDirectory;  // Pre-downloaded tiles directory
     QString m_tileProvider;  // "osm" or "cartodb"
     QCache<QString, QPixmap> m_memoryCache;
     QMutex m_cacheMutex;

@@ -18,12 +18,16 @@ TileImageProvider::TileImageProvider()
     QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     m_cacheDirectory = cacheDir + "/osm_tiles";
 
+    // Set default static tile directory (project relative)
+    m_staticTileDirectory = "static_maps/osm_tiles";
+
     // Create cache directory if it doesn't exist
     QDir().mkpath(m_cacheDirectory);
 
     qDebug() << "TileImageProvider initialized";
     qDebug() << "  User-Agent:" << m_userAgent;
     qDebug() << "  Cache directory:" << m_cacheDirectory;
+    qDebug() << "  Static tile directory:" << m_staticTileDirectory;
     qDebug() << "  Tile provider:" << m_tileProvider;
 }
 
@@ -43,6 +47,12 @@ void TileImageProvider::setCacheDirectory(const QString &path)
     QDir().mkpath(m_cacheDirectory);
 }
 
+void TileImageProvider::setStaticTileDirectory(const QString &path)
+{
+    m_staticTileDirectory = path;
+    qDebug() << "Static tile directory set to:" << m_staticTileDirectory;
+}
+
 void TileImageProvider::setMaxCacheSize(int megabytes)
 {
     m_memoryCache.setMaxCost(megabytes);
@@ -58,8 +68,10 @@ void TileImageProvider::setTileProvider(const QString &provider)
         QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
         if (m_tileProvider == "cartodb") {
             m_cacheDirectory = cacheDir + "/cartodb_tiles";
+            m_staticTileDirectory = "static_maps/cartodb_tiles";
         } else {
             m_cacheDirectory = cacheDir + "/osm_tiles";
+            m_staticTileDirectory = "static_maps/osm_tiles";
         }
         QDir().mkpath(m_cacheDirectory);
 
@@ -69,6 +81,7 @@ void TileImageProvider::setTileProvider(const QString &provider)
 
         qDebug() << "Tile provider changed to:" << m_tileProvider;
         qDebug() << "  Cache directory:" << m_cacheDirectory;
+        qDebug() << "  Static tile directory:" << m_staticTileDirectory;
     }
 }
 
@@ -113,6 +126,19 @@ QPixmap TileImageProvider::loadTile(int z, int x, int y)
         QPixmap *cached = m_memoryCache.object(tileKey);
         if (cached) {
             return *cached;
+        }
+    }
+
+    // Check static tile directory first (pre-downloaded tiles)
+    QString staticPath = QString("%1/%2/%3/%4.png")
+        .arg(m_staticTileDirectory).arg(z).arg(x).arg(y);
+    if (QFile::exists(staticPath)) {
+        QPixmap pixmap(staticPath);
+        if (!pixmap.isNull()) {
+            // Add to memory cache
+            QMutexLocker locker(&m_cacheMutex);
+            m_memoryCache.insert(tileKey, new QPixmap(pixmap), 1);
+            return pixmap;
         }
     }
 

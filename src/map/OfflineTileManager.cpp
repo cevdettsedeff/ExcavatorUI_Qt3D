@@ -25,8 +25,12 @@ OfflineTileManager::OfflineTileManager(QObject *parent)
     m_cacheDirectory = cacheDir + "/osm_tiles";
     QDir().mkpath(m_cacheDirectory);
 
+    // Set default static tile directory (project relative)
+    m_staticTileDirectory = "static_maps/osm_tiles";
+
     qDebug() << "OfflineTileManager initialized";
     qDebug() << "  Cache directory:" << m_cacheDirectory;
+    qDebug() << "  Static tile directory:" << m_staticTileDirectory;
     qDebug() << "  Tile provider:" << m_tileProvider;
 }
 
@@ -44,6 +48,14 @@ void OfflineTileManager::setCacheDirectory(const QString &path)
     }
 }
 
+void OfflineTileManager::setStaticTileDirectory(const QString &path)
+{
+    if (m_staticTileDirectory != path) {
+        m_staticTileDirectory = path;
+        qDebug() << "Static tile directory set to:" << m_staticTileDirectory;
+    }
+}
+
 void OfflineTileManager::setTileProvider(const QString &provider)
 {
     QString normalizedProvider = provider.toLower();
@@ -54,13 +66,16 @@ void OfflineTileManager::setTileProvider(const QString &provider)
         QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
         if (m_tileProvider == "cartodb") {
             m_cacheDirectory = cacheDir + "/cartodb_tiles";
+            m_staticTileDirectory = "static_maps/cartodb_tiles";
         } else {
             m_cacheDirectory = cacheDir + "/osm_tiles";
+            m_staticTileDirectory = "static_maps/osm_tiles";
         }
         QDir().mkpath(m_cacheDirectory);
 
         qDebug() << "Tile provider changed to:" << m_tileProvider;
         qDebug() << "  Cache directory:" << m_cacheDirectory;
+        qDebug() << "  Static tile directory:" << m_staticTileDirectory;
 
         emit tileProviderChanged();
         emit cacheDirectoryChanged();
@@ -140,8 +155,15 @@ QString OfflineTileManager::getTileCachePath(int z, int x, int y)
 
 bool OfflineTileManager::isTileCached(int z, int x, int y) const
 {
-    QString path = QString("%1/%2/%3/%4.png").arg(m_cacheDirectory).arg(z).arg(x).arg(y);
-    return QFile::exists(path);
+    // Check static tile directory first (pre-downloaded tiles)
+    QString staticPath = QString("%1/%2/%3/%4.png").arg(m_staticTileDirectory).arg(z).arg(x).arg(y);
+    if (QFile::exists(staticPath)) {
+        return true;
+    }
+
+    // Check cache directory
+    QString cachePath = QString("%1/%2/%3/%4.png").arg(m_cacheDirectory).arg(z).arg(x).arg(y);
+    return QFile::exists(cachePath);
 }
 
 int OfflineTileManager::cachedTileCount() const
