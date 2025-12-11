@@ -11,12 +11,14 @@
 #include <QDir>
 
 /**
- * OfflineTileManager - Downloads OSM tiles for offline use
+ * OfflineTileManager - Downloads map tiles for offline use
  *
+ * Supports multiple tile providers: OSM, CartoDB Positron
  * Downloads tiles for a specified region and zoom range,
  * saving them to the local cache directory.
  *
  * Usage from QML:
+ *   offlineTileManager.tileProvider = "cartodb"
  *   offlineTileManager.downloadRegion(lat, lon, radiusKm, minZoom, maxZoom)
  */
 class OfflineTileManager : public QObject
@@ -30,6 +32,7 @@ class OfflineTileManager : public QObject
     Q_PROPERTY(QString cacheDirectory READ cacheDirectory WRITE setCacheDirectory NOTIFY cacheDirectoryChanged)
     Q_PROPERTY(qint64 cacheSize READ cacheSize NOTIFY cacheSizeChanged)
     Q_PROPERTY(int cachedTileCount READ cachedTileCount NOTIFY cacheSizeChanged)
+    Q_PROPERTY(QString tileProvider READ tileProvider WRITE setTileProvider NOTIFY tileProviderChanged)
 
 public:
     explicit OfflineTileManager(QObject *parent = nullptr);
@@ -44,6 +47,8 @@ public:
     void setCacheDirectory(const QString &path);
     qint64 cacheSize() const;
     int cachedTileCount() const;
+    QString tileProvider() const { return m_tileProvider; }
+    void setTileProvider(const QString &provider);
 
     // Q_INVOKABLE methods for QML
     Q_INVOKABLE void downloadRegion(double centerLat, double centerLon,
@@ -65,6 +70,7 @@ signals:
     void progressChanged();
     void cacheDirectoryChanged();
     void cacheSizeChanged();
+    void tileProviderChanged();
     void downloadComplete();
     void downloadError(const QString &error);
     void tileDownloaded(int z, int x, int y);
@@ -98,6 +104,7 @@ private:
     int m_downloadedTiles;
     QString m_cacheDirectory;
     QString m_userAgent;
+    QString m_tileProvider;  // "osm" or "cartodb"
 
     // Download queue
     QQueue<TileCoord> m_downloadQueue;

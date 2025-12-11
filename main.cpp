@@ -48,8 +48,18 @@ int main(int argc, char *argv[])
     configManager.setConfigPath("config/bathymetry_config.json");
     configManager.loadConfig();
 
+    // TileImageProvider oluştur (online tile loading için)
+    TileImageProvider* tileImageProvider = new TileImageProvider();
+
     // OfflineTileManager oluştur (harita offline indirme için)
     OfflineTileManager offlineTileManager;
+
+    // Connect tile provider changes: when offline manager changes provider, update image provider too
+    QObject::connect(&offlineTileManager, &OfflineTileManager::tileProviderChanged, [&]() {
+        QString provider = offlineTileManager.tileProvider();
+        tileImageProvider->setTileProvider(provider);
+        qDebug() << "Synchronized tile provider to:" << provider;
+    });
 
 #ifdef HAVE_GDAL
     // BathymetricDataLoader oluştur (sadece GDAL varsa)
@@ -64,8 +74,8 @@ int main(int argc, char *argv[])
     // QML Engine oluştur
     QQmlApplicationEngine engine;
 
-    // Register OSM tile image provider (with proper HTTP headers)
-    engine.addImageProvider("osmtiles", new TileImageProvider());
+    // Register tile image provider (supports OSM and CartoDB)
+    engine.addImageProvider("osmtiles", tileImageProvider);
 
 #ifdef HAVE_GDAL
     // QML types'ı kaydet (sadece GDAL varsa)
