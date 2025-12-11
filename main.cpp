@@ -11,6 +11,7 @@
 #include "src/sensors/IMUMockService.h"
 #include "src/config/ConfigManager.h"
 #include "src/map/TileImageProvider.h"
+#include "src/map/OfflineTileManager.h"
 
 // GDAL-dependent features (optional)
 #ifdef HAVE_GDAL
@@ -47,6 +48,9 @@ int main(int argc, char *argv[])
     configManager.setConfigPath("config/bathymetry_config.json");
     configManager.loadConfig();
 
+    // OfflineTileManager oluştur (harita offline indirme için)
+    OfflineTileManager offlineTileManager;
+
 #ifdef HAVE_GDAL
     // BathymetricDataLoader oluştur (sadece GDAL varsa)
     BathymetricDataLoader bathymetryLoader;
@@ -76,6 +80,9 @@ int main(int argc, char *argv[])
 
     // ConfigManager'ı QML'e expose et
     engine.rootContext()->setContextProperty("configManager", &configManager);
+
+    // OfflineTileManager'ı QML'e expose et
+    engine.rootContext()->setContextProperty("offlineTileManager", &offlineTileManager);
 
 #ifdef HAVE_GDAL
     // BathymetricDataLoader'ı QML'e expose et (sadece GDAL varsa)
