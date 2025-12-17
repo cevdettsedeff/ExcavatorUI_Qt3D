@@ -2,21 +2,20 @@
 #define TRANSLATIONSERVICE_H
 
 #include <QObject>
-#include <QString>
-#include <QVariantMap>
+#include <QTranslator>
+#include <QGuiApplication>
+#include <QQmlEngine>
 #include <QSettings>
 
 /**
- * TranslationService - Simple JSON-based translation service
+ * TranslationService - Qt Linguist based translation service
  *
- * NO Qt Linguist Tools required! Uses simple JSON files.
+ * Uses Qt Linguist .ts/.qm files for translations.
  * Supports Turkish (tr_TR) and English (en_US).
  *
- * JSON files location: translations/tr_TR.json, translations/en_US.json
- *
  * Usage from QML:
- *   Text { text: translationService.tr("menu.excavator") }
- *   Text { text: translationService.tr("app.title") }
+ *   Text { text: qsTr("Excavator") }
+ *   Button { text: qsTr("Login") }
  */
 class TranslationService : public QObject
 {
@@ -25,16 +24,13 @@ class TranslationService : public QObject
     Q_PROPERTY(QStringList availableLanguages READ availableLanguages CONSTANT)
 
 public:
-    explicit TranslationService(QObject *parent = nullptr);
+    explicit TranslationService(QGuiApplication *app, QQmlEngine *engine, QObject *parent = nullptr);
     ~TranslationService();
 
     QString currentLanguage() const { return m_currentLanguage; }
     void setCurrentLanguage(const QString &language);
 
     QStringList availableLanguages() const;
-
-    // Main translation method - use this in QML
-    Q_INVOKABLE QString tr(const QString &key, const QString &defaultValue = QString()) const;
 
     Q_INVOKABLE void switchLanguage(const QString &language);
     Q_INVOKABLE QString getLanguageName(const QString &languageCode) const;
@@ -46,11 +42,12 @@ signals:
     void languageChanged();
 
 private:
-    bool loadTranslations(const QString &language);
-    QVariant getNestedValue(const QVariantMap &map, const QString &key) const;
+    bool loadTranslation(const QString &language);
 
+    QGuiApplication *m_app;
+    QQmlEngine *m_engine;
+    QTranslator *m_translator;
     QString m_currentLanguage;
-    QVariantMap m_translations;
     QSettings m_settings;
 };
 
