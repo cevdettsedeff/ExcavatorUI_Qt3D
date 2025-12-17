@@ -6,6 +6,8 @@
 #include <QIcon>
 #include <QColor>
 #include <QTimer>
+#include <QDir>
+#include <QDebug>
 #include "src/database/DatabaseManager.h"
 #include "src/auth/AuthService.h"
 #include "src/sensors/IMUMockService.h"
@@ -47,6 +49,18 @@ int main(int argc, char *argv[])
     ConfigManager configManager;
     configManager.setConfigPath("config/bathymetry_config.json");
     configManager.loadConfig();
+
+    // Debug: Working directory ve maps klasörü kontrolü
+    QString workingDir = QDir::currentPath();
+    QString mapsPath = QDir(workingDir).filePath("maps");
+    qDebug() << "========================================";
+    qDebug() << "Working Directory:" << workingDir;
+    qDebug() << "Maps Path:" << mapsPath;
+    qDebug() << "Maps Exists:" << QDir(mapsPath).exists();
+    if (QDir(mapsPath).exists()) {
+        qDebug() << "Maps Contents:" << QDir(mapsPath).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    }
+    qDebug() << "========================================";
 
     // TileImageProvider oluştur (online tile loading için)
     TileImageProvider* tileImageProvider = new TileImageProvider();

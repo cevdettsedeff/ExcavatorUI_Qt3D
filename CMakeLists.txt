@@ -209,6 +209,19 @@ set_target_properties(ExcavatorUI_Qt3DApp PROPERTIES
     MACOSX_BUNDLE TRUE
 )
 
+# Copy maps directory to build directory (if it exists)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/maps")
+    add_custom_command(TARGET ExcavatorUI_Qt3DApp POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/maps"
+        "$<TARGET_FILE_DIR:ExcavatorUI_Qt3DApp>/maps"
+        COMMENT "Copying maps directory to build directory..."
+    )
+    message(STATUS "✓ maps directory will be copied to build directory")
+else()
+    message(STATUS "ℹ maps directory not found - offline tiles will not be available")
+endif()
+
 install(TARGETS ExcavatorUI_Qt3DApp
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
