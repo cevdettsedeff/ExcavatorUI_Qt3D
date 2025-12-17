@@ -195,5 +195,291 @@
         <source>East</source>
         <translation>East</translation>
     </message>
+    <message>
+        <source>Pending Approval Users</source>
+        <translation>Pending Approval Users</translation>
+    </message>
+    <message>
+        <source>users waiting for approval</source>
+        <translation>users waiting for approval</translation>
+    </message>
+    <message>
+        <source>Approve</source>
+        <translation>Approve</translation>
+    </message>
+    <message>
+        <source>Reject</source>
+        <translation>Reject</translation>
+    </message>
+    <message>
+        <source>All registration requests processed</source>
+        <translation>All registration requests processed</translation>
+    </message>
+    <message>
+        <source>All Users</source>
+        <translation>All Users</translation>
+    </message>
+    <message>
+        <source>registered users</source>
+        <translation>registered users</translation>
+    </message>
+    <message>
+        <source>Add New User</source>
+        <translation>Add New User</translation>
+    </message>
+    <message>
+        <source>PENDING</source>
+        <translation>PENDING</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Edit</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Delete</translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation>Username</translation>
+    </message>
+    <message>
+        <source>Password (minimum 6 characters)</source>
+        <translation>Password (minimum 6 characters)</translation>
+    </message>
+    <message>
+        <source>Grant Admin Permission</source>
+        <translation>Grant Admin Permission</translation>
+    </message>
+    <message>
+        <source>Edit User</source>
+        <translation>Edit User</translation>
+    </message>
+    <message>
+        <source>New Password (can be left blank)</source>
+        <translation>New Password (can be left blank)</translation>
+    </message>
+    <message>
+        <source>Admin Permission</source>
+        <translation>Admin Permission</translation>
+    </message>
+    <message>
+        <source>Delete User</source>
+        <translation>Delete User</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the following user?</source>
+        <translation>Are you sure you want to delete the following user?</translation>
+    </message>
+    <message>
+        <source>This action cannot be undone!</source>
+        <translation>This action cannot be undone!</translation>
+    </message>
+    <message>
+        <source>Please log in</source>
+        <translation>Please log in</translation>
+    </message>
+    <message>
+        <source>Enter your username</source>
+        <translation>Enter your username</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>Password</translation>
+    </message>
+    <message>
+        <source>Enter your password</source>
+        <translation>Enter your password</translation>
+    </message>
+    <message>
+        <source>Hide</source>
+        <translation>Hide</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>Show</translation>
+    </message>
+    <message>
+        <source>Login</source>
+        <translation>Login</translation>
+    </message>
+    <message>
+        <source>or</source>
+        <translation>or</translation>
+    </message>
+    <message>
+        <source>Sign Up</source>
+        <translation>Sign Up</translation>
+    </message>
+    <message>
+        <source>Create New Account</source>
+        <translation>Create New Account</translation>
+    </message>
+    <message>
+        <source>Please enter your information</source>
+        <translation>Please enter your information</translation>
+    </message>
+    <message>
+        <source>Choose your username (min. 3 characters)</source>
+        <translation>Choose your username (min. 3 characters)</translation>
+    </message>
+    <message>
+        <source>Choose your password</source>
+        <translation>Choose your password</translation>
+    </message>
+    <message>
+        <source>Confirm Password</source>
+        <translation>Confirm Password</translation>
+    </message>
+    <message>
+        <source>Re-enter your password</source>
+        <translation>Re-enter your password</translation>
+    </message>
+    <message>
+        <source>Register</source>
+        <translation>Register</translation>
+    </message>
+    <message>
+        <source>This username is already taken. Please choose another username.</source>
+        <translation>This username is already taken. Please choose another username.</translation>
+    </message>
+    <message>
+        <source>Go Back</source>
+        <translation>Go Back</translation>
+    </message>
+    <message>
+        <source>Password Requirements</source>
+        <translation>Password Requirements</translation>
+    </message>
+    <message>
+        <source>• Username: At least 3 characters
+• Password: At least 6 characters
+• At least 1 uppercase, 1 lowercase letter
+• Must contain at least 1 digit</source>
+        <translation>• Username: At least 3 characters
+• Password: At least 6 characters
+• At least 1 uppercase, 1 lowercase letter
+• Must contain at least 1 digit</translation>
+    </message>
+    <message>
+        <source>Username must be at least 3 characters.</source>
+        <translation>Username must be at least 3 characters.</translation>
+    </message>
+    <message>
+        <source>Username can be at most 20 characters.</source>
+        <translation>Username can be at most 20 characters.</translation>
+    </message>
+    <message>
+        <source>Username can only contain letters, numbers and underscore (_).</source>
+        <translation>Username can only contain letters, numbers and underscore (_).</translation>
+    </message>
+    <message>
+        <source>Password must be at least 6 characters.</source>
+        <translation>Password must be at least 6 characters.</translation>
+    </message>
+    <message>
+        <source>Password must contain at least 1 uppercase letter.</source>
+        <translation>Password must contain at least 1 uppercase letter.</translation>
+    </message>
+    <message>
+        <source>Password must contain at least 1 lowercase letter.</source>
+        <translation>Password must contain at least 1 lowercase letter.</translation>
+    </message>
+    <message>
+        <source>Password must contain at least 1 digit.</source>
+        <translation>Password must contain at least 1 digit.</translation>
+    </message>
+    <message>
+        <source>Passwords do not match. Please re-enter the same password.</source>
+        <translation>Passwords do not match. Please re-enter the same password.</translation>
+    </message>
+    <message>
+        <source>Registration Request Received!</source>
+        <translation>Registration Request Received!</translation>
+    </message>
+    <message>
+        <source>Your registration request has been sent to the administrator.
+
+Redirecting to login page while waiting for approval...</source>
+        <translation>Your registration request has been sent to the administrator.
+
+Redirecting to login page while waiting for approval...</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <source>My Profile</source>
+        <translation>My Profile</translation>
+    </message>
+    <message>
+        <source>Profile Information</source>
+        <translation>Profile Information</translation>
+    </message>
+    <message>
+        <source>Change your username and password</source>
+        <translation>Change your username and password</translation>
+    </message>
+    <message>
+        <source>Current Username</source>
+        <translation>Current Username</translation>
+    </message>
+    <message>
+        <source>New Username</source>
+        <translation>New Username</translation>
+    </message>
+    <message>
+        <source>Enter your new username</source>
+        <translation>Enter your new username</translation>
+    </message>
+    <message>
+        <source>New Password</source>
+        <translation>New Password</translation>
+    </message>
+    <message>
+        <source>Enter your new password (at least 6 characters)</source>
+        <translation>Enter your new password (at least 6 characters)</translation>
+    </message>
+    <message>
+        <source>New Password (Confirm)</source>
+        <translation>New Password (Confirm)</translation>
+    </message>
+    <message>
+        <source>You will be automatically logged out and redirected to the login screen when your profile is updated.</source>
+        <translation>You will be automatically logged out and redirected to the login screen when your profile is updated.</translation>
+    </message>
+    <message>
+        <source>Save Changes</source>
+        <translation>Save Changes</translation>
+    </message>
+    <message>
+        <source>At least one field must be filled.</source>
+        <translation>At least one field must be filled.</translation>
+    </message>
+    <message>
+        <source>Passwords do not match.</source>
+        <translation>Passwords do not match.</translation>
+    </message>
+    <message>
+        <source>An error occurred while updating profile. This username may already be in use.</source>
+        <translation>An error occurred while updating profile. This username may already be in use.</translation>
+    </message>
+    <message>
+        <source>Success</source>
+        <translation>Success</translation>
+    </message>
+    <message>
+        <source>Profile Updated</source>
+        <translation>Profile Updated</translation>
+    </message>
+    <message>
+        <source>Your profile has been successfully updated.
+
+Redirecting to login screen...</source>
+        <translation>Your profile has been successfully updated.
+
+Redirecting to login screen...</translation>
+    </message>
 </context>
 </TS>

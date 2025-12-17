@@ -195,5 +195,291 @@
         <source>East</source>
         <translation>Doğu</translation>
     </message>
+    <message>
+        <source>Pending Approval Users</source>
+        <translation>Onay Bekleyen Kullanıcılar</translation>
+    </message>
+    <message>
+        <source>users waiting for approval</source>
+        <translation>kullanıcı onay bekliyor</translation>
+    </message>
+    <message>
+        <source>Approve</source>
+        <translation>Onayla</translation>
+    </message>
+    <message>
+        <source>Reject</source>
+        <translation>Reddet</translation>
+    </message>
+    <message>
+        <source>All registration requests processed</source>
+        <translation>Tüm kayıt istekleri işlendi</translation>
+    </message>
+    <message>
+        <source>All Users</source>
+        <translation>Tüm Kullanıcılar</translation>
+    </message>
+    <message>
+        <source>registered users</source>
+        <translation>kayıtlı kullanıcı</translation>
+    </message>
+    <message>
+        <source>Add New User</source>
+        <translation>Yeni Kullanıcı Ekle</translation>
+    </message>
+    <message>
+        <source>PENDING</source>
+        <translation>BEKLEMEDE</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Düzenle</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Sil</translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation>Kullanıcı Adı</translation>
+    </message>
+    <message>
+        <source>Password (minimum 6 characters)</source>
+        <translation>Şifre (minimum 6 karakter)</translation>
+    </message>
+    <message>
+        <source>Grant Admin Permission</source>
+        <translation>Admin Yetkisi Ver</translation>
+    </message>
+    <message>
+        <source>Edit User</source>
+        <translation>Kullanıcı Düzenle</translation>
+    </message>
+    <message>
+        <source>New Password (can be left blank)</source>
+        <translation>Yeni Şifre (boş bırakılabilir)</translation>
+    </message>
+    <message>
+        <source>Admin Permission</source>
+        <translation>Admin Yetkisi</translation>
+    </message>
+    <message>
+        <source>Delete User</source>
+        <translation>Kullanıcı Sil</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the following user?</source>
+        <translation>Aşağıdaki kullanıcıyı silmek istediğinize emin misiniz?</translation>
+    </message>
+    <message>
+        <source>This action cannot be undone!</source>
+        <translation>Bu işlem geri alınamaz!</translation>
+    </message>
+    <message>
+        <source>Please log in</source>
+        <translation>Lütfen giriş yapın</translation>
+    </message>
+    <message>
+        <source>Enter your username</source>
+        <translation>Kullanıcı adınızı girin</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>Şifre</translation>
+    </message>
+    <message>
+        <source>Enter your password</source>
+        <translation>Şifrenizi girin</translation>
+    </message>
+    <message>
+        <source>Hide</source>
+        <translation>Gizle</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>Göster</translation>
+    </message>
+    <message>
+        <source>Login</source>
+        <translation>Giriş Yap</translation>
+    </message>
+    <message>
+        <source>or</source>
+        <translation>veya</translation>
+    </message>
+    <message>
+        <source>Sign Up</source>
+        <translation>Üye Ol</translation>
+    </message>
+    <message>
+        <source>Create New Account</source>
+        <translation>Yeni Hesap Oluştur</translation>
+    </message>
+    <message>
+        <source>Please enter your information</source>
+        <translation>Lütfen bilgilerinizi girin</translation>
+    </message>
+    <message>
+        <source>Choose your username (min. 3 characters)</source>
+        <translation>Kullanıcı adınızı seçin (min. 3 karakter)</translation>
+    </message>
+    <message>
+        <source>Choose your password</source>
+        <translation>Şifrenizi belirleyin</translation>
+    </message>
+    <message>
+        <source>Confirm Password</source>
+        <translation>Şifre Tekrar</translation>
+    </message>
+    <message>
+        <source>Re-enter your password</source>
+        <translation>Şifrenizi tekrar girin</translation>
+    </message>
+    <message>
+        <source>Register</source>
+        <translation>Kayıt Ol</translation>
+    </message>
+    <message>
+        <source>This username is already taken. Please choose another username.</source>
+        <translation>Bu kullanıcı adı zaten kullanımda. Lütfen başka bir kullanıcı adı seçin.</translation>
+    </message>
+    <message>
+        <source>Go Back</source>
+        <translation>Geri Dön</translation>
+    </message>
+    <message>
+        <source>Password Requirements</source>
+        <translation>Şifre Gereksinimleri</translation>
+    </message>
+    <message>
+        <source>• Username: At least 3 characters
+• Password: At least 6 characters
+• At least 1 uppercase, 1 lowercase letter
+• Must contain at least 1 digit</source>
+        <translation>• Kullanıcı adı: En az 3 karakter
+• Şifre: En az 6 karakter
+• En az 1 büyük harf, 1 küçük harf
+• En az 1 rakam içermeli</translation>
+    </message>
+    <message>
+        <source>Username must be at least 3 characters.</source>
+        <translation>Kullanıcı adı en az 3 karakter olmalıdır.</translation>
+    </message>
+    <message>
+        <source>Username can be at most 20 characters.</source>
+        <translation>Kullanıcı adı en fazla 20 karakter olabilir.</translation>
+    </message>
+    <message>
+        <source>Username can only contain letters, numbers and underscore (_).</source>
+        <translation>Kullanıcı adı sadece harf, rakam ve alt çizgi (_) içerebilir.</translation>
+    </message>
+    <message>
+        <source>Password must be at least 6 characters.</source>
+        <translation>Şifre en az 6 karakter olmalıdır.</translation>
+    </message>
+    <message>
+        <source>Password must contain at least 1 uppercase letter.</source>
+        <translation>Şifre en az 1 büyük harf içermelidir.</translation>
+    </message>
+    <message>
+        <source>Password must contain at least 1 lowercase letter.</source>
+        <translation>Şifre en az 1 küçük harf içermelidir.</translation>
+    </message>
+    <message>
+        <source>Password must contain at least 1 digit.</source>
+        <translation>Şifre en az 1 rakam içermelidir.</translation>
+    </message>
+    <message>
+        <source>Passwords do not match. Please re-enter the same password.</source>
+        <translation>Şifreler eşleşmiyor. Lütfen aynı şifreyi tekrar girin.</translation>
+    </message>
+    <message>
+        <source>Registration Request Received!</source>
+        <translation>Kayıt İsteğiniz Alındı!</translation>
+    </message>
+    <message>
+        <source>Your registration request has been sent to the administrator.
+
+Redirecting to login page while waiting for approval...</source>
+        <translation>Kayıt isteğiniz yetkili kişiye gönderildi.
+
+Onay beklerken giriş sayfasına yönlendiriliyorsunuz...</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Hata</translation>
+    </message>
+    <message>
+        <source>My Profile</source>
+        <translation>Profilim</translation>
+    </message>
+    <message>
+        <source>Profile Information</source>
+        <translation>Profil Bilgileri</translation>
+    </message>
+    <message>
+        <source>Change your username and password</source>
+        <translation>Kullanıcı adı ve şifrenizi değiştirin</translation>
+    </message>
+    <message>
+        <source>Current Username</source>
+        <translation>Mevcut Kullanıcı Adı</translation>
+    </message>
+    <message>
+        <source>New Username</source>
+        <translation>Yeni Kullanıcı Adı</translation>
+    </message>
+    <message>
+        <source>Enter your new username</source>
+        <translation>Yeni kullanıcı adınızı girin</translation>
+    </message>
+    <message>
+        <source>New Password</source>
+        <translation>Yeni Şifre</translation>
+    </message>
+    <message>
+        <source>Enter your new password (at least 6 characters)</source>
+        <translation>Yeni şifrenizi girin (en az 6 karakter)</translation>
+    </message>
+    <message>
+        <source>New Password (Confirm)</source>
+        <translation>Yeni Şifre (Tekrar)</translation>
+    </message>
+    <message>
+        <source>You will be automatically logged out and redirected to the login screen when your profile is updated.</source>
+        <translation>Profil bilgileriniz güncellendiğinde otomatik olarak çıkış yapılacak ve giriş ekranına yönlendirileceksiniz.</translation>
+    </message>
+    <message>
+        <source>Save Changes</source>
+        <translation>Değişiklikleri Kaydet</translation>
+    </message>
+    <message>
+        <source>At least one field must be filled.</source>
+        <translation>En az bir alan doldurulmalıdır.</translation>
+    </message>
+    <message>
+        <source>Passwords do not match.</source>
+        <translation>Şifreler eşleşmiyor.</translation>
+    </message>
+    <message>
+        <source>An error occurred while updating profile. This username may already be in use.</source>
+        <translation>Profil güncellenirken bir hata oluştu. Bu kullanıcı adı zaten kullanılıyor olabilir.</translation>
+    </message>
+    <message>
+        <source>Success</source>
+        <translation>Başarılı</translation>
+    </message>
+    <message>
+        <source>Profile Updated</source>
+        <translation>Profil Güncellendi</translation>
+    </message>
+    <message>
+        <source>Your profile has been successfully updated.
+
+Redirecting to login screen...</source>
+        <translation>Profil bilgileriniz başarıyla güncellendi.
+
+Giriş ekranına yönlendiriliyorsunuz...</translation>
+    </message>
 </context>
 </TS>

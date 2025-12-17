@@ -63,7 +63,7 @@ Rectangle {
             }
 
             Text {
-                text: "Kullanıcı Yönetimi"
+                text: qsTr("User Management")
                 font.pixelSize: 28
                 font.bold: true
                 color: "#ffffff"
@@ -163,14 +163,14 @@ Rectangle {
                             Layout.alignment: Qt.AlignVCenter
 
                             Text {
-                                text: "Onay Bekleyen Kullanıcılar"
+                                text: qsTr("Pending Approval Users")
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: "#ffffff"
                             }
 
                             Text {
-                                text: pendingUsers.length + " kullanıcı onay bekliyor"
+                                text: pendingUsers.length + " " + qsTr("users waiting for approval")
                                 font.pixelSize: 14
                                 color: "#ff9800"
                             }
@@ -274,7 +274,7 @@ Rectangle {
                                         Layout.alignment: Qt.AlignVCenter
 
                                         Button {
-                                            text: "✓ Onayla"
+                                            text: "✓ " + qsTr("Approve")
                                             width: 110
                                             height: 42
 
@@ -309,7 +309,7 @@ Rectangle {
                                         }
 
                                         Button {
-                                            text: "✗ Reddet"
+                                            text: "✗ " + qsTr("Reject")
                                             width: 110
                                             height: 42
 
@@ -365,7 +365,7 @@ Rectangle {
                                 }
 
                                 Text {
-                                    text: "Tüm kayıt istekleri işlendi"
+                                    text: qsTr("All registration requests processed")
                                     font.pixelSize: 14
                                     color: "#888888"
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -411,14 +411,14 @@ Rectangle {
                             Layout.alignment: Qt.AlignVCenter
 
                             Text {
-                                text: "Tüm Kullanıcılar"
+                                text: qsTr("All Users")
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: "#ffffff"
                             }
 
                             Text {
-                                text: allUsers.length + " kayıtlı kullanıcı"
+                                text: allUsers.length + " " + qsTr("registered users")
                                 font.pixelSize: 14
                                 color: "#00bcd4"
                             }
@@ -427,7 +427,7 @@ Rectangle {
                         Item { Layout.fillWidth: true }
 
                         Button {
-                            text: "+ Yeni Kullanıcı Ekle"
+                            text: "+ " + qsTr("Add New User")
                             width: 200
                             height: 42
                             Layout.alignment: Qt.AlignVCenter
@@ -559,7 +559,7 @@ Rectangle {
                                                 color: "#ff9800"
 
                                                 Text {
-                                                    text: "BEKLEMEDE"
+                                                    text: qsTr("PENDING")
                                                     font.pixelSize: 9
                                                     font.bold: true
                                                     color: "#ffffff"
@@ -592,7 +592,7 @@ Rectangle {
                                         Layout.alignment: Qt.AlignVCenter
 
                                         Button {
-                                            text: "✎ Düzenle"
+                                            text: "✎ " + qsTr("Edit")
                                             width: 100
                                             height: 38
 
@@ -624,7 +624,7 @@ Rectangle {
                                         }
 
                                         Button {
-                                            text: "✗ Sil"
+                                            text: "✗ " + qsTr("Delete")
                                             width: 80
                                             height: 38
                                             enabled: modelData.username !== authService.currentUser
@@ -673,7 +673,7 @@ Rectangle {
     // Yeni Kullanıcı Ekleme Dialog
     Dialog {
         id: addUserDialog
-        title: "Yeni Kullanıcı Ekle"
+        title: qsTr("Add New User")
         modal: true
         anchors.centerIn: parent
         width: 450
@@ -705,7 +705,7 @@ Rectangle {
 
             Text {
                 anchors.centerIn: parent
-                text: "➕ Yeni Kullanıcı Ekle"
+                text: "➕ " + qsTr("Add New User")
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
@@ -720,7 +720,7 @@ Rectangle {
             TextField {
                 id: usernameInput
                 Layout.fillWidth: true
-                placeholderText: "Kullanıcı Adı"
+                placeholderText: qsTr("Username")
                 font.pixelSize: 14
                 height: 45
 
@@ -741,7 +741,7 @@ Rectangle {
             TextField {
                 id: passwordInput
                 Layout.fillWidth: true
-                placeholderText: "Şifre (minimum 6 karakter)"
+                placeholderText: qsTr("Password (minimum 6 characters)")
                 echoMode: TextInput.Password
                 font.pixelSize: 14
                 height: 45
@@ -762,7 +762,7 @@ Rectangle {
 
             CheckBox {
                 id: adminCheckbox
-                text: "Admin Yetkisi Ver"
+                text: qsTr("Grant Admin Permission")
                 font.pixelSize: 14
 
                 indicator: Rectangle {
@@ -816,7 +816,7 @@ Rectangle {
     // Kullanıcı Düzenleme Dialog
     Dialog {
         id: editUserDialog
-        title: "Kullanıcı Düzenle"
+        title: qsTr("Edit User")
         modal: true
         anchors.centerIn: parent
         width: 450
@@ -848,7 +848,7 @@ Rectangle {
 
             Text {
                 anchors.centerIn: parent
-                text: "✎ Kullanıcı Düzenle"
+                text: "✎ " + qsTr("Edit User")
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
@@ -863,7 +863,7 @@ Rectangle {
             TextField {
                 id: editUsernameInput
                 Layout.fillWidth: true
-                placeholderText: "Kullanıcı Adı"
+                placeholderText: qsTr("Username")
                 font.pixelSize: 14
                 height: 45
 
@@ -884,7 +884,7 @@ Rectangle {
             TextField {
                 id: editPasswordInput
                 Layout.fillWidth: true
-                placeholderText: "Yeni Şifre (boş bırakılabilir)"
+                placeholderText: qsTr("New Password (can be left blank)")
                 echoMode: TextInput.Password
                 font.pixelSize: 14
                 height: 45
@@ -905,7 +905,7 @@ Rectangle {
 
             CheckBox {
                 id: editAdminCheckbox
-                text: "Admin Yetkisi"
+                text: qsTr("Admin Permission")
                 font.pixelSize: 14
 
                 indicator: Rectangle {
@@ -955,7 +955,7 @@ Rectangle {
     // Silme Onay Dialog
     Dialog {
         id: deleteConfirmDialog
-        title: "Kullanıcı Sil"
+        title: qsTr("Delete User")
         modal: true
         anchors.centerIn: parent
         width: 400
@@ -986,7 +986,7 @@ Rectangle {
 
             Text {
                 anchors.centerIn: parent
-                text: "⚠️ Kullanıcı Sil"
+                text: "⚠️ " + qsTr("Delete User")
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
@@ -998,7 +998,7 @@ Rectangle {
             width: parent.width
 
             Text {
-                text: "Aşağıdaki kullanıcıyı silmek istediğinize emin misiniz?"
+                text: qsTr("Are you sure you want to delete the following user?")
                 font.pixelSize: 14
                 color: "#cccccc"
                 wrapMode: Text.WordWrap
@@ -1023,7 +1023,7 @@ Rectangle {
             }
 
             Text {
-                text: "Bu işlem geri alınamaz!"
+                text: qsTr("This action cannot be undone!")
                 font.pixelSize: 12
                 color: "#ff9800"
                 font.italic: true
