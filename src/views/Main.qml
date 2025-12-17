@@ -1125,7 +1125,7 @@ ApplicationWindow {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
-                        currentIndex: 0
+                        currentIndex: 1  // Varsayılan olarak Offline harita göster
 
                         // Online Harita
                         SimpleMapView {

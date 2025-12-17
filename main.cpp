@@ -50,9 +50,13 @@ int main(int argc, char *argv[])
 
     // TileImageProvider oluştur (online tile loading için)
     TileImageProvider* tileImageProvider = new TileImageProvider();
+    // Kullanıcının yerel tile klasörünü ayarla
+    tileImageProvider->setStaticTileDirectory("maps");
 
     // OfflineTileManager oluştur (harita offline indirme için)
     OfflineTileManager offlineTileManager;
+    // Kullanıcının yerel tile klasörünü ayarla
+    offlineTileManager.setStaticTileDirectory("maps");
 
     // Connect tile provider changes: when offline manager changes provider, update image provider too
     QObject::connect(&offlineTileManager, &OfflineTileManager::tileProviderChanged, [&]() {

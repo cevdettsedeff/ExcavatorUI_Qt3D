@@ -17,7 +17,7 @@ Rectangle {
     // Map view state
     property real centerLat: excavatorLat
     property real centerLon: excavatorLon
-    property int zoomLevel: 15
+    property int zoomLevel: 12  // Kullanıcının mevcut tile zoom seviyesi
     property real tileSize: 256
 
     // Current center tile coordinates
@@ -610,7 +610,7 @@ Rectangle {
                     id: homeArea
                     anchors.fill: parent
                     enabled: !isUpdating
-                    onClicked: goToLocation(excavatorLat, excavatorLon, 15)
+                    onClicked: goToLocation(excavatorLat, excavatorLon, 12)
                 }
             }
         }
