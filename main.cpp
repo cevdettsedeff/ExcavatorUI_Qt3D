@@ -14,6 +14,8 @@
 #include "src/config/ConfigManager.h"
 #include "src/map/TileImageProvider.h"
 #include "src/map/OfflineTileManager.h"
+#include "src/i18n/TranslationService.h"
+#include "src/theme/ThemeManager.h"
 
 // GDAL-dependent features (optional)
 #ifdef HAVE_GDAL
@@ -92,6 +94,12 @@ int main(int argc, char *argv[])
     // QML Engine oluştur
     QQmlApplicationEngine engine;
 
+    // TranslationService oluştur
+    TranslationService translationService(&app, &engine);
+
+    // ThemeManager oluştur
+    ThemeManager themeManager;
+
     // Register tile image provider (supports OSM and CartoDB)
     engine.addImageProvider("osmtiles", tileImageProvider);
 
@@ -111,6 +119,12 @@ int main(int argc, char *argv[])
 
     // OfflineTileManager'ı QML'e expose et
     engine.rootContext()->setContextProperty("offlineTileManager", &offlineTileManager);
+
+    // TranslationService'i QML'e expose et
+    engine.rootContext()->setContextProperty("translationService", &translationService);
+
+    // ThemeManager'ı QML'e expose et
+    engine.rootContext()->setContextProperty("themeManager", &themeManager);
 
 #ifdef HAVE_GDAL
     // BathymetricDataLoader'ı QML'e expose et (sadece GDAL varsa)

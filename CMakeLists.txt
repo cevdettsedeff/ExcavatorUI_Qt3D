@@ -114,6 +114,10 @@ set(BASE_SOURCES
     src/map/TileImageProvider.cpp
     src/map/OfflineTileManager.h
     src/map/OfflineTileManager.cpp
+    src/i18n/TranslationService.h
+    src/i18n/TranslationService.cpp
+    src/theme/ThemeManager.h
+    src/theme/ThemeManager.cpp
     ${APP_ICON}
 )
 
@@ -133,6 +137,12 @@ else()
     message(STATUS "✗ Skipping GDAL bathymetry sources (GDAL not found)")
 endif()
 
+# Translation files
+set(TS_FILES
+    translations/excavator_tr_TR.ts
+    translations/excavator_en_US.ts
+)
+
 qt_add_executable(ExcavatorUI_Qt3DApp
     ${BASE_SOURCES}
     ${BATHYMETRY_SOURCES}
@@ -151,6 +161,13 @@ message(STATUS "Bulunan mesh dosyası sayısı: ${MESH_COUNT}")
 # İlk 5 dosyayı göster (debug için)
 list(SUBLIST MESH_FILES 0 5 FIRST_MESHES)
 message(STATUS "İlk mesh dosyaları: ${FIRST_MESHES}")
+
+# Add translations to the executable
+qt_add_translations(ExcavatorUI_Qt3DApp
+    TS_FILES ${TS_FILES}
+    RESOURCE_PREFIX "/i18n"
+    QM_FILES_OUTPUT_VARIABLE qm_files
+)
 
 qt_add_qml_module(ExcavatorUI_Qt3DApp
     URI ExcavatorUI_Qt3D

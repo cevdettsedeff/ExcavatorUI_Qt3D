@@ -17,8 +17,12 @@ ApplicationWindow {
     // İLK FRAME'DEN İTİBAREN GÖRÜNMESİ GEREKEN ARKAPLAN
     Rectangle {
         anchors.fill: parent
-        color: "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
         z: -1
+
+        Behavior on color {
+            ColorAnimation { duration: 300 }
+        }
     }
 
     // Ana container - dikey layout
@@ -44,8 +48,12 @@ ApplicationWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 50
-            color: "#0d0d0d"
+            color: themeManager ? themeManager.backgroundColorDark : "#0d0d0d"
             z: 100
+
+            Behavior on color {
+                ColorAnimation { duration: 300 }
+            }
 
             RowLayout {
                 anchors.fill: parent
@@ -53,10 +61,70 @@ ApplicationWindow {
                 anchors.rightMargin: 20
                 spacing: 20
 
-                // Sol taraf - Başlık ve kullanıcı bilgisi
+                // Sol taraf - Tema butonu + Başlık ve kullanıcı bilgisi
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 15
+
+                    // Tema değiştirme butonu (Sol üst köşe)
+                    Rectangle {
+                        width: 40
+                        height: 35
+                        radius: 5
+                        color: themeBtnArea.containsMouse ? (themeManager ? themeManager.hoverColor : "#333333") : "transparent"
+                        border.color: themeManager ? themeManager.borderColor : "#404040"
+                        border.width: 1
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: themeManager && themeManager.isDarkTheme ? "☀️" : "🌙"
+                            font.pixelSize: 20
+                        }
+
+                        MouseArea {
+                            id: themeBtnArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (themeManager) {
+                                    themeManager.toggleTheme()
+                                }
+                            }
+                        }
+
+                        // Tooltip
+                        Rectangle {
+                            visible: themeBtnArea.containsMouse
+                            anchors.top: parent.bottom
+                            anchors.topMargin: 5
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            width: tooltipText.width + 16
+                            height: 25
+                            color: "#2a2a2a"
+                            radius: 3
+                            opacity: 0.95
+                            z: 200
+
+                            Text {
+                                id: tooltipText
+                                anchors.centerIn: parent
+                                text: themeManager && themeManager.isDarkTheme ? qsTr("Light") : qsTr("Dark")
+                                font.pixelSize: 11
+                                color: "#ffffff"
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        width: 2
+                        height: 30
+                        color: themeManager ? themeManager.borderColor : "#404040"
+                    }
 
                     Text {
                         text: "🚜"
@@ -64,10 +132,10 @@ ApplicationWindow {
                     }
 
                     Text {
-                        text: "Excavator Dashboard"
+                        text: qsTr("Excavator Dashboard")
                         font.pixelSize: 18
                         font.bold: true
-                        color: "#ffffff"
+                        color: themeManager ? themeManager.textColor : "#ffffff"
                     }
 
                     Rectangle {
@@ -78,9 +146,9 @@ ApplicationWindow {
 
                     Text {
                         text: authService && authService.currentUser ?
-                              "Hoşgeldin, " + authService.currentUser + (authService.isAdmin ? " (Admin)" : "") : ""
+                              qsTr("Welcome") + ", " + authService.currentUser + (authService.isAdmin ? " (" + qsTr("Admin") + ")" : "") : ""
                         font.pixelSize: 14
-                        color: authService && authService.isAdmin ? "#ba68c8" : "#888888"
+                        color: authService && authService.isAdmin ? "#ba68c8" : (themeManager ? themeManager.textColorSecondary : "#888888")
                     }
 
                     Rectangle {
@@ -95,7 +163,7 @@ ApplicationWindow {
 
                         Button {
                             id: excavatorViewButton
-                            text: "Ekskavatör"
+                            text: qsTr("Excavator")
                             width: 110
                             height: 35
 
@@ -126,7 +194,7 @@ ApplicationWindow {
 
                         Button {
                             id: mapViewButton
-                            text: "Harita"
+                            text: qsTr("Map")
                             width: 110
                             height: 35
 
@@ -158,7 +226,7 @@ ApplicationWindow {
                         // Admin butonu (sadece admin görebilir)
                         Button {
                             id: adminViewButton
-                            text: "Kullanıcı Yönetimi"
+                            text: qsTr("User Management")
                             width: 160
                             height: 35
                             visible: authService && authService.isAdmin
@@ -191,7 +259,7 @@ ApplicationWindow {
                         // Profilim butonu (sadece admin değilse görebilir)
                         Button {
                             id: profileViewButton
-                            text: "Profilim"
+                            text: qsTr("Profile")
                             width: 100
                             height: 35
                             visible: authService && !authService.isAdmin
@@ -223,12 +291,83 @@ ApplicationWindow {
                     }
                 }
 
-                // Sağ taraf - Logout butonu
+                // Sağ taraf - Dil seçici + Logout butonu
+                Row {
+                    spacing: 10
+
+                    // Dil seçici butonu
+                    Rectangle {
+                        width: 80
+                        height: 35
+                        radius: 5
+                        color: langBtnArea.containsMouse ? (themeManager ? themeManager.hoverColor : "#333333") : (themeManager ? themeManager.secondaryColor : "#34495e")
+                        border.color: themeManager ? themeManager.borderColor : "#505050"
+                        border.width: 1
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
+
+                        Row {
+                            anchors.centerIn: parent
+                            spacing: 5
+
+                            Text {
+                                text: "🌐"
+                                font.pixelSize: 16
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Text {
+                                text: translationService ? (translationService.currentLanguage === "tr_TR" ? "TR" : "EN") : "TR"
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: themeManager ? themeManager.textColor : "#ffffff"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        MouseArea {
+                            id: langBtnArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                langMenu.open()
+                            }
+                        }
+
+                        // Language menu
+                        Menu {
+                            id: langMenu
+                            y: parent.height
+
+                            MenuItem {
+                                text: "🇹🇷 Türkçe"
+                                onTriggered: {
+                                    if (translationService) {
+                                        translationService.switchLanguage("tr_TR")
+                                    }
+                                }
+                            }
+
+                            MenuItem {
+                                text: "🇬🇧 English"
+                                onTriggered: {
+                                    if (translationService) {
+                                        translationService.switchLanguage("en_US")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 Button {
                     id: logoutButton
                     Layout.preferredWidth: 100
                     Layout.preferredHeight: 35
-                    text: "Çıkış"
+                    text: qsTr("Logout")
 
                     background: Rectangle {
                         color: logoutButton.pressed ? "#c0392b" : (logoutButton.hovered ? "#e74c3c" : "#d32f2f")
