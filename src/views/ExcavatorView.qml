@@ -6,7 +6,11 @@ import ExcavatorUI_Qt3D
 
 Rectangle {
     id: excavatorViewRoot
-    color: "#2a2a2a"
+    color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+
+    Behavior on color {
+        ColorAnimation { duration: 300 }
+    }
 
     // Excavator rotasyonunu dışarı aç
     property alias excavatorRotation: excavatorContainer.eulerRotation.y
@@ -19,7 +23,7 @@ Rectangle {
         anchors.margins: 20
 
         environment: SceneEnvironment {
-            clearColor: "#2a2a2a"
+            clearColor: themeManager ? themeManager.backgroundColor : "#2a2a2a"
             backgroundMode: SceneEnvironment.Color
             antialiasingMode: SceneEnvironment.MSAA
             antialiasingQuality: SceneEnvironment.High
@@ -128,11 +132,15 @@ Rectangle {
         anchors.bottomMargin: 10
         width: 240
         height: gpsColumn.height + 30
-        color: "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
         opacity: 0.95
         radius: 10
-        border.color: "#505050"
+        border.color: themeManager ? themeManager.borderColor : "#505050"
         border.width: 2
+
+        Behavior on color {
+            ColorAnimation { duration: 300 }
+        }
 
         Column {
             id: gpsColumn
@@ -143,7 +151,7 @@ Rectangle {
             Rectangle {
                 width: 200
                 height: 1
-                color: "#505050"
+                color: themeManager ? themeManager.borderColor : "#505050"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -172,7 +180,7 @@ Rectangle {
             Rectangle {
                 width: 200
                 height: 1
-                color: "#505050"
+                color: themeManager ? themeManager.borderColor : "#505050"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
@@ -188,16 +196,20 @@ Rectangle {
         anchors.rightMargin: 10
         anchors.bottomMargin: 10
         height: 100
-        color: "#1e1e1e"
+        color: themeManager ? themeManager.backgroundColorDark : "#1e1e1e"
         opacity: 0.98
         radius: 10
-        border.color: "#505050"
+        border.color: themeManager ? themeManager.borderColor : "#505050"
         border.width: 2
+
+        Behavior on color {
+            ColorAnimation { duration: 300 }
+        }
 
         // Gradient arka plan için
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#252525" }
-            GradientStop { position: 1.0; color: "#1a1a1a" }
+            GradientStop { position: 0.0; color: themeManager ? themeManager.backgroundColorDark : "#252525" }
+            GradientStop { position: 1.0; color: themeManager ? themeManager.backgroundColor : "#1a1a1a" }
         }
 
         CheckBox {
@@ -238,15 +250,19 @@ Rectangle {
                     height: 45
 
                     background: Rectangle {
-                        color: autoRotateCheckbox.checked ? "#4CAF50" : "#424242"
+                        color: autoRotateCheckbox.checked ? "#4CAF50" : (themeManager ? themeManager.secondaryColor : "#424242")
                         radius: 6
-                        border.color: autoRotateCheckbox.checked ? "#66BB6A" : "#616161"
+                        border.color: autoRotateCheckbox.checked ? "#66BB6A" : (themeManager ? themeManager.borderColor : "#616161")
                         border.width: 1
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
                     }
 
                     contentItem: Text {
                         text: autoRotateButton.text
-                        color: "#ffffff"
+                        color: themeManager ? themeManager.textColor : "#ffffff"
                         font.pixelSize: 18
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -262,7 +278,7 @@ Rectangle {
             Rectangle {
                 width: 1
                 height: 90
-                color: "#505050"
+                color: themeManager ? themeManager.borderColor : "#505050"
             }
 
             // Açı Bölümü
@@ -324,7 +340,7 @@ Rectangle {
 
                 Text {
                     text: Math.round(rotationSlider.value) + "°"
-                    color: "#ffffff"
+                    color: themeManager ? themeManager.textColor : "#ffffff"
                     anchors.horizontalCenter: parent.horizontalCenter
                     font.pixelSize: 10
                 }
@@ -334,7 +350,7 @@ Rectangle {
             Rectangle {
                 width: 1
                 height: 90
-                color: "#505050"
+                color: themeManager ? themeManager.borderColor : "#505050"
             }
 
             // Zoom Bölümü
@@ -390,7 +406,7 @@ Rectangle {
 
                 Text {
                     text: Math.round(zoomSlider.value)
-                    color: "#ffffff"
+                    color: themeManager ? themeManager.textColor : "#ffffff"
                     anchors.horizontalCenter: parent.horizontalCenter
                     font.pixelSize: 10
                 }
@@ -400,7 +416,7 @@ Rectangle {
             Rectangle {
                 width: 1
                 height: 90
-                color: "#505050"
+                color: themeManager ? themeManager.borderColor : "#505050"
             }
 
             // Ölçek Bölümü
@@ -431,7 +447,7 @@ Rectangle {
 
                 Text {
                     text: scaleSlider.value.toFixed(1) + "x"
-                    color: "#ffffff"
+                    color: themeManager ? themeManager.textColor : "#ffffff"
                     anchors.horizontalCenter: parent.horizontalCenter
                     font.pixelSize: 10
                 }
@@ -441,7 +457,7 @@ Rectangle {
             Rectangle {
                 width: 1
                 height: 90
-                color: "#505050"
+                color: themeManager ? themeManager.borderColor : "#505050"
             }
 
             // Sıfırla Bölümü
@@ -467,11 +483,15 @@ Rectangle {
                         radius: 6
                         border.color: "#ef5350"
                         border.width: 1
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
                     }
 
                     contentItem: Text {
                         text: parent.text
-                        color: "#ffffff"
+                        color: themeManager ? themeManager.textColor : "#ffffff"
                         font.pixelSize: 24
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter

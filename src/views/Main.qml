@@ -10,7 +10,7 @@ ApplicationWindow {
     height: 800
     visible: true
     title: qsTr("Excavator Dashboard - 3D Model & Map")
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
 
     property bool contentLoaded: false
 
@@ -105,7 +105,7 @@ ApplicationWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             width: tooltipText.width + 16
                             height: 25
-                            color: "#2a2a2a"
+                            color: themeManager ? themeManager.backgroundColorDark : "#2a2a2a"
                             radius: 3
                             opacity: 0.95
                             z: 200
@@ -115,7 +115,7 @@ ApplicationWindow {
                                 anchors.centerIn: parent
                                 text: themeManager && themeManager.isDarkTheme ? qsTr("Light") : qsTr("Dark")
                                 font.pixelSize: 11
-                                color: "#ffffff"
+                                color: themeManager ? themeManager.textColor : "#ffffff"
                             }
                         }
                     }
@@ -141,7 +141,7 @@ ApplicationWindow {
                     Rectangle {
                         width: 2
                         height: 30
-                        color: "#404040"
+                        color: themeManager ? themeManager.borderColor : "#404040"
                     }
 
                     Text {
@@ -154,7 +154,7 @@ ApplicationWindow {
                     Rectangle {
                         width: 2
                         height: 30
-                        color: "#404040"
+                        color: themeManager ? themeManager.borderColor : "#404040"
                     }
 
                     // Navbar Menü Butonları
@@ -168,9 +168,9 @@ ApplicationWindow {
                             height: 35
 
                             background: Rectangle {
-                                color: contentStack.currentIndex === 0 ? "#00bcd4" : "#34495e"
+                                color: contentStack.currentIndex === 0 ? (themeManager ? themeManager.primaryColor : "#00bcd4") : (themeManager ? themeManager.secondaryColor : "#34495e")
                                 radius: 5
-                                border.color: contentStack.currentIndex === 0 ? "#00e5ff" : "#505050"
+                                border.color: contentStack.currentIndex === 0 ? (themeManager ? themeManager.accentColor : "#00e5ff") : (themeManager ? themeManager.borderColor : "#505050")
                                 border.width: 2
 
                                 Behavior on color {
@@ -182,7 +182,7 @@ ApplicationWindow {
                                 text: excavatorViewButton.text
                                 font.pixelSize: 13
                                 font.bold: true
-                                color: "#ffffff"
+                                color: themeManager ? themeManager.textColor : "#ffffff"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
@@ -199,9 +199,9 @@ ApplicationWindow {
                             height: 35
 
                             background: Rectangle {
-                                color: contentStack.currentIndex === 1 ? "#00bcd4" : "#34495e"
+                                color: contentStack.currentIndex === 1 ? (themeManager ? themeManager.primaryColor : "#00bcd4") : (themeManager ? themeManager.secondaryColor : "#34495e")
                                 radius: 5
-                                border.color: contentStack.currentIndex === 1 ? "#00e5ff" : "#505050"
+                                border.color: contentStack.currentIndex === 1 ? (themeManager ? themeManager.accentColor : "#00e5ff") : (themeManager ? themeManager.borderColor : "#505050")
                                 border.width: 2
 
                                 Behavior on color {
@@ -213,7 +213,7 @@ ApplicationWindow {
                                 text: mapViewButton.text
                                 font.pixelSize: 13
                                 font.bold: true
-                                color: "#ffffff"
+                                color: themeManager ? themeManager.textColor : "#ffffff"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
@@ -232,9 +232,9 @@ ApplicationWindow {
                             visible: authService && authService.isAdmin
 
                             background: Rectangle {
-                                color: contentStack.currentIndex === 2 ? "#9c27b0" : "#34495e"
+                                color: contentStack.currentIndex === 2 ? "#9c27b0" : (themeManager ? themeManager.secondaryColor : "#34495e")
                                 radius: 5
-                                border.color: contentStack.currentIndex === 2 ? "#ba68c8" : "#505050"
+                                border.color: contentStack.currentIndex === 2 ? "#ba68c8" : (themeManager ? themeManager.borderColor : "#505050")
                                 border.width: 2
 
                                 Behavior on color {
@@ -246,7 +246,7 @@ ApplicationWindow {
                                 text: adminViewButton.text
                                 font.pixelSize: 13
                                 font.bold: true
-                                color: "#ffffff"
+                                color: themeManager ? themeManager.textColor : "#ffffff"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
@@ -265,9 +265,9 @@ ApplicationWindow {
                             visible: authService && !authService.isAdmin
 
                             background: Rectangle {
-                                color: contentStack.currentIndex === 3 ? "#3498db" : "#34495e"
+                                color: contentStack.currentIndex === 3 ? "#3498db" : (themeManager ? themeManager.secondaryColor : "#34495e")
                                 radius: 5
-                                border.color: contentStack.currentIndex === 3 ? "#5dade2" : "#505050"
+                                border.color: contentStack.currentIndex === 3 ? "#5dade2" : (themeManager ? themeManager.borderColor : "#505050")
                                 border.width: 2
 
                                 Behavior on color {
@@ -279,7 +279,7 @@ ApplicationWindow {
                                 text: profileViewButton.text
                                 font.pixelSize: 13
                                 font.bold: true
-                                color: "#ffffff"
+                                color: themeManager ? themeManager.textColor : "#ffffff"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
@@ -401,14 +401,18 @@ ApplicationWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
-            color: "#404040"
+            color: themeManager ? themeManager.borderColor : "#404040"
         }
 
         // Ana içerik - StackLayout ile görünüm değişimi
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: "#2a2a2a"
+            color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+
+            Behavior on color {
+                ColorAnimation { duration: 300 }
+            }
 
             StackLayout {
                 id: contentStack
@@ -417,7 +421,11 @@ ApplicationWindow {
 
                 // Ekskavatör Görünümü
                 Rectangle {
-                    color: "#2a2a2a"
+                    color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
 
                     ExcavatorView {
                         id: mainExcavatorView
@@ -435,8 +443,8 @@ ApplicationWindow {
                         Rectangle {
                             anchors.fill: parent
                             gradient: Gradient {
-                                GradientStop { position: 0.0; color: "#2d2d2d" }
-                                GradientStop { position: 1.0; color: "#1a1a1a" }
+                                GradientStop { position: 0.0; color: themeManager ? themeManager.backgroundColorDark : "#2d2d2d" }
+                                GradientStop { position: 1.0; color: themeManager ? themeManager.backgroundColor : "#1a1a1a" }
                             }
                         }
 
@@ -453,7 +461,7 @@ ApplicationWindow {
                                 text: "3D Ekskavatör Görünümü"
                                 font.pixelSize: 28
                                 font.bold: true
-                                color: "#ffffff"
+                                color: themeManager ? themeManager.textColor : "#ffffff"
                             }
                         }
 
@@ -479,7 +487,7 @@ ApplicationWindow {
                         anchors.leftMargin: 20
                         width: 200
                         height: sensorExpanded ? 380 : 50
-                        color: "#1a1a1a"
+                        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
                         radius: 10
                         border.color: "#4CAF50"
                         border.width: 2
@@ -492,6 +500,10 @@ ApplicationWindow {
                             NumberAnimation { duration: 300; easing.type: Easing.InOutQuad }
                         }
 
+                        Behavior on color {
+                            ColorAnimation { duration: 300 }
+                        }
+
                         // Başlık/Toggle Butonu
                         Rectangle {
                             id: sensorHeader
@@ -500,8 +512,12 @@ ApplicationWindow {
                             anchors.right: parent.right
                             anchors.margins: 5
                             height: 40
-                            color: "#0d0d0d"
+                            color: themeManager ? themeManager.backgroundColorDark : "#0d0d0d"
                             radius: 5
+
+                            Behavior on color {
+                                ColorAnimation { duration: 300 }
+                            }
 
                             MouseArea {
                                 anchors.fill: parent
@@ -551,10 +567,14 @@ ApplicationWindow {
                             Rectangle {
                                 width: parent.width
                                 height: 55
-                                color: "#252525"
+                                color: themeManager ? themeManager.backgroundColorDark : "#252525"
                                 radius: 5
-                                border.color: "#404040"
+                                border.color: themeManager ? themeManager.borderColor : "#404040"
                                 border.width: 1
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 300 }
+                                }
 
                                 Row {
                                     anchors.fill: parent
@@ -584,7 +604,7 @@ ApplicationWindow {
                                             text: "RTK SENSÖR"
                                             font.pixelSize: 12
                                             font.bold: true
-                                            color: "#ffffff"
+                                            color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
                                             text: "Bağlantı: Aktif"
@@ -599,10 +619,14 @@ ApplicationWindow {
                             Rectangle {
                                 width: parent.width
                                 height: 55
-                                color: "#252525"
+                                color: themeManager ? themeManager.backgroundColorDark : "#252525"
                                 radius: 5
-                                border.color: "#404040"
+                                border.color: themeManager ? themeManager.borderColor : "#404040"
                                 border.width: 1
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 300 }
+                                }
 
                                 Row {
                                     anchors.fill: parent
@@ -632,7 +656,7 @@ ApplicationWindow {
                                             text: "IMU 1"
                                             font.pixelSize: 12
                                             font.bold: true
-                                            color: "#ffffff"
+                                            color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
                                             text: "Bağlantı: Aktif"
@@ -647,10 +671,14 @@ ApplicationWindow {
                             Rectangle {
                                 width: parent.width
                                 height: 55
-                                color: "#252525"
+                                color: themeManager ? themeManager.backgroundColorDark : "#252525"
                                 radius: 5
-                                border.color: "#404040"
+                                border.color: themeManager ? themeManager.borderColor : "#404040"
                                 border.width: 1
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 300 }
+                                }
 
                                 Row {
                                     anchors.fill: parent
@@ -680,7 +708,7 @@ ApplicationWindow {
                                             text: "IMU 2"
                                             font.pixelSize: 12
                                             font.bold: true
-                                            color: "#ffffff"
+                                            color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
                                             text: "Bağlantı: Aktif"
@@ -695,10 +723,14 @@ ApplicationWindow {
                             Rectangle {
                                 width: parent.width
                                 height: 55
-                                color: "#252525"
+                                color: themeManager ? themeManager.backgroundColorDark : "#252525"
                                 radius: 5
-                                border.color: "#404040"
+                                border.color: themeManager ? themeManager.borderColor : "#404040"
                                 border.width: 1
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 300 }
+                                }
 
                                 Row {
                                     anchors.fill: parent
@@ -728,7 +760,7 @@ ApplicationWindow {
                                             text: "IMU 3"
                                             font.pixelSize: 12
                                             font.bold: true
-                                            color: "#ffffff"
+                                            color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
                                             text: "Bağlantı: Aktif"
@@ -805,11 +837,15 @@ ApplicationWindow {
                         anchors.rightMargin: 20
                         width: 350
                         height: 260
-                        color: "#1a1a1a"
+                        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
                         radius: 10
-                        border.color: "#00bcd4"
+                        border.color: themeManager ? themeManager.primaryColor : "#00bcd4"
                         border.width: 2
                         opacity: 0.95
+
+                        Behavior on color {
+                            ColorAnimation { duration: 300 }
+                        }
 
                         // Başlık
                         Rectangle {
@@ -817,15 +853,19 @@ ApplicationWindow {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             height: 30
-                            color: "#0d0d0d"
+                            color: themeManager ? themeManager.backgroundColorDark : "#0d0d0d"
                             radius: 10
+
+                            Behavior on color {
+                                ColorAnimation { duration: 300 }
+                            }
 
                             Text {
                                 anchors.centerIn: parent
                                 text: "Üstten Görünüm"
                                 font.pixelSize: 12
                                 font.bold: true
-                                color: "#00bcd4"
+                                color: themeManager ? themeManager.primaryColor : "#00bcd4"
                             }
                         }
 
@@ -878,9 +918,13 @@ ApplicationWindow {
                             anchors.right: parent.right
                             anchors.margins: 5
                             height: 30
-                            color: "#0d0d0d"
+                            color: themeManager ? themeManager.backgroundColorDark : "#0d0d0d"
                             radius: 5
                             opacity: 0.9
+
+                            Behavior on color {
+                                ColorAnimation { duration: 300 }
+                            }
 
                             Row {
                                 anchors.centerIn: parent
@@ -909,7 +953,7 @@ ApplicationWindow {
                                         width: topZoomSlider.availableWidth
                                         height: implicitHeight
                                         radius: 2
-                                        color: "#404040"
+                                        color: themeManager ? themeManager.borderColor : "#404040"
 
                                         Rectangle {
                                             width: topZoomSlider.visualPosition * parent.width
@@ -950,11 +994,15 @@ ApplicationWindow {
                         anchors.rightMargin: 20
                         width: 350
                         height: 260
-                        color: "#1a1a1a"
+                        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
                         radius: 10
                         border.color: "#ffc107"
                         border.width: 2
                         opacity: 0.95
+
+                        Behavior on color {
+                            ColorAnimation { duration: 300 }
+                        }
 
                         // Başlık
                         Rectangle {
@@ -962,8 +1010,12 @@ ApplicationWindow {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             height: 30
-                            color: "#0d0d0d"
+                            color: themeManager ? themeManager.backgroundColorDark : "#0d0d0d"
                             radius: 10
+
+                            Behavior on color {
+                                ColorAnimation { duration: 300 }
+                            }
 
                             Text {
                                 anchors.centerIn: parent
@@ -1102,7 +1154,11 @@ ApplicationWindow {
 
                 // Harita Görünümü (Online/Offline sekmeli)
                 Rectangle {
-                    color: "#2a2a2a"
+                    color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
 
                     // Panel başlığı ve alt sekmeler
                     Rectangle {
@@ -1117,8 +1173,8 @@ ApplicationWindow {
                         Rectangle {
                             anchors.fill: parent
                             gradient: Gradient {
-                                GradientStop { position: 0.0; color: "#2d2d2d" }
-                                GradientStop { position: 1.0; color: "#1a1a1a" }
+                                GradientStop { position: 0.0; color: themeManager ? themeManager.backgroundColorDark : "#2d2d2d" }
+                                GradientStop { position: 1.0; color: themeManager ? themeManager.backgroundColor : "#1a1a1a" }
                             }
                         }
 
@@ -1135,14 +1191,14 @@ ApplicationWindow {
                                 text: "Harita Görünümü"
                                 font.pixelSize: 28
                                 font.bold: true
-                                color: "#ffffff"
+                                color: themeManager ? themeManager.textColor : "#ffffff"
                             }
 
                             // Alt sekme butonları
                             Rectangle {
                                 width: 2
                                 height: 40
-                                color: "#404040"
+                                color: themeManager ? themeManager.borderColor : "#404040"
                                 Layout.leftMargin: 20
                             }
 
@@ -1155,9 +1211,13 @@ ApplicationWindow {
                                     width: 110
                                     height: 36
                                     radius: 18
-                                    color: mapSubStack.currentIndex === 0 ? "#4CAF50" : "#252525"
+                                    color: mapSubStack.currentIndex === 0 ? "#4CAF50" : (themeManager ? themeManager.backgroundColorDark : "#252525")
                                     border.color: "#4CAF50"
                                     border.width: 2
+
+                                    Behavior on color {
+                                        ColorAnimation { duration: 150 }
+                                    }
 
                                     Row {
                                         anchors.centerIn: parent
@@ -1166,7 +1226,7 @@ ApplicationWindow {
                                         Text {
                                             text: "●"
                                             font.pixelSize: 10
-                                            color: mapSubStack.currentIndex === 0 ? "#ffffff" : "#4CAF50"
+                                            color: mapSubStack.currentIndex === 0 ? (themeManager ? themeManager.textColor : "#ffffff") : "#4CAF50"
                                             anchors.verticalCenter: parent.verticalCenter
                                         }
 
@@ -1174,7 +1234,7 @@ ApplicationWindow {
                                             text: "Online"
                                             font.pixelSize: 12
                                             font.bold: true
-                                            color: mapSubStack.currentIndex === 0 ? "#ffffff" : "#4CAF50"
+                                            color: mapSubStack.currentIndex === 0 ? (themeManager ? themeManager.textColor : "#ffffff") : "#4CAF50"
                                         }
                                     }
 
@@ -1190,9 +1250,13 @@ ApplicationWindow {
                                     width: 110
                                     height: 36
                                     radius: 18
-                                    color: mapSubStack.currentIndex === 1 ? "#ff9800" : "#252525"
+                                    color: mapSubStack.currentIndex === 1 ? "#ff9800" : (themeManager ? themeManager.backgroundColorDark : "#252525")
                                     border.color: "#ff9800"
                                     border.width: 2
+
+                                    Behavior on color {
+                                        ColorAnimation { duration: 150 }
+                                    }
 
                                     Row {
                                         anchors.centerIn: parent
@@ -1201,7 +1265,7 @@ ApplicationWindow {
                                         Text {
                                             text: "◉"
                                             font.pixelSize: 10
-                                            color: mapSubStack.currentIndex === 1 ? "#ffffff" : "#ff9800"
+                                            color: mapSubStack.currentIndex === 1 ? (themeManager ? themeManager.textColor : "#ffffff") : "#ff9800"
                                             anchors.verticalCenter: parent.verticalCenter
                                         }
 
@@ -1209,7 +1273,7 @@ ApplicationWindow {
                                             text: "Offline"
                                             font.pixelSize: 12
                                             font.bold: true
-                                            color: mapSubStack.currentIndex === 1 ? "#ffffff" : "#ff9800"
+                                            color: mapSubStack.currentIndex === 1 ? (themeManager ? themeManager.textColor : "#ffffff") : "#ff9800"
                                         }
                                     }
 
@@ -1280,8 +1344,12 @@ ApplicationWindow {
 
                 // Kullanıcı Yönetimi Görünümü (Sadece Admin)
                 Rectangle {
-                    color: "#2a2a2a"
+                    color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
                     visible: authService && authService.isAdmin
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
 
                     UserManagementView {
                         anchors.fill: parent
@@ -1290,8 +1358,12 @@ ApplicationWindow {
 
                 // Profil Görünümü (Sadece Admin Değilse)
                 Rectangle {
-                    color: "#2a2a2a"
+                    color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
                     visible: authService && !authService.isAdmin
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
 
                     ProfileView {
                         anchors.fill: parent

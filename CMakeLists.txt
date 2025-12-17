@@ -170,7 +170,6 @@ message(STATUS "İlk mesh dosyaları: ${FIRST_MESHES}")
 qt_add_translations(ExcavatorUI_Qt3DApp
     TS_FILES ${TS_FILES}
     RESOURCE_PREFIX "/i18n"
-    QM_FILES_OUTPUT_VARIABLE qm_files
 )
 
 qt_add_qml_module(ExcavatorUI_Qt3DApp
