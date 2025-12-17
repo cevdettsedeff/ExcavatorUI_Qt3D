@@ -15,6 +15,17 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Network
 )
 
+# Qt LinguistTools for translations (optional)
+find_package(Qt6 COMPONENTS LinguistTools QUIET)
+if(Qt6LinguistTools_FOUND)
+    message(STATUS "✓ Qt6 LinguistTools found - Translation features enabled")
+    set(HAVE_LINGUIST_TOOLS TRUE)
+else()
+    message(WARNING "✗ Qt6 LinguistTools not found - Translations will not be compiled")
+    message(WARNING "  Install: Qt Maintenance Tool → Add Components → Qt Linguist Tools")
+    set(HAVE_LINGUIST_TOOLS FALSE)
+endif()
+
 # QtLocation for OpenStreetMap (optional, for simplified map view)
 find_package(Qt6 COMPONENTS Location QUIET)
 if(Qt6Location_FOUND)
@@ -162,12 +173,19 @@ message(STATUS "Bulunan mesh dosyası sayısı: ${MESH_COUNT}")
 list(SUBLIST MESH_FILES 0 5 FIRST_MESHES)
 message(STATUS "İlk mesh dosyaları: ${FIRST_MESHES}")
 
-# Add translations to the executable
-qt_add_translations(ExcavatorUI_Qt3DApp
-    TS_FILES ${TS_FILES}
-    RESOURCE_PREFIX "/i18n"
-    QM_FILES_OUTPUT_VARIABLE qm_files
-)
+# Add translations to the executable (if LinguistTools available)
+if(HAVE_LINGUIST_TOOLS)
+    qt_add_translations(ExcavatorUI_Qt3DApp
+        TS_FILES ${TS_FILES}
+        RESOURCE_PREFIX "/i18n"
+        QM_FILES_OUTPUT_VARIABLE qm_files
+    )
+    message(STATUS "✓ Translations will be compiled and embedded")
+else()
+    # If LinguistTools not available, translations won't be compiled
+    # App will still work but language switching may not have translations
+    message(STATUS "⚠ Translations will not be compiled - app will use default strings")
+endif()
 
 qt_add_qml_module(ExcavatorUI_Qt3DApp
     URI ExcavatorUI_Qt3D
