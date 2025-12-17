@@ -945,6 +945,38 @@ Rectangle {
                     }
                 }
 
+                // Tile provider selection
+                Row {
+                    width: parent.width
+                    spacing: 5
+
+                    Text {
+                        text: "Harita:"
+                        font.pixelSize: 10
+                        color: "#ffffff"
+                        width: 35
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    ComboBox {
+                        id: tileProviderCombo
+                        width: parent.width - 40
+                        height: 30
+                        model: ["OpenStreetMap", "CartoDB Positron"]
+                        currentIndex: 1  // Default to CartoDB
+
+                        property var providerValues: ["osm", "cartodb"]
+                        property string selectedProvider: providerValues[currentIndex]
+
+                        onCurrentIndexChanged: {
+                            if (offlineTileManager) {
+                                offlineTileManager.tileProvider = selectedProvider
+                                console.log("Tile provider changed to:", selectedProvider)
+                            }
+                        }
+                    }
+                }
+
                 // Radius selection
                 Row {
                     width: parent.width
@@ -962,11 +994,76 @@ Rectangle {
                         id: radiusCombo
                         width: parent.width - 40
                         height: 30
-                        model: ["1 km", "2 km", "5 km", "10 km"]
+                        model: ["1 km", "2 km", "5 km", "10 km", "Türkiye Tümü"]
                         currentIndex: 1
 
-                        property var radiusValues: [1, 2, 5, 10]
+                        property var radiusValues: [1, 2, 5, 10, 0]  // 0 means use Turkey bounds
                         property real selectedRadius: radiusValues[currentIndex]
+                        property bool isTurkeyMode: currentIndex === 4
+                    }
+                }
+
+                // Turkey download info (visible when Turkey mode selected)
+                Rectangle {
+                    width: parent.width
+                    height: turkeyInfoColumn.height + 10
+                    color: "#2a4858"
+                    radius: 5
+                    visible: radiusCombo.isTurkeyMode
+
+                    Column {
+                        id: turkeyInfoColumn
+                        anchors.centerIn: parent
+                        spacing: 2
+                        width: parent.width - 10
+
+                        Text {
+                            text: "⚠ Türkiye Tümü"
+                            font.pixelSize: 10
+                            font.bold: true
+                            color: "#ffa726"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+
+                        Text {
+                            text: "Alan: 36°-42° Kuzey, 26°-45° Doğu"
+                            font.pixelSize: 8
+                            color: "#cccccc"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            wrapMode: Text.WordWrap
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Text {
+                            text: {
+                                if (offlineTileManager && radiusCombo.isTurkeyMode) {
+                                    // Calculate for Turkey bounds
+                                    var minLat = 36.0, maxLat = 42.1
+                                    var minLon = 26.0, maxLon = 45.0
+                                    var centerLat = (minLat + maxLat) / 2
+                                    var centerLon = (minLon + maxLon) / 2
+
+                                    // Estimate radius in km (approximate)
+                                    var latDiff = maxLat - minLat
+                                    var lonDiff = maxLon - minLon
+                                    var radiusKm = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff) * 111 / 2
+
+                                    var count = offlineTileManager.estimateTileCount(
+                                        centerLat, centerLon, radiusKm,
+                                        zoomRangeCombo.selectedMinZoom,
+                                        zoomRangeCombo.selectedMaxZoom
+                                    )
+                                    var sizeMB = Math.round(count * 30 / 1024)
+                                    return "~" + count + " tile (~" + sizeMB + " MB)"
+                                }
+                                return ""
+                            }
+                            font.pixelSize: 8
+                            color: "#ffb74d"
+                            font.bold: true
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
                     }
                 }
 
@@ -1105,16 +1202,27 @@ Rectangle {
                             if (offlineTileManager.isDownloading) {
                                 offlineTileManager.cancelDownload()
                             } else {
-                                // Download around preview center (draggable) or excavator position
-                                var downloadLat = downloadPreview.isDragged ? downloadPreview.downloadCenterLat : excavatorLat
-                                var downloadLon = downloadPreview.isDragged ? downloadPreview.downloadCenterLon : excavatorLon
-                                console.log("Downloading region at:", downloadLat, downloadLon)
-                                offlineTileManager.downloadRegion(
-                                    downloadLat, downloadLon,
-                                    radiusCombo.selectedRadius,
-                                    zoomRangeCombo.selectedMinZoom,
-                                    zoomRangeCombo.selectedMaxZoom
-                                )
+                                if (radiusCombo.isTurkeyMode) {
+                                    // Download entire Turkey using bounds
+                                    console.log("Downloading entire Turkey...")
+                                    offlineTileManager.downloadArea(
+                                        36.0, 42.1,  // minLat, maxLat
+                                        26.0, 45.0,  // minLon, maxLon
+                                        zoomRangeCombo.selectedMinZoom,
+                                        zoomRangeCombo.selectedMaxZoom
+                                    )
+                                } else {
+                                    // Download around preview center (draggable) or excavator position
+                                    var downloadLat = downloadPreview.isDragged ? downloadPreview.downloadCenterLat : excavatorLat
+                                    var downloadLon = downloadPreview.isDragged ? downloadPreview.downloadCenterLon : excavatorLon
+                                    console.log("Downloading region at:", downloadLat, downloadLon)
+                                    offlineTileManager.downloadRegion(
+                                        downloadLat, downloadLon,
+                                        radiusCombo.selectedRadius,
+                                        zoomRangeCombo.selectedMinZoom,
+                                        zoomRangeCombo.selectedMaxZoom
+                                    )
+                                }
                             }
                         }
                     }

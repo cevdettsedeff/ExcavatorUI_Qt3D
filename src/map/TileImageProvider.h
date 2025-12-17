@@ -11,14 +11,16 @@
 #include <QHash>
 
 /**
- * TileImageProvider - OSM tile loader with proper HTTP headers
+ * TileImageProvider - Map tile loader with proper HTTP headers
  *
- * Loads OpenStreetMap tiles with correct User-Agent and Referer headers
- * to comply with OSM tile usage policy: https://operations.osmfoundation.org/policies/tiles/
+ * Supports multiple tile providers: OSM, CartoDB Positron
+ * Loads tiles with correct User-Agent and Referer headers
+ * to comply with tile usage policies.
  *
  * Features:
+ * - Multiple tile providers (OSM, CartoDB)
  * - Proper HTTP headers (User-Agent, Referer)
- * - Local disk cache
+ * - Local disk cache (separate per provider)
  * - Memory cache for recently used tiles
  * - Thread-safe tile loading
  *
@@ -37,7 +39,9 @@ public:
     // Configuration
     void setUserAgent(const QString &userAgent);
     void setCacheDirectory(const QString &path);
+    void setStaticTileDirectory(const QString &path);
     void setMaxCacheSize(int megabytes);
+    void setTileProvider(const QString &provider);
 
 private:
     QPixmap loadTile(int z, int x, int y);
@@ -47,6 +51,8 @@ private:
 
     QString m_userAgent;
     QString m_cacheDirectory;
+    QString m_staticTileDirectory;  // Pre-downloaded tiles directory
+    QString m_tileProvider;  // "osm" or "cartodb"
     QCache<QString, QPixmap> m_memoryCache;
     QMutex m_cacheMutex;
 };

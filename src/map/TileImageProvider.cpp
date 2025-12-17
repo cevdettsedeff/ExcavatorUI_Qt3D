@@ -11,11 +11,15 @@
 TileImageProvider::TileImageProvider()
     : QQuickImageProvider(QQuickImageProvider::Pixmap)
     , m_userAgent("ExcavatorUI/1.0 (Qt6 Application; https://github.com/yourcompany/excavator)")
+    , m_tileProvider("osm")  // Default to OSM
     , m_memoryCache(50)  // Cache 50 tiles in memory (about 3MB at 256x256)
 {
     // Set default cache directory
     QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     m_cacheDirectory = cacheDir + "/osm_tiles";
+
+    // Set default static tile directory (project relative)
+    m_staticTileDirectory = "static_maps/osm_tiles";
 
     // Create cache directory if it doesn't exist
     QDir().mkpath(m_cacheDirectory);
@@ -23,6 +27,8 @@ TileImageProvider::TileImageProvider()
     qDebug() << "TileImageProvider initialized";
     qDebug() << "  User-Agent:" << m_userAgent;
     qDebug() << "  Cache directory:" << m_cacheDirectory;
+    qDebug() << "  Static tile directory:" << m_staticTileDirectory;
+    qDebug() << "  Tile provider:" << m_tileProvider;
 }
 
 TileImageProvider::~TileImageProvider()
@@ -41,9 +47,42 @@ void TileImageProvider::setCacheDirectory(const QString &path)
     QDir().mkpath(m_cacheDirectory);
 }
 
+void TileImageProvider::setStaticTileDirectory(const QString &path)
+{
+    m_staticTileDirectory = path;
+    qDebug() << "Static tile directory set to:" << m_staticTileDirectory;
+}
+
 void TileImageProvider::setMaxCacheSize(int megabytes)
 {
     m_memoryCache.setMaxCost(megabytes);
+}
+
+void TileImageProvider::setTileProvider(const QString &provider)
+{
+    QString normalizedProvider = provider.toLower();
+    if (m_tileProvider != normalizedProvider) {
+        m_tileProvider = normalizedProvider;
+
+        // Update cache directory based on provider
+        QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+        if (m_tileProvider == "cartodb") {
+            m_cacheDirectory = cacheDir + "/cartodb_tiles";
+            m_staticTileDirectory = "static_maps/cartodb_tiles";
+        } else {
+            m_cacheDirectory = cacheDir + "/osm_tiles";
+            m_staticTileDirectory = "static_maps/osm_tiles";
+        }
+        QDir().mkpath(m_cacheDirectory);
+
+        // Clear memory cache when changing providers
+        QMutexLocker locker(&m_cacheMutex);
+        m_memoryCache.clear();
+
+        qDebug() << "Tile provider changed to:" << m_tileProvider;
+        qDebug() << "  Cache directory:" << m_cacheDirectory;
+        qDebug() << "  Static tile directory:" << m_staticTileDirectory;
+    }
 }
 
 QPixmap TileImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
@@ -90,6 +129,19 @@ QPixmap TileImageProvider::loadTile(int z, int x, int y)
         }
     }
 
+    // Check static tile directory first (pre-downloaded tiles)
+    QString staticPath = QString("%1/%2/%3/%4.png")
+        .arg(m_staticTileDirectory).arg(z).arg(x).arg(y);
+    if (QFile::exists(staticPath)) {
+        QPixmap pixmap(staticPath);
+        if (!pixmap.isNull()) {
+            // Add to memory cache
+            QMutexLocker locker(&m_cacheMutex);
+            m_memoryCache.insert(tileKey, new QPixmap(pixmap), 1);
+            return pixmap;
+        }
+    }
+
     // Check disk cache
     QString cachePath = getCachePath(z, x, y);
     if (QFile::exists(cachePath)) {
@@ -121,16 +173,29 @@ QPixmap TileImageProvider::loadTile(int z, int x, int y)
 
 QString TileImageProvider::getTileUrl(int z, int x, int y)
 {
-    // Use one of OSM's tile servers (a, b, or c)
-    QStringList servers = {"a", "b", "c"};
-    int serverIndex = QRandomGenerator::global()->bounded(servers.size());
-    QString server = servers[serverIndex];
+    if (m_tileProvider == "cartodb") {
+        // CartoDB Positron tile servers (a, b, c, d)
+        QStringList servers = {"a", "b", "c", "d"};
+        int serverIndex = QRandomGenerator::global()->bounded(servers.size());
+        QString server = servers[serverIndex];
 
-    return QString("https://%1.tile.openstreetmap.org/%2/%3/%4.png")
-        .arg(server)
-        .arg(z)
-        .arg(x)
-        .arg(y);
+        return QString("https://%1.basemaps.cartocdn.com/light_all/%2/%3/%4.png")
+            .arg(server)
+            .arg(z)
+            .arg(x)
+            .arg(y);
+    } else {
+        // OSM tile servers (default: a, b, c)
+        QStringList servers = {"a", "b", "c"};
+        int serverIndex = QRandomGenerator::global()->bounded(servers.size());
+        QString server = servers[serverIndex];
+
+        return QString("https://%1.tile.openstreetmap.org/%2/%3/%4.png")
+            .arg(server)
+            .arg(z)
+            .arg(x)
+            .arg(y);
+    }
 }
 
 QString TileImageProvider::getCachePath(int z, int x, int y)
