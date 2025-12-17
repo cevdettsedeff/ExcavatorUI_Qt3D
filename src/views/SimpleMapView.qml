@@ -525,7 +525,7 @@ Rectangle {
             Text {
                 id: resetLabel
                 anchors.centerIn: parent
-                text: "Sıfırla (2x tık)"
+                text: qsTr("Reset (2x click)")
                 font.pixelSize: 8
                 color: "#ffffff"
             }
@@ -545,7 +545,7 @@ Rectangle {
 
         Text {
             anchors.centerIn: parent
-            text: "Yükleniyor..."
+            text: qsTr("Loading...")
             color: "#00bcd4"
             font.pixelSize: 12
         }
@@ -572,7 +572,7 @@ Rectangle {
             spacing: 8
 
             Text {
-                text: "EKSKAVATOR KONUMU"
+                text: qsTr("EXCAVATOR LOCATION")
                 font.pixelSize: 12
                 font.bold: true
                 color: "#00bcd4"
@@ -597,7 +597,7 @@ Rectangle {
             }
 
             Text {
-                text: "Tuzla Limanı, İstanbul"
+                text: qsTr("Tuzla Port, Istanbul")
                 font.pixelSize: 10
                 color: "#aaaaaa"
             }
@@ -758,7 +758,7 @@ Rectangle {
                     Text {
                         id: tooltipText1
                         anchors.centerIn: parent
-                        text: "Ekskavatör"
+                        text: qsTr("Excavator")
                         font.pixelSize: 10
                         color: "#ffffff"
                     }
@@ -799,7 +799,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "Tuzla"
+                        text: qsTr("Tuzla")
                         font.pixelSize: 11
                         font.bold: true
                         color: tuzlaArea.pressed ? "#ffffff" : "#00bcd4"
@@ -824,7 +824,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "Istanbul"
+                        text: qsTr("Istanbul")
                         font.pixelSize: 11
                         font.bold: true
                         color: istanbulArea.pressed ? "#ffffff" : "#4CAF50"
@@ -900,7 +900,7 @@ Rectangle {
                     spacing: 8
 
                     Text {
-                        text: "OFFLINE HARITA"
+                        text: qsTr("OFFLINE MAP DOWNLOAD")
                         font.pixelSize: 11
                         font.bold: true
                         color: "#ff9800"
@@ -937,7 +937,7 @@ Rectangle {
                         spacing: 2
 
                         Text {
-                            text: "Önbellek: " + (offlineTileManager ? offlineTileManager.formatCacheSize() : "0 MB")
+                            text: qsTr("Cache") + ": " + (offlineTileManager ? offlineTileManager.formatCacheSize() : "0 MB")
                             font.pixelSize: 10
                             color: "#aaaaaa"
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -951,7 +951,7 @@ Rectangle {
                     spacing: 5
 
                     Text {
-                        text: "Harita:"
+                        text: qsTr("Map") + ":"
                         font.pixelSize: 10
                         color: "#ffffff"
                         width: 35
@@ -983,7 +983,7 @@ Rectangle {
                     spacing: 5
 
                     Text {
-                        text: "Alan:"
+                        text: qsTr("Area") + ":"
                         font.pixelSize: 10
                         color: "#ffffff"
                         width: 35
@@ -994,7 +994,7 @@ Rectangle {
                         id: radiusCombo
                         width: parent.width - 40
                         height: 30
-                        model: ["1 km", "2 km", "5 km", "10 km", "Türkiye Tümü"]
+                        model: ["1 km", "2 km", "5 km", "10 km", qsTr("All Turkey")]
                         currentIndex: 1
 
                         property var radiusValues: [1, 2, 5, 10, 0]  // 0 means use Turkey bounds
@@ -1018,7 +1018,7 @@ Rectangle {
                         width: parent.width - 10
 
                         Text {
-                            text: "⚠ Türkiye Tümü"
+                            text: "⚠ " + qsTr("All Turkey")
                             font.pixelSize: 10
                             font.bold: true
                             color: "#ffa726"
@@ -1026,7 +1026,7 @@ Rectangle {
                         }
 
                         Text {
-                            text: "Alan: 36°-42° Kuzey, 26°-45° Doğu"
+                            text: qsTr("Area") + ": 36°-42° " + qsTr("North") + ", 26°-45° " + qsTr("East")
                             font.pixelSize: 8
                             color: "#cccccc"
                             anchors.horizontalCenter: parent.horizontalCenter

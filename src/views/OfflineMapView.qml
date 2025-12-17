@@ -252,7 +252,7 @@ Rectangle {
 
                             Text {
                                 anchors.horizontalCenter: parent.horizontalCenter
-                                text: "İndirilmemiş"
+                                text: qsTr("Not Downloaded")
                                 font.pixelSize: 10
                                 color: "#444444"
                             }
@@ -380,7 +380,7 @@ Rectangle {
             }
 
             Text {
-                text: "OFFLINE MOD - Sadece indirilen haritalar gösteriliyor"
+                text: qsTr("OFFLINE MODE - Showing only downloaded maps")
                 font.pixelSize: 12
                 font.bold: true
                 color: "#ffffff"
@@ -409,7 +409,7 @@ Rectangle {
             spacing: 8
 
             Text {
-                text: "ÖNBELLEK DURUMU"
+                text: qsTr("CACHE STATUS")
                 font.pixelSize: 12
                 font.bold: true
                 color: "#ff9800"
@@ -423,7 +423,7 @@ Rectangle {
 
             Row {
                 spacing: 5
-                Text { text: "Boyut:"; font.pixelSize: 11; color: "#ffffff"; width: 60 }
+                Text { text: qsTr("Size") + ":"; font.pixelSize: 11; color: "#ffffff"; width: 60 }
                 Text {
                     text: offlineTileManager ? offlineTileManager.formatCacheSize() : "0 MB"
                     font.pixelSize: 11
@@ -433,9 +433,9 @@ Rectangle {
 
             Row {
                 spacing: 5
-                Text { text: "Tile:"; font.pixelSize: 11; color: "#ffffff"; width: 60 }
+                Text { text: qsTr("Tiles") + ":"; font.pixelSize: 11; color: "#ffffff"; width: 60 }
                 Text {
-                    text: offlineTileManager ? offlineTileManager.cachedTileCount + " adet" : "0 adet"
+                    text: offlineTileManager ? offlineTileManager.cachedTileCount + " " + qsTr("pcs") : "0 " + qsTr("pcs")
                     font.pixelSize: 11
                     color: "#00ff00"
                 }
@@ -462,7 +462,7 @@ Rectangle {
 
                 Text {
                     anchors.centerIn: parent
-                    text: "Önbelleği Temizle"
+                    text: qsTr("Clear Cache")
                     font.pixelSize: 11
                     font.bold: true
                     color: "#ffffff"
@@ -631,7 +631,7 @@ Rectangle {
         Text {
             id: helpText
             anchors.centerIn: parent
-            text: "Online sekmeden bölge indirin"
+            text: qsTr("Download regions from Online tab")
             font.pixelSize: 10
             color: "#888888"
         }

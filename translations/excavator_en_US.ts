@@ -111,5 +111,89 @@
         <source>RESET</source>
         <translation>RESET</translation>
     </message>
+    <message>
+        <source>Not Downloaded</source>
+        <translation>Not Downloaded</translation>
+    </message>
+    <message>
+        <source>OFFLINE MODE - Showing only downloaded maps</source>
+        <translation>OFFLINE MODE - Showing only downloaded maps</translation>
+    </message>
+    <message>
+        <source>CACHE STATUS</source>
+        <translation>CACHE STATUS</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>Size</translation>
+    </message>
+    <message>
+        <source>Tiles</source>
+        <translation>Tiles</translation>
+    </message>
+    <message>
+        <source>pcs</source>
+        <translation>pcs</translation>
+    </message>
+    <message>
+        <source>Clear Cache</source>
+        <translation>Clear Cache</translation>
+    </message>
+    <message>
+        <source>Download regions from Online tab</source>
+        <translation>Download regions from Online tab</translation>
+    </message>
+    <message>
+        <source>Reset (2x click)</source>
+        <translation>Reset (2x click)</translation>
+    </message>
+    <message>
+        <source>Loading...</source>
+        <translation>Loading...</translation>
+    </message>
+    <message>
+        <source>EXCAVATOR LOCATION</source>
+        <translation>EXCAVATOR LOCATION</translation>
+    </message>
+    <message>
+        <source>Tuzla Port, Istanbul</source>
+        <translation>Tuzla Port, Istanbul</translation>
+    </message>
+    <message>
+        <source>Excavator</source>
+        <translation>Excavator</translation>
+    </message>
+    <message>
+        <source>Tuzla</source>
+        <translation>Tuzla</translation>
+    </message>
+    <message>
+        <source>Istanbul</source>
+        <translation>Istanbul</translation>
+    </message>
+    <message>
+        <source>OFFLINE MAP DOWNLOAD</source>
+        <translation>OFFLINE MAP DOWNLOAD</translation>
+    </message>
+    <message>
+        <source>Cache</source>
+        <translation>Cache</translation>
+    </message>
+    <message>
+        <source>Area</source>
+        <translation>Area</translation>
+    </message>
+    <message>
+        <source>All Turkey</source>
+        <translation>All Turkey</translation>
+    </message>
+    <message>
+        <source>North</source>
+        <translation>North</translation>
+    </message>
+    <message>
+        <source>East</source>
+        <translation>East</translation>
+    </message>
 </context>
 </TS>
