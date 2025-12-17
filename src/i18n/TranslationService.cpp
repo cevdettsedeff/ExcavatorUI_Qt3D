@@ -1,17 +1,16 @@
 #include "TranslationService.h"
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QDebug>
 #include <QDir>
-#include <QLocale>
 
-TranslationService::TranslationService(QGuiApplication *app, QQmlEngine *engine, QObject *parent)
+TranslationService::TranslationService(QObject *parent)
     : QObject(parent)
-    , m_app(app)
-    , m_engine(engine)
-    , m_translator(new QTranslator(this))
     , m_currentLanguage("tr_TR")  // Default: Turkish
     , m_settings("ExcavatorUI", "Settings")
 {
-    qDebug() << "TranslationService initialized";
+    qDebug() << "TranslationService initialized (JSON-based - no Qt Linguist needed!)";
 
     // Load saved language preference
     loadLanguagePreference();
@@ -19,9 +18,6 @@ TranslationService::TranslationService(QGuiApplication *app, QQmlEngine *engine,
 
 TranslationService::~TranslationService()
 {
-    if (m_translator) {
-        m_app->removeTranslator(m_translator);
-    }
 }
 
 QStringList TranslationService::availableLanguages() const
@@ -50,13 +46,8 @@ void TranslationService::switchLanguage(const QString &language)
 
     qDebug() << "Switching language from" << m_currentLanguage << "to" << language;
 
-    // Remove old translator
-    if (m_translator) {
-        m_app->removeTranslator(m_translator);
-    }
-
-    // Load new translation
-    if (loadTranslation(language)) {
+    // Load new translations
+    if (loadTranslations(language)) {
         m_currentLanguage = language;
         emit currentLanguageChanged();
         emit languageChanged();
@@ -64,44 +55,100 @@ void TranslationService::switchLanguage(const QString &language)
         // Save preference
         saveLanguagePreference();
 
-        // Retranslate QML UI
-        if (m_engine) {
-            m_engine->retranslate();
-        }
-
         qDebug() << "Language switched successfully to:" << language;
     } else {
-        qWarning() << "Failed to load translation for:" << language;
+        qWarning() << "Failed to load translations for:" << language;
     }
 }
 
-bool TranslationService::loadTranslation(const QString &language)
+bool TranslationService::loadTranslations(const QString &language)
 {
-    QString translationFile = QString("excavator_%1").arg(language);
+    QString filename = language + ".json";
 
     // Try multiple paths
     QStringList searchPaths = {
-        ":/i18n",                           // Qt resource system
-        QDir::currentPath() + "/translations",  // Build directory
-        QDir::currentPath() + "/../translations", // Source directory
-        "translations",                     // Relative path
-        "../translations"                   // Parent directory
+        ":/translations/" + filename,           // Qt resource system
+        "translations/" + filename,             // Relative to working dir
+        "../translations/" + filename,          // Parent directory
+        "../../translations/" + filename,       // Two levels up
+        QDir::currentPath() + "/translations/" + filename,
+        QDir::currentPath() + "/../translations/" + filename
     };
 
     for (const QString &path : searchPaths) {
-        QString fullPath = path + "/" + translationFile + ".qm";
+        QFile file(path);
 
-        qDebug() << "Trying to load translation from:" << fullPath;
+        qDebug() << "Trying to load translation from:" << path;
 
-        if (m_translator->load(translationFile, path)) {
-            m_app->installTranslator(m_translator);
-            qDebug() << "✓ Translation loaded from:" << fullPath;
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QByteArray data = file.readAll();
+            file.close();
+
+            QJsonParseError error;
+            QJsonDocument doc = QJsonDocument::fromJson(data, &error);
+
+            if (error.error != QJsonParseError::NoError) {
+                qWarning() << "JSON parse error:" << error.errorString();
+                continue;
+            }
+
+            if (!doc.isObject()) {
+                qWarning() << "Invalid JSON format - expected object";
+                continue;
+            }
+
+            m_translations = doc.object().toVariantMap();
+            qDebug() << "✓ Translations loaded from:" << path;
+            qDebug() << "  Translation keys:" << m_translations.keys();
             return true;
         }
     }
 
-    qWarning() << "✗ Translation file not found:" << translationFile;
+    qWarning() << "✗ Translation file not found:" << filename;
     return false;
+}
+
+QString TranslationService::tr(const QString &key, const QString &defaultValue) const
+{
+    if (m_translations.isEmpty()) {
+        qDebug() << "No translations loaded, returning key:" << key;
+        return defaultValue.isEmpty() ? key : defaultValue;
+    }
+
+    QVariant value = getNestedValue(m_translations, key);
+
+    if (value.isValid() && value.canConvert<QString>()) {
+        return value.toString();
+    }
+
+    qDebug() << "Translation not found for key:" << key;
+    return defaultValue.isEmpty() ? key : defaultValue;
+}
+
+QVariant TranslationService::getNestedValue(const QVariantMap &map, const QString &key) const
+{
+    QStringList parts = key.split('.');
+
+    if (parts.isEmpty()) {
+        return QVariant();
+    }
+
+    QVariant current = map;
+
+    for (const QString &part : parts) {
+        if (!current.canConvert<QVariantMap>()) {
+            return QVariant();
+        }
+
+        QVariantMap currentMap = current.toMap();
+        if (!currentMap.contains(part)) {
+            return QVariant();
+        }
+
+        current = currentMap.value(part);
+    }
+
+    return current;
 }
 
 QString TranslationService::getLanguageName(const QString &languageCode) const

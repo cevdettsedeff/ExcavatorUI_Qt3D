@@ -1,0 +1,63 @@
+{
+  "app": {
+    "title": "Excavator Dashboard",
+    "subtitle": "3D Model & Map"
+  },
+  "menu": {
+    "excavator": "Ekskavatör",
+    "map": "Harita",
+    "user_management": "Kullanıcı Yönetimi",
+    "profile": "Profilim",
+    "logout": "Çıkış",
+    "welcome": "Hoşgeldin",
+    "admin": "Yönetici"
+  },
+  "theme": {
+    "dark": "Karanlık",
+    "light": "Aydınlık",
+    "switch": "Tema Değiştir"
+  },
+  "language": {
+    "turkish": "Türkçe",
+    "english": "English",
+    "switch": "Dil Değiştir"
+  },
+  "map": {
+    "title": "Harita Görünümü",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "zoom": "Yakınlaştırma"
+  },
+  "excavator": {
+    "title": "3D Ekskavatör Görünümü",
+    "top_view": "Üstten Görünüm",
+    "side_view": "Yandan Görünüm"
+  },
+  "sensor": {
+    "status": "SENSÖR DURUMU",
+    "rtk": "RTK SENSÖR",
+    "imu": "IMU",
+    "connection_active": "Bağlantı: Aktif",
+    "connection_inactive": "Bağlantı: Pasif"
+  },
+  "digging": {
+    "start": "KAZI BAŞLAT",
+    "stop": "DURDUR"
+  },
+  "offline_map": {
+    "mode": "ÇEVRİMDIŞI MOD - Sadece indirilen haritalar gösteriliyor",
+    "cache_status": "ÖNBELLEK DURUMU",
+    "size": "Boyut:",
+    "tiles": "Tile:",
+    "clear_cache": "Önbelleği Temizle",
+    "not_downloaded": "İndirilmemiş",
+    "download_hint": "Online sekmeden bölge indirin"
+  },
+  "login": {
+    "title": "Giriş Yap",
+    "username": "Kullanıcı Adı",
+    "password": "Şifre",
+    "register": "Kayıt Ol",
+    "submit": "Giriş"
+  }
+}

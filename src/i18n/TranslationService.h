@@ -2,20 +2,21 @@
 #define TRANSLATIONSERVICE_H
 
 #include <QObject>
-#include <QTranslator>
-#include <QGuiApplication>
-#include <QQmlEngine>
+#include <QString>
+#include <QVariantMap>
 #include <QSettings>
 
 /**
- * TranslationService - Multi-language support service
+ * TranslationService - Simple JSON-based translation service
  *
- * Provides runtime language switching for the application.
+ * NO Qt Linguist Tools required! Uses simple JSON files.
  * Supports Turkish (tr_TR) and English (en_US).
  *
+ * JSON files location: translations/tr_TR.json, translations/en_US.json
+ *
  * Usage from QML:
- *   translationService.currentLanguage = "tr_TR"
- *   translationService.switchLanguage("en_US")
+ *   Text { text: translationService.tr("menu.excavator") }
+ *   Text { text: translationService.tr("app.title") }
  */
 class TranslationService : public QObject
 {
@@ -24,13 +25,16 @@ class TranslationService : public QObject
     Q_PROPERTY(QStringList availableLanguages READ availableLanguages CONSTANT)
 
 public:
-    explicit TranslationService(QGuiApplication *app, QQmlEngine *engine, QObject *parent = nullptr);
+    explicit TranslationService(QObject *parent = nullptr);
     ~TranslationService();
 
     QString currentLanguage() const { return m_currentLanguage; }
     void setCurrentLanguage(const QString &language);
 
     QStringList availableLanguages() const;
+
+    // Main translation method - use this in QML
+    Q_INVOKABLE QString tr(const QString &key, const QString &defaultValue = QString()) const;
 
     Q_INVOKABLE void switchLanguage(const QString &language);
     Q_INVOKABLE QString getLanguageName(const QString &languageCode) const;
@@ -42,12 +46,11 @@ signals:
     void languageChanged();
 
 private:
-    bool loadTranslation(const QString &language);
+    bool loadTranslations(const QString &language);
+    QVariant getNestedValue(const QVariantMap &map, const QString &key) const;
 
-    QGuiApplication *m_app;
-    QQmlEngine *m_engine;
-    QTranslator *m_translator;
     QString m_currentLanguage;
+    QVariantMap m_translations;
     QSettings m_settings;
 };
 

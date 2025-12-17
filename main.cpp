@@ -94,8 +94,8 @@ int main(int argc, char *argv[])
     // QML Engine oluştur
     QQmlApplicationEngine engine;
 
-    // TranslationService oluştur
-    TranslationService translationService(&app, &engine);
+    // TranslationService oluştur (JSON-based - no Qt Linguist needed!)
+    TranslationService translationService;
 
     // ThemeManager oluştur
     ThemeManager themeManager;
