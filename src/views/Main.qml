@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick3D
+import Qt5Compat.GraphicalEffects
 import ExcavatorUI_Qt3D
 
 ApplicationWindow {
@@ -235,23 +236,60 @@ ApplicationWindow {
                 Row {
                     spacing: 10
 
-                    // Tema değiştirme butonu
+                    // Tema değiştirme butonu - Modern Toggle Switch
                     Rectangle {
-                        width: 40
+                        width: 70
                         height: 35
-                        radius: 5
-                        color: themeBtnArea.containsMouse ? (themeManager ? themeManager.hoverColor : "#333333") : "transparent"
-                        border.color: themeManager ? themeManager.borderColor : "#404040"
-                        border.width: 1
+                        radius: 17.5
+                        color: themeManager && themeManager.isDarkTheme ? "#2d3748" : "#e2e8f0"
+                        border.color: themeManager && themeManager.isDarkTheme ? "#4a5568" : "#cbd5e0"
+                        border.width: 2
 
                         Behavior on color {
-                            ColorAnimation { duration: 150 }
+                            ColorAnimation { duration: 300 }
                         }
 
-                        Text {
-                            anchors.centerIn: parent
-                            text: themeManager && themeManager.isDarkTheme ? "☀️" : "🌙"
-                            font.pixelSize: 20
+                        Behavior on border.color {
+                            ColorAnimation { duration: 300 }
+                        }
+
+                        // Toggle thumb (kaydırılabilir daire)
+                        Rectangle {
+                            id: toggleThumb
+                            width: 28
+                            height: 28
+                            radius: 14
+                            y: 3.5
+                            x: themeManager && themeManager.isDarkTheme ? 37 : 3.5
+                            color: themeManager && themeManager.isDarkTheme ? "#1e3a8a" : "#f59e0b"
+
+                            Behavior on x {
+                                NumberAnimation {
+                                    duration: 300
+                                    easing.type: Easing.InOutQuad
+                                }
+                            }
+
+                            Behavior on color {
+                                ColorAnimation { duration: 300 }
+                            }
+
+                            // Icon inside thumb
+                            Text {
+                                anchors.centerIn: parent
+                                text: themeManager && themeManager.isDarkTheme ? "🌙" : "☀️"
+                                font.pixelSize: 16
+                            }
+
+                            // Subtle shadow effect
+                            layer.enabled: true
+                            layer.effect: DropShadow {
+                                horizontalOffset: 0
+                                verticalOffset: 2
+                                radius: 4
+                                samples: 9
+                                color: "#40000000"
+                            }
                         }
 
                         MouseArea {
@@ -263,6 +301,18 @@ ApplicationWindow {
                                 if (themeManager) {
                                     themeManager.toggleTheme()
                                 }
+                            }
+                        }
+
+                        // Hover effect
+                        Rectangle {
+                            anchors.fill: parent
+                            radius: parent.radius
+                            color: themeBtnArea.containsMouse ? "#ffffff" : "transparent"
+                            opacity: themeBtnArea.containsMouse ? 0.1 : 0
+
+                            Behavior on opacity {
+                                NumberAnimation { duration: 150 }
                             }
                         }
 
