@@ -39,30 +39,48 @@ Rectangle {
             fieldOfView: 60
         }
 
-        // Işıklandırma
+        // Işıklandırma - Tema ile uyumlu
         DirectionalLight {
             eulerRotation.x: -30
             eulerRotation.y: -70
-            brightness: 2.0
+            brightness: themeManager && themeManager.isDarkTheme ? 2.0 : 3.5
             castsShadow: true
+
+            Behavior on brightness {
+                NumberAnimation { duration: 300 }
+            }
         }
 
         DirectionalLight {
             eulerRotation.x: 30
             eulerRotation.y: 110
-            brightness: 1.5
+            brightness: themeManager && themeManager.isDarkTheme ? 1.5 : 2.5
+
+            Behavior on brightness {
+                NumberAnimation { duration: 300 }
+            }
         }
 
         PointLight {
             position: Qt.vector3d(0, 200, 200)
-            brightness: 2.0
-            ambientColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
+            brightness: themeManager && themeManager.isDarkTheme ? 2.0 : 3.0
+            ambientColor: themeManager && themeManager.isDarkTheme ?
+                Qt.rgba(0.5, 0.5, 0.5, 1.0) : Qt.rgba(0.7, 0.7, 0.7, 1.0)
+
+            Behavior on brightness {
+                NumberAnimation { duration: 300 }
+            }
         }
 
         PointLight {
             position: Qt.vector3d(200, 100, 0)
-            brightness: 1.0
-            color: Qt.rgba(1.0, 1.0, 0.9, 1.0)
+            brightness: themeManager && themeManager.isDarkTheme ? 1.0 : 2.0
+            color: themeManager && themeManager.isDarkTheme ?
+                Qt.rgba(1.0, 1.0, 0.9, 1.0) : Qt.rgba(1.0, 0.98, 0.85, 1.0)
+
+            Behavior on brightness {
+                NumberAnimation { duration: 300 }
+            }
         }
 
         // Excavator Container Node - Bu node döndürülecek

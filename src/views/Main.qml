@@ -61,70 +61,10 @@ ApplicationWindow {
                 anchors.rightMargin: 20
                 spacing: 20
 
-                // Sol taraf - Tema butonu + Başlık ve kullanıcı bilgisi
+                // Sol taraf - Başlık ve kullanıcı bilgisi
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 15
-
-                    // Tema değiştirme butonu (Sol üst köşe)
-                    Rectangle {
-                        width: 40
-                        height: 35
-                        radius: 5
-                        color: themeBtnArea.containsMouse ? (themeManager ? themeManager.hoverColor : "#333333") : "transparent"
-                        border.color: themeManager ? themeManager.borderColor : "#404040"
-                        border.width: 1
-
-                        Behavior on color {
-                            ColorAnimation { duration: 150 }
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: themeManager && themeManager.isDarkTheme ? "☀️" : "🌙"
-                            font.pixelSize: 20
-                        }
-
-                        MouseArea {
-                            id: themeBtnArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                if (themeManager) {
-                                    themeManager.toggleTheme()
-                                }
-                            }
-                        }
-
-                        // Tooltip
-                        Rectangle {
-                            visible: themeBtnArea.containsMouse
-                            anchors.top: parent.bottom
-                            anchors.topMargin: 5
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            width: tooltipText.width + 16
-                            height: 25
-                            color: themeManager ? themeManager.backgroundColorDark : "#2a2a2a"
-                            radius: 3
-                            opacity: 0.95
-                            z: 200
-
-                            Text {
-                                id: tooltipText
-                                anchors.centerIn: parent
-                                text: themeManager && themeManager.isDarkTheme ? qsTr("Light") : qsTr("Dark")
-                                font.pixelSize: 11
-                                color: themeManager ? themeManager.textColor : "#ffffff"
-                            }
-                        }
-                    }
-
-                    Rectangle {
-                        width: 2
-                        height: 30
-                        color: themeManager ? themeManager.borderColor : "#404040"
-                    }
 
                     Text {
                         text: "🚜"
@@ -291,9 +231,63 @@ ApplicationWindow {
                     }
                 }
 
-                // Sağ taraf - Dil seçici + Logout butonu
+                // Sağ taraf - Tema + Dil seçici + Logout butonu
                 Row {
                     spacing: 10
+
+                    // Tema değiştirme butonu
+                    Rectangle {
+                        width: 40
+                        height: 35
+                        radius: 5
+                        color: themeBtnArea.containsMouse ? (themeManager ? themeManager.hoverColor : "#333333") : "transparent"
+                        border.color: themeManager ? themeManager.borderColor : "#404040"
+                        border.width: 1
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: themeManager && themeManager.isDarkTheme ? "☀️" : "🌙"
+                            font.pixelSize: 20
+                        }
+
+                        MouseArea {
+                            id: themeBtnArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (themeManager) {
+                                    themeManager.toggleTheme()
+                                }
+                            }
+                        }
+
+                        // Tooltip
+                        Rectangle {
+                            visible: themeBtnArea.containsMouse
+                            anchors.top: parent.bottom
+                            anchors.topMargin: 5
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            width: tooltipText.width + 16
+                            height: 25
+                            color: themeManager ? themeManager.backgroundColorDark : "#2a2a2a"
+                            radius: 3
+                            opacity: 0.95
+                            z: 200
+
+                            Text {
+                                id: tooltipText
+                                anchors.centerIn: parent
+                                text: themeManager && themeManager.isDarkTheme ? qsTr("Light") : qsTr("Dark")
+                                font.pixelSize: 11
+                                color: themeManager ? themeManager.textColor : "#ffffff"
+                            }
+                        }
+                    }
 
                     // Dil seçici butonu
                     Rectangle {

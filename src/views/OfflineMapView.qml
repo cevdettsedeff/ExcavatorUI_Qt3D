@@ -8,7 +8,11 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: offlineMapRoot
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
+
+    Behavior on color {
+        ColorAnimation { duration: 300 }
+    }
 
     // Excavator fixed position
     property real excavatorLat: 40.8078

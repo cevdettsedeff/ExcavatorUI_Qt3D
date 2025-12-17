@@ -7,7 +7,11 @@ import QtQuick.Controls
  */
 Rectangle {
     id: simpleMapRoot
-    color: "#87CEEB"  // Sky blue as fallback
+    color: themeManager && themeManager.isDarkTheme ? "#1a2332" : "#87CEEB"  // Koyu mavi (dark) veya açık mavi (light)
+
+    Behavior on color {
+        ColorAnimation { duration: 300 }
+    }
 
     // Excavator fixed position (never changes)
     property real excavatorLat: 40.8078  // Tuzla Limanı
@@ -538,16 +542,24 @@ Rectangle {
         width: 100
         height: 40
         radius: 5
-        color: "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColorDark : "#1a1a1a"
         opacity: 0.9
         visible: isUpdating
         z: 100
 
+        Behavior on color {
+            ColorAnimation { duration: 300 }
+        }
+
         Text {
             anchors.centerIn: parent
             text: qsTr("Loading...")
-            color: "#00bcd4"
+            color: themeManager ? themeManager.primaryColor : "#00bcd4"
             font.pixelSize: 12
+
+            Behavior on color {
+                ColorAnimation { duration: 300 }
+            }
         }
     }
 
@@ -559,12 +571,16 @@ Rectangle {
         anchors.leftMargin: 20
         width: infoColumn.width + 30
         height: infoColumn.height + 30
-        color: "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
         opacity: 0.95
         radius: 10
-        border.color: "#00bcd4"
+        border.color: themeManager ? themeManager.primaryColor : "#00bcd4"
         border.width: 2
         z: 10
+
+        Behavior on color {
+            ColorAnimation { duration: 300 }
+        }
 
         Column {
             id: infoColumn
@@ -575,31 +591,66 @@ Rectangle {
                 text: qsTr("EXCAVATOR LOCATION")
                 font.pixelSize: 12
                 font.bold: true
-                color: "#00bcd4"
+                color: themeManager ? themeManager.primaryColor : "#00bcd4"
+
+                Behavior on color {
+                    ColorAnimation { duration: 300 }
+                }
             }
 
             Row {
                 spacing: 5
-                Text { text: "Lat:"; font.pixelSize: 11; color: "#ffffff"; width: 40 }
+                Text {
+                    text: "Lat:";
+                    font.pixelSize: 11;
+                    color: themeManager ? themeManager.textColor : "#ffffff";
+                    width: 40
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
+                }
                 Text { text: excavatorLat.toFixed(6); font.pixelSize: 11; color: "#00ff00" }
             }
 
             Row {
                 spacing: 5
-                Text { text: "Lon:"; font.pixelSize: 11; color: "#ffffff"; width: 40 }
+                Text {
+                    text: "Lon:";
+                    font.pixelSize: 11;
+                    color: themeManager ? themeManager.textColor : "#ffffff";
+                    width: 40
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
+                }
                 Text { text: excavatorLon.toFixed(6); font.pixelSize: 11; color: "#00ff00" }
             }
 
             Row {
                 spacing: 5
-                Text { text: "Zoom:"; font.pixelSize: 11; color: "#ffffff"; width: 40 }
+                Text {
+                    text: "Zoom:";
+                    font.pixelSize: 11;
+                    color: themeManager ? themeManager.textColor : "#ffffff";
+                    width: 40
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
+                }
                 Text { text: zoomLevel; font.pixelSize: 11; color: "#00ff00" }
             }
 
             Text {
                 text: qsTr("Tuzla Port, Istanbul")
                 font.pixelSize: 10
-                color: "#aaaaaa"
+                color: themeManager ? themeManager.textColorSecondary : "#aaaaaa"
+
+                Behavior on color {
+                    ColorAnimation { duration: 300 }
+                }
             }
         }
     }
