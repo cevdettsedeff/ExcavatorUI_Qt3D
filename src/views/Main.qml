@@ -458,7 +458,7 @@ ApplicationWindow {
                             }
 
                             Text {
-                                text: "3D Ekskavatör Görünümü"
+                                text: qsTr("3D Excavator View")
                                 font.pixelSize: 28
                                 font.bold: true
                                 color: themeManager ? themeManager.textColor : "#ffffff"
@@ -532,7 +532,7 @@ ApplicationWindow {
                                 spacing: 10
 
                                 Text {
-                                    text: "SENSÖR DURUM"
+                                    text: qsTr("SENSOR STATUS")
                                     font.pixelSize: 12
                                     font.bold: true
                                     color: "#4CAF50"
@@ -601,13 +601,13 @@ ApplicationWindow {
                                         anchors.verticalCenter: parent.verticalCenter
 
                                         Text {
-                                            text: "RTK SENSÖR"
+                                            text: qsTr("RTK SENSOR")
                                             font.pixelSize: 12
                                             font.bold: true
                                             color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
-                                            text: "Bağlantı: Aktif"
+                                            text: qsTr("Connection: Active")
                                             font.pixelSize: 10
                                             color: "#4CAF50"
                                         }
@@ -659,7 +659,7 @@ ApplicationWindow {
                                             color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
-                                            text: "Bağlantı: Aktif"
+                                            text: qsTr("Connection: Active")
                                             font.pixelSize: 10
                                             color: "#4CAF50"
                                         }
@@ -711,7 +711,7 @@ ApplicationWindow {
                                             color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
-                                            text: "Bağlantı: Aktif"
+                                            text: qsTr("Connection: Active")
                                             font.pixelSize: 10
                                             color: "#4CAF50"
                                         }
@@ -763,7 +763,7 @@ ApplicationWindow {
                                             color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
-                                            text: "Bağlantı: Aktif"
+                                            text: qsTr("Connection: Active")
                                             font.pixelSize: 10
                                             color: "#4CAF50"
                                         }
@@ -806,7 +806,7 @@ ApplicationWindow {
                                     }
 
                                     Text {
-                                        text: imuService && imuService.isDigging ? "DURDUR" : "KAZI BAŞLAT"
+                                        text: imuService && imuService.isDigging ? qsTr("STOP") : qsTr("START DIGGING")
                                         font.pixelSize: 12
                                         font.bold: true
                                         color: "#ffffff"
@@ -862,7 +862,7 @@ ApplicationWindow {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "Üstten Görünüm"
+                                text: qsTr("Top View")
                                 font.pixelSize: 12
                                 font.bold: true
                                 color: themeManager ? themeManager.primaryColor : "#00bcd4"
@@ -1019,7 +1019,7 @@ ApplicationWindow {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "Yandan Görünüm"
+                                text: qsTr("Side View")
                                 font.pixelSize: 12
                                 font.bold: true
                                 color: "#ffc107"
@@ -1188,7 +1188,7 @@ ApplicationWindow {
                             }
 
                             Text {
-                                text: "Harita Görünümü"
+                                text: qsTr("Map View")
                                 font.pixelSize: 28
                                 font.bold: true
                                 color: themeManager ? themeManager.textColor : "#ffffff"

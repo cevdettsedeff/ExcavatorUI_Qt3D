@@ -43,5 +43,73 @@
         <source>Light</source>
         <translation>Light</translation>
     </message>
+    <message>
+        <source>3D Excavator View</source>
+        <translation>3D Excavator View</translation>
+    </message>
+    <message>
+        <source>SENSOR STATUS</source>
+        <translation>SENSOR STATUS</translation>
+    </message>
+    <message>
+        <source>RTK SENSOR</source>
+        <translation>RTK SENSOR</translation>
+    </message>
+    <message>
+        <source>Connection: Active</source>
+        <translation>Connection: Active</translation>
+    </message>
+    <message>
+        <source>START DIGGING</source>
+        <translation>START DIGGING</translation>
+    </message>
+    <message>
+        <source>STOP</source>
+        <translation>STOP</translation>
+    </message>
+    <message>
+        <source>Top View</source>
+        <translation>Top View</translation>
+    </message>
+    <message>
+        <source>Side View</source>
+        <translation>Side View</translation>
+    </message>
+    <message>
+        <source>Map View</source>
+        <translation>Map View</translation>
+    </message>
+    <message>
+        <source>GPS</source>
+        <translation>GPS</translation>
+    </message>
+    <message>
+        <source>Depth</source>
+        <translation>Depth</translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation>Connection</translation>
+    </message>
+    <message>
+        <source>AUTO</source>
+        <translation>AUTO</translation>
+    </message>
+    <message>
+        <source>ANGLE</source>
+        <translation>ANGLE</translation>
+    </message>
+    <message>
+        <source>ZOOM</source>
+        <translation>ZOOM</translation>
+    </message>
+    <message>
+        <source>SCALE</source>
+        <translation>SCALE</translation>
+    </message>
+    <message>
+        <source>RESET</source>
+        <translation>RESET</translation>
+    </message>
 </context>
 </TS>

@@ -156,7 +156,7 @@ Rectangle {
             }
 
             Text {
-                text: "GPS: 40.1213, 29.1412"
+                text: qsTr("GPS") + ": 40.1213, 29.1412"
                 font.pixelSize: 14
                 font.bold: true
                 color: "#00bcd4"
@@ -164,14 +164,14 @@ Rectangle {
             }
 
             Text {
-                text: "Derinlik: 33m"
+                text: qsTr("Depth") + ": 33m"
                 font.pixelSize: 13
                 color: "#ffc107"
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
             Text {
-                text: "Bağlantı: OK"
+                text: qsTr("Connection") + ": OK"
                 font.pixelSize: 12
                 color: "#4CAF50"
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -235,7 +235,7 @@ Rectangle {
                 spacing: 5
 
                 Text {
-                    text: "OTO"
+                    text: qsTr("AUTO")
                     color: "#00bcd4"
                     font.pixelSize: 9
                     font.bold: true
@@ -286,7 +286,7 @@ Rectangle {
                 spacing: 5
 
                 Text {
-                    text: "AÇI"
+                    text: qsTr("ANGLE")
                     color: "#ffc107"
                     font.pixelSize: 9
                     font.bold: true
@@ -358,7 +358,7 @@ Rectangle {
                 spacing: 5
 
                 Text {
-                    text: "ZOOM"
+                    text: qsTr("ZOOM")
                     color: "#9c27b0"
                     font.pixelSize: 9
                     font.bold: true
@@ -424,7 +424,7 @@ Rectangle {
                 spacing: 5
 
                 Text {
-                    text: "ÖLÇEK"
+                    text: qsTr("SCALE")
                     color: "#ff5722"
                     font.pixelSize: 9
                     font.bold: true
@@ -465,7 +465,7 @@ Rectangle {
                 spacing: 5
 
                 Text {
-                    text: "RESET"
+                    text: qsTr("RESET")
                     color: "#f44336"
                     font.pixelSize: 9
                     font.bold: true
