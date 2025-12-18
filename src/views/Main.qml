@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick3D
-import Qt5Compat.GraphicalEffects
 import ExcavatorUI_Qt3D
 
 ApplicationWindow {
@@ -274,21 +273,21 @@ ApplicationWindow {
                                 ColorAnimation { duration: 300 }
                             }
 
+                            // Shadow effect (simple alternative)
+                            Rectangle {
+                                anchors.centerIn: parent
+                                width: parent.width + 2
+                                height: parent.height + 2
+                                radius: parent.radius + 1
+                                color: "#30000000"
+                                z: -1
+                            }
+
                             // Icon inside thumb
                             Text {
                                 anchors.centerIn: parent
                                 text: themeManager && themeManager.isDarkTheme ? "🌙" : "☀️"
                                 font.pixelSize: 16
-                            }
-
-                            // Subtle shadow effect
-                            layer.enabled: true
-                            layer.effect: DropShadow {
-                                horizontalOffset: 0
-                                verticalOffset: 2
-                                radius: 4
-                                samples: 9
-                                color: "#40000000"
                             }
                         }
 

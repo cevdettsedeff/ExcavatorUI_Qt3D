@@ -11,10 +11,30 @@ ApplicationWindow {
     title: qsTr("Excavator Dashboard")
     color: "#1a1a1a"
 
+    // Dil değişikliği için trigger
+    property int retranslationTrigger: 0
+
     // Window'u ortala
     Component.onCompleted: {
         loginWindow.x = (Screen.width - loginWindow.width) / 2
         loginWindow.y = (Screen.height - loginWindow.height) / 2
+    }
+
+    // Dil değişikliklerini dinle ve view'ı yenile
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            retranslationTrigger++
+            // Current view'ı kaydet
+            var isLoginView = stackView.depth === 1
+
+            // View'ı yenile
+            if (isLoginView) {
+                stackView.replace(null, loginViewComponent)
+            } else {
+                stackView.replace(null, registerViewComponent)
+            }
+        }
     }
 
     // StackView ile view'lar arası geçiş
