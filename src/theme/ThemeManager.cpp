@@ -8,7 +8,10 @@ ThemeManager::ThemeManager(QObject *parent)
 {
     qDebug() << "ThemeManager initialized";
 
-    // Load saved theme preference
+    // Initialize with dark theme colors first
+    updateColors();
+
+    // Then load saved preference if exists
     loadThemePreference();
 }
 

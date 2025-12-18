@@ -12,7 +12,10 @@ TranslationService::TranslationService(QGuiApplication *app, QQmlEngine *engine,
 {
     qDebug() << "TranslationService initialized (Qt Linguist based)";
 
-    // Load saved language preference
+    // Load Turkish by default first
+    loadTranslation("tr_TR");
+
+    // Then load saved preference if exists
     loadLanguagePreference();
 }
 

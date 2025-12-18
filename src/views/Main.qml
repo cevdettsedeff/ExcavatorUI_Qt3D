@@ -16,6 +16,17 @@ ApplicationWindow {
     property bool showLanguageLoadingOverlay: false
     property string loadingMessage: ""
 
+    // Dil değişikliği tetikleyici - tüm qsTr() çağrılarını yenilemek için
+    property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
+
+    // TranslationService'i dinle
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            languageTrigger++
+        }
+    }
+
     // Dil değişikliği loading overlay
     Rectangle {
         id: languageLoadingOverlay
@@ -134,7 +145,7 @@ ApplicationWindow {
                     }
 
                     Text {
-                        text: qsTr("Excavator Dashboard")
+                        text: (languageTrigger, qsTr("Excavator Dashboard"))
                         font.pixelSize: 18
                         font.bold: true
                         color: themeManager ? themeManager.textColor : "#ffffff"
@@ -165,7 +176,7 @@ ApplicationWindow {
 
                         Button {
                             id: excavatorViewButton
-                            text: qsTr("Excavator")
+                            text: (languageTrigger, qsTr("Excavator"))
                             width: 110
                             height: 35
 
@@ -196,7 +207,7 @@ ApplicationWindow {
 
                         Button {
                             id: mapViewButton
-                            text: qsTr("Map")
+                            text: (languageTrigger, qsTr("Map"))
                             width: 110
                             height: 35
 
@@ -228,7 +239,7 @@ ApplicationWindow {
                         // Admin butonu (sadece admin görebilir)
                         Button {
                             id: adminViewButton
-                            text: qsTr("User Management")
+                            text: (languageTrigger, qsTr("User Management"))
                             width: 160
                             height: 35
                             visible: authService && authService.isAdmin
@@ -261,7 +272,7 @@ ApplicationWindow {
                         // Profilim butonu (sadece admin değilse görebilir)
                         Button {
                             id: profileViewButton
-                            text: qsTr("Profile")
+                            text: (languageTrigger, qsTr("Profile"))
                             width: 100
                             height: 35
                             visible: authService && !authService.isAdmin
@@ -472,7 +483,7 @@ ApplicationWindow {
                     id: logoutButton
                     Layout.preferredWidth: 100
                     Layout.preferredHeight: 35
-                    text: qsTr("Logout")
+                    text: (languageTrigger, qsTr("Logout"))
 
                     background: Rectangle {
                         color: logoutButton.pressed ? "#c0392b" : (logoutButton.hovered ? "#e74c3c" : "#d32f2f")
@@ -563,7 +574,7 @@ ApplicationWindow {
                             }
 
                             Text {
-                                text: qsTr("3D Excavator View")
+                                text: (languageTrigger, qsTr("3D Excavator View"))
                                 font.pixelSize: 28
                                 font.bold: true
                                 color: themeManager ? themeManager.textColor : "#ffffff"
@@ -637,7 +648,7 @@ ApplicationWindow {
                                 spacing: 10
 
                                 Text {
-                                    text: qsTr("SENSOR STATUS")
+                                    text: (languageTrigger, qsTr("SENSOR STATUS"))
                                     font.pixelSize: 12
                                     font.bold: true
                                     color: "#4CAF50"
@@ -706,13 +717,13 @@ ApplicationWindow {
                                         anchors.verticalCenter: parent.verticalCenter
 
                                         Text {
-                                            text: qsTr("RTK SENSOR")
+                                            text: (languageTrigger, qsTr("RTK SENSOR"))
                                             font.pixelSize: 12
                                             font.bold: true
                                             color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
-                                            text: qsTr("Connection: Active")
+                                            text: (languageTrigger, qsTr("Connection: Active"))
                                             font.pixelSize: 10
                                             color: "#4CAF50"
                                         }
@@ -764,7 +775,7 @@ ApplicationWindow {
                                             color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
-                                            text: qsTr("Connection: Active")
+                                            text: (languageTrigger, qsTr("Connection: Active"))
                                             font.pixelSize: 10
                                             color: "#4CAF50"
                                         }
@@ -816,7 +827,7 @@ ApplicationWindow {
                                             color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
-                                            text: qsTr("Connection: Active")
+                                            text: (languageTrigger, qsTr("Connection: Active"))
                                             font.pixelSize: 10
                                             color: "#4CAF50"
                                         }
@@ -868,7 +879,7 @@ ApplicationWindow {
                                             color: themeManager ? themeManager.textColor : "#ffffff"
                                         }
                                         Text {
-                                            text: qsTr("Connection: Active")
+                                            text: (languageTrigger, qsTr("Connection: Active"))
                                             font.pixelSize: 10
                                             color: "#4CAF50"
                                         }
@@ -967,7 +978,7 @@ ApplicationWindow {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: qsTr("Top View")
+                                text: (languageTrigger, qsTr("Top View"))
                                 font.pixelSize: 12
                                 font.bold: true
                                 color: themeManager ? themeManager.primaryColor : "#00bcd4"
@@ -1124,7 +1135,7 @@ ApplicationWindow {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: qsTr("Side View")
+                                text: (languageTrigger, qsTr("Side View"))
                                 font.pixelSize: 12
                                 font.bold: true
                                 color: "#ffc107"
@@ -1293,7 +1304,7 @@ ApplicationWindow {
                             }
 
                             Text {
-                                text: qsTr("Map View")
+                                text: (languageTrigger, qsTr("Map View"))
                                 font.pixelSize: 28
                                 font.bold: true
                                 color: themeManager ? themeManager.textColor : "#ffffff"
