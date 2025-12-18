@@ -42,7 +42,7 @@ Rectangle {
             }
 
             Text {
-                text: "Profilim"
+                text: qsTr("My Profile")
                 font.pixelSize: 28
                 font.bold: true
                 color: "#ffffff"
@@ -111,14 +111,14 @@ Rectangle {
                             Layout.alignment: Qt.AlignVCenter
 
                             Text {
-                                text: "Profil Bilgileri"
+                                text: qsTr("Profile Information")
                                 font.pixelSize: 22
                                 font.bold: true
                                 color: "#ffffff"
                             }
 
                             Text {
-                                text: "Kullanıcı adı ve şifrenizi değiştirin"
+                                text: qsTr("Change your username and password")
                                 font.pixelSize: 14
                                 color: "#3498db"
                             }
@@ -144,7 +144,7 @@ Rectangle {
                         spacing: 10
 
                         Text {
-                            text: "Mevcut Kullanıcı Adı"
+                            text: qsTr("Current Username")
                             font.pixelSize: 14
                             font.bold: true
                             color: "#cccccc"
@@ -183,7 +183,7 @@ Rectangle {
                         spacing: 10
 
                         Text {
-                            text: "Yeni Kullanıcı Adı"
+                            text: qsTr("New Username")
                             font.pixelSize: 14
                             font.bold: true
                             color: "#cccccc"
@@ -193,7 +193,7 @@ Rectangle {
                             id: newUsernameField
                             width: parent.width
                             height: 50
-                            placeholderText: "Yeni kullanıcı adınızı girin"
+                            placeholderText: qsTr("Enter your new username")
                             font.pixelSize: 14
 
                             background: Rectangle {
@@ -217,7 +217,7 @@ Rectangle {
                         spacing: 10
 
                         Text {
-                            text: "Yeni Şifre"
+                            text: qsTr("New Password")
                             font.pixelSize: 14
                             font.bold: true
                             color: "#cccccc"
@@ -232,7 +232,7 @@ Rectangle {
                             TextField {
                                 id: newPasswordField
                                 anchors.fill: parent
-                                placeholderText: "Yeni şifrenizi girin (en az 6 karakter)"
+                                placeholderText: qsTr("Enter your new password (at least 6 characters)")
                                 echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
                                 font.pixelSize: 14
                                 color: "#ffffff"
@@ -262,7 +262,7 @@ Rectangle {
                                 }
 
                                 contentItem: Text {
-                                    text: parent.parent.showPassword ? "Gizle" : "Göster"
+                                    text: parent.parent.showPassword ? qsTr("Hide") : qsTr("Show")
                                     font.pixelSize: 11
                                     color: "#3498db"
                                     horizontalAlignment: Text.AlignHCenter
@@ -282,7 +282,7 @@ Rectangle {
                         spacing: 10
 
                         Text {
-                            text: "Yeni Şifre (Tekrar)"
+                            text: qsTr("New Password (Confirm)")
                             font.pixelSize: 14
                             font.bold: true
                             color: "#cccccc"
@@ -297,7 +297,7 @@ Rectangle {
                             TextField {
                                 id: confirmPasswordField
                                 anchors.fill: parent
-                                placeholderText: "Şifrenizi tekrar girin"
+                                placeholderText: qsTr("Re-enter your password")
                                 echoMode: parent.showConfirmPassword ? TextInput.Normal : TextInput.Password
                                 font.pixelSize: 14
                                 color: "#ffffff"
@@ -327,7 +327,7 @@ Rectangle {
                                 }
 
                                 contentItem: Text {
-                                    text: parent.parent.showConfirmPassword ? "Gizle" : "Göster"
+                                    text: parent.parent.showConfirmPassword ? qsTr("Hide") : qsTr("Show")
                                     font.pixelSize: 11
                                     color: "#3498db"
                                     horizontalAlignment: Text.AlignHCenter
@@ -361,7 +361,7 @@ Rectangle {
                             }
 
                             Text {
-                                text: "Profil bilgileriniz güncellendiğinde otomatik olarak çıkış yapılacak ve giriş ekranına yönlendirileceksiniz."
+                                text: qsTr("You will be automatically logged out and redirected to the login screen when your profile is updated.")
                                 font.pixelSize: 12
                                 color: "#ffffff"
                                 wrapMode: Text.WordWrap
@@ -405,7 +405,7 @@ Rectangle {
                             }
 
                             Text {
-                                text: "Değişiklikleri Kaydet"
+                                text: qsTr("Save Changes")
                                 font.pixelSize: 16
                                 font.bold: true
                                 color: parent.parent.enabled ? "#ffffff" : "#666666"
@@ -416,26 +416,26 @@ Rectangle {
                         onClicked: {
                             // Validasyon
                             if (newUsernameField.text.length === 0 && newPasswordField.text.length === 0) {
-                                errorDialog.errorText = "En az bir alan doldurulmalıdır."
+                                errorDialog.errorText = qsTr("At least one field must be filled.")
                                 errorDialog.open()
                                 return
                             }
 
                             if (newUsernameField.text.length > 0 && newUsernameField.text.length < 3) {
-                                errorDialog.errorText = "Kullanıcı adı en az 3 karakter olmalıdır."
+                                errorDialog.errorText = qsTr("Username must be at least 3 characters.")
                                 errorDialog.open()
                                 return
                             }
 
                             if (newPasswordField.text.length > 0) {
                                 if (newPasswordField.text.length < 6) {
-                                    errorDialog.errorText = "Şifre en az 6 karakter olmalıdır."
+                                    errorDialog.errorText = qsTr("Password must be at least 6 characters.")
                                     errorDialog.open()
                                     return
                                 }
 
                                 if (newPasswordField.text !== confirmPasswordField.text) {
-                                    errorDialog.errorText = "Şifreler eşleşmiyor."
+                                    errorDialog.errorText = qsTr("Passwords do not match.")
                                     errorDialog.open()
                                     return
                                 }
@@ -448,7 +448,7 @@ Rectangle {
                             if (authService.updateProfile(username, password)) {
                                 successDialog.open()
                             } else {
-                                errorDialog.errorText = "Profil güncellenirken bir hata oluştu. Bu kullanıcı adı zaten kullanılıyor olabilir."
+                                errorDialog.errorText = qsTr("An error occurred while updating profile. This username may already be in use.")
                                 errorDialog.open()
                             }
                         }
@@ -461,7 +461,7 @@ Rectangle {
     // Başarı Dialog'u
     Dialog {
         id: successDialog
-        title: "Başarılı"
+        title: qsTr("Success")
         modal: true
         anchors.centerIn: parent
         width: 400
@@ -489,7 +489,7 @@ Rectangle {
 
             Text {
                 anchors.centerIn: parent
-                text: "✓ Profil Güncellendi"
+                text: "✓ " + qsTr("Profile Updated")
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
@@ -501,7 +501,7 @@ Rectangle {
             width: parent.width
 
             Text {
-                text: "Profil bilgileriniz başarıyla güncellendi.\n\nGiriş ekranına yönlendiriliyorsunuz..."
+                text: qsTr("Your profile has been successfully updated.\n\nRedirecting to login screen...")
                 font.pixelSize: 14
                 color: "#cccccc"
                 wrapMode: Text.WordWrap
@@ -521,7 +521,7 @@ Rectangle {
     // Hata Dialog'u
     Dialog {
         id: errorDialog
-        title: "Hata"
+        title: qsTr("Error")
         modal: true
         anchors.centerIn: parent
         width: 400
@@ -551,7 +551,7 @@ Rectangle {
 
             Text {
                 anchors.centerIn: parent
-                text: "⚠️ Hata"
+                text: "⚠️ " + qsTr("Error")
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"

@@ -89,6 +89,10 @@ static_maps/*.aux.xml
 # Map tiles (pre-downloaded, large, not for Git)
 static_maps/osm_tiles/
 static_maps/cartodb_tiles/
+maps/*.png
+maps/*/*.png
+maps/*/*/*.png
+maps/*/*/*/*.png
 
 # Database files
 *.db

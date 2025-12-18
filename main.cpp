@@ -6,12 +6,16 @@
 #include <QIcon>
 #include <QColor>
 #include <QTimer>
+#include <QDir>
+#include <QDebug>
 #include "src/database/DatabaseManager.h"
 #include "src/auth/AuthService.h"
 #include "src/sensors/IMUMockService.h"
 #include "src/config/ConfigManager.h"
 #include "src/map/TileImageProvider.h"
 #include "src/map/OfflineTileManager.h"
+#include "src/i18n/TranslationService.h"
+#include "src/theme/ThemeManager.h"
 
 // GDAL-dependent features (optional)
 #ifdef HAVE_GDAL
@@ -48,11 +52,27 @@ int main(int argc, char *argv[])
     configManager.setConfigPath("config/bathymetry_config.json");
     configManager.loadConfig();
 
+    // Debug: Working directory ve maps klasörü kontrolü
+    QString workingDir = QDir::currentPath();
+    QString mapsPath = QDir(workingDir).filePath("maps");
+    qDebug() << "========================================";
+    qDebug() << "Working Directory:" << workingDir;
+    qDebug() << "Maps Path:" << mapsPath;
+    qDebug() << "Maps Exists:" << QDir(mapsPath).exists();
+    if (QDir(mapsPath).exists()) {
+        qDebug() << "Maps Contents:" << QDir(mapsPath).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    }
+    qDebug() << "========================================";
+
     // TileImageProvider oluştur (online tile loading için)
     TileImageProvider* tileImageProvider = new TileImageProvider();
+    // Kullanıcının yerel tile klasörünü ayarla
+    tileImageProvider->setStaticTileDirectory("maps");
 
     // OfflineTileManager oluştur (harita offline indirme için)
     OfflineTileManager offlineTileManager;
+    // Kullanıcının yerel tile klasörünü ayarla
+    offlineTileManager.setStaticTileDirectory("maps");
 
     // Connect tile provider changes: when offline manager changes provider, update image provider too
     QObject::connect(&offlineTileManager, &OfflineTileManager::tileProviderChanged, [&]() {
@@ -74,6 +94,12 @@ int main(int argc, char *argv[])
     // QML Engine oluştur
     QQmlApplicationEngine engine;
 
+    // TranslationService oluştur (Qt Linguist based)
+    TranslationService translationService(&app, &engine);
+
+    // ThemeManager oluştur
+    ThemeManager themeManager;
+
     // Register tile image provider (supports OSM and CartoDB)
     engine.addImageProvider("osmtiles", tileImageProvider);
 
@@ -93,6 +119,12 @@ int main(int argc, char *argv[])
 
     // OfflineTileManager'ı QML'e expose et
     engine.rootContext()->setContextProperty("offlineTileManager", &offlineTileManager);
+
+    // TranslationService'i QML'e expose et
+    engine.rootContext()->setContextProperty("translationService", &translationService);
+
+    // ThemeManager'ı QML'e expose et
+    engine.rootContext()->setContextProperty("themeManager", &themeManager);
 
 #ifdef HAVE_GDAL
     // BathymetricDataLoader'ı QML'e expose et (sadece GDAL varsa)

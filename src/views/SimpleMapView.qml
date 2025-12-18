@@ -7,7 +7,11 @@ import QtQuick.Controls
  */
 Rectangle {
     id: simpleMapRoot
-    color: "#87CEEB"  // Sky blue as fallback
+    color: themeManager && themeManager.isDarkTheme ? "#1a2332" : "#87CEEB"  // Koyu mavi (dark) veya açık mavi (light)
+
+    Behavior on color {
+        ColorAnimation { duration: 300 }
+    }
 
     // Excavator fixed position (never changes)
     property real excavatorLat: 40.8078  // Tuzla Limanı
@@ -525,7 +529,7 @@ Rectangle {
             Text {
                 id: resetLabel
                 anchors.centerIn: parent
-                text: "Sıfırla (2x tık)"
+                text: qsTr("Reset (2x click)")
                 font.pixelSize: 8
                 color: "#ffffff"
             }
@@ -538,16 +542,24 @@ Rectangle {
         width: 100
         height: 40
         radius: 5
-        color: "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColorDark : "#1a1a1a"
         opacity: 0.9
         visible: isUpdating
         z: 100
 
+        Behavior on color {
+            ColorAnimation { duration: 300 }
+        }
+
         Text {
             anchors.centerIn: parent
-            text: "Yükleniyor..."
-            color: "#00bcd4"
+            text: qsTr("Loading...")
+            color: themeManager ? themeManager.primaryColor : "#00bcd4"
             font.pixelSize: 12
+
+            Behavior on color {
+                ColorAnimation { duration: 300 }
+            }
         }
     }
 
@@ -559,12 +571,16 @@ Rectangle {
         anchors.leftMargin: 20
         width: infoColumn.width + 30
         height: infoColumn.height + 30
-        color: "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
         opacity: 0.95
         radius: 10
-        border.color: "#00bcd4"
+        border.color: themeManager ? themeManager.primaryColor : "#00bcd4"
         border.width: 2
         z: 10
+
+        Behavior on color {
+            ColorAnimation { duration: 300 }
+        }
 
         Column {
             id: infoColumn
@@ -572,34 +588,69 @@ Rectangle {
             spacing: 8
 
             Text {
-                text: "EKSKAVATOR KONUMU"
+                text: qsTr("EXCAVATOR LOCATION")
                 font.pixelSize: 12
                 font.bold: true
-                color: "#00bcd4"
+                color: themeManager ? themeManager.primaryColor : "#00bcd4"
+
+                Behavior on color {
+                    ColorAnimation { duration: 300 }
+                }
             }
 
             Row {
                 spacing: 5
-                Text { text: "Lat:"; font.pixelSize: 11; color: "#ffffff"; width: 40 }
+                Text {
+                    text: "Lat:";
+                    font.pixelSize: 11;
+                    color: themeManager ? themeManager.textColor : "#ffffff";
+                    width: 40
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
+                }
                 Text { text: excavatorLat.toFixed(6); font.pixelSize: 11; color: "#00ff00" }
             }
 
             Row {
                 spacing: 5
-                Text { text: "Lon:"; font.pixelSize: 11; color: "#ffffff"; width: 40 }
+                Text {
+                    text: "Lon:";
+                    font.pixelSize: 11;
+                    color: themeManager ? themeManager.textColor : "#ffffff";
+                    width: 40
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
+                }
                 Text { text: excavatorLon.toFixed(6); font.pixelSize: 11; color: "#00ff00" }
             }
 
             Row {
                 spacing: 5
-                Text { text: "Zoom:"; font.pixelSize: 11; color: "#ffffff"; width: 40 }
+                Text {
+                    text: "Zoom:";
+                    font.pixelSize: 11;
+                    color: themeManager ? themeManager.textColor : "#ffffff";
+                    width: 40
+
+                    Behavior on color {
+                        ColorAnimation { duration: 300 }
+                    }
+                }
                 Text { text: zoomLevel; font.pixelSize: 11; color: "#00ff00" }
             }
 
             Text {
-                text: "Tuzla Limanı, İstanbul"
+                text: qsTr("Tuzla Port, Istanbul")
                 font.pixelSize: 10
-                color: "#aaaaaa"
+                color: themeManager ? themeManager.textColorSecondary : "#aaaaaa"
+
+                Behavior on color {
+                    ColorAnimation { duration: 300 }
+                }
             }
         }
     }
@@ -758,7 +809,7 @@ Rectangle {
                     Text {
                         id: tooltipText1
                         anchors.centerIn: parent
-                        text: "Ekskavatör"
+                        text: qsTr("Excavator")
                         font.pixelSize: 10
                         color: "#ffffff"
                     }
@@ -799,7 +850,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "Tuzla"
+                        text: qsTr("Tuzla")
                         font.pixelSize: 11
                         font.bold: true
                         color: tuzlaArea.pressed ? "#ffffff" : "#00bcd4"
@@ -824,7 +875,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "Istanbul"
+                        text: qsTr("Istanbul")
                         font.pixelSize: 11
                         font.bold: true
                         color: istanbulArea.pressed ? "#ffffff" : "#4CAF50"
@@ -900,7 +951,7 @@ Rectangle {
                     spacing: 8
 
                     Text {
-                        text: "OFFLINE HARITA"
+                        text: qsTr("OFFLINE MAP DOWNLOAD")
                         font.pixelSize: 11
                         font.bold: true
                         color: "#ff9800"
@@ -937,7 +988,7 @@ Rectangle {
                         spacing: 2
 
                         Text {
-                            text: "Önbellek: " + (offlineTileManager ? offlineTileManager.formatCacheSize() : "0 MB")
+                            text: qsTr("Cache") + ": " + (offlineTileManager ? offlineTileManager.formatCacheSize() : "0 MB")
                             font.pixelSize: 10
                             color: "#aaaaaa"
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -951,7 +1002,7 @@ Rectangle {
                     spacing: 5
 
                     Text {
-                        text: "Harita:"
+                        text: qsTr("Map") + ":"
                         font.pixelSize: 10
                         color: "#ffffff"
                         width: 35
@@ -983,7 +1034,7 @@ Rectangle {
                     spacing: 5
 
                     Text {
-                        text: "Alan:"
+                        text: qsTr("Area") + ":"
                         font.pixelSize: 10
                         color: "#ffffff"
                         width: 35
@@ -994,7 +1045,7 @@ Rectangle {
                         id: radiusCombo
                         width: parent.width - 40
                         height: 30
-                        model: ["1 km", "2 km", "5 km", "10 km", "Türkiye Tümü"]
+                        model: ["1 km", "2 km", "5 km", "10 km", qsTr("All Turkey")]
                         currentIndex: 1
 
                         property var radiusValues: [1, 2, 5, 10, 0]  // 0 means use Turkey bounds
@@ -1018,7 +1069,7 @@ Rectangle {
                         width: parent.width - 10
 
                         Text {
-                            text: "⚠ Türkiye Tümü"
+                            text: "⚠ " + qsTr("All Turkey")
                             font.pixelSize: 10
                             font.bold: true
                             color: "#ffa726"
@@ -1026,7 +1077,7 @@ Rectangle {
                         }
 
                         Text {
-                            text: "Alan: 36°-42° Kuzey, 26°-45° Doğu"
+                            text: qsTr("Area") + ": 36°-42° " + qsTr("North") + ", 26°-45° " + qsTr("East")
                             font.pixelSize: 8
                             color: "#cccccc"
                             anchors.horizontalCenter: parent.horizontalCenter

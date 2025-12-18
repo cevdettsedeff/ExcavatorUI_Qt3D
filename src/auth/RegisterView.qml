@@ -8,9 +8,97 @@ Item {
     signal switchToLogin()
     signal registrationSuccessful()
 
+    // Dil değişikliği tetikleyici - bu değiştiğinde tüm qsTr() çağrıları yenilenir
+    property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
+
+    // Helper fonksiyon - QML binding için
+    function tr(text) {
+        // languageTrigger kullanarak binding dependency oluştur
+        return languageTrigger >= 0 ? qsTr(text) : ""
+    }
+
+    // TranslationService'i dinle
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            languageTrigger++
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         color: "#1a1a1a"
+
+        // Dil seçici butonu (sağ üst köşe)
+        Rectangle {
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: 15
+            width: 80
+            height: 35
+            radius: 5
+            color: langBtnArea.containsMouse ? "#333333" : "#34495e"
+            border.color: "#505050"
+            border.width: 1
+            z: 100
+
+            Behavior on color {
+                ColorAnimation { duration: 150 }
+            }
+
+            Row {
+                anchors.centerIn: parent
+                spacing: 5
+
+                Text {
+                    text: "🌐"
+                    font.pixelSize: 16
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Text {
+                    text: translationService ? (translationService.currentLanguage === "tr_TR" ? "TR" : "EN") : "TR"
+                    font.pixelSize: 12
+                    font.bold: true
+                    color: "#ffffff"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            MouseArea {
+                id: langBtnArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    langMenu.open()
+                }
+            }
+
+            // Language menu
+            Menu {
+                id: langMenu
+                y: parent.height
+
+                MenuItem {
+                    text: "🇹🇷 Türkçe"
+                    onTriggered: {
+                        if (translationService) {
+                            translationService.switchLanguage("tr_TR")
+                        }
+                    }
+                }
+
+                MenuItem {
+                    text: "🇬🇧 English"
+                    onTriggered: {
+                        if (translationService) {
+                            translationService.switchLanguage("en_US")
+                        }
+                    }
+                }
+            }
+        }
 
         ScrollView {
             anchors.fill: parent
@@ -55,7 +143,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "Yeni Hesap Oluştur"
+                        text: tr("Create New Account")
                         font.pixelSize: 24
                         font.bold: true
                         color: "#ffffff"
@@ -63,7 +151,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "Lütfen bilgilerinizi girin"
+                        text: tr("Please enter your information")
                         font.pixelSize: 14
                         color: "#888888"
                         Layout.bottomMargin: 15
@@ -82,7 +170,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: "Kullanıcı Adı"
+                        text: tr("Username")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -91,7 +179,7 @@ Item {
                         id: usernameField
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: "Kullanıcı adınızı seçin (min. 3 karakter)"
+                        placeholderText: tr("Choose your username (min. 3 characters)")
                         font.pixelSize: 14
                         color: "#ffffff"
 
@@ -112,7 +200,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: "Şifre"
+                        text: tr("Password")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -126,7 +214,7 @@ Item {
                         TextField {
                             id: passwordField
                             anchors.fill: parent
-                            placeholderText: "Şifrenizi belirleyin"
+                            placeholderText: tr("Choose your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -154,7 +242,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showPassword ? "Gizle" : "Göster"
+                                text: parent.parent.showPassword ? registerView.tr("Hide") : registerView.tr("Show")
                                 font.pixelSize: 11
                                 color: "#2ecc71"
                                 horizontalAlignment: Text.AlignHCenter
@@ -174,7 +262,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: "Şifre Tekrar"
+                        text: tr("Confirm Password")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -188,7 +276,7 @@ Item {
                         TextField {
                             id: confirmPasswordField
                             anchors.fill: parent
-                            placeholderText: "Şifrenizi tekrar girin"
+                            placeholderText: tr("Re-enter your password")
                             echoMode: parent.showConfirmPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -216,7 +304,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showConfirmPassword ? "Gizle" : "Göster"
+                                text: parent.parent.showConfirmPassword ? registerView.tr("Hide") : registerView.tr("Show")
                                 font.pixelSize: 11
                                 color: "#2ecc71"
                                 horizontalAlignment: Text.AlignHCenter
@@ -235,7 +323,7 @@ Item {
                     id: registerButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
-                    text: "Kayıt Ol"
+                    text: tr("Register")
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 &&
@@ -306,7 +394,7 @@ Item {
                         if (authService.registerUser(usernameField.text, passwordField.text)) {
                             successDialog.open()
                         } else {
-                            errorDialog.errorText = "Bu kullanıcı adı zaten kullanımda. Lütfen başka bir kullanıcı adı seçin."
+                            errorDialog.errorText = qsTr("This username is already taken. Please choose another username.")
                             errorDialog.open()
                         }
                     }
@@ -317,7 +405,7 @@ Item {
                     id: backButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 45
-                    text: "Geri Dön"
+                    text: tr("Go Back")
                     font.pixelSize: 14
                     hoverEnabled: true
                     scale: backButton.pressed ? 0.97 : (backButton.hovered ? 1.02 : 1.0)
@@ -391,7 +479,7 @@ Item {
 
                         Text {
                             Layout.fillWidth: true
-                            text: "ℹ️ Şifre Gereksinimleri"
+                            text: "ℹ️ " + registerView.tr("Password Requirements")
                             font.pixelSize: 12
                             font.bold: true
                             color: "#ecf0f1"
@@ -399,7 +487,7 @@ Item {
 
                         Text {
                             Layout.fillWidth: true
-                            text: "• Kullanıcı adı: En az 3 karakter\n• Şifre: En az 6 karakter\n• En az 1 büyük harf, 1 küçük harf\n• En az 1 rakam içermeli"
+                            text: tr("• Username: At least 3 characters\n• Password: At least 6 characters\n• At least 1 uppercase, 1 lowercase letter\n• Must contain at least 1 digit")
                             font.pixelSize: 11
                             color: "#bdc3c7"
                             lineHeight: 1.6
@@ -421,14 +509,14 @@ Item {
         if (username.length < 3) {
             return {
                 valid: false,
-                error: "Kullanıcı adı en az 3 karakter olmalıdır."
+                error: qsTr("Username must be at least 3 characters.")
             }
         }
 
         if (username.length > 20) {
             return {
                 valid: false,
-                error: "Kullanıcı adı en fazla 20 karakter olabilir."
+                error: qsTr("Username can be at most 20 characters.")
             }
         }
 
@@ -437,7 +525,7 @@ Item {
         if (!usernameRegex.test(username)) {
             return {
                 valid: false,
-                error: "Kullanıcı adı sadece harf, rakam ve alt çizgi (_) içerebilir."
+                error: qsTr("Username can only contain letters, numbers and underscore (_).")
             }
         }
 
@@ -445,7 +533,7 @@ Item {
         if (password.length < 6) {
             return {
                 valid: false,
-                error: "Şifre en az 6 karakter olmalıdır."
+                error: qsTr("Password must be at least 6 characters.")
             }
         }
 
@@ -453,7 +541,7 @@ Item {
         if (!/[A-Z]/.test(password)) {
             return {
                 valid: false,
-                error: "Şifre en az 1 büyük harf içermelidir."
+                error: qsTr("Password must contain at least 1 uppercase letter.")
             }
         }
 
@@ -461,7 +549,7 @@ Item {
         if (!/[a-z]/.test(password)) {
             return {
                 valid: false,
-                error: "Şifre en az 1 küçük harf içermelidir."
+                error: qsTr("Password must contain at least 1 lowercase letter.")
             }
         }
 
@@ -469,7 +557,7 @@ Item {
         if (!/[0-9]/.test(password)) {
             return {
                 valid: false,
-                error: "Şifre en az 1 rakam içermelidir."
+                error: qsTr("Password must contain at least 1 digit.")
             }
         }
 
@@ -477,7 +565,7 @@ Item {
         if (password !== confirmPassword) {
             return {
                 valid: false,
-                error: "Şifreler eşleşmiyor. Lütfen aynı şifreyi tekrar girin."
+                error: qsTr("Passwords do not match. Please re-enter the same password.")
             }
         }
 
@@ -508,7 +596,7 @@ Item {
 
             Text {
                 anchors.centerIn: parent
-                text: "✓ Kayıt İsteğiniz Alındı!"
+                text: "✓ " + registerView.tr("Registration Request Received!")
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"
@@ -523,7 +611,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: implicitHeight
-                text: "Kayıt isteğiniz yetkili kişiye gönderildi.\n\nOnay beklerken giriş sayfasına yönlendiriliyorsunuz..."
+                text: tr("Your registration request has been sent to the administrator.\n\nRedirecting to login page while waiting for approval...")
                 font.pixelSize: 14
                 color: "#ffffff"
                 wrapMode: Text.WordWrap
@@ -564,7 +652,7 @@ Item {
 
             Text {
                 anchors.centerIn: parent
-                text: "⚠ Hata"
+                text: "⚠ " + registerView.tr("Error")
                 font.pixelSize: 18
                 font.bold: true
                 color: "#ffffff"

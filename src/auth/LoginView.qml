@@ -7,9 +7,97 @@ Item {
 
     signal switchToRegister()
 
+    // Dil değişikliği tetikleyici - bu değiştiğinde tüm qsTr() çağrıları yenilenir
+    property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
+
+    // Helper fonksiyon - QML binding için
+    function tr(text) {
+        // languageTrigger kullanarak binding dependency oluştur
+        return languageTrigger >= 0 ? qsTr(text) : ""
+    }
+
+    // TranslationService'i dinle
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            languageTrigger++
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         color: "#1a1a1a"
+
+        // Dil seçici butonu (sağ üst köşe)
+        Rectangle {
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: 15
+            width: 80
+            height: 35
+            radius: 5
+            color: langBtnArea.containsMouse ? "#333333" : "#34495e"
+            border.color: "#505050"
+            border.width: 1
+            z: 100
+
+            Behavior on color {
+                ColorAnimation { duration: 150 }
+            }
+
+            Row {
+                anchors.centerIn: parent
+                spacing: 5
+
+                Text {
+                    text: "🌐"
+                    font.pixelSize: 16
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Text {
+                    text: translationService ? (translationService.currentLanguage === "tr_TR" ? "TR" : "EN") : "TR"
+                    font.pixelSize: 12
+                    font.bold: true
+                    color: "#ffffff"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            MouseArea {
+                id: langBtnArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    langMenu.open()
+                }
+            }
+
+            // Language menu
+            Menu {
+                id: langMenu
+                y: parent.height
+
+                MenuItem {
+                    text: "🇹🇷 Türkçe"
+                    onTriggered: {
+                        if (translationService) {
+                            translationService.switchLanguage("tr_TR")
+                        }
+                    }
+                }
+
+                MenuItem {
+                    text: "🇬🇧 English"
+                    onTriggered: {
+                        if (translationService) {
+                            translationService.switchLanguage("en_US")
+                        }
+                    }
+                }
+            }
+        }
 
         ScrollView {
             anchors.fill: parent
@@ -60,7 +148,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "Lütfen giriş yapın"
+                        text: tr("Please log in")
                         font.pixelSize: 14
                         color: "#888888"
                         Layout.bottomMargin: 15
@@ -80,7 +168,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: "Kullanıcı Adı"
+                        text: tr("Username")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -89,7 +177,7 @@ Item {
                         id: usernameField
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: "Kullanıcı adınızı girin"
+                        placeholderText: tr("Enter your username")
                         font.pixelSize: 14
                         color: "#ffffff"
 
@@ -110,7 +198,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: "Şifre"
+                        text: tr("Password")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -124,7 +212,7 @@ Item {
                         TextField {
                             id: passwordField
                             anchors.fill: parent
-                            placeholderText: "Şifrenizi girin"
+                            placeholderText: tr("Enter your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -152,7 +240,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showPassword ? "Gizle" : "Göster"
+                                text: parent.parent.showPassword ? loginView.tr("Hide") : loginView.tr("Show")
                                 font.pixelSize: 11
                                 color: "#3498db"
                                 horizontalAlignment: Text.AlignHCenter
@@ -184,7 +272,7 @@ Item {
                     id: loginButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
-                    text: "Giriş Yap"
+                    text: tr("Login")
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
@@ -259,7 +347,7 @@ Item {
                     }
 
                     Text {
-                        text: "veya"
+                        text: tr("or")
                         font.pixelSize: 11
                         color: "#888888"
                     }
@@ -276,7 +364,7 @@ Item {
                     id: registerButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 45
-                    text: "Üye Ol"
+                    text: tr("Sign Up")
                     font.pixelSize: 14
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)

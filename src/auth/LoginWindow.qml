@@ -11,10 +11,82 @@ ApplicationWindow {
     title: qsTr("Excavator Dashboard")
     color: "#1a1a1a"
 
+    // Dil değişikliği için trigger
+    property int retranslationTrigger: 0
+    property bool showLanguageLoadingOverlay: false
+    property string loadingMessage: ""
+
     // Window'u ortala
     Component.onCompleted: {
         loginWindow.x = (Screen.width - loginWindow.width) / 2
         loginWindow.y = (Screen.height - loginWindow.height) / 2
+    }
+
+    // Dil değişikliklerini dinle ve loading göster
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            retranslationTrigger++
+            // Yeni dile geçtik, eski dilde mesaj göster
+            loadingMessage = (translationService.currentLanguage === "tr_TR") ? "Changing language..." : "Dil değiştiriliyor..."
+            showLanguageLoadingOverlay = true
+            languageLoadingTimer.start()
+
+            // Current view'ı kaydet
+            var isLoginView = stackView.depth === 1
+
+            // View'ı yenile
+            if (isLoginView) {
+                stackView.replace(null, loginViewComponent)
+            } else {
+                stackView.replace(null, registerViewComponent)
+            }
+        }
+    }
+
+    Timer {
+        id: languageLoadingTimer
+        interval: 800
+        repeat: false
+        onTriggered: {
+            showLanguageLoadingOverlay = false
+        }
+    }
+
+    // Dil değişikliği loading overlay
+    Rectangle {
+        id: languageLoadingOverlay
+        anchors.fill: parent
+        color: "#80000000"
+        visible: showLanguageLoadingOverlay
+        z: 1000
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: 200
+            height: 90
+            color: "#2a2a2a"
+            radius: 10
+            border.color: "#00bcd4"
+            border.width: 2
+
+            ColumnLayout {
+                anchors.centerIn: parent
+                spacing: 12
+
+                BusyIndicator {
+                    Layout.alignment: Qt.AlignHCenter
+                    running: showLanguageLoadingOverlay
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: loadingMessage
+                    font.pixelSize: 13
+                    color: "#ffffff"
+                }
+            }
+        }
     }
 
     // StackView ile view'lar arası geçiş
