@@ -11,6 +11,77 @@ Item {
         anchors.fill: parent
         color: "#1a1a1a"
 
+        // Dil seçici butonu (sağ üst köşe)
+        Rectangle {
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: 15
+            width: 80
+            height: 35
+            radius: 5
+            color: langBtnArea.containsMouse ? "#333333" : "#34495e"
+            border.color: "#505050"
+            border.width: 1
+            z: 100
+
+            Behavior on color {
+                ColorAnimation { duration: 150 }
+            }
+
+            Row {
+                anchors.centerIn: parent
+                spacing: 5
+
+                Text {
+                    text: "🌐"
+                    font.pixelSize: 16
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Text {
+                    text: translationService ? (translationService.currentLanguage === "tr_TR" ? "TR" : "EN") : "TR"
+                    font.pixelSize: 12
+                    font.bold: true
+                    color: "#ffffff"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            MouseArea {
+                id: langBtnArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    langMenu.open()
+                }
+            }
+
+            // Language menu
+            Menu {
+                id: langMenu
+                y: parent.height
+
+                MenuItem {
+                    text: "🇹🇷 Türkçe"
+                    onTriggered: {
+                        if (translationService) {
+                            translationService.switchLanguage("tr_TR")
+                        }
+                    }
+                }
+
+                MenuItem {
+                    text: "🇬🇧 English"
+                    onTriggered: {
+                        if (translationService) {
+                            translationService.switchLanguage("en_US")
+                        }
+                    }
+                }
+            }
+        }
+
         ScrollView {
             anchors.fill: parent
             contentWidth: availableWidth
