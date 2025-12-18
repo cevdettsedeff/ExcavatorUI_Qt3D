@@ -53,21 +53,21 @@ void ThemeManager::updateColors()
         m_selectedColor = QColor("#00bcd4");
 
     } else {
-        // Light theme colors
-        m_backgroundColor = QColor("#f5f5f5");
-        m_backgroundColorLight = QColor("#ffffff");
-        m_backgroundColorDark = QColor("#e0e0e0");
+        // Light theme colors - optimized for better contrast
+        m_backgroundColor = QColor("#e8eaf6");        // Soft blue-grey background
+        m_backgroundColorLight = QColor("#f5f7fa");   // Very light blue-grey
+        m_backgroundColorDark = QColor("#c5cae9");    // Medium blue-grey
 
-        m_textColor = QColor("#212121");
-        m_textColorSecondary = QColor("#757575");
-        m_textColorDisabled = QColor("#bdbdbd");
+        m_textColor = QColor("#1a237e");              // Deep indigo for text
+        m_textColorSecondary = QColor("#5c6bc0");     // Medium indigo
+        m_textColorDisabled = QColor("#9fa8da");      // Light indigo
 
-        m_primaryColor = QColor("#0097a7");
-        m_secondaryColor = QColor("#546e7a");
-        m_accentColor = QColor("#ff5722");
-        m_borderColor = QColor("#e0e0e0");
-        m_hoverColor = QColor("#f0f0f0");
-        m_selectedColor = QColor("#0097a7");
+        m_primaryColor = QColor("#0097a7");           // Cyan
+        m_secondaryColor = QColor("#7986cb");         // Indigo accent
+        m_accentColor = QColor("#ff6f00");            // Orange accent
+        m_borderColor = QColor("#c5cae9");            // Light border
+        m_hoverColor = QColor("#d1d9ff");             // Hover effect
+        m_selectedColor = QColor("#0097a7");          // Same as primary
     }
 }
 

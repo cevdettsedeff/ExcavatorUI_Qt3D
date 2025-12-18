@@ -7,6 +7,17 @@ Item {
 
     signal switchToRegister()
 
+    // Dil değişikliği tetikleyici - bu değiştiğinde tüm qsTr() çağrıları yenilenir
+    property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
+
+    // TranslationService'i dinle
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            languageTrigger++
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         color: "#1a1a1a"

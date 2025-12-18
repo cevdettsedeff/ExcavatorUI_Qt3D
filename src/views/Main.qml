@@ -13,6 +13,65 @@ ApplicationWindow {
     color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
 
     property bool contentLoaded: false
+    property bool showLanguageLoadingOverlay: false
+
+    // Dil değişikliği loading overlay
+    Rectangle {
+        id: languageLoadingOverlay
+        anchors.fill: parent
+        color: "#80000000"
+        visible: showLanguageLoadingOverlay
+        z: 1000
+
+        Behavior on opacity {
+            NumberAnimation { duration: 300 }
+        }
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: 200
+            height: 100
+            color: themeManager ? themeManager.backgroundColorLight : "#2a2a2a"
+            radius: 10
+            border.color: themeManager ? themeManager.primaryColor : "#00bcd4"
+            border.width: 2
+
+            ColumnLayout {
+                anchors.centerIn: parent
+                spacing: 15
+
+                BusyIndicator {
+                    Layout.alignment: Qt.AlignHCenter
+                    running: showLanguageLoadingOverlay
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: qsTr("Loading...")
+                    font.pixelSize: 14
+                    color: themeManager ? themeManager.textColor : "#ffffff"
+                }
+            }
+        }
+    }
+
+    // Dil değişikliğini dinle
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            showLanguageLoadingOverlay = true
+            languageLoadingTimer.start()
+        }
+    }
+
+    Timer {
+        id: languageLoadingTimer
+        interval: 2000
+        repeat: false
+        onTriggered: {
+            showLanguageLoadingOverlay = false
+        }
+    }
 
     // İLK FRAME'DEN İTİBAREN GÖRÜNMESİ GEREKEN ARKAPLAN
     Rectangle {
