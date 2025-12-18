@@ -10,6 +10,12 @@ Item {
     // Dil değişikliği tetikleyici - bu değiştiğinde tüm qsTr() çağrıları yenilenir
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
+    // Helper fonksiyon - QML binding için
+    function tr(text) {
+        // languageTrigger kullanarak binding dependency oluştur
+        return languageTrigger >= 0 ? qsTr(text) : ""
+    }
+
     // TranslationService'i dinle
     Connections {
         target: translationService
@@ -142,7 +148,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: (languageTrigger, qsTr("Please log in"))
+                        text: tr("Please log in")
                         font.pixelSize: 14
                         color: "#888888"
                         Layout.bottomMargin: 15
@@ -162,7 +168,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: (languageTrigger, qsTr("Username"))
+                        text: tr("Username")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -171,7 +177,7 @@ Item {
                         id: usernameField
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: (languageTrigger, qsTr("Enter your username"))
+                        placeholderText: tr("Enter your username")
                         font.pixelSize: 14
                         color: "#ffffff"
 
@@ -192,7 +198,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: (languageTrigger, qsTr("Password"))
+                        text: tr("Password")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -206,7 +212,7 @@ Item {
                         TextField {
                             id: passwordField
                             anchors.fill: parent
-                            placeholderText: (languageTrigger, qsTr("Enter your password"))
+                            placeholderText: tr("Enter your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -234,7 +240,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showPassword ? qsTr("Hide") : qsTr("Show")
+                                text: parent.parent.showPassword ? loginView.tr("Hide") : loginView.tr("Show")
                                 font.pixelSize: 11
                                 color: "#3498db"
                                 horizontalAlignment: Text.AlignHCenter
@@ -266,7 +272,7 @@ Item {
                     id: loginButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
-                    text: (languageTrigger, qsTr("Login"))
+                    text: tr("Login")
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
@@ -341,7 +347,7 @@ Item {
                     }
 
                     Text {
-                        text: (languageTrigger, qsTr("or"))
+                        text: tr("or")
                         font.pixelSize: 11
                         color: "#888888"
                     }
@@ -358,7 +364,7 @@ Item {
                     id: registerButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 45
-                    text: (languageTrigger, qsTr("Sign Up"))
+                    text: tr("Sign Up")
                     font.pixelSize: 14
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
