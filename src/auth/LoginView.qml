@@ -192,7 +192,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: (languageTrigger, qsTr("Password")
+                        text: (languageTrigger, qsTr("Password"))
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -206,7 +206,7 @@ Item {
                         TextField {
                             id: passwordField
                             anchors.fill: parent
-                            placeholderText: (languageTrigger, qsTr("Enter your password")
+                            placeholderText: (languageTrigger, qsTr("Enter your password"))
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -266,7 +266,7 @@ Item {
                     id: loginButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
-                    text: (languageTrigger, qsTr("Login")
+                    text: (languageTrigger, qsTr("Login"))
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
@@ -341,7 +341,7 @@ Item {
                     }
 
                     Text {
-                        text: (languageTrigger, qsTr("or")
+                        text: (languageTrigger, qsTr("or"))
                         font.pixelSize: 11
                         color: "#888888"
                     }
@@ -358,7 +358,7 @@ Item {
                     id: registerButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 45
-                    text: (languageTrigger, qsTr("Sign Up")
+                    text: (languageTrigger, qsTr("Sign Up"))
                     font.pixelSize: 14
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
