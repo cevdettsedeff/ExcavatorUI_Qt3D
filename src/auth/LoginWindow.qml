@@ -14,6 +14,7 @@ ApplicationWindow {
     // Dil değişikliği için trigger
     property int retranslationTrigger: 0
     property bool showLanguageLoadingOverlay: false
+    property string loadingMessage: ""
 
     // Window'u ortala
     Component.onCompleted: {
@@ -26,6 +27,8 @@ ApplicationWindow {
         target: translationService
         function onLanguageChanged() {
             retranslationTrigger++
+            // Yeni dile geçtik, eski dilde mesaj göster
+            loadingMessage = (translationService.currentLanguage === "tr_TR") ? "Changing language..." : "Dil değiştiriliyor..."
             showLanguageLoadingOverlay = true
             languageLoadingTimer.start()
 
@@ -43,7 +46,7 @@ ApplicationWindow {
 
     Timer {
         id: languageLoadingTimer
-        interval: 2000
+        interval: 800
         repeat: false
         onTriggered: {
             showLanguageLoadingOverlay = false
@@ -60,7 +63,7 @@ ApplicationWindow {
 
         Rectangle {
             anchors.centerIn: parent
-            width: 180
+            width: 200
             height: 90
             color: "#2a2a2a"
             radius: 10
@@ -78,7 +81,7 @@ ApplicationWindow {
 
                 Text {
                     Layout.alignment: Qt.AlignHCenter
-                    text: qsTr("Loading...")
+                    text: loadingMessage
                     font.pixelSize: 13
                     color: "#ffffff"
                 }

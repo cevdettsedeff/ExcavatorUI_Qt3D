@@ -14,6 +14,7 @@ ApplicationWindow {
 
     property bool contentLoaded: false
     property bool showLanguageLoadingOverlay: false
+    property string loadingMessage: ""
 
     // Dil değişikliği loading overlay
     Rectangle {
@@ -29,7 +30,7 @@ ApplicationWindow {
 
         Rectangle {
             anchors.centerIn: parent
-            width: 200
+            width: 220
             height: 100
             color: themeManager ? themeManager.backgroundColorLight : "#2a2a2a"
             radius: 10
@@ -47,7 +48,7 @@ ApplicationWindow {
 
                 Text {
                     Layout.alignment: Qt.AlignHCenter
-                    text: qsTr("Loading...")
+                    text: loadingMessage
                     font.pixelSize: 14
                     color: themeManager ? themeManager.textColor : "#ffffff"
                 }
@@ -59,6 +60,8 @@ ApplicationWindow {
     Connections {
         target: translationService
         function onLanguageChanged() {
+            // Yeni dile geçtik, eski dilde mesaj göster
+            loadingMessage = (translationService.currentLanguage === "tr_TR") ? "Changing language..." : "Dil değiştiriliyor..."
             showLanguageLoadingOverlay = true
             languageLoadingTimer.start()
         }
@@ -66,7 +69,7 @@ ApplicationWindow {
 
     Timer {
         id: languageLoadingTimer
-        interval: 2000
+        interval: 800
         repeat: false
         onTriggered: {
             showLanguageLoadingOverlay = false

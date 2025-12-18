@@ -137,7 +137,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("Create New Account")
+                        text: (languageTrigger, qsTr("Create New Account")
                         font.pixelSize: 24
                         font.bold: true
                         color: "#ffffff"
@@ -145,7 +145,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("Please enter your information")
+                        text: (languageTrigger, qsTr("Please enter your information")
                         font.pixelSize: 14
                         color: "#888888"
                         Layout.bottomMargin: 15
@@ -164,7 +164,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: qsTr("Username")
+                        text: (languageTrigger, qsTr("Username")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -173,7 +173,7 @@ Item {
                         id: usernameField
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: qsTr("Choose your username (min. 3 characters)")
+                        placeholderText: (languageTrigger, qsTr("Choose your username (min. 3 characters)")
                         font.pixelSize: 14
                         color: "#ffffff"
 
@@ -194,7 +194,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: qsTr("Password")
+                        text: (languageTrigger, qsTr("Password")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -208,7 +208,7 @@ Item {
                         TextField {
                             id: passwordField
                             anchors.fill: parent
-                            placeholderText: qsTr("Choose your password")
+                            placeholderText: (languageTrigger, qsTr("Choose your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -256,7 +256,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: qsTr("Confirm Password")
+                        text: (languageTrigger, qsTr("Confirm Password")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -270,7 +270,7 @@ Item {
                         TextField {
                             id: confirmPasswordField
                             anchors.fill: parent
-                            placeholderText: qsTr("Re-enter your password")
+                            placeholderText: (languageTrigger, qsTr("Re-enter your password")
                             echoMode: parent.showConfirmPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -317,7 +317,7 @@ Item {
                     id: registerButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
-                    text: qsTr("Register")
+                    text: (languageTrigger, qsTr("Register")
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 &&
@@ -399,7 +399,7 @@ Item {
                     id: backButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 45
-                    text: qsTr("Go Back")
+                    text: (languageTrigger, qsTr("Go Back")
                     font.pixelSize: 14
                     hoverEnabled: true
                     scale: backButton.pressed ? 0.97 : (backButton.hovered ? 1.02 : 1.0)
@@ -481,7 +481,7 @@ Item {
 
                         Text {
                             Layout.fillWidth: true
-                            text: qsTr("• Username: At least 3 characters\n• Password: At least 6 characters\n• At least 1 uppercase, 1 lowercase letter\n• Must contain at least 1 digit")
+                            text: (languageTrigger, qsTr("• Username: At least 3 characters\n• Password: At least 6 characters\n• At least 1 uppercase, 1 lowercase letter\n• Must contain at least 1 digit")
                             font.pixelSize: 11
                             color: "#bdc3c7"
                             lineHeight: 1.6
@@ -605,7 +605,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: implicitHeight
-                text: qsTr("Your registration request has been sent to the administrator.\n\nRedirecting to login page while waiting for approval...")
+                text: (languageTrigger, qsTr("Your registration request has been sent to the administrator.\n\nRedirecting to login page while waiting for approval...")
                 font.pixelSize: 14
                 color: "#ffffff"
                 wrapMode: Text.WordWrap
