@@ -15,6 +15,16 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     Network
 )
 
+# Qt VirtualKeyboard for touch input
+find_package(Qt6 COMPONENTS VirtualKeyboard QUIET)
+if(Qt6VirtualKeyboard_FOUND)
+    message(STATUS "✓ Qt6 VirtualKeyboard found - Touch keyboard enabled")
+    set(HAVE_VIRTUALKEYBOARD TRUE)
+else()
+    message(WARNING "✗ Qt6 VirtualKeyboard not found - Touch keyboard disabled")
+    set(HAVE_VIRTUALKEYBOARD FALSE)
+endif()
+
 # Qt LinguistTools for translations
 find_package(Qt6 COMPONENTS LinguistTools REQUIRED)
 message(STATUS "✓ Qt6 LinguistTools found - Translation features enabled")
@@ -182,6 +192,11 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/auth/RegisterView.qml
         # Main views
         src/views/Main.qml
+        src/views/HomePage.qml
+        src/views/MapPage.qml
+        src/views/AreaPage.qml
+        src/views/AlarmPage.qml
+        src/views/SettingsPage.qml
         src/views/ExcavatorView.qml
         src/views/MapView.qml
         src/views/SimpleMapView.qml
@@ -191,6 +206,9 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/BathymetricMapView_V3.qml
         src/views/UserManagementView.qml
         src/views/ProfileView.qml
+        # UI Components
+        src/components/StatusBar.qml
+        src/components/BottomNavigation.qml
         # 3D Components
         src/components/Excavator.qml
         src/components/Grid3D.qml
@@ -216,6 +234,11 @@ target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
 # Link QtLocation if available
 if(Qt6Location_FOUND)
     target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE Qt6::Location)
+endif()
+
+# Link Qt VirtualKeyboard if available
+if(Qt6VirtualKeyboard_FOUND)
+    target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE Qt6::VirtualKeyboard)
 endif()
 
 # Link GDAL if available
