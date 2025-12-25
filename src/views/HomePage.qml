@@ -31,17 +31,16 @@ Rectangle {
         }
     }
 
-    // Ana içerik
-    Item {
+    // Ana içerik - Dikey düzen
+    ColumnLayout {
         anchors.fill: parent
+        spacing: 0
 
-        // Sol taraftaki Ana 3D Görünüm
+        // ÜST: Ana 3D Görünüm (büyük alan)
         Rectangle {
             id: main3DView
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: coordinateBar.top
-            width: parent.width * 0.55
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             color: "#0a1628"
             border.color: "#2a4a6a"
             border.width: 1
@@ -145,16 +144,16 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.margins: 10
-                width: 30
+                width: 50
                 color: "transparent"
 
                 // Gradient bar
                 Rectangle {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 12
+                    width: 15
                     height: parent.height * 0.7
-                    radius: 6
+                    radius: 7
 
                     gradient: Gradient {
                         GradientStop { position: 0.0; color: "#4CAF50" }
@@ -167,21 +166,41 @@ Rectangle {
                 // Derinlik etiketleri
                 Column {
                     anchors.left: parent.left
-                    anchors.leftMargin: 18
+                    anchors.leftMargin: 22
                     anchors.top: parent.top
                     anchors.topMargin: parent.height * 0.15
-                    spacing: (parent.height * 0.7) / 4 - 15
+                    spacing: (parent.height * 0.7) / 4 - 18
 
                     Repeater {
                         model: ["0M", "-5M", "-10M", "-15M", "-20M"]
 
                         Text {
                             text: modelData
-                            font.pixelSize: 10
+                            font.pixelSize: 12
                             font.bold: true
                             color: "#ffffff"
                         }
                     }
+                }
+            }
+
+            // Tolerans Göstergesi (Alt kısım)
+            Rectangle {
+                id: toleranceBanner
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottomMargin: 15
+                width: 280
+                height: 45
+                radius: 5
+                color: homePage.withinTolerance ? "#4CAF50" : "#f44336"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: homePage.withinTolerance ? "WITHIN TOLERANCE" : "OUT OF TOLERANCE"
+                    font.pixelSize: 18
+                    font.bold: true
+                    color: "#ffffff"
                 }
             }
 
@@ -212,18 +231,16 @@ Rectangle {
             }
         }
 
-        // Sağ Panel - Mini Görünümler
-        Column {
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: coordinateBar.top
-            width: parent.width * 0.45
+        // ALT: Mini Görünümler (yan yana)
+        Row {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 280
             spacing: 0
 
-            // Top-Down View (Kuşbakışı)
+            // Top-Down View (Kuşbakışı) - Sol
             Rectangle {
-                width: parent.width
-                height: parent.height * 0.45
+                width: parent.width / 2
+                height: parent.height
                 color: "#0a1628"
                 border.color: "#2a4a6a"
                 border.width: 1
@@ -273,7 +290,7 @@ Rectangle {
                         brightness: 2.0
                     }
 
-                    // Çalışma alanı sınırı (kesik çizgi simülasyonu)
+                    // Çalışma alanı sınırı
                     Model {
                         source: "#Rectangle"
                         position: Qt.vector3d(0, -5, 0)
@@ -299,10 +316,10 @@ Rectangle {
                 }
             }
 
-            // Yandan Görünüm
+            // Yandan Görünüm - Sağ
             Rectangle {
-                width: parent.width
-                height: parent.height * 0.55
+                width: parent.width / 2
+                height: parent.height
                 color: "#0a1628"
                 border.color: "#2a4a6a"
                 border.width: 1
@@ -343,12 +360,12 @@ Rectangle {
                     }
                 }
 
-                // Yan profil görünümü (basitleştirilmiş)
+                // 3D Görünüm - Yandan
                 View3D {
                     anchors.top: sideViewHeader.bottom
                     anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.bottom: depthLabels.top
+                    anchors.right: depthLabels.left
+                    anchors.bottom: parent.bottom
                     anchors.margins: 2
 
                     environment: SceneEnvironment {
@@ -419,10 +436,12 @@ Rectangle {
                 Column {
                     id: depthLabels
                     anchors.right: parent.right
+                    anchors.top: sideViewHeader.bottom
                     anchors.bottom: parent.bottom
-                    anchors.rightMargin: 10
-                    anchors.bottomMargin: 10
-                    spacing: 8
+                    anchors.rightMargin: 8
+                    anchors.topMargin: 15
+                    width: 60
+                    spacing: 25
 
                     Repeater {
                         model: ["-1.0m", "-1.5m", "-2.0m", "-2.5m"]
@@ -433,7 +452,7 @@ Rectangle {
 
                             Text {
                                 text: modelData
-                                font.pixelSize: 10
+                                font.pixelSize: 11
                                 color: "#888888"
                             }
 
@@ -450,34 +469,11 @@ Rectangle {
             }
         }
 
-        // Tolerans Göstergesi
-        Rectangle {
-            id: toleranceBanner
-            anchors.bottom: coordinateBar.top
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.bottomMargin: 10
-            width: main3DView.width - 20
-            height: 40
-            radius: 5
-            color: homePage.withinTolerance ? "#4CAF50" : "#f44336"
-
-            Text {
-                anchors.centerIn: parent
-                text: homePage.withinTolerance ? "WITHIN TOLERANCE" : "OUT OF TOLERANCE"
-                font.pixelSize: 16
-                font.bold: true
-                color: "#ffffff"
-            }
-        }
-
-        // Koordinat Çubuğu (Alt kısım)
+        // Koordinat Çubuğu (En alt)
         Rectangle {
             id: coordinateBar
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            height: 45
+            Layout.fillWidth: true
+            Layout.preferredHeight: 45
             color: "#1a1a1a"
             border.color: "#333333"
             border.width: 1
