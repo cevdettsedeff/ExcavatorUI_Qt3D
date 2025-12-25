@@ -13,6 +13,7 @@ find_package(Qt6 6.4 REQUIRED COMPONENTS
     QuickControls2
     Sql
     Network
+    VirtualKeyboard
 )
 
 # Qt VirtualKeyboard for touch input
