@@ -25,9 +25,6 @@
 
 int main(int argc, char *argv[])
 {
-    // Sanal klavye için environment variable ayarla (dokunmatik ekran desteği)
-    qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
-
     QQuickStyle::setStyle("Basic");
     QGuiApplication app(argc, argv);
 
