@@ -199,10 +199,13 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
     URI ExcavatorUI_Qt3D
     VERSION 1.0
     QML_FILES
+        # Root container (tek kalıcı window - VirtualKeyboard için)
+        src/AppRoot.qml
         # Auth views
         src/auth/LoginWindow.qml
         src/auth/LoginView.qml
         src/auth/RegisterView.qml
+        src/auth/LoginContainer.qml
         # Main views
         src/views/Main.qml
         src/views/HomePage.qml

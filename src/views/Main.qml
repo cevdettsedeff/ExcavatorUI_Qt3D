@@ -2,14 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick3D
-import ExcavatorUI_Qt3D
 
-ApplicationWindow {
+/**
+ * Main Dashboard View
+ * AppRoot tarafından Loader ile yüklenir
+ */
+Rectangle {
     id: root
-    width: 800
-    height: 1280
-    visible: true
-    title: qsTr("Excavator Dashboard")
     color: "#1a1a1a"
 
     property bool contentLoaded: false
@@ -189,11 +188,4 @@ ApplicationWindow {
         }
     }
 
-    Component.onCompleted: {
-        // Ekranı ortala (eğer masaüstünde çalışıyorsa)
-        if (Screen.width > 800) {
-            root.x = (Screen.width - root.width) / 2
-            root.y = (Screen.height - root.height) / 2
-        }
-    }
 }

@@ -25,11 +25,9 @@
 
 int main(int argc, char *argv[])
 {
-    // NOT: Qt Virtual Keyboard şimdilik devre dışı bırakıldı.
-    // Qt VirtualKeyboard sadece tek InputPanel'e izin veriyor ve
-    // login/logout döngüsünde crash'e neden oluyor.
-    // Dokunmatik ekran için alternatif çözüm gerekli.
-    // qputenv("QT_IM_MODULE", "qtvirtualkeyboard");
+    // Qt Virtual Keyboard'u etkinleştir (dokunmatik ekran desteği)
+    // AppRoot.qml tek bir kalıcı InputPanel içerir - crash sorunu çözüldü
+    qputenv("QT_IM_MODULE", "qtvirtualkeyboard");
 
     QQuickStyle::setStyle("Basic");
     QGuiApplication app(argc, argv);
@@ -137,57 +135,17 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("bathymetryLoader", &bathymetryLoader);
 #endif
 
-    // Login window'u yükle
-    const QUrl loginUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/auth/LoginWindow.qml"));
+    // AppRoot'u yükle - tek kalıcı window, Login/Dashboard Loader ile yönetilir
+    // Bu yapı VirtualKeyboard InputPanel crash'ini önler
+    const QUrl appRootUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/AppRoot.qml"));
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [loginUrl](QObject *obj, const QUrl &objUrl) {
-        if (!obj && loginUrl == objUrl)
+                     &app, [appRootUrl](QObject *obj, const QUrl &objUrl) {
+        if (!obj && appRootUrl == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-    engine.load(loginUrl);
-
-    // Login başarılı olduğunda dashboard'u aç
-    QObject::connect(&authService, &AuthService::loginSucceeded, [&engine]() {
-        qDebug() << "Login başarılı, dashboard açılıyor...";
-
-        // Dashboard URL'i
-        const QUrl dashboardUrl(QStringLiteral("qrc:/ExcavatorUI_Qt3D/src/views/Main.qml"));
-
-        // Dashboard'u yükle
-        engine.load(dashboardUrl);
-
-        // Window oluşturulduğunda background'u ayarla
-        QTimer::singleShot(0, [&engine]() {
-            const auto rootObjects = engine.rootObjects();
-            for (auto obj : rootObjects) {
-                QQuickWindow *window = qobject_cast<QQuickWindow*>(obj);
-                if (window) {
-                    window->setColor(QColor(0x1a, 0x1a, 0x1a));
-                }
-            }
-        });
-    });
-
-    // Logout olduğunda login ekranına dön
-    QObject::connect(&authService, &AuthService::loggedOut, [&engine, loginUrl]() {
-        qDebug() << "Logout yapıldı, login ekranına dönülüyor...";
-
-        // Tüm mevcut QML objelerini temizle
-        const auto rootObjects = engine.rootObjects();
-        for (auto obj : rootObjects) {
-            if (obj) {
-                obj->deleteLater();
-            }
-        }
-
-        // Engine'i temizle
-        engine.clearComponentCache();
-
-        // Login window'u tekrar yükle
-        engine.load(loginUrl);
-    });
+    engine.load(appRootUrl);
 
     return app.exec();
 }
