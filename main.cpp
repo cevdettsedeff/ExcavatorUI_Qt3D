@@ -25,8 +25,11 @@
 
 int main(int argc, char *argv[])
 {
-    // Qt Virtual Keyboard'u etkinleştir (dokunmatik ekran desteği)
-    qputenv("QT_IM_MODULE", "qtvirtualkeyboard");
+    // NOT: Qt Virtual Keyboard şimdilik devre dışı bırakıldı.
+    // Qt VirtualKeyboard sadece tek InputPanel'e izin veriyor ve
+    // login/logout döngüsünde crash'e neden oluyor.
+    // Dokunmatik ekran için alternatif çözüm gerekli.
+    // qputenv("QT_IM_MODULE", "qtvirtualkeyboard");
 
     QQuickStyle::setStyle("Basic");
     QGuiApplication app(argc, argv);

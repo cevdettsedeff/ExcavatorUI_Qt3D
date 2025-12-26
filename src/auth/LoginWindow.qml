@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.VirtualKeyboard
-import ExcavatorUI_Qt3D
 
 ApplicationWindow {
     id: loginWindow
@@ -89,13 +87,10 @@ ApplicationWindow {
         }
     }
 
-    // Ana içerik alanı - klavye için alan bırak
+    // Ana içerik alanı
     Item {
         id: contentArea
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: inputPanel.top
+        anchors.fill: parent
 
         // StackView ile view'lar arası geçiş
         StackView {
@@ -173,34 +168,4 @@ ApplicationWindow {
         }
     }
 
-    // Virtual Keyboard - Dokunmatik ekran için
-    InputPanel {
-        id: inputPanel
-        z: 99
-        x: 0
-        y: loginWindow.height
-        width: loginWindow.width
-
-        states: State {
-            name: "visible"
-            when: inputPanel.active
-            PropertyChanges {
-                target: inputPanel
-                y: loginWindow.height - inputPanel.height
-            }
-        }
-
-        transitions: Transition {
-            from: ""
-            to: "visible"
-            reversible: true
-            ParallelAnimation {
-                NumberAnimation {
-                    properties: "y"
-                    duration: 250
-                    easing.type: Easing.InOutQuad
-                }
-            }
-        }
-    }
 }
