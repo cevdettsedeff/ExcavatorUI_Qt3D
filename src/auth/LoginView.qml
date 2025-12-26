@@ -194,44 +194,45 @@ Item {
             // Logo/Başlık bölümü
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 140
+                Layout.preferredHeight: 100
                 color: "transparent"
-                Layout.topMargin: 15
+                Layout.topMargin: 10
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.topMargin: 10
-                    spacing: 12
+                    anchors.topMargin: 5
+                    spacing: 8
 
                     // İkon
                     Rectangle {
                         Layout.alignment: Qt.AlignHCenter
-                        width: 70
-                        height: 70
-                        radius: 35
+                        width: 50
+                        height: 50
+                        radius: 25
                         color: "#3498db"
 
                         Text {
                             anchors.centerIn: parent
-                            text: "👷🏻"
-                            font.pixelSize: 36
+                            text: "🚜"
+                            font.pixelSize: 28
                         }
                     }
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "Excavator Dashboard"
-                        font.pixelSize: 26
+                        text: "EHK - Harita Ve Görselleştirme Yönetimi"
+                        font.pixelSize: 18
                         font.bold: true
                         color: "#ffffff"
+                        wrapMode: Text.WordWrap
+                        horizontalAlignment: Text.AlignHCenter
                     }
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: tr("Please log in")
-                        font.pixelSize: 15
+                        font.pixelSize: 13
                         color: "#888888"
-                        Layout.bottomMargin: 10
                     }
                 }
             }
@@ -239,10 +240,10 @@ Item {
             // Form bölümü
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.topMargin: 20
+                Layout.topMargin: 10
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                spacing: 18
+                spacing: 12
 
                 // Kullanıcı adı
                 ColumnLayout {
@@ -258,9 +259,9 @@ Item {
                     TextField {
                         id: usernameField
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 55
+                        Layout.preferredHeight: 45
                         placeholderText: tr("Enter your username")
-                        font.pixelSize: 16
+                        font.pixelSize: 14
                         color: "#ffffff"
 
                         background: Rectangle {
@@ -287,7 +288,7 @@ Item {
 
                     Item {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 55
+                        Layout.preferredHeight: 45
 
                         property bool showPassword: false
 
@@ -296,7 +297,7 @@ Item {
                             anchors.fill: parent
                             placeholderText: tr("Enter your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
-                            font.pixelSize: 16
+                            font.pixelSize: 14
                             color: "#ffffff"
                             rightPadding: 45
 
@@ -353,10 +354,10 @@ Item {
                 Button {
                     id: loginButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 60
-                    Layout.topMargin: 10
+                    Layout.preferredHeight: 48
+                    Layout.topMargin: 8
                     text: tr("Login")
-                    font.pixelSize: 18
+                    font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
                     hoverEnabled: true
@@ -446,9 +447,9 @@ Item {
                 Button {
                     id: registerButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 55
+                    Layout.preferredHeight: 44
                     text: tr("Sign Up")
-                    font.pixelSize: 16
+                    font.pixelSize: 14
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
 

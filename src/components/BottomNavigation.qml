@@ -38,22 +38,22 @@ Rectangle {
         id: tabModel
 
         ListElement {
-            icon: "⌂"
-            labelKey: "Home"
-            labelTr: "Ana"
+            icon: "🚜"
+            labelKey: "Excavator"
+            labelTr: "Ekskavatör"
         }
         ListElement {
-            icon: "▦"
+            icon: "🗺"
             labelKey: "Map"
             labelTr: "Harita"
         }
         ListElement {
-            icon: "⚑"
+            icon: "📐"
             labelKey: "Area"
             labelTr: "Alan"
         }
         ListElement {
-            icon: "◉"
+            icon: "🔔"
             labelKey: "Alarm"
             labelTr: "Alarm"
         }
@@ -89,12 +89,11 @@ Rectangle {
                     anchors.centerIn: parent
                     spacing: 4
 
-                    // İkon - Renksiz, seçilince sarı
+                    // İkon - Emoji ikonlar
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
                         text: model.icon
-                        font.pixelSize: 26
-                        font.bold: true
+                        font.pixelSize: 32
                         color: isSelected ? "#FFB300" : "#888888"
 
                         Behavior on color {
@@ -106,7 +105,7 @@ Rectangle {
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
                         text: tabLabel
-                        font.pixelSize: 11
+                        font.pixelSize: 10
                         color: isSelected ? "#FFB300" : "#888888"
 
                         Behavior on color {
