@@ -25,6 +25,9 @@
 
 int main(int argc, char *argv[])
 {
+    // Qt Virtual Keyboard'u etkinleştir (dokunmatik ekran desteği)
+    qputenv("QT_IM_MODULE", "qtvirtualkeyboard");
+
     QQuickStyle::setStyle("Basic");
     QGuiApplication app(argc, argv);
 

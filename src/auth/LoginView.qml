@@ -194,21 +194,21 @@ Item {
             // Logo/Başlık bölümü
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 100
+                Layout.preferredHeight: 130
                 color: "transparent"
-                Layout.topMargin: 10
+                Layout.topMargin: 5
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.topMargin: 5
-                    spacing: 8
+                    anchors.topMargin: 0
+                    spacing: 6
 
                     // Uygulama İkonu
                     Image {
                         Layout.alignment: Qt.AlignHCenter
                         source: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
-                        width: 56
-                        height: 56
+                        width: 52
+                        height: 52
                         fillMode: Image.PreserveAspectFit
                         smooth: true
                         antialiasing: true
@@ -255,7 +255,7 @@ Item {
                     TextField {
                         id: usernameField
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 45
+                        Layout.preferredHeight: 40
                         placeholderText: qsTranslate("Main", "Enter your username")
                         font.pixelSize: 14
                         color: "#ffffff"
@@ -284,7 +284,7 @@ Item {
 
                     Item {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 45
+                        Layout.preferredHeight: 40
 
                         property bool showPassword: false
 
