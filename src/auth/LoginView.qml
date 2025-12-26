@@ -125,7 +125,7 @@ Item {
                     // NETAŞ Logosu
                     Image {
                         id: netasLogo
-                        source: "qrc:/resources/logos/netas_logo.png"
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/logos/netas_logo.png"
                         width: 140
                         height: 70
                         fillMode: Image.PreserveAspectFit
@@ -154,7 +154,7 @@ Item {
                     // TCDD Teknik Logosu
                     Image {
                         id: tcddLogo
-                        source: "qrc:/resources/logos/tcdd_teknik_logo.png"
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/logos/tcdd_teknik_logo.png"
                         width: 140
                         height: 70
                         fillMode: Image.PreserveAspectFit
@@ -206,7 +206,7 @@ Item {
                     // Uygulama İkonu
                     Image {
                         Layout.alignment: Qt.AlignHCenter
-                        source: "qrc:/resources/icons/app_icon.ico"
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
                         width: 56
                         height: 56
                         fillMode: Image.PreserveAspectFit
@@ -226,7 +226,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("Please log in")
+                        text: qsTranslate("Main", "Please log in")
                         font.pixelSize: 13
                         color: "#888888"
                     }
@@ -247,7 +247,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: qsTr("Username")
+                        text: qsTranslate("Main", "Username")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -256,7 +256,7 @@ Item {
                         id: usernameField
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: qsTr("Enter your username")
+                        placeholderText: qsTranslate("Main", "Enter your username")
                         font.pixelSize: 14
                         color: "#ffffff"
 
@@ -277,7 +277,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: qsTr("Password")
+                        text: qsTranslate("Main", "Password")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -291,7 +291,7 @@ Item {
                         TextField {
                             id: passwordField
                             anchors.fill: parent
-                            placeholderText: qsTr("Enter your password")
+                            placeholderText: qsTranslate("Main", "Enter your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -319,7 +319,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showPassword ? qsTr("Hide") : qsTr("Show")
+                                text: parent.parent.showPassword ? qsTranslate("Main", "Hide") : qsTranslate("Main", "Show")
                                 font.pixelSize: 11
                                 color: "#3498db"
                                 horizontalAlignment: Text.AlignHCenter
@@ -352,7 +352,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 48
                     Layout.topMargin: 8
-                    text: qsTr("Login")
+                    text: qsTranslate("Main", "Login")
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
@@ -427,7 +427,7 @@ Item {
                     }
 
                     Text {
-                        text: qsTr("or")
+                        text: qsTranslate("Main", "or")
                         font.pixelSize: 11
                         color: "#888888"
                     }
@@ -444,7 +444,7 @@ Item {
                     id: registerButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 44
-                    text: qsTr("Sign Up")
+                    text: qsTranslate("Main", "Sign Up")
                     font.pixelSize: 14
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
