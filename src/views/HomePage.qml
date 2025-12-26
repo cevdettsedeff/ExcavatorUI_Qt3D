@@ -11,7 +11,6 @@ Rectangle {
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
-    property bool withinTolerance: true
 
     // Konum verileri
     property real posX: 124.32
@@ -137,36 +136,74 @@ Rectangle {
                 }
             }
 
-            // Derinlik Skalası (Sol taraf)
+            // Derinlik Skalası - Gridli (Sol taraf)
             Rectangle {
                 id: depthScale
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.margins: 10
-                width: 50
+                width: 55
                 color: "transparent"
 
-                // Gradient bar
-                Rectangle {
+                // Gradient bar with grid lines
+                Item {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 15
+                    width: 18
                     height: parent.height * 0.7
-                    radius: 7
 
-                    gradient: Gradient {
-                        GradientStop { position: 0.0; color: "#4CAF50" }
-                        GradientStop { position: 0.3; color: "#FFEB3B" }
-                        GradientStop { position: 0.6; color: "#FF9800" }
-                        GradientStop { position: 1.0; color: "#f44336" }
+                    // Ana gradient bar
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 3
+
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "#4CAF50" }
+                            GradientStop { position: 0.3; color: "#FFEB3B" }
+                            GradientStop { position: 0.6; color: "#FF9800" }
+                            GradientStop { position: 1.0; color: "#f44336" }
+                        }
+                    }
+
+                    // Grid çizgileri
+                    Column {
+                        anchors.fill: parent
+                        spacing: 0
+
+                        Repeater {
+                            model: 5
+
+                            Item {
+                                width: parent.width
+                                height: parent.height / 5
+
+                                // Yatay çizgi
+                                Rectangle {
+                                    anchors.bottom: parent.bottom
+                                    width: parent.width
+                                    height: 1
+                                    color: "#00000060"
+                                    visible: index < 4
+                                }
+
+                                // Küçük işaret çizgileri
+                                Rectangle {
+                                    anchors.right: parent.right
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: 5
+                                    height: 2
+                                    color: "#ffffff80"
+                                }
+                            }
+                        }
                     }
                 }
 
                 // Derinlik etiketleri
                 Column {
                     anchors.left: parent.left
-                    anchors.leftMargin: 22
+                    anchors.leftMargin: 24
                     anchors.top: parent.top
                     anchors.topMargin: parent.height * 0.15
                     spacing: (parent.height * 0.7) / 4 - 18
@@ -181,26 +218,6 @@ Rectangle {
                             color: "#ffffff"
                         }
                     }
-                }
-            }
-
-            // Tolerans Göstergesi (Alt kısım)
-            Rectangle {
-                id: toleranceBanner
-                anchors.bottom: parent.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottomMargin: 15
-                width: 280
-                height: 45
-                radius: 5
-                color: homePage.withinTolerance ? "#4CAF50" : "#f44336"
-
-                Text {
-                    anchors.centerIn: parent
-                    text: homePage.withinTolerance ? "WITHIN TOLERANCE" : "OUT OF TOLERANCE"
-                    font.pixelSize: 18
-                    font.bold: true
-                    color: "#ffffff"
                 }
             }
 
@@ -231,10 +248,10 @@ Rectangle {
             }
         }
 
-        // ALT: Mini Görünümler (yan yana)
+        // ALT: Mini Görünümler (yan yana) - Daha büyük
         Row {
             Layout.fillWidth: true
-            Layout.preferredHeight: 280
+            Layout.preferredHeight: 350
             spacing: 0
 
             // Top-Down View (Kuşbakışı) - Sol
@@ -439,9 +456,9 @@ Rectangle {
                     anchors.top: sideViewHeader.bottom
                     anchors.bottom: parent.bottom
                     anchors.rightMargin: 8
-                    anchors.topMargin: 15
+                    anchors.topMargin: 20
                     width: 60
-                    spacing: 25
+                    spacing: 35
 
                     Repeater {
                         model: ["-1.0m", "-1.5m", "-2.0m", "-2.5m"]

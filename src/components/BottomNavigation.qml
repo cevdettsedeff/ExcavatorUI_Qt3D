@@ -33,32 +33,32 @@ Rectangle {
         color: "#333333"
     }
 
-    // Tab modeli
+    // Tab modeli - Basit Unicode ikonlar
     ListModel {
         id: tabModel
 
         ListElement {
-            icon: "🏠"
+            icon: "⌂"
             labelKey: "Home"
             labelTr: "Ana"
         }
         ListElement {
-            icon: "🗺️"
+            icon: "▦"
             labelKey: "Map"
             labelTr: "Harita"
         }
         ListElement {
-            icon: "🚩"
+            icon: "⚑"
             labelKey: "Area"
             labelTr: "Alan"
         }
         ListElement {
-            icon: "🔔"
+            icon: "◉"
             labelKey: "Alarm"
             labelTr: "Alarm"
         }
         ListElement {
-            icon: "⚙️"
+            icon: "⚙"
             labelKey: "Settings"
             labelTr: "Ayarlar"
         }
@@ -89,24 +89,12 @@ Rectangle {
                     anchors.centerIn: parent
                     spacing: 4
 
-                    // İkon
+                    // İkon - Renksiz, seçilince sarı
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
                         text: model.icon
-                        font.pixelSize: 24
-                        opacity: isSelected ? 1.0 : 0.6
-
-                        Behavior on opacity {
-                            NumberAnimation { duration: 150 }
-                        }
-                    }
-
-                    // Etiket
-                    Text {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        text: tabLabel
-                        font.pixelSize: 12
-                        font.bold: isSelected
+                        font.pixelSize: 26
+                        font.bold: true
                         color: isSelected ? "#FFB300" : "#888888"
 
                         Behavior on color {
@@ -114,16 +102,31 @@ Rectangle {
                         }
                     }
 
-                    // Seçim göstergesi
+                    // Etiket
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: tabLabel
+                        font.pixelSize: 11
+                        color: isSelected ? "#FFB300" : "#888888"
+
+                        Behavior on color {
+                            ColorAnimation { duration: 150 }
+                        }
+                    }
+
+                    // Alt çizgi - sadece seçili olunca görünür
                     Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        width: isSelected ? 30 : 0
-                        height: 3
-                        radius: 1.5
+                        width: isSelected ? 40 : 0
+                        height: 2
                         color: "#FFB300"
+                        opacity: isSelected ? 1 : 0
 
                         Behavior on width {
                             NumberAnimation { duration: 200; easing.type: Easing.OutQuad }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation { duration: 200 }
                         }
                     }
                 }
@@ -133,18 +136,6 @@ Rectangle {
                     onClicked: {
                         bottomNav.currentIndex = index
                         bottomNav.tabChanged(index)
-                    }
-                }
-
-                // Seçim arka plan efekti
-                Rectangle {
-                    anchors.fill: parent
-                    anchors.margins: 5
-                    radius: 10
-                    color: isSelected ? "#FFB30020" : "transparent"
-
-                    Behavior on color {
-                        ColorAnimation { duration: 200 }
                     }
                 }
             }
