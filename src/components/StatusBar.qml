@@ -38,10 +38,11 @@ Rectangle {
                 anchors.centerIn: parent
                 spacing: 5
 
-                // Sinyal ikonu
-                Column {
+                // Sinyal ikonu - Row ile yatay dizilim
+                Row {
                     spacing: 1
                     anchors.verticalCenter: parent.verticalCenter
+                    height: 16
 
                     Repeater {
                         model: 4
@@ -50,11 +51,11 @@ Rectangle {
                             width: 3
                             height: 4 + index * 3
                             radius: 1
+                            anchors.bottom: parent.bottom
                             color: {
                                 var strength = statusBar.rtkConnected ? (statusBar.rtkStatus === "FIX" ? 4 : (statusBar.rtkStatus === "FLOAT" ? 3 : 2)) : 0
                                 return index < strength ? "#4CAF50" : "#555555"
                             }
-                            anchors.bottom: parent.bottom
                         }
                     }
                 }

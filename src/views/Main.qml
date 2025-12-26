@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick3D
-import QtQuick.VirtualKeyboard
 import ExcavatorUI_Qt3D
 
 ApplicationWindow {
@@ -30,13 +29,10 @@ ApplicationWindow {
         }
     }
 
-    // Ana container - klavye için alan bırak
+    // Ana container
     ColumnLayout {
         id: mainContainer
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: inputPanel.top
+        anchors.fill: parent
         spacing: 0
 
         // Üst Durum Çubuğu
@@ -198,37 +194,6 @@ ApplicationWindow {
         if (Screen.width > 800) {
             root.x = (Screen.width - root.width) / 2
             root.y = (Screen.height - root.height) / 2
-        }
-    }
-
-    // Virtual Keyboard - Dokunmatik ekran için
-    InputPanel {
-        id: inputPanel
-        z: 99
-        x: 0
-        y: root.height
-        width: root.width
-
-        states: State {
-            name: "visible"
-            when: inputPanel.active
-            PropertyChanges {
-                target: inputPanel
-                y: root.height - inputPanel.height
-            }
-        }
-
-        transitions: Transition {
-            from: ""
-            to: "visible"
-            reversible: true
-            ParallelAnimation {
-                NumberAnimation {
-                    properties: "y"
-                    duration: 250
-                    easing.type: Easing.InOutQuad
-                }
-            }
         }
     }
 }
