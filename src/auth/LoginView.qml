@@ -203,19 +203,15 @@ Item {
                     anchors.topMargin: 5
                     spacing: 8
 
-                    // İkon
-                    Rectangle {
+                    // Uygulama İkonu
+                    Image {
                         Layout.alignment: Qt.AlignHCenter
-                        width: 50
-                        height: 50
-                        radius: 25
-                        color: "#3498db"
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "🚜"
-                            font.pixelSize: 28
-                        }
+                        source: "qrc:/resources/icons/app_icon.ico"
+                        width: 56
+                        height: 56
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                        antialiasing: true
                     }
 
                     Text {
@@ -230,7 +226,7 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: tr("Please log in")
+                        text: qsTr("Please log in")
                         font.pixelSize: 13
                         color: "#888888"
                     }
@@ -251,7 +247,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: tr("Username")
+                        text: qsTr("Username")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -260,7 +256,7 @@ Item {
                         id: usernameField
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
-                        placeholderText: tr("Enter your username")
+                        placeholderText: qsTr("Enter your username")
                         font.pixelSize: 14
                         color: "#ffffff"
 
@@ -281,7 +277,7 @@ Item {
                     spacing: 5
 
                     Text {
-                        text: tr("Password")
+                        text: qsTr("Password")
                         font.pixelSize: 12
                         color: "#cccccc"
                     }
@@ -295,7 +291,7 @@ Item {
                         TextField {
                             id: passwordField
                             anchors.fill: parent
-                            placeholderText: tr("Enter your password")
+                            placeholderText: qsTr("Enter your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
                             font.pixelSize: 14
                             color: "#ffffff"
@@ -323,7 +319,7 @@ Item {
                             }
 
                             contentItem: Text {
-                                text: parent.parent.showPassword ? loginView.tr("Hide") : loginView.tr("Show")
+                                text: parent.parent.showPassword ? qsTr("Hide") : qsTr("Show")
                                 font.pixelSize: 11
                                 color: "#3498db"
                                 horizontalAlignment: Text.AlignHCenter
@@ -356,7 +352,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 48
                     Layout.topMargin: 8
-                    text: tr("Login")
+                    text: qsTr("Login")
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
@@ -431,7 +427,7 @@ Item {
                     }
 
                     Text {
-                        text: tr("or")
+                        text: qsTr("or")
                         font.pixelSize: 11
                         color: "#888888"
                     }
@@ -448,7 +444,7 @@ Item {
                     id: registerButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 44
-                    text: tr("Sign Up")
+                    text: qsTr("Sign Up")
                     font.pixelSize: 14
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
