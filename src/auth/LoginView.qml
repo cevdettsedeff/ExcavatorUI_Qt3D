@@ -105,43 +105,123 @@ Item {
             clip: true
 
             ColumnLayout {
-                width: loginView.width * 0.8
+                width: loginView.width - 100  // Sağdan ve soldan 50'şer piksel boşluk
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 20
-                anchors.topMargin: 20
-                anchors.bottomMargin: 20
+                spacing: 25
+                anchors.topMargin: 30
+                anchors.bottomMargin: 30
 
-            // Logo/Başlık bölümü
+            // Üst Logolar - NETAŞ ve TCDD Teknik
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 100
                 color: "transparent"
-                Layout.topMargin: 10
+                Layout.topMargin: 20
+
+                Row {
+                    anchors.centerIn: parent
+                    spacing: 40
+
+                    // NETAŞ Logosu
+                    Image {
+                        id: netasLogo
+                        source: "qrc:/resources/logos/netas_logo.png"
+                        width: 140
+                        height: 70
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                        antialiasing: true
+
+                        // Fallback - logo yoksa placeholder
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "#2a2a2a"
+                            radius: 8
+                            border.color: "#404040"
+                            border.width: 1
+                            visible: netasLogo.status !== Image.Ready
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "NETAŞ"
+                                font.pixelSize: 18
+                                font.bold: true
+                                color: "#ffffff"
+                            }
+                        }
+                    }
+
+                    // TCDD Teknik Logosu
+                    Image {
+                        id: tcddLogo
+                        source: "qrc:/resources/logos/tcdd_teknik_logo.png"
+                        width: 140
+                        height: 70
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                        antialiasing: true
+
+                        // Fallback - logo yoksa placeholder
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "#2a2a2a"
+                            radius: 8
+                            border.color: "#404040"
+                            border.width: 1
+                            visible: tcddLogo.status !== Image.Ready
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "TCDD TEKNİK"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "#ffffff"
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Ayırıcı çizgi
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 1
+                Layout.leftMargin: 30
+                Layout.rightMargin: 30
+                color: "#333333"
+            }
+
+            // Logo/Başlık bölümü
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 140
+                color: "transparent"
+                Layout.topMargin: 15
 
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.topMargin: 10
-                    spacing: 8
+                    spacing: 12
 
                     // İkon
                     Rectangle {
                         Layout.alignment: Qt.AlignHCenter
-                        width: 60
-                        height: 60
-                        radius: 30
+                        width: 70
+                        height: 70
+                        radius: 35
                         color: "#3498db"
 
                         Text {
                             anchors.centerIn: parent
                             text: "👷🏻"
-                            font.pixelSize: 32
+                            font.pixelSize: 36
                         }
                     }
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: "Excavator Dashboard"
-                        font.pixelSize: 24
+                        font.pixelSize: 26
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -149,9 +229,9 @@ Item {
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: tr("Please log in")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         color: "#888888"
-                        Layout.bottomMargin: 15
+                        Layout.bottomMargin: 10
                     }
                 }
             }
@@ -159,8 +239,10 @@ Item {
             // Form bölümü
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.topMargin: 30
-                spacing: 15
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                Layout.rightMargin: 20
+                spacing: 18
 
                 // Kullanıcı adı
                 ColumnLayout {
@@ -176,9 +258,9 @@ Item {
                     TextField {
                         id: usernameField
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 45
+                        Layout.preferredHeight: 55
                         placeholderText: tr("Enter your username")
-                        font.pixelSize: 14
+                        font.pixelSize: 16
                         color: "#ffffff"
 
                         background: Rectangle {
@@ -205,7 +287,7 @@ Item {
 
                     Item {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 45
+                        Layout.preferredHeight: 55
 
                         property bool showPassword: false
 
@@ -214,7 +296,7 @@ Item {
                             anchors.fill: parent
                             placeholderText: tr("Enter your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
-                            font.pixelSize: 14
+                            font.pixelSize: 16
                             color: "#ffffff"
                             rightPadding: 45
 
@@ -271,9 +353,10 @@ Item {
                 Button {
                     id: loginButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 50
+                    Layout.preferredHeight: 60
+                    Layout.topMargin: 10
                     text: tr("Login")
-                    font.pixelSize: 16
+                    font.pixelSize: 18
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
                     hoverEnabled: true
@@ -363,9 +446,9 @@ Item {
                 Button {
                     id: registerButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 45
+                    Layout.preferredHeight: 55
                     text: tr("Sign Up")
-                    font.pixelSize: 14
+                    font.pixelSize: 16
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
 
