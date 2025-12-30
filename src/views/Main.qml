@@ -141,16 +141,65 @@ Rectangle {
         }
     }
 
-    // Loading Screen
-    LoadingScreen {
+    // Loading Screen (inline - module import sorunu için)
+    Rectangle {
         id: loadingScreen
         anchors.fill: parent
         z: 1000
+        color: "#1a1a1a"
         visible: !root.contentLoaded
         opacity: root.contentLoaded ? 0 : 1
 
+        property real progress: 0.0
         property real loadProgress: 0.0
         property real targetProgress: 0.0
+
+        Column {
+            anchors.centerIn: parent
+            spacing: 30
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "ExcavatorUI"
+                font.pixelSize: 48
+                font.bold: true
+                color: "#4CAF50"
+            }
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "Yükleniyor..."
+                font.pixelSize: 20
+                color: "#888888"
+            }
+
+            // Progress bar
+            Rectangle {
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 300
+                height: 8
+                radius: 4
+                color: "#333333"
+
+                Rectangle {
+                    width: parent.width * loadingScreen.progress
+                    height: parent.height
+                    radius: 4
+                    color: "#4CAF50"
+
+                    Behavior on width {
+                        NumberAnimation { duration: 100 }
+                    }
+                }
+            }
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: Math.round(loadingScreen.progress * 100) + "%"
+                font.pixelSize: 16
+                color: "#888888"
+            }
+        }
 
         Timer {
             interval: 30
