@@ -213,6 +213,11 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/AreaPage.qml
         src/views/AlarmPage.qml
         src/views/SettingsPage.qml
+        src/views/ConfigDashboard.qml
+        src/views/ExcavatorConfigPage.qml
+        src/views/DigAreaConfigPage.qml
+        src/views/MapConfigPage.qml
+        src/views/AlarmConfigPage.qml
         src/views/ExcavatorView.qml
         src/views/MapView.qml
         src/views/SimpleMapView.qml

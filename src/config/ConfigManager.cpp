@@ -4,6 +4,7 @@
 #include <QJsonArray>
 #include <QDebug>
 #include <QDir>
+#include <QStandardPaths>
 
 ConfigManager::ConfigManager(QObject *parent)
     : QObject(parent)
@@ -14,8 +15,27 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_verticalExaggeration(2.0)
     , m_gridVisible(true)
     , m_legendVisible(true)
+    , m_boomLength(12.0)
+    , m_armLength(10.0)
+    , m_bucketWidth(2.0)
+    , m_excavatorConfigured(false)
+    , m_gridRows(4)
+    , m_gridCols(4)
+    , m_digAreaConfigured(false)
+    , m_mapCenterLatitude(40.7128)
+    , m_mapCenterLongitude(29.0060)
+    , m_mapZoomLevel(15)
+    , m_mapAreaWidth(500.0)
+    , m_mapAreaHeight(500.0)
+    , m_mapConfigured(false)
+    , m_alarmColorCritical("#FF4444")
+    , m_alarmColorWarning("#FFA500")
+    , m_alarmColorInfo("#2196F3")
+    , m_alarmColorSuccess("#4CAF50")
+    , m_alarmConfigured(false)
 {
     setDefaultValues();
+    initializeGridDepths();
 
     // Default config path
     m_configPath = QDir::currentPath() + "/config/bathymetry_config.json";
@@ -110,6 +130,26 @@ void ConfigManager::parseConfig(const QJsonObject &json)
     // Parse rendering settings
     if (json.contains("rendering") && json["rendering"].isObject()) {
         parseRenderingSettings(json["rendering"].toObject());
+    }
+
+    // Parse excavator settings
+    if (json.contains("excavator") && json["excavator"].isObject()) {
+        parseExcavatorSettings(json["excavator"].toObject());
+    }
+
+    // Parse dig area settings
+    if (json.contains("dig_area") && json["dig_area"].isObject()) {
+        parseDigAreaSettings(json["dig_area"].toObject());
+    }
+
+    // Parse map settings
+    if (json.contains("map") && json["map"].isObject()) {
+        parseMapSettings(json["map"].toObject());
+    }
+
+    // Parse alarm settings
+    if (json.contains("alarm") && json["alarm"].isObject()) {
+        parseAlarmSettings(json["alarm"].toObject());
     }
 }
 
@@ -270,4 +310,411 @@ QString ConfigManager::getDepthRangeName(double depth) const
     } else {
         return "deep";
     }
+}
+
+bool ConfigManager::isConfigured() const
+{
+    return m_excavatorConfigured && m_digAreaConfigured && m_mapConfigured && m_alarmConfigured;
+}
+
+// Excavator setters
+void ConfigManager::setExcavatorName(const QString &name)
+{
+    if (m_excavatorName != name) {
+        m_excavatorName = name;
+        emit excavatorNameChanged();
+    }
+}
+
+void ConfigManager::setBoomLength(double length)
+{
+    if (m_boomLength != length) {
+        m_boomLength = length;
+        emit boomLengthChanged();
+    }
+}
+
+void ConfigManager::setArmLength(double length)
+{
+    if (m_armLength != length) {
+        m_armLength = length;
+        emit armLengthChanged();
+    }
+}
+
+void ConfigManager::setBucketWidth(double width)
+{
+    if (m_bucketWidth != width) {
+        m_bucketWidth = width;
+        emit bucketWidthChanged();
+    }
+}
+
+// Dig Area setters
+void ConfigManager::setGridRows(int rows)
+{
+    if (m_gridRows != rows && rows > 0) {
+        m_gridRows = rows;
+        initializeGridDepths();
+        emit gridRowsChanged();
+    }
+}
+
+void ConfigManager::setGridCols(int cols)
+{
+    if (m_gridCols != cols && cols > 0) {
+        m_gridCols = cols;
+        initializeGridDepths();
+        emit gridColsChanged();
+    }
+}
+
+void ConfigManager::setGridDepths(const QVariantList &depths)
+{
+    m_gridDepths = depths;
+    emit gridDepthsChanged();
+}
+
+void ConfigManager::initializeGridDepths()
+{
+    m_gridDepths.clear();
+    for (int i = 0; i < m_gridRows * m_gridCols; ++i) {
+        m_gridDepths.append(0.0);
+    }
+    emit gridDepthsChanged();
+}
+
+double ConfigManager::getGridDepth(int row, int col) const
+{
+    int index = row * m_gridCols + col;
+    if (index >= 0 && index < m_gridDepths.size()) {
+        return m_gridDepths[index].toDouble();
+    }
+    return 0.0;
+}
+
+void ConfigManager::setGridDepth(int row, int col, double depth)
+{
+    int index = row * m_gridCols + col;
+    if (index >= 0 && index < m_gridDepths.size()) {
+        m_gridDepths[index] = depth;
+        emit gridDepthsChanged();
+    }
+}
+
+// Map setters
+void ConfigManager::setMapCenterLatitude(double lat)
+{
+    if (m_mapCenterLatitude != lat) {
+        m_mapCenterLatitude = lat;
+        emit mapCenterLatitudeChanged();
+    }
+}
+
+void ConfigManager::setMapCenterLongitude(double lon)
+{
+    if (m_mapCenterLongitude != lon) {
+        m_mapCenterLongitude = lon;
+        emit mapCenterLongitudeChanged();
+    }
+}
+
+void ConfigManager::setMapZoomLevel(int zoom)
+{
+    if (m_mapZoomLevel != zoom) {
+        m_mapZoomLevel = zoom;
+        emit mapZoomLevelChanged();
+    }
+}
+
+void ConfigManager::setMapAreaWidth(double width)
+{
+    if (m_mapAreaWidth != width) {
+        m_mapAreaWidth = width;
+        emit mapAreaWidthChanged();
+    }
+}
+
+void ConfigManager::setMapAreaHeight(double height)
+{
+    if (m_mapAreaHeight != height) {
+        m_mapAreaHeight = height;
+        emit mapAreaHeightChanged();
+    }
+}
+
+// Alarm setters
+void ConfigManager::setAlarmColorCritical(const QString &color)
+{
+    if (m_alarmColorCritical != color) {
+        m_alarmColorCritical = color;
+        emit alarmColorCriticalChanged();
+    }
+}
+
+void ConfigManager::setAlarmColorWarning(const QString &color)
+{
+    if (m_alarmColorWarning != color) {
+        m_alarmColorWarning = color;
+        emit alarmColorWarningChanged();
+    }
+}
+
+void ConfigManager::setAlarmColorInfo(const QString &color)
+{
+    if (m_alarmColorInfo != color) {
+        m_alarmColorInfo = color;
+        emit alarmColorInfoChanged();
+    }
+}
+
+void ConfigManager::setAlarmColorSuccess(const QString &color)
+{
+    if (m_alarmColorSuccess != color) {
+        m_alarmColorSuccess = color;
+        emit alarmColorSuccessChanged();
+    }
+}
+
+// Mark configuration sections as complete
+void ConfigManager::markExcavatorConfigured()
+{
+    if (!m_excavatorConfigured) {
+        m_excavatorConfigured = true;
+        emit excavatorConfiguredChanged();
+        emit isConfiguredChanged();
+    }
+}
+
+void ConfigManager::markDigAreaConfigured()
+{
+    if (!m_digAreaConfigured) {
+        m_digAreaConfigured = true;
+        emit digAreaConfiguredChanged();
+        emit isConfiguredChanged();
+    }
+}
+
+void ConfigManager::markMapConfigured()
+{
+    if (!m_mapConfigured) {
+        m_mapConfigured = true;
+        emit mapConfiguredChanged();
+        emit isConfiguredChanged();
+    }
+}
+
+void ConfigManager::markAlarmConfigured()
+{
+    if (!m_alarmConfigured) {
+        m_alarmConfigured = true;
+        emit alarmConfiguredChanged();
+        emit isConfiguredChanged();
+    }
+}
+
+void ConfigManager::resetConfiguration()
+{
+    m_excavatorConfigured = false;
+    m_digAreaConfigured = false;
+    m_mapConfigured = false;
+    m_alarmConfigured = false;
+
+    emit excavatorConfiguredChanged();
+    emit digAreaConfiguredChanged();
+    emit mapConfiguredChanged();
+    emit alarmConfiguredChanged();
+    emit isConfiguredChanged();
+}
+
+// Parse new settings sections
+void ConfigManager::parseExcavatorSettings(const QJsonObject &excavator)
+{
+    if (excavator.contains("name")) {
+        setExcavatorName(excavator["name"].toString());
+    }
+    if (excavator.contains("boom_length")) {
+        setBoomLength(excavator["boom_length"].toDouble(12.0));
+    }
+    if (excavator.contains("arm_length")) {
+        setArmLength(excavator["arm_length"].toDouble(10.0));
+    }
+    if (excavator.contains("bucket_width")) {
+        setBucketWidth(excavator["bucket_width"].toDouble(2.0));
+    }
+    if (excavator.contains("configured")) {
+        m_excavatorConfigured = excavator["configured"].toBool(false);
+        emit excavatorConfiguredChanged();
+    }
+}
+
+void ConfigManager::parseDigAreaSettings(const QJsonObject &digArea)
+{
+    if (digArea.contains("grid_rows")) {
+        m_gridRows = digArea["grid_rows"].toInt(4);
+        emit gridRowsChanged();
+    }
+    if (digArea.contains("grid_cols")) {
+        m_gridCols = digArea["grid_cols"].toInt(4);
+        emit gridColsChanged();
+    }
+    if (digArea.contains("grid_depths") && digArea["grid_depths"].isArray()) {
+        m_gridDepths.clear();
+        QJsonArray arr = digArea["grid_depths"].toArray();
+        for (const auto &val : arr) {
+            m_gridDepths.append(val.toDouble(0.0));
+        }
+        emit gridDepthsChanged();
+    } else {
+        initializeGridDepths();
+    }
+    if (digArea.contains("configured")) {
+        m_digAreaConfigured = digArea["configured"].toBool(false);
+        emit digAreaConfiguredChanged();
+    }
+}
+
+void ConfigManager::parseMapSettings(const QJsonObject &mapSettings)
+{
+    if (mapSettings.contains("center_latitude")) {
+        setMapCenterLatitude(mapSettings["center_latitude"].toDouble(40.7128));
+    }
+    if (mapSettings.contains("center_longitude")) {
+        setMapCenterLongitude(mapSettings["center_longitude"].toDouble(29.0060));
+    }
+    if (mapSettings.contains("zoom_level")) {
+        setMapZoomLevel(mapSettings["zoom_level"].toInt(15));
+    }
+    if (mapSettings.contains("area_width")) {
+        setMapAreaWidth(mapSettings["area_width"].toDouble(500.0));
+    }
+    if (mapSettings.contains("area_height")) {
+        setMapAreaHeight(mapSettings["area_height"].toDouble(500.0));
+    }
+    if (mapSettings.contains("configured")) {
+        m_mapConfigured = mapSettings["configured"].toBool(false);
+        emit mapConfiguredChanged();
+    }
+}
+
+void ConfigManager::parseAlarmSettings(const QJsonObject &alarmSettings)
+{
+    if (alarmSettings.contains("color_critical")) {
+        setAlarmColorCritical(alarmSettings["color_critical"].toString("#FF4444"));
+    }
+    if (alarmSettings.contains("color_warning")) {
+        setAlarmColorWarning(alarmSettings["color_warning"].toString("#FFA500"));
+    }
+    if (alarmSettings.contains("color_info")) {
+        setAlarmColorInfo(alarmSettings["color_info"].toString("#2196F3"));
+    }
+    if (alarmSettings.contains("color_success")) {
+        setAlarmColorSuccess(alarmSettings["color_success"].toString("#4CAF50"));
+    }
+    if (alarmSettings.contains("configured")) {
+        m_alarmConfigured = alarmSettings["configured"].toBool(false);
+        emit alarmConfiguredChanged();
+    }
+}
+
+bool ConfigManager::saveConfig()
+{
+    QJsonObject root;
+
+    // Bathymetry settings
+    QJsonObject bathymetry;
+    bathymetry["vrt_path"] = m_vrtPath;
+    bathymetry["tile_size"] = m_tileSize;
+    bathymetry["cache_size"] = m_cacheSize;
+    bathymetry["default_lod"] = m_defaultLOD;
+
+    // Color scheme
+    QJsonObject colorScheme;
+    colorScheme["shallow"] = m_colorShallow.name();
+    colorScheme["shallow_mid"] = m_colorShallowMid.name();
+    colorScheme["mid"] = m_colorMid.name();
+    colorScheme["mid_deep"] = m_colorMidDeep.name();
+    colorScheme["deep"] = m_colorDeep.name();
+    bathymetry["color_scheme"] = colorScheme;
+
+    // Depth ranges
+    QJsonObject depthRanges;
+    depthRanges["shallow"] = QJsonArray{m_rangeShallow[0], m_rangeShallow[1]};
+    depthRanges["shallow_mid"] = QJsonArray{m_rangeShallowMid[0], m_rangeShallowMid[1]};
+    depthRanges["mid"] = QJsonArray{m_rangeMid[0], m_rangeMid[1]};
+    depthRanges["mid_deep"] = QJsonArray{m_rangeMidDeep[0], m_rangeMidDeep[1]};
+    depthRanges["deep"] = QJsonArray{m_rangeDeep[0], m_rangeDeep[1]};
+    bathymetry["depth_ranges"] = depthRanges;
+
+    root["bathymetry"] = bathymetry;
+
+    // Rendering settings
+    QJsonObject rendering;
+    rendering["vertical_exaggeration"] = m_verticalExaggeration;
+    rendering["grid_visible"] = m_gridVisible;
+    rendering["legend_visible"] = m_legendVisible;
+    root["rendering"] = rendering;
+
+    // Excavator settings
+    QJsonObject excavator;
+    excavator["name"] = m_excavatorName;
+    excavator["boom_length"] = m_boomLength;
+    excavator["arm_length"] = m_armLength;
+    excavator["bucket_width"] = m_bucketWidth;
+    excavator["configured"] = m_excavatorConfigured;
+    root["excavator"] = excavator;
+
+    // Dig area settings
+    QJsonObject digArea;
+    digArea["grid_rows"] = m_gridRows;
+    digArea["grid_cols"] = m_gridCols;
+    QJsonArray depthsArray;
+    for (const auto &depth : m_gridDepths) {
+        depthsArray.append(depth.toDouble());
+    }
+    digArea["grid_depths"] = depthsArray;
+    digArea["configured"] = m_digAreaConfigured;
+    root["dig_area"] = digArea;
+
+    // Map settings
+    QJsonObject mapObj;
+    mapObj["center_latitude"] = m_mapCenterLatitude;
+    mapObj["center_longitude"] = m_mapCenterLongitude;
+    mapObj["zoom_level"] = m_mapZoomLevel;
+    mapObj["area_width"] = m_mapAreaWidth;
+    mapObj["area_height"] = m_mapAreaHeight;
+    mapObj["configured"] = m_mapConfigured;
+    root["map"] = mapObj;
+
+    // Alarm settings
+    QJsonObject alarm;
+    alarm["color_critical"] = m_alarmColorCritical;
+    alarm["color_warning"] = m_alarmColorWarning;
+    alarm["color_info"] = m_alarmColorInfo;
+    alarm["color_success"] = m_alarmColorSuccess;
+    alarm["configured"] = m_alarmConfigured;
+    root["alarm"] = alarm;
+
+    // Write to file
+    QJsonDocument doc(root);
+    QFile file(m_configPath);
+
+    // Ensure directory exists
+    QDir dir = QFileInfo(m_configPath).absoluteDir();
+    if (!dir.exists()) {
+        dir.mkpath(".");
+    }
+
+    if (!file.open(QIODevice::WriteOnly)) {
+        QString error = "Cannot write config file: " + file.errorString();
+        qWarning() << error;
+        emit errorOccurred(error);
+        return false;
+    }
+
+    file.write(doc.toJson(QJsonDocument::Indented));
+    file.close();
+
+    qDebug() << "Configuration saved to" << m_configPath;
+    return true;
 }

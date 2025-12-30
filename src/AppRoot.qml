@@ -7,7 +7,7 @@ import QtQuick.VirtualKeyboard
  *
  * Bu bileşen uygulama boyunca yaşar ve:
  * 1. Tek bir InputPanel instance'ı tutar (VirtualKeyboard crash'ini önler)
- * 2. Loader ile Login/Dashboard arasında geçiş yapar
+ * 2. Loader ile Login/ConfigDashboard/Dashboard arasında geçiş yapar
  * 3. AuthService sinyallerini merkezi olarak yönetir
  */
 ApplicationWindow {
@@ -19,7 +19,8 @@ ApplicationWindow {
     color: "#1a1a1a"
 
     // Mevcut görünüm durumu
-    property string currentView: "login" // "login" veya "dashboard"
+    // "login" -> "config-dashboard" -> "dashboard"
+    property string currentView: "login"
 
     // Window'u ortala (masaüstünde)
     Component.onCompleted: {
@@ -34,7 +35,7 @@ ApplicationWindow {
         target: authService
 
         function onLoginSucceeded() {
-            console.log("Login başarılı, dashboard'a geçiliyor...")
+            console.log("Login başarılı...")
             // Önce klavyeyi kapat
             Qt.inputMethod.hide()
             // Kısa bir gecikme ile geçiş yap (klavye animasyonu için)
@@ -53,7 +54,14 @@ ApplicationWindow {
         interval: 150
         repeat: false
         onTriggered: {
-            currentView = "dashboard"
+            // Eğer konfigürasyon tamamlanmışsa direkt dashboard'a git
+            if (configManager.isConfigured) {
+                console.log("Konfigürasyon tamamlanmış, dashboard'a geçiliyor...")
+                currentView = "dashboard"
+            } else {
+                console.log("Konfigürasyon gerekli, config-dashboard'a geçiliyor...")
+                currentView = "config-dashboard"
+            }
         }
     }
 
@@ -65,13 +73,35 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.bottom: inputPanel.top
 
-        // View Loader - Login veya Dashboard yükler
+        // View Loader - Login, ConfigDashboard veya Dashboard yükler
         Loader {
             id: viewLoader
             anchors.fill: parent
-            source: currentView === "login"
-                ? "qrc:/ExcavatorUI_Qt3D/src/auth/LoginContainer.qml"
-                : "qrc:/ExcavatorUI_Qt3D/src/views/Main.qml"
+            source: getViewSource()
+
+            function getViewSource() {
+                switch (currentView) {
+                    case "login":
+                        return "qrc:/ExcavatorUI_Qt3D/src/auth/LoginContainer.qml"
+                    case "config-dashboard":
+                        return "qrc:/ExcavatorUI_Qt3D/src/views/ConfigDashboard.qml"
+                    case "dashboard":
+                        return "qrc:/ExcavatorUI_Qt3D/src/views/Main.qml"
+                    default:
+                        return "qrc:/ExcavatorUI_Qt3D/src/auth/LoginContainer.qml"
+                }
+            }
+
+            // ConfigDashboard'dan gelen sinyalleri dinle
+            Connections {
+                target: viewLoader.item
+                ignoreUnknownSignals: true
+
+                function onConfigurationComplete() {
+                    console.log("Konfigürasyon tamamlandı, ana dashboard'a geçiliyor...")
+                    currentView = "dashboard"
+                }
+            }
 
             // Geçiş animasyonu
             onSourceChanged: {
