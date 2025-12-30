@@ -1,27 +1,21 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ExcavatorUI_Qt3D
 
-ApplicationWindow {
-    id: loginWindow
-    width: 800
-    height: 1280
-    visible: true
-    title: qsTr("Excavator Dashboard")
-    color: "#1a1a1a"
+/**
+ * LoginContainer - Login/Register view'larını içeren container
+ *
+ * Bu bileşen InputPanel içermez, AppRoot'taki InputPanel kullanılır.
+ * StackView ile Login ve Register arasında geçiş sağlar.
+ */
+Item {
+    id: loginContainer
 
     // Dil değişikliği için trigger
     property int retranslationTrigger: 0
     property bool showLanguageLoadingOverlay: false
     property string loadingMessage: ""
-
-    // Window'u ortala (masaüstünde)
-    Component.onCompleted: {
-        if (Screen.width > 800) {
-            loginWindow.x = (Screen.width - loginWindow.width) / 2
-            loginWindow.y = (Screen.height - loginWindow.height) / 2
-        }
-    }
 
     // Dil değişikliklerini dinle ve loading göster
     Connections {
@@ -87,48 +81,42 @@ ApplicationWindow {
         }
     }
 
-    // Ana içerik alanı
-    Item {
-        id: contentArea
+    // StackView ile view'lar arası geçiş
+    StackView {
+        id: stackView
         anchors.fill: parent
+        initialItem: loginViewComponent
 
-        // StackView ile view'lar arası geçiş
-        StackView {
-            id: stackView
-            anchors.fill: parent
-            initialItem: loginViewComponent
-
-            pushEnter: Transition {
-                PropertyAnimation {
-                    property: "opacity"
-                    from: 0
-                    to: 1
-                    duration: 200
-                }
+        pushEnter: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: 200
             }
-            pushExit: Transition {
-                PropertyAnimation {
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                    duration: 200
-                }
+        }
+        pushExit: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: 200
             }
-            popEnter: Transition {
-                PropertyAnimation {
-                    property: "opacity"
-                    from: 0
-                    to: 1
-                    duration: 200
-                }
+        }
+        popEnter: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: 200
             }
-            popExit: Transition {
-                PropertyAnimation {
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                    duration: 200
-                }
+        }
+        popExit: Transition {
+            PropertyAnimation {
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: 200
             }
         }
     }
@@ -158,14 +146,4 @@ ApplicationWindow {
             }
         }
     }
-
-    // AuthService'ten gelen sinyalleri dinle
-    Connections {
-        target: authService
-
-        function onLoginSucceeded() {
-            loginWindow.close()
-        }
-    }
-
 }
