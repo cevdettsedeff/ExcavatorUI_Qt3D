@@ -13,16 +13,25 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager.backgroundColor
+    color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
 
     signal back()
     signal configSaved()
 
+    // Theme colors with fallbacks
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#0891b2"
+    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
+    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f5f5f5"
+    property color textColor: themeManager ? themeManager.textColor : "#1f2937"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#6b7280"
+    property color borderColor: themeManager ? themeManager.borderColor : "#e5e7eb"
+    property color themeInfoColor: themeManager ? themeManager.infoColor : "#3b82f6"
+
     // Current colors
-    property string criticalColor: configManager.alarmColorCritical
-    property string warningColor: configManager.alarmColorWarning
-    property string infoColor: configManager.alarmColorInfo
-    property string successColor: configManager.alarmColorSuccess
+    property string criticalColor: configManager ? configManager.alarmColorCritical : "#FF4444"
+    property string warningColorVal: configManager ? configManager.alarmColorWarning : "#FFA500"
+    property string infoColorVal: configManager ? configManager.alarmColorInfo : "#2196F3"
+    property string successColorVal: configManager ? configManager.alarmColorSuccess : "#4CAF50"
 
     // Color picker state
     property string editingColorType: ""
@@ -35,7 +44,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 60
-        color: themeManager.primaryColor
+        color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
@@ -95,10 +104,10 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: infoContent.height + 24
-                color: Qt.rgba(themeManager.infoColor.r, themeManager.infoColor.g, themeManager.infoColor.b, 0.1)
+                color: Qt.rgba(root.themeInfoColor.r, root.themeInfoColor.g, root.themeInfoColor.b, 0.1)
                 radius: 12
                 border.width: 1
-                border.color: Qt.rgba(themeManager.infoColor.r, themeManager.infoColor.g, themeManager.infoColor.b, 0.3)
+                border.color: Qt.rgba(root.themeInfoColor.r, root.themeInfoColor.g, root.themeInfoColor.b, 0.3)
 
                 RowLayout {
                     id: infoContent
@@ -117,7 +126,7 @@ Rectangle {
                         Layout.fillWidth: true
                         text: qsTr("Alarm renkleri, uygulamadaki tüm uyarı ve bildirimlerde kullanılacaktır. İstediğiniz renkleri seçerek arayüzü özelleştirebilirsiniz.")
                         font.pixelSize: 13
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                         wrapMode: Text.WordWrap
                     }
                 }
@@ -128,7 +137,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: colorSettingsContent.height + 32
-                color: themeManager.surfaceColor
+                color: root.surfaceColor
                 radius: 12
 
                 ColumnLayout {
@@ -143,7 +152,7 @@ Rectangle {
                         text: qsTr("Alarm Renkleri")
                         font.pixelSize: 16
                         font.bold: true
-                        color: themeManager.textColor
+                        color: root.textColor
                     }
 
                     // Critical Color
@@ -153,6 +162,10 @@ Rectangle {
                         description: qsTr("Acil durumlar ve kritik hatalar")
                         icon: "🚨"
                         currentColor: criticalColor
+                        rowTextColor: root.textColor
+                        rowTextSecondaryColor: root.textSecondaryColor
+                        rowSurfaceColor: root.surfaceColor
+                        rowBorderColor: root.borderColor
                         onColorClicked: {
                             editingColorType = "critical"
                             editingColor = criticalColor
@@ -163,7 +176,7 @@ Rectangle {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 1
-                        color: themeManager.borderColor
+                        color: root.borderColor
                     }
 
                     // Warning Color
@@ -172,10 +185,14 @@ Rectangle {
                         label: qsTr("Uyarı")
                         description: qsTr("Dikkat gerektiren durumlar")
                         icon: "⚠️"
-                        currentColor: warningColor
+                        currentColor: warningColorVal
+                        rowTextColor: root.textColor
+                        rowTextSecondaryColor: root.textSecondaryColor
+                        rowSurfaceColor: root.surfaceColor
+                        rowBorderColor: root.borderColor
                         onColorClicked: {
                             editingColorType = "warning"
-                            editingColor = warningColor
+                            editingColor = warningColorVal
                             colorPickerPopup.open()
                         }
                     }
@@ -183,7 +200,7 @@ Rectangle {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 1
-                        color: themeManager.borderColor
+                        color: root.borderColor
                     }
 
                     // Info Color
@@ -192,10 +209,14 @@ Rectangle {
                         label: qsTr("Bilgi")
                         description: qsTr("Genel bilgilendirmeler")
                         icon: "ℹ️"
-                        currentColor: infoColor
+                        currentColor: infoColorVal
+                        rowTextColor: root.textColor
+                        rowTextSecondaryColor: root.textSecondaryColor
+                        rowSurfaceColor: root.surfaceColor
+                        rowBorderColor: root.borderColor
                         onColorClicked: {
                             editingColorType = "info"
-                            editingColor = infoColor
+                            editingColor = infoColorVal
                             colorPickerPopup.open()
                         }
                     }
@@ -203,7 +224,7 @@ Rectangle {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 1
-                        color: themeManager.borderColor
+                        color: root.borderColor
                     }
 
                     // Success Color
@@ -212,10 +233,14 @@ Rectangle {
                         label: qsTr("Başarı")
                         description: qsTr("Başarılı işlemler ve onaylar")
                         icon: "✅"
-                        currentColor: successColor
+                        currentColor: successColorVal
+                        rowTextColor: root.textColor
+                        rowTextSecondaryColor: root.textSecondaryColor
+                        rowSurfaceColor: root.surfaceColor
+                        rowBorderColor: root.borderColor
                         onColorClicked: {
                             editingColorType = "success"
-                            editingColor = successColor
+                            editingColor = successColorVal
                             colorPickerPopup.open()
                         }
                     }
@@ -227,7 +252,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: previewContent.height + 32
-                color: themeManager.surfaceColor
+                color: root.surfaceColor
                 radius: 12
 
                 ColumnLayout {
@@ -242,7 +267,7 @@ Rectangle {
                         text: qsTr("Önizleme")
                         font.pixelSize: 16
                         font.bold: true
-                        color: themeManager.textColor
+                        color: root.textColor
                     }
 
                     // Preview alarms
@@ -252,30 +277,38 @@ Rectangle {
                         title: qsTr("Kritik: Sistem Hatası")
                         message: qsTr("Acil müdahale gerekiyor")
                         icon: "🚨"
+                        cardTextColor: root.textColor
+                        cardTextSecondaryColor: root.textSecondaryColor
                     }
 
                     AlarmPreviewCard {
                         Layout.fillWidth: true
-                        alarmColor: warningColor
+                        alarmColor: warningColorVal
                         title: qsTr("Uyarı: Düşük Yakıt")
                         message: qsTr("Yakıt seviyesi %15'in altında")
                         icon: "⚠️"
+                        cardTextColor: root.textColor
+                        cardTextSecondaryColor: root.textSecondaryColor
                     }
 
                     AlarmPreviewCard {
                         Layout.fillWidth: true
-                        alarmColor: infoColor
+                        alarmColor: infoColorVal
                         title: qsTr("Bilgi: GPS Bağlantısı")
                         message: qsTr("GPS sinyali alınıyor")
                         icon: "ℹ️"
+                        cardTextColor: root.textColor
+                        cardTextSecondaryColor: root.textSecondaryColor
                     }
 
                     AlarmPreviewCard {
                         Layout.fillWidth: true
-                        alarmColor: successColor
+                        alarmColor: successColorVal
                         title: qsTr("Başarılı: Kalibrasyon")
                         message: qsTr("Sensör kalibrasyonu tamamlandı")
                         icon: "✅"
+                        cardTextColor: root.textColor
+                        cardTextSecondaryColor: root.textSecondaryColor
                     }
                 }
             }
@@ -290,15 +323,15 @@ Rectangle {
                 contentItem: Text {
                     text: parent.text
                     font.pixelSize: 14
-                    color: themeManager.textSecondaryColor
+                    color: root.textSecondaryColor
                     horizontalAlignment: Text.AlignHCenter
                 }
 
                 onClicked: {
                     criticalColor = "#FF4444"
-                    warningColor = "#FFA500"
-                    infoColor = "#2196F3"
-                    successColor = "#4CAF50"
+                    warningColorVal = "#FFA500"
+                    infoColorVal = "#2196F3"
+                    successColorVal = "#4CAF50"
                 }
             }
         }
@@ -311,14 +344,14 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 80
-        color: themeManager.surfaceColor
+        color: root.surfaceColor
 
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
             height: 1
-            color: themeManager.borderColor
+            color: root.borderColor
         }
 
         Button {
@@ -329,7 +362,7 @@ Rectangle {
 
             background: Rectangle {
                 radius: 12
-                color: parent.pressed ? Qt.darker(themeManager.primaryColor, 1.2) : themeManager.primaryColor
+                color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
             }
 
             contentItem: Text {
@@ -342,10 +375,12 @@ Rectangle {
             }
 
             onClicked: {
-                configManager.alarmColorCritical = criticalColor
-                configManager.alarmColorWarning = warningColor
-                configManager.alarmColorInfo = infoColor
-                configManager.alarmColorSuccess = successColor
+                if (configManager) {
+                    configManager.alarmColorCritical = criticalColor
+                    configManager.alarmColorWarning = warningColorVal
+                    configManager.alarmColorInfo = infoColorVal
+                    configManager.alarmColorSuccess = successColorVal
+                }
                 root.configSaved()
             }
         }
@@ -361,10 +396,10 @@ Rectangle {
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         background: Rectangle {
-            color: themeManager.backgroundColor
+            color: root.backgroundColor
             radius: 16
             border.width: 1
-            border.color: themeManager.borderColor
+            border.color: root.borderColor
         }
 
         contentItem: ColumnLayout {
@@ -376,7 +411,7 @@ Rectangle {
                 text: qsTr("Renk Seçin")
                 font.pixelSize: 18
                 font.bold: true
-                color: themeManager.textColor
+                color: root.textColor
                 horizontalAlignment: Text.AlignHCenter
             }
 
@@ -388,14 +423,14 @@ Rectangle {
                 radius: 40
                 color: editingColor
                 border.width: 3
-                border.color: themeManager.borderColor
+                border.color: root.borderColor
             }
 
             // Predefined colors grid
             Text {
                 text: qsTr("Hazır Renkler")
                 font.pixelSize: 13
-                color: themeManager.textSecondaryColor
+                color: root.textSecondaryColor
             }
 
             GridLayout {
@@ -432,7 +467,7 @@ Rectangle {
             Text {
                 text: qsTr("Özel Renk (HEX)")
                 font.pixelSize: 13
-                color: themeManager.textSecondaryColor
+                color: root.textSecondaryColor
             }
 
             TextField {
@@ -441,14 +476,14 @@ Rectangle {
                 text: editingColor
                 font.pixelSize: 16
                 font.family: "monospace"
-                color: themeManager.textColor
+                color: root.textColor
                 horizontalAlignment: Text.AlignHCenter
 
                 background: Rectangle {
-                    color: themeManager.surfaceColor
+                    color: root.surfaceColor
                     radius: 8
                     border.width: parent.activeFocus ? 2 : 1
-                    border.color: parent.activeFocus ? themeManager.primaryColor : themeManager.borderColor
+                    border.color: parent.activeFocus ? root.primaryColor : root.borderColor
                 }
 
                 onTextChanged: {
@@ -473,15 +508,15 @@ Rectangle {
 
                     background: Rectangle {
                         radius: 8
-                        color: parent.pressed ? themeManager.surfaceColor : "transparent"
+                        color: parent.pressed ? root.surfaceColor : "transparent"
                         border.width: 1
-                        border.color: themeManager.borderColor
+                        border.color: root.borderColor
                     }
 
                     contentItem: Text {
                         text: parent.text
                         font.pixelSize: 14
-                        color: themeManager.textColor
+                        color: root.textColor
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
@@ -496,7 +531,7 @@ Rectangle {
 
                     background: Rectangle {
                         radius: 8
-                        color: parent.pressed ? Qt.darker(themeManager.primaryColor, 1.2) : themeManager.primaryColor
+                        color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
                     }
 
                     contentItem: Text {
@@ -511,9 +546,9 @@ Rectangle {
                     onClicked: {
                         switch (editingColorType) {
                             case "critical": criticalColor = editingColor; break;
-                            case "warning": warningColor = editingColor; break;
-                            case "info": infoColor = editingColor; break;
-                            case "success": successColor = editingColor; break;
+                            case "warning": warningColorVal = editingColor; break;
+                            case "info": infoColorVal = editingColor; break;
+                            case "success": successColorVal = editingColor; break;
                         }
                         colorPickerPopup.close()
                     }
@@ -522,12 +557,16 @@ Rectangle {
         }
     }
 
-    // AlarmColorRow Component
+    // AlarmColorRow Component with explicit color properties
     component AlarmColorRow: RowLayout {
         property string label: ""
         property string description: ""
         property string icon: ""
         property string currentColor: "#000000"
+        property color rowTextColor: "#1f2937"
+        property color rowTextSecondaryColor: "#6b7280"
+        property color rowSurfaceColor: "#ffffff"
+        property color rowBorderColor: "#e5e7eb"
 
         signal colorClicked()
 
@@ -546,13 +585,13 @@ Rectangle {
                 text: label
                 font.pixelSize: 15
                 font.bold: true
-                color: themeManager.textColor
+                color: rowTextColor
             }
 
             Text {
                 text: description
                 font.pixelSize: 12
-                color: themeManager.textSecondaryColor
+                color: rowTextSecondaryColor
             }
         }
 
@@ -578,26 +617,28 @@ Rectangle {
                 width: 20
                 height: 20
                 radius: 10
-                color: themeManager.surfaceColor
+                color: rowSurfaceColor
                 border.width: 1
-                border.color: themeManager.borderColor
+                border.color: rowBorderColor
 
                 Text {
                     anchors.centerIn: parent
                     text: "✎"
                     font.pixelSize: 10
-                    color: themeManager.textColor
+                    color: rowTextColor
                 }
             }
         }
     }
 
-    // AlarmPreviewCard Component
+    // AlarmPreviewCard Component with explicit color properties
     component AlarmPreviewCard: Rectangle {
         property string alarmColor: "#FF4444"
         property string title: ""
         property string message: ""
         property string icon: ""
+        property color cardTextColor: "#1f2937"
+        property color cardTextSecondaryColor: "#6b7280"
 
         height: 60
         radius: 8
@@ -636,13 +677,13 @@ Rectangle {
                     text: title
                     font.pixelSize: 13
                     font.bold: true
-                    color: themeManager.textColor
+                    color: cardTextColor
                 }
 
                 Text {
                     text: message
                     font.pixelSize: 11
-                    color: themeManager.textSecondaryColor
+                    color: cardTextSecondaryColor
                 }
             }
         }

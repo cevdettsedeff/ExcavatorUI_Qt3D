@@ -11,10 +11,17 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager.backgroundColor
+    color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
 
     signal back()
     signal configSaved()
+
+    // Theme colors with fallbacks
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#0891b2"
+    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
+    property color textColor: themeManager ? themeManager.textColor : "#1f2937"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#6b7280"
+    property color borderColor: themeManager ? themeManager.borderColor : "#e5e7eb"
 
     // Selected cell for editing
     property int selectedRow: -1
@@ -27,7 +34,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 60
-        color: themeManager.primaryColor
+        color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
@@ -87,7 +94,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: gridSizeContent.height + 32
-                color: themeManager.surfaceColor
+                color: root.surfaceColor
                 radius: 12
 
                 ColumnLayout {
@@ -102,7 +109,7 @@ Rectangle {
                         text: qsTr("Grid Boyutu")
                         font.pixelSize: 16
                         font.bold: true
-                        color: themeManager.textColor
+                        color: root.textColor
                     }
 
                     RowLayout {
@@ -117,7 +124,7 @@ Rectangle {
                             Text {
                                 text: qsTr("Satır Sayısı")
                                 font.pixelSize: 13
-                                color: themeManager.textSecondaryColor
+                                color: root.textSecondaryColor
                             }
 
                             RowLayout {
@@ -128,24 +135,24 @@ Rectangle {
                                     Layout.preferredHeight: 40
                                     text: "-"
                                     font.pixelSize: 20
-                                    enabled: configManager.gridRows > 1
+                                    enabled: configManager ? configManager.gridRows > 1 : false
 
                                     background: Rectangle {
                                         radius: 8
-                                        color: parent.pressed ? Qt.darker(themeManager.surfaceColor, 1.2) : themeManager.surfaceColor
+                                        color: parent.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
                                         border.width: 1
-                                        border.color: themeManager.borderColor
+                                        border.color: root.borderColor
                                     }
 
-                                    onClicked: configManager.gridRows = configManager.gridRows - 1
+                                    onClicked: if (configManager) configManager.gridRows = configManager.gridRows - 1
                                 }
 
                                 Text {
                                     Layout.preferredWidth: 40
-                                    text: configManager.gridRows.toString()
+                                    text: configManager ? configManager.gridRows.toString() : "4"
                                     font.pixelSize: 18
                                     font.bold: true
-                                    color: themeManager.textColor
+                                    color: root.textColor
                                     horizontalAlignment: Text.AlignHCenter
                                 }
 
@@ -154,16 +161,16 @@ Rectangle {
                                     Layout.preferredHeight: 40
                                     text: "+"
                                     font.pixelSize: 20
-                                    enabled: configManager.gridRows < 10
+                                    enabled: configManager ? configManager.gridRows < 10 : false
 
                                     background: Rectangle {
                                         radius: 8
-                                        color: parent.pressed ? Qt.darker(themeManager.surfaceColor, 1.2) : themeManager.surfaceColor
+                                        color: parent.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
                                         border.width: 1
-                                        border.color: themeManager.borderColor
+                                        border.color: root.borderColor
                                     }
 
-                                    onClicked: configManager.gridRows = configManager.gridRows + 1
+                                    onClicked: if (configManager) configManager.gridRows = configManager.gridRows + 1
                                 }
                             }
                         }
@@ -176,7 +183,7 @@ Rectangle {
                             Text {
                                 text: qsTr("Sütun Sayısı")
                                 font.pixelSize: 13
-                                color: themeManager.textSecondaryColor
+                                color: root.textSecondaryColor
                             }
 
                             RowLayout {
@@ -187,24 +194,24 @@ Rectangle {
                                     Layout.preferredHeight: 40
                                     text: "-"
                                     font.pixelSize: 20
-                                    enabled: configManager.gridCols > 1
+                                    enabled: configManager ? configManager.gridCols > 1 : false
 
                                     background: Rectangle {
                                         radius: 8
-                                        color: parent.pressed ? Qt.darker(themeManager.surfaceColor, 1.2) : themeManager.surfaceColor
+                                        color: parent.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
                                         border.width: 1
-                                        border.color: themeManager.borderColor
+                                        border.color: root.borderColor
                                     }
 
-                                    onClicked: configManager.gridCols = configManager.gridCols - 1
+                                    onClicked: if (configManager) configManager.gridCols = configManager.gridCols - 1
                                 }
 
                                 Text {
                                     Layout.preferredWidth: 40
-                                    text: configManager.gridCols.toString()
+                                    text: configManager ? configManager.gridCols.toString() : "4"
                                     font.pixelSize: 18
                                     font.bold: true
-                                    color: themeManager.textColor
+                                    color: root.textColor
                                     horizontalAlignment: Text.AlignHCenter
                                 }
 
@@ -213,25 +220,27 @@ Rectangle {
                                     Layout.preferredHeight: 40
                                     text: "+"
                                     font.pixelSize: 20
-                                    enabled: configManager.gridCols < 10
+                                    enabled: configManager ? configManager.gridCols < 10 : false
 
                                     background: Rectangle {
                                         radius: 8
-                                        color: parent.pressed ? Qt.darker(themeManager.surfaceColor, 1.2) : themeManager.surfaceColor
+                                        color: parent.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
                                         border.width: 1
-                                        border.color: themeManager.borderColor
+                                        border.color: root.borderColor
                                     }
 
-                                    onClicked: configManager.gridCols = configManager.gridCols + 1
+                                    onClicked: if (configManager) configManager.gridCols = configManager.gridCols + 1
                                 }
                             }
                         }
                     }
 
                     Text {
-                        text: qsTr("Toplam: %1 grid hücresi").arg(configManager.gridRows * configManager.gridCols)
+                        text: qsTr("Toplam: %1 grid hücresi").arg(
+                            configManager ? (configManager.gridRows * configManager.gridCols) : 16
+                        )
                         font.pixelSize: 12
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                     }
                 }
             }
@@ -241,7 +250,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: gridArea.height + 80
-                color: themeManager.surfaceColor
+                color: root.surfaceColor
                 radius: 12
 
                 ColumnLayout {
@@ -253,13 +262,13 @@ Rectangle {
                         text: qsTr("Batimetrik Veri Girişi")
                         font.pixelSize: 16
                         font.bold: true
-                        color: themeManager.textColor
+                        color: root.textColor
                     }
 
                     Text {
                         text: qsTr("Her hücreye tıklayarak derinlik değeri girin")
                         font.pixelSize: 12
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                     }
 
                     // Grid
@@ -267,39 +276,42 @@ Rectangle {
                         id: gridArea
                         Layout.fillWidth: true
                         Layout.preferredHeight: {
+                            var cols = configManager ? configManager.gridCols : 4
+                            var rows = configManager ? configManager.gridRows : 4
                             var availableWidth = parent.width - 32
-                            var cellSize = Math.min(availableWidth / configManager.gridCols, 80)
-                            return cellSize * configManager.gridRows
+                            var cellSize = Math.min(availableWidth / cols, 80)
+                            return cellSize * rows
                         }
 
                         Grid {
                             anchors.centerIn: parent
-                            columns: configManager.gridCols
+                            columns: configManager ? configManager.gridCols : 4
                             spacing: 4
 
                             Repeater {
-                                model: configManager.gridRows * configManager.gridCols
+                                model: configManager ? (configManager.gridRows * configManager.gridCols) : 16
 
                                 Rectangle {
                                     id: gridCell
-                                    property int row: Math.floor(index / configManager.gridCols)
-                                    property int col: index % configManager.gridCols
-                                    property real depth: configManager.getGridDepth(row, col)
+                                    property int row: Math.floor(index / (configManager ? configManager.gridCols : 4))
+                                    property int col: index % (configManager ? configManager.gridCols : 4)
+                                    property real depth: configManager ? configManager.getGridDepth(row, col) : 0
 
                                     width: {
-                                        var availableWidth = gridArea.width - (configManager.gridCols - 1) * 4
-                                        return Math.min(availableWidth / configManager.gridCols, 76)
+                                        var cols = configManager ? configManager.gridCols : 4
+                                        var availableWidth = gridArea.width - (cols - 1) * 4
+                                        return Math.min(availableWidth / cols, 76)
                                     }
                                     height: width
                                     radius: 8
                                     color: getDepthColor(depth)
                                     border.width: (selectedRow === row && selectedCol === col) ? 3 : 1
                                     border.color: (selectedRow === row && selectedCol === col)
-                                        ? themeManager.primaryColor
+                                        ? root.primaryColor
                                         : Qt.darker(color, 1.2)
 
                                     function getDepthColor(d) {
-                                        if (d === 0) return themeManager.surfaceColor
+                                        if (d === 0) return root.surfaceColor
                                         var intensity = Math.min(d / 30, 1)
                                         return Qt.rgba(
                                             0.2 + (1 - intensity) * 0.3,
@@ -318,14 +330,14 @@ Rectangle {
                                             text: depth > 0 ? depth.toFixed(1) : "-"
                                             font.pixelSize: gridCell.width > 50 ? 14 : 10
                                             font.bold: true
-                                            color: depth > 15 ? "white" : themeManager.textColor
+                                            color: depth > 15 ? "white" : root.textColor
                                         }
 
                                         Text {
                                             Layout.alignment: Qt.AlignHCenter
                                             text: depth > 0 ? "m" : ""
                                             font.pixelSize: 9
-                                            color: depth > 15 ? Qt.rgba(1,1,1,0.7) : themeManager.textSecondaryColor
+                                            color: depth > 15 ? Qt.rgba(1,1,1,0.7) : root.textSecondaryColor
                                             visible: gridCell.width > 40
                                         }
                                     }
@@ -350,7 +362,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: 80
-                color: themeManager.surfaceColor
+                color: root.surfaceColor
                 radius: 12
 
                 RowLayout {
@@ -361,7 +373,7 @@ Rectangle {
                     Text {
                         text: qsTr("Derinlik Skalası:")
                         font.pixelSize: 12
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                     }
 
                     Rectangle {
@@ -380,19 +392,19 @@ Rectangle {
                     Text {
                         text: "0m"
                         font.pixelSize: 11
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                     }
 
                     Text {
                         text: "→"
                         font.pixelSize: 11
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                     }
 
                     Text {
                         text: "30m+"
                         font.pixelSize: 11
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                     }
                 }
             }
@@ -408,14 +420,14 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 80
-        color: themeManager.surfaceColor
+        color: root.surfaceColor
 
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
             height: 1
-            color: themeManager.borderColor
+            color: root.borderColor
         }
 
         Button {
@@ -426,7 +438,7 @@ Rectangle {
 
             background: Rectangle {
                 radius: 12
-                color: parent.pressed ? Qt.darker(themeManager.primaryColor, 1.2) : themeManager.primaryColor
+                color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
             }
 
             contentItem: Text {
@@ -453,16 +465,16 @@ Rectangle {
         width: 300
 
         background: Rectangle {
-            color: themeManager.backgroundColor
+            color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
             radius: 16
             border.width: 1
-            border.color: themeManager.borderColor
+            border.color: root.borderColor
         }
 
         header: Rectangle {
             width: parent.width
             height: 50
-            color: themeManager.primaryColor
+            color: root.primaryColor
             radius: 16
 
             Rectangle {
@@ -495,14 +507,14 @@ Rectangle {
                 font.pixelSize: 18
                 horizontalAlignment: Text.AlignHCenter
                 validator: DoubleValidator { bottom: 0; decimals: 2 }
-                color: themeManager.textColor
-                placeholderTextColor: themeManager.textSecondaryColor
+                color: root.textColor
+                placeholderTextColor: root.textSecondaryColor
 
                 background: Rectangle {
-                    color: themeManager.surfaceColor
+                    color: root.surfaceColor
                     radius: 8
                     border.width: depthInput.activeFocus ? 2 : 1
-                    border.color: depthInput.activeFocus ? themeManager.primaryColor : themeManager.borderColor
+                    border.color: depthInput.activeFocus ? root.primaryColor : root.borderColor
                 }
 
                 Component.onCompleted: {
@@ -513,12 +525,12 @@ Rectangle {
             Text {
                 Layout.alignment: Qt.AlignHCenter
                 text: qsTr("Mevcut değer: %1 m").arg(
-                    selectedRow >= 0 && selectedCol >= 0
+                    (selectedRow >= 0 && selectedCol >= 0 && configManager)
                         ? configManager.getGridDepth(selectedRow, selectedCol).toFixed(1)
                         : "0.0"
                 )
                 font.pixelSize: 12
-                color: themeManager.textSecondaryColor
+                color: root.textSecondaryColor
             }
         }
 
@@ -534,7 +546,7 @@ Rectangle {
                 contentItem: Text {
                     text: parent.text
                     font.pixelSize: 14
-                    color: themeManager.textSecondaryColor
+                    color: root.textSecondaryColor
                     horizontalAlignment: Text.AlignHCenter
                 }
 
@@ -546,7 +558,7 @@ Rectangle {
 
                 background: Rectangle {
                     radius: 8
-                    color: parent.pressed ? Qt.darker(themeManager.primaryColor, 1.2) : themeManager.primaryColor
+                    color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
                 }
 
                 contentItem: Text {
@@ -559,7 +571,7 @@ Rectangle {
 
                 onClicked: {
                     var val = parseFloat(depthInput.text)
-                    if (!isNaN(val) && val >= 0 && selectedRow >= 0 && selectedCol >= 0) {
+                    if (!isNaN(val) && val >= 0 && selectedRow >= 0 && selectedCol >= 0 && configManager) {
                         configManager.setGridDepth(selectedRow, selectedCol, val)
                     }
                     depthInputDialog.close()

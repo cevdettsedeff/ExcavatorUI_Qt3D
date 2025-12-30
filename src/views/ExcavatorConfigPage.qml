@@ -13,10 +13,18 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager.backgroundColor
+    color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
 
     signal back()
     signal configSaved()
+
+    // Theme colors with fallbacks
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#0891b2"
+    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
+    property color textColor: themeManager ? themeManager.textColor : "#1f2937"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#6b7280"
+    property color borderColor: themeManager ? themeManager.borderColor : "#e5e7eb"
+    property color infoColor: themeManager ? themeManager.infoColor : "#3b82f6"
 
     // Header
     Rectangle {
@@ -25,7 +33,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 60
-        color: themeManager.primaryColor
+        color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
@@ -85,7 +93,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: 200
                 Layout.preferredHeight: 150
-                color: themeManager.surfaceColor
+                color: root.surfaceColor
                 radius: 12
 
                 Image {
@@ -105,8 +113,15 @@ Rectangle {
                 Layout.margins: 20
                 label: qsTr("Ekskavatör Adı")
                 placeholder: qsTr("Örn: CAT 320D")
-                inputText: configManager.excavatorName
-                onTextChanged: configManager.excavatorName = text
+                inputText: configManager ? configManager.excavatorName : ""
+                fieldPrimaryColor: root.primaryColor
+                fieldSurfaceColor: root.surfaceColor
+                fieldTextColor: root.textColor
+                fieldTextSecondaryColor: root.textSecondaryColor
+                fieldBorderColor: root.borderColor
+                onFieldTextChanged: function(newText) {
+                    if (configManager) configManager.excavatorName = newText
+                }
             }
 
             // Boom Length
@@ -116,12 +131,17 @@ Rectangle {
                 Layout.rightMargin: 20
                 label: qsTr("Boom Uzunluğu (metre)")
                 placeholder: qsTr("Örn: 12.0")
-                inputText: configManager.boomLength.toFixed(1)
+                inputText: configManager ? configManager.boomLength.toFixed(1) : "0.0"
                 inputType: "number"
                 suffix: "m"
-                onTextChanged: {
-                    var val = parseFloat(text)
-                    if (!isNaN(val) && val > 0) {
+                fieldPrimaryColor: root.primaryColor
+                fieldSurfaceColor: root.surfaceColor
+                fieldTextColor: root.textColor
+                fieldTextSecondaryColor: root.textSecondaryColor
+                fieldBorderColor: root.borderColor
+                onFieldTextChanged: function(newText) {
+                    var val = parseFloat(newText)
+                    if (!isNaN(val) && val > 0 && configManager) {
                         configManager.boomLength = val
                     }
                 }
@@ -134,12 +154,17 @@ Rectangle {
                 Layout.rightMargin: 20
                 label: qsTr("Arm Uzunluğu (metre)")
                 placeholder: qsTr("Örn: 10.0")
-                inputText: configManager.armLength.toFixed(1)
+                inputText: configManager ? configManager.armLength.toFixed(1) : "0.0"
                 inputType: "number"
                 suffix: "m"
-                onTextChanged: {
-                    var val = parseFloat(text)
-                    if (!isNaN(val) && val > 0) {
+                fieldPrimaryColor: root.primaryColor
+                fieldSurfaceColor: root.surfaceColor
+                fieldTextColor: root.textColor
+                fieldTextSecondaryColor: root.textSecondaryColor
+                fieldBorderColor: root.borderColor
+                onFieldTextChanged: function(newText) {
+                    var val = parseFloat(newText)
+                    if (!isNaN(val) && val > 0 && configManager) {
                         configManager.armLength = val
                     }
                 }
@@ -152,12 +177,17 @@ Rectangle {
                 Layout.rightMargin: 20
                 label: qsTr("Bucket Genişliği (metre)")
                 placeholder: qsTr("Örn: 2.0")
-                inputText: configManager.bucketWidth.toFixed(1)
+                inputText: configManager ? configManager.bucketWidth.toFixed(1) : "0.0"
                 inputType: "number"
                 suffix: "m"
-                onTextChanged: {
-                    var val = parseFloat(text)
-                    if (!isNaN(val) && val > 0) {
+                fieldPrimaryColor: root.primaryColor
+                fieldSurfaceColor: root.surfaceColor
+                fieldTextColor: root.textColor
+                fieldTextSecondaryColor: root.textSecondaryColor
+                fieldBorderColor: root.borderColor
+                onFieldTextChanged: function(newText) {
+                    var val = parseFloat(newText)
+                    if (!isNaN(val) && val > 0 && configManager) {
                         configManager.bucketWidth = val
                     }
                 }
@@ -168,10 +198,10 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 Layout.preferredHeight: infoContent.height + 24
-                color: Qt.rgba(themeManager.infoColor.r, themeManager.infoColor.g, themeManager.infoColor.b, 0.1)
+                color: Qt.rgba(root.infoColor.r, root.infoColor.g, root.infoColor.b, 0.1)
                 radius: 8
                 border.width: 1
-                border.color: Qt.rgba(themeManager.infoColor.r, themeManager.infoColor.g, themeManager.infoColor.b, 0.3)
+                border.color: Qt.rgba(root.infoColor.r, root.infoColor.g, root.infoColor.b, 0.3)
 
                 RowLayout {
                     id: infoContent
@@ -190,7 +220,7 @@ Rectangle {
                         Layout.fillWidth: true
                         text: qsTr("Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
                         font.pixelSize: 13
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                         wrapMode: Text.WordWrap
                     }
                 }
@@ -207,14 +237,14 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 80
-        color: themeManager.surfaceColor
+        color: root.surfaceColor
 
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
             height: 1
-            color: themeManager.borderColor
+            color: root.borderColor
         }
 
         Button {
@@ -225,6 +255,7 @@ Rectangle {
             enabled: isFormValid
 
             property bool isFormValid: {
+                if (!configManager) return false
                 return configManager.excavatorName.length > 0 &&
                        configManager.boomLength > 0 &&
                        configManager.armLength > 0 &&
@@ -234,17 +265,17 @@ Rectangle {
             background: Rectangle {
                 radius: 12
                 color: parent.enabled
-                    ? (parent.pressed ? Qt.darker(themeManager.primaryColor, 1.2) : themeManager.primaryColor)
-                    : themeManager.surfaceColor
+                    ? (parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor)
+                    : root.surfaceColor
                 border.width: parent.enabled ? 0 : 1
-                border.color: themeManager.borderColor
+                border.color: root.borderColor
             }
 
             contentItem: Text {
                 text: parent.text
                 font.pixelSize: 16
                 font.bold: true
-                color: parent.enabled ? "white" : themeManager.textSecondaryColor
+                color: parent.enabled ? "white" : root.textSecondaryColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -255,32 +286,40 @@ Rectangle {
         }
     }
 
-    // ConfigInputField Component
+    // ConfigInputField Component with explicit color properties
     component ConfigInputField: ColumnLayout {
+        id: inputFieldRoot
         property string label: ""
         property string placeholder: ""
         property string inputText: ""
         property string inputType: "text" // "text" or "number"
         property string suffix: ""
 
-        signal textChanged(string text)
+        // Theme colors (passed from parent)
+        property color fieldPrimaryColor: "#0891b2"
+        property color fieldSurfaceColor: "#ffffff"
+        property color fieldTextColor: "#1f2937"
+        property color fieldTextSecondaryColor: "#6b7280"
+        property color fieldBorderColor: "#e5e7eb"
+
+        signal fieldTextChanged(string newText)
 
         spacing: 8
 
         Text {
-            text: parent.label
+            text: inputFieldRoot.label
             font.pixelSize: 14
             font.bold: true
-            color: themeManager.textColor
+            color: inputFieldRoot.fieldTextColor
         }
 
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 50
-            color: themeManager.surfaceColor
+            color: inputFieldRoot.fieldSurfaceColor
             radius: 8
             border.width: inputField.activeFocus ? 2 : 1
-            border.color: inputField.activeFocus ? themeManager.primaryColor : themeManager.borderColor
+            border.color: inputField.activeFocus ? inputFieldRoot.fieldPrimaryColor : inputFieldRoot.fieldBorderColor
 
             RowLayout {
                 anchors.fill: parent
@@ -291,20 +330,20 @@ Rectangle {
                     id: inputField
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    text: inputText
-                    placeholderText: placeholder
+                    text: inputFieldRoot.inputText
+                    placeholderText: inputFieldRoot.placeholder
                     font.pixelSize: 16
-                    color: themeManager.textColor
-                    placeholderTextColor: themeManager.textSecondaryColor
+                    color: inputFieldRoot.fieldTextColor
+                    placeholderTextColor: inputFieldRoot.fieldTextSecondaryColor
 
-                    validator: inputType === "number" ? doubleValidator : null
+                    validator: inputFieldRoot.inputType === "number" ? doubleValidator : null
 
                     background: Rectangle {
                         color: "transparent"
                     }
 
                     onTextChanged: {
-                        parent.parent.parent.textChanged(text)
+                        inputFieldRoot.fieldTextChanged(inputField.text)
                     }
 
                     DoubleValidator {
@@ -315,10 +354,10 @@ Rectangle {
                 }
 
                 Text {
-                    visible: suffix.length > 0
-                    text: suffix
+                    visible: inputFieldRoot.suffix.length > 0
+                    text: inputFieldRoot.suffix
                     font.pixelSize: 14
-                    color: themeManager.textSecondaryColor
+                    color: inputFieldRoot.fieldTextSecondaryColor
                 }
             }
         }

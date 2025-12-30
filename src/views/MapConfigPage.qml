@@ -12,15 +12,23 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager.backgroundColor
+    color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
 
     signal back()
     signal configSaved()
 
+    // Theme colors with fallbacks
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#0891b2"
+    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
+    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f5f5f5"
+    property color textColor: themeManager ? themeManager.textColor : "#1f2937"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#6b7280"
+    property color borderColor: themeManager ? themeManager.borderColor : "#e5e7eb"
+
     // Map state
-    property real mapCenterLat: configManager.mapCenterLatitude
-    property real mapCenterLon: configManager.mapCenterLongitude
-    property int mapZoom: configManager.mapZoomLevel
+    property real mapCenterLat: configManager ? configManager.mapCenterLatitude : 40.65
+    property real mapCenterLon: configManager ? configManager.mapCenterLongitude : 29.275
+    property int mapZoom: configManager ? configManager.mapZoomLevel : 14
 
     // Selection rectangle state (in pixels, relative to map)
     property real selectionX: 0.3
@@ -35,7 +43,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 60
-        color: themeManager.primaryColor
+        color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
@@ -89,7 +97,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 16
-            color: themeManager.surfaceColor
+            color: root.surfaceColor
             radius: 12
             clip: true
 
@@ -189,9 +197,9 @@ Rectangle {
                         y: mapView.height * selectionY
                         width: mapView.width * selectionWidth
                         height: mapView.height * selectionHeight
-                        color: Qt.rgba(themeManager.primaryColor.r, themeManager.primaryColor.g, themeManager.primaryColor.b, 0.2)
+                        color: Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.2)
                         border.width: 3
-                        border.color: themeManager.primaryColor
+                        border.color: root.primaryColor
                         radius: 4
 
                         // Corner handles
@@ -202,7 +210,7 @@ Rectangle {
                                 width: 20
                                 height: 20
                                 radius: 10
-                                color: themeManager.primaryColor
+                                color: root.primaryColor
                                 border.width: 2
                                 border.color: "white"
 
@@ -299,7 +307,7 @@ Rectangle {
                             width: selectionInfoText.width + 16
                             height: 24
                             radius: 12
-                            color: themeManager.primaryColor
+                            color: root.primaryColor
 
                             Text {
                                 id: selectionInfoText
@@ -324,13 +332,13 @@ Rectangle {
                             width: 40
                             height: 40
                             radius: 8
-                            color: zoomInMa.pressed ? Qt.darker(themeManager.surfaceColor, 1.2) : themeManager.surfaceColor
+                            color: zoomInMa.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
 
                             Text {
                                 anchors.centerIn: parent
                                 text: "+"
                                 font.pixelSize: 24
-                                color: themeManager.textColor
+                                color: root.textColor
                             }
 
                             MouseArea {
@@ -362,13 +370,13 @@ Rectangle {
                             width: 40
                             height: 40
                             radius: 8
-                            color: zoomOutMa.pressed ? Qt.darker(themeManager.surfaceColor, 1.2) : themeManager.surfaceColor
+                            color: zoomOutMa.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
 
                             Text {
                                 anchors.centerIn: parent
                                 text: "−"
                                 font.pixelSize: 24
-                                color: themeManager.textColor
+                                color: root.textColor
                             }
 
                             MouseArea {
@@ -439,7 +447,7 @@ Rectangle {
             Layout.leftMargin: 16
             Layout.rightMargin: 16
             Layout.bottomMargin: 8
-            color: themeManager.surfaceColor
+            color: root.surfaceColor
             radius: 12
 
             ColumnLayout {
@@ -454,7 +462,7 @@ Rectangle {
                     text: qsTr("Koordinat Ayarları")
                     font.pixelSize: 14
                     font.bold: true
-                    color: themeManager.textColor
+                    color: root.textColor
                 }
 
                 RowLayout {
@@ -469,7 +477,7 @@ Rectangle {
                         Text {
                             text: qsTr("Enlem (Latitude)")
                             font.pixelSize: 11
-                            color: themeManager.textSecondaryColor
+                            color: root.textSecondaryColor
                         }
 
                         TextField {
@@ -477,15 +485,15 @@ Rectangle {
                             Layout.preferredHeight: 40
                             text: mapCenterLat.toFixed(6)
                             font.pixelSize: 14
-                            color: themeManager.textColor
+                            color: root.textColor
                             horizontalAlignment: Text.AlignHCenter
                             validator: DoubleValidator { bottom: -90; top: 90; decimals: 6 }
 
                             background: Rectangle {
-                                color: themeManager.backgroundColor
+                                color: root.backgroundColor
                                 radius: 6
                                 border.width: parent.activeFocus ? 2 : 1
-                                border.color: parent.activeFocus ? themeManager.primaryColor : themeManager.borderColor
+                                border.color: parent.activeFocus ? root.primaryColor : root.borderColor
                             }
 
                             onEditingFinished: {
@@ -505,7 +513,7 @@ Rectangle {
                         Text {
                             text: qsTr("Boylam (Longitude)")
                             font.pixelSize: 11
-                            color: themeManager.textSecondaryColor
+                            color: root.textSecondaryColor
                         }
 
                         TextField {
@@ -513,15 +521,15 @@ Rectangle {
                             Layout.preferredHeight: 40
                             text: mapCenterLon.toFixed(6)
                             font.pixelSize: 14
-                            color: themeManager.textColor
+                            color: root.textColor
                             horizontalAlignment: Text.AlignHCenter
                             validator: DoubleValidator { bottom: -180; top: 180; decimals: 6 }
 
                             background: Rectangle {
-                                color: themeManager.backgroundColor
+                                color: root.backgroundColor
                                 radius: 6
                                 border.width: parent.activeFocus ? 2 : 1
-                                border.color: parent.activeFocus ? themeManager.primaryColor : themeManager.borderColor
+                                border.color: parent.activeFocus ? root.primaryColor : root.borderColor
                             }
 
                             onEditingFinished: {
@@ -542,7 +550,7 @@ Rectangle {
                     Text {
                         text: qsTr("Hızlı Konum:")
                         font.pixelSize: 11
-                        color: themeManager.textSecondaryColor
+                        color: root.textSecondaryColor
                     }
 
                     Button {
@@ -552,9 +560,9 @@ Rectangle {
 
                         background: Rectangle {
                             radius: 4
-                            color: parent.pressed ? Qt.darker(themeManager.backgroundColor, 1.1) : themeManager.backgroundColor
+                            color: parent.pressed ? Qt.darker(root.backgroundColor, 1.1) : root.backgroundColor
                             border.width: 1
-                            border.color: themeManager.borderColor
+                            border.color: root.borderColor
                         }
 
                         onClicked: {
@@ -571,9 +579,9 @@ Rectangle {
 
                         background: Rectangle {
                             radius: 4
-                            color: parent.pressed ? Qt.darker(themeManager.backgroundColor, 1.1) : themeManager.backgroundColor
+                            color: parent.pressed ? Qt.darker(root.backgroundColor, 1.1) : root.backgroundColor
                             border.width: 1
-                            border.color: themeManager.borderColor
+                            border.color: root.borderColor
                         }
 
                         onClicked: {
@@ -590,9 +598,9 @@ Rectangle {
 
                         background: Rectangle {
                             radius: 4
-                            color: parent.pressed ? Qt.darker(themeManager.backgroundColor, 1.1) : themeManager.backgroundColor
+                            color: parent.pressed ? Qt.darker(root.backgroundColor, 1.1) : root.backgroundColor
                             border.width: 1
-                            border.color: themeManager.borderColor
+                            border.color: root.borderColor
                         }
 
                         onClicked: {
@@ -615,14 +623,14 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 80
-        color: themeManager.surfaceColor
+        color: root.surfaceColor
 
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
             height: 1
-            color: themeManager.borderColor
+            color: root.borderColor
         }
 
         Button {
@@ -633,7 +641,7 @@ Rectangle {
 
             background: Rectangle {
                 radius: 12
-                color: parent.pressed ? Qt.darker(themeManager.primaryColor, 1.2) : themeManager.primaryColor
+                color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
             }
 
             contentItem: Text {
@@ -647,9 +655,11 @@ Rectangle {
 
             onClicked: {
                 // Save map settings
-                configManager.mapCenterLatitude = mapCenterLat
-                configManager.mapCenterLongitude = mapCenterLon
-                configManager.mapZoomLevel = mapZoom
+                if (configManager) {
+                    configManager.mapCenterLatitude = mapCenterLat
+                    configManager.mapCenterLongitude = mapCenterLon
+                    configManager.mapZoomLevel = mapZoom
+                }
                 root.configSaved()
             }
         }
