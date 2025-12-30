@@ -98,6 +98,9 @@ int main(int argc, char *argv[])
     // QML Engine oluştur
     QQmlApplicationEngine engine;
 
+    // QML module import path ekle (Loader ile yüklenen dosyalar için)
+    engine.addImportPath("qrc:/");
+
     // TranslationService oluştur (Qt Linguist based)
     TranslationService translationService(&app, &engine);
 
