@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick3D
+import ExcavatorUI_Qt3D
 
 /**
  * Main Dashboard View

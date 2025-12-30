@@ -57,8 +57,8 @@ ApplicationWindow {
             id: viewLoader
             anchors.fill: parent
             source: currentView === "login"
-                ? "auth/LoginContainer.qml"
-                : "views/Main.qml"
+                ? "qrc:/ExcavatorUI_Qt3D/src/auth/LoginContainer.qml"
+                : "qrc:/ExcavatorUI_Qt3D/src/views/Main.qml"
 
             // Geçiş animasyonu
             onSourceChanged: {
