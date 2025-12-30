@@ -296,17 +296,15 @@ Rectangle {
         border.width: tile.isConfigured ? 0 : 1
         border.color: themeManager.borderColor
 
-        // Shadow effect
-        layer.enabled: true
-        layer.effect: Item {
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: -2
-                radius: tile.radius + 2
-                color: "transparent"
-                border.width: 1
-                border.color: Qt.rgba(0, 0, 0, 0.1)
-            }
+        // Shadow using border (simple approach without layer effect)
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: -2
+            radius: tile.radius + 2
+            color: "transparent"
+            border.width: 1
+            border.color: Qt.rgba(0, 0, 0, 0.1)
+            z: -1
         }
 
         MouseArea {

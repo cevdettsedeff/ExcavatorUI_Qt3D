@@ -88,10 +88,14 @@ Rectangle {
                 color: themeManager.surfaceColor
                 radius: 12
 
-                Text {
+                Image {
                     anchors.centerIn: parent
-                    text: "🚜"
-                    font.pixelSize: 80
+                    source: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
+                    width: 80
+                    height: 80
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    antialiasing: true
                 }
             }
 
