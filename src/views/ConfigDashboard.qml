@@ -115,7 +115,7 @@ Rectangle {
                             Layout.preferredHeight: 200
                             title: qsTr("Ekskavatör Ayarları")
                             description: qsTr("Boom, arm uzunlukları ve ekskavatör adı")
-                            icon: "🚜"
+                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
                             stepNumber: 1
                             isConfigured: configManager.excavatorConfigured
                             isEnabled: true
@@ -283,6 +283,7 @@ Rectangle {
         property string title: ""
         property string description: ""
         property string icon: ""
+        property string imageSource: ""  // Opsiyonel resim kaynağı
         property int stepNumber: 1
         property bool isConfigured: false
         property bool isEnabled: true
@@ -365,12 +366,32 @@ Rectangle {
                 }
             }
 
-            // Icon
-            Text {
+            // Icon - Emoji veya Image
+            Item {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 4
-                text: tile.icon
-                font.pixelSize: 52
+                Layout.preferredWidth: 52
+                Layout.preferredHeight: 52
+
+                // Emoji icon
+                Text {
+                    anchors.centerIn: parent
+                    text: tile.icon
+                    font.pixelSize: 52
+                    visible: tile.imageSource === ""
+                }
+
+                // Image icon
+                Image {
+                    anchors.centerIn: parent
+                    source: tile.imageSource
+                    width: 52
+                    height: 52
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    antialiasing: true
+                    visible: tile.imageSource !== ""
+                }
             }
 
             // Title - büyük ve belirgin
