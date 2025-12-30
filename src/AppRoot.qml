@@ -35,12 +35,25 @@ ApplicationWindow {
 
         function onLoginSucceeded() {
             console.log("Login başarılı, dashboard'a geçiliyor...")
-            currentView = "dashboard"
+            // Önce klavyeyi kapat
+            Qt.inputMethod.hide()
+            // Kısa bir gecikme ile geçiş yap (klavye animasyonu için)
+            transitionTimer.start()
         }
 
         function onLoggedOut() {
             console.log("Logout yapıldı, login ekranına dönülüyor...")
             currentView = "login"
+        }
+    }
+
+    // Dashboard'a geçiş için timer (klavye kapanma animasyonu bekler)
+    Timer {
+        id: transitionTimer
+        interval: 150
+        repeat: false
+        onTriggered: {
+            currentView = "dashboard"
         }
     }
 
