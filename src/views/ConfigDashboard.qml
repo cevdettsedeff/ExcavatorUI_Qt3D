@@ -337,20 +337,29 @@ Rectangle {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 16
-            spacing: 6
+            anchors.margins: 12
+            spacing: 4
 
-            // Header with status badge
+            // Üst kısım: Başlık ve durum badge yan yana
             RowLayout {
                 Layout.fillWidth: true
+                spacing: 8
 
-                Item { Layout.fillWidth: true }
+                // Başlık - kutucuğun üstünde belirgin şekilde
+                Text {
+                    Layout.fillWidth: true
+                    text: tile.title
+                    font.pixelSize: 14
+                    font.bold: true
+                    color: tile.isConfigured ? "white" : themeManager.textColor
+                    elide: Text.ElideRight
+                }
 
                 // Status indicator
                 Rectangle {
-                    Layout.preferredWidth: statusText.width + 16
-                    Layout.preferredHeight: 26
-                    radius: 13
+                    Layout.preferredWidth: statusText.width + 12
+                    Layout.preferredHeight: 22
+                    radius: 11
                     color: tile.isConfigured
                         ? Qt.rgba(1, 1, 1, 0.25)
                         : Qt.rgba(themeManager.warningColor.r, themeManager.warningColor.g, themeManager.warningColor.b, 0.2)
@@ -358,9 +367,9 @@ Rectangle {
                     Text {
                         id: statusText
                         anchors.centerIn: parent
-                        text: tile.isConfigured ? "✓ " + qsTr("Tamamlandı") : qsTr("Bekliyor")
-                        font.pixelSize: 11
-                        font.bold: tile.isConfigured
+                        text: tile.isConfigured ? "✓" : "..."
+                        font.pixelSize: 10
+                        font.bold: true
                         color: tile.isConfigured ? "white" : themeManager.warningColor
                     }
                 }
@@ -369,19 +378,19 @@ Rectangle {
             // Icon - Emoji veya Image
             Item {
                 Layout.alignment: Qt.AlignHCenter
-                Layout.topMargin: 4
-                Layout.preferredWidth: 52
-                Layout.preferredHeight: 52
+                Layout.fillHeight: true
+                Layout.preferredWidth: 56
+                Layout.preferredHeight: 56
 
-                // Emoji icon
+                // Emoji icon - sadece imageSource boşsa göster
                 Text {
                     anchors.centerIn: parent
                     text: tile.icon
-                    font.pixelSize: 52
-                    visible: tile.imageSource === ""
+                    font.pixelSize: 48
+                    visible: tile.imageSource.length === 0
                 }
 
-                // Image icon
+                // Image icon - imageSource doluysa göster
                 Image {
                     anchors.centerIn: parent
                     source: tile.imageSource
@@ -390,46 +399,33 @@ Rectangle {
                     fillMode: Image.PreserveAspectFit
                     smooth: true
                     antialiasing: true
-                    visible: tile.imageSource !== ""
+                    visible: tile.imageSource.length > 0
                 }
-            }
-
-            // Title - büyük ve belirgin
-            Text {
-                Layout.fillWidth: true
-                Layout.topMargin: 8
-                text: tile.title
-                font.pixelSize: 17
-                font.bold: true
-                color: tile.isConfigured ? "white" : themeManager.textColor
-                horizontalAlignment: Text.AlignHCenter
-                wrapMode: Text.WordWrap
             }
 
             // Description
             Text {
                 Layout.fillWidth: true
-                Layout.topMargin: 2
                 text: tile.description
-                font.pixelSize: 12
+                font.pixelSize: 11
                 color: tile.isConfigured ? Qt.rgba(1, 1, 1, 0.8) : themeManager.textSecondaryColor
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
+                maximumLineCount: 2
+                elide: Text.ElideRight
             }
-
-            Item { Layout.fillHeight: true }
 
             // Alt kısımda düzenle/yapılandır butonu görünümü
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 32
-                radius: 8
+                Layout.preferredHeight: 28
+                radius: 6
                 color: tile.isConfigured ? Qt.rgba(1, 1, 1, 0.2) : Qt.rgba(themeManager.primaryColor.r, themeManager.primaryColor.g, themeManager.primaryColor.b, 0.1)
 
                 Text {
                     anchors.centerIn: parent
                     text: tile.isConfigured ? qsTr("Düzenle") : qsTr("Yapılandır")
-                    font.pixelSize: 13
+                    font.pixelSize: 12
                     font.bold: true
                     color: tile.isConfigured ? "white" : themeManager.primaryColor
                 }
