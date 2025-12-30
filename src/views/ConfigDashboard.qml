@@ -64,7 +64,7 @@ Rectangle {
                             }
 
                             Text {
-                                text: qsTr("Lütfen aşağıdaki ayarları sırasıyla tamamlayın")
+                                text: qsTr("Lütfen aşağıdaki ayarları tamamlayın")
                                 font.pixelSize: 14
                                 color: Qt.rgba(1, 1, 1, 0.8)
                                 Layout.alignment: Qt.AlignHCenter
@@ -134,12 +134,10 @@ Rectangle {
                             icon: "📐"
                             stepNumber: 2
                             isConfigured: configManager.digAreaConfigured
-                            isEnabled: configManager.excavatorConfigured
+                            isEnabled: true
 
                             onClicked: {
-                                if (isEnabled) {
-                                    stackView.push(digAreaConfigComponent)
-                                }
+                                stackView.push(digAreaConfigComponent)
                             }
                         }
 
@@ -152,12 +150,10 @@ Rectangle {
                             icon: "🗺"
                             stepNumber: 3
                             isConfigured: configManager.mapConfigured
-                            isEnabled: configManager.digAreaConfigured
+                            isEnabled: true
 
                             onClicked: {
-                                if (isEnabled) {
-                                    stackView.push(mapConfigComponent)
-                                }
+                                stackView.push(mapConfigComponent)
                             }
                         }
 
@@ -170,12 +166,10 @@ Rectangle {
                             icon: "🔔"
                             stepNumber: 4
                             isConfigured: configManager.alarmConfigured
-                            isEnabled: configManager.mapConfigured
+                            isEnabled: true
 
                             onClicked: {
-                                if (isEnabled) {
-                                    stackView.push(alarmConfigComponent)
-                                }
+                                stackView.push(alarmConfigComponent)
                             }
                         }
                     }
@@ -295,10 +289,11 @@ Rectangle {
 
         signal clicked()
 
-        color: isEnabled ? themeManager.surfaceColor : Qt.darker(themeManager.surfaceColor, 1.1)
+        // Tamamlanan kutucuklar mavi, diğerleri normal
+        color: tile.isConfigured ? themeManager.primaryColor : themeManager.surfaceColor
         radius: 16
-        border.width: isConfigured ? 2 : 0
-        border.color: themeManager.successColor
+        border.width: tile.isConfigured ? 0 : 1
+        border.color: themeManager.borderColor
 
         // Shadow effect
         layer.enabled: true
@@ -316,16 +311,14 @@ Rectangle {
         MouseArea {
             anchors.fill: parent
             enabled: tile.isEnabled
-            cursorShape: tile.isEnabled ? Qt.PointingHandCursor : Qt.ForbiddenCursor
+            cursorShape: Qt.PointingHandCursor
 
             onClicked: {
                 tile.clicked()
             }
 
             onPressed: {
-                if (tile.isEnabled) {
-                    tile.scale = 0.98
-                }
+                tile.scale = 0.98
             }
 
             onReleased: {
@@ -337,51 +330,37 @@ Rectangle {
             NumberAnimation { duration: 100 }
         }
 
+        Behavior on color {
+            ColorAnimation { duration: 200 }
+        }
+
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16
-            spacing: 8
+            spacing: 6
 
-            // Header with step number and status
+            // Header with status badge
             RowLayout {
                 Layout.fillWidth: true
-
-                // Step badge
-                Rectangle {
-                    Layout.preferredWidth: 32
-                    Layout.preferredHeight: 32
-                    radius: 16
-                    color: tile.isConfigured
-                        ? themeManager.successColor
-                        : (tile.isEnabled ? themeManager.primaryColor : themeManager.textSecondaryColor)
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: tile.isConfigured ? "✓" : tile.stepNumber.toString()
-                        font.pixelSize: 14
-                        font.bold: true
-                        color: "white"
-                    }
-                }
 
                 Item { Layout.fillWidth: true }
 
                 // Status indicator
                 Rectangle {
                     Layout.preferredWidth: statusText.width + 16
-                    Layout.preferredHeight: 24
-                    radius: 12
+                    Layout.preferredHeight: 26
+                    radius: 13
                     color: tile.isConfigured
-                        ? Qt.rgba(themeManager.successColor.r, themeManager.successColor.g, themeManager.successColor.b, 0.2)
+                        ? Qt.rgba(1, 1, 1, 0.25)
                         : Qt.rgba(themeManager.warningColor.r, themeManager.warningColor.g, themeManager.warningColor.b, 0.2)
-                    visible: tile.isEnabled
 
                     Text {
                         id: statusText
                         anchors.centerIn: parent
-                        text: tile.isConfigured ? qsTr("Tamamlandı") : qsTr("Bekliyor")
+                        text: tile.isConfigured ? "✓ " + qsTr("Tamamlandı") : qsTr("Bekliyor")
                         font.pixelSize: 11
-                        color: tile.isConfigured ? themeManager.successColor : themeManager.warningColor
+                        font.bold: tile.isConfigured
+                        color: tile.isConfigured ? "white" : themeManager.warningColor
                     }
                 }
             }
@@ -389,18 +368,19 @@ Rectangle {
             // Icon
             Text {
                 Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: 4
                 text: tile.icon
-                font.pixelSize: 48
-                opacity: tile.isEnabled ? 1.0 : 0.5
+                font.pixelSize: 52
             }
 
-            // Title
+            // Title - büyük ve belirgin
             Text {
                 Layout.fillWidth: true
+                Layout.topMargin: 8
                 text: tile.title
-                font.pixelSize: 16
+                font.pixelSize: 17
                 font.bold: true
-                color: tile.isEnabled ? themeManager.textColor : themeManager.textSecondaryColor
+                color: tile.isConfigured ? "white" : themeManager.textColor
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
             }
@@ -408,24 +388,31 @@ Rectangle {
             // Description
             Text {
                 Layout.fillWidth: true
+                Layout.topMargin: 2
                 text: tile.description
                 font.pixelSize: 12
-                color: themeManager.textSecondaryColor
+                color: tile.isConfigured ? Qt.rgba(1, 1, 1, 0.8) : themeManager.textSecondaryColor
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
-                opacity: tile.isEnabled ? 1.0 : 0.6
             }
 
             Item { Layout.fillHeight: true }
-        }
 
-        // Disabled overlay
-        Rectangle {
-            anchors.fill: parent
-            radius: parent.radius
-            color: "black"
-            opacity: tile.isEnabled ? 0 : 0.1
-            visible: !tile.isEnabled
+            // Alt kısımda düzenle/yapılandır butonu görünümü
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 32
+                radius: 8
+                color: tile.isConfigured ? Qt.rgba(1, 1, 1, 0.2) : Qt.rgba(themeManager.primaryColor.r, themeManager.primaryColor.g, themeManager.primaryColor.b, 0.1)
+
+                Text {
+                    anchors.centerIn: parent
+                    text: tile.isConfigured ? qsTr("Düzenle") : qsTr("Yapılandır")
+                    font.pixelSize: 13
+                    font.bold: true
+                    color: tile.isConfigured ? "white" : themeManager.primaryColor
+                }
+            }
         }
     }
 }
