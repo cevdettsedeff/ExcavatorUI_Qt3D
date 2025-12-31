@@ -190,13 +190,14 @@ Rectangle {
                                     var row = Math.floor(idx / 3) - 1
                                     var col = (idx % 3) - 1
 
-                                    var lat = mapCenterLat + (row * -0.01 / Math.pow(2, mapZoom - 10))
-                                    var lon = mapCenterLon + (col * 0.01 / Math.pow(2, mapZoom - 10))
-
-                                    // Calculate tile coordinates
+                                    // Calculate center tile coordinates first
                                     var n = Math.pow(2, mapZoom)
-                                    var xtile = Math.floor((lon + 180) / 360 * n)
-                                    var ytile = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * n)
+                                    var centerXtile = Math.floor((mapCenterLon + 180) / 360 * n)
+                                    var centerYtile = Math.floor((1 - Math.log(Math.tan(mapCenterLat * Math.PI / 180) + 1 / Math.cos(mapCenterLat * Math.PI / 180)) / Math.PI) / 2 * n)
+
+                                    // Apply offset for neighboring tiles
+                                    var xtile = centerXtile + col
+                                    var ytile = centerYtile + row
 
                                     // Carto basemaps (no access restrictions)
                                     return "https://basemaps.cartocdn.com/rastertiles/voyager/" + mapZoom + "/" + xtile + "/" + ytile + ".png"
