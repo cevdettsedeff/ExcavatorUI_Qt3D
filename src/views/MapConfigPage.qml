@@ -193,12 +193,13 @@ Rectangle {
                                     var lat = mapCenterLat + (row * -0.01 / Math.pow(2, mapZoom - 10))
                                     var lon = mapCenterLon + (col * 0.01 / Math.pow(2, mapZoom - 10))
 
-                                    // Calculate OSM tile coordinates
+                                    // Calculate tile coordinates
                                     var n = Math.pow(2, mapZoom)
                                     var xtile = Math.floor((lon + 180) / 360 * n)
                                     var ytile = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * n)
 
-                                    return "https://tile.openstreetmap.org/" + mapZoom + "/" + xtile + "/" + ytile + ".png"
+                                    // Carto basemaps (no access restrictions)
+                                    return "https://basemaps.cartocdn.com/rastertiles/voyager/" + mapZoom + "/" + xtile + "/" + ytile + ".png"
                                 }
                             }
                         }
