@@ -6,8 +6,8 @@ import QtQuick.Layouts
  * MapConfigPage - Harita Ayarları Sayfası
  *
  * Kullanıcı kazı yapılacak alanı haritadan seçer:
- * - OpenStreetMap görünümü
- * - Önizleme karesi ile alan seçimi
+ * - Carto basemap görünümü
+ * - Akıcı pan ve zoom
  * - Koordinat ve boyut ayarları
  */
 Rectangle {
@@ -44,11 +44,138 @@ Rectangle {
     property real mapCenterLon: configManager ? configManager.mapCenterLongitude : 29.275
     property int mapZoom: configManager ? configManager.mapZoomLevel : 14
 
+    // Tile management
+    property real tileSize: 256
+    property int centerTileX: 0
+    property int centerTileY: 0
+    property real offsetX: 0
+    property real offsetY: 0
+    property int gridWidth: 5
+    property int gridHeight: 5
+    property bool isUpdating: false
+    property bool isInitialized: false
+
     // Selection rectangle state (in pixels, relative to map)
     property real selectionX: 0.3
     property real selectionY: 0.3
     property real selectionWidth: 0.4
     property real selectionHeight: 0.4
+
+    Component.onCompleted: {
+        initializeMap()
+    }
+
+    function initializeMap() {
+        if (isInitialized) return
+        isInitialized = true
+
+        var tile = latLonToTile(mapCenterLat, mapCenterLon, mapZoom)
+        centerTileX = tile.x
+        centerTileY = tile.y
+        offsetX = 0
+        offsetY = 0
+
+        tileModel.clear()
+        populateTileModel()
+    }
+
+    function latLonToTile(lat, lon, zoom) {
+        var n = Math.pow(2, zoom)
+        var x = Math.floor((lon + 180) / 360 * n)
+        var latRad = lat * Math.PI / 180
+        var y = Math.floor((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * n)
+        return { x: x, y: y }
+    }
+
+    function tileToLatLon(x, y, zoom) {
+        var n = Math.pow(2, zoom)
+        var lon = x / n * 360 - 180
+        var lat = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n))) * 180 / Math.PI
+        return { lat: lat, lon: lon }
+    }
+
+    function populateTileModel() {
+        var maxTile = Math.pow(2, mapZoom) - 1
+        var halfW = Math.floor(gridWidth / 2)
+        var halfH = Math.floor(gridHeight / 2)
+
+        for (var dy = -halfH; dy <= halfH; dy++) {
+            for (var dx = -halfW; dx <= halfW; dx++) {
+                var tx = centerTileX + dx
+                var ty = centerTileY + dy
+
+                if (tx >= 0 && tx <= maxTile && ty >= 0 && ty <= maxTile) {
+                    tileModel.append({
+                        tileX: tx,
+                        tileY: ty,
+                        tileZ: mapZoom,
+                        gridX: dx,
+                        gridY: dy
+                    })
+                }
+            }
+        }
+    }
+
+    function changeZoom(delta) {
+        if (isUpdating) return
+
+        var newZoom = mapZoom + delta
+        if (newZoom < 3 || newZoom > 18) return
+
+        isUpdating = true
+
+        var currentCenter = tileToLatLon(
+            centerTileX + offsetX / tileSize,
+            centerTileY + offsetY / tileSize,
+            mapZoom
+        )
+
+        mapZoom = newZoom
+        mapCenterLat = currentCenter.lat
+        mapCenterLon = currentCenter.lon
+
+        var newTile = latLonToTile(currentCenter.lat, currentCenter.lon, newZoom)
+        centerTileX = newTile.x
+        centerTileY = newTile.y
+        offsetX = 0
+        offsetY = 0
+
+        tileModel.clear()
+        rebuildTimer.start()
+    }
+
+    function goToLocation(lat, lon, zoom) {
+        if (isUpdating) return
+
+        isUpdating = true
+        mapCenterLat = lat
+        mapCenterLon = lon
+        mapZoom = zoom
+
+        var tile = latLonToTile(lat, lon, zoom)
+        centerTileX = tile.x
+        centerTileY = tile.y
+        offsetX = 0
+        offsetY = 0
+
+        tileModel.clear()
+        rebuildTimer.start()
+    }
+
+    Timer {
+        id: rebuildTimer
+        interval: 100
+        repeat: false
+        onTriggered: {
+            populateTileModel()
+            isUpdating = false
+        }
+    }
+
+    ListModel {
+        id: tileModel
+    }
 
     // Header
     Rectangle {
@@ -119,88 +246,106 @@ Rectangle {
             Item {
                 id: mapContainer
                 anchors.fill: parent
-                anchors.margins: 8
+                anchors.margins: 4
 
-                // OpenStreetMap Tile Display
+                // Map Viewport
                 Rectangle {
                     id: mapView
                     anchors.fill: parent
-                    color: "#0a3050"
+                    color: "#e8f4f8"
                     clip: true
 
-                    // Map tiles grid simulation
-                    Grid {
-                        id: tilesGrid
-                        anchors.centerIn: parent
-                        columns: 3
-                        rows: 3
-                        spacing: 0
+                    // Grid background pattern
+                    Canvas {
+                        anchors.fill: parent
+                        onPaint: {
+                            var ctx = getContext("2d")
+                            ctx.strokeStyle = "#d0e0e8"
+                            ctx.lineWidth = 1
 
-                        property int tileSize: Math.min(mapView.width, mapView.height) / 3
+                            var gridSize = 50
+                            for (var x = 0; x < width; x += gridSize) {
+                                ctx.beginPath()
+                                ctx.moveTo(x, 0)
+                                ctx.lineTo(x, height)
+                                ctx.stroke()
+                            }
+                            for (var y = 0; y < height; y += gridSize) {
+                                ctx.beginPath()
+                                ctx.moveTo(0, y)
+                                ctx.lineTo(width, y)
+                                ctx.stroke()
+                            }
+                        }
+                    }
+
+                    // Tile container
+                    Item {
+                        id: tileContainer
+                        width: gridWidth * tileSize
+                        height: gridHeight * tileSize
+                        x: (parent.width - width) / 2 + offsetX
+                        y: (parent.height - height) / 2 + offsetY
+
+                        Behavior on x { NumberAnimation { duration: 50 } }
+                        Behavior on y { NumberAnimation { duration: 50 } }
 
                         Repeater {
-                            model: 9
+                            model: tileModel
 
-                            Image {
-                                width: tilesGrid.tileSize
-                                height: tilesGrid.tileSize
-                                source: getTileUrl(index)
-                                fillMode: Image.PreserveAspectCrop
-                                asynchronous: true
+                            Item {
+                                required property int tileX
+                                required property int tileY
+                                required property int tileZ
+                                required property int gridX
+                                required property int gridY
 
-                                // Fallback for when tiles don't load
-                                Rectangle {
+                                x: (gridX + Math.floor(gridWidth / 2)) * tileSize
+                                y: (gridY + Math.floor(gridHeight / 2)) * tileSize
+                                width: tileSize
+                                height: tileSize
+
+                                Image {
                                     anchors.fill: parent
-                                    color: "#1a4060"
-                                    visible: parent.status !== Image.Ready
+                                    source: "https://basemaps.cartocdn.com/rastertiles/voyager/" + parent.tileZ + "/" + parent.tileX + "/" + parent.tileY + ".png"
+                                    asynchronous: true
+                                    cache: true
+                                    fillMode: Image.PreserveAspectFit
 
-                                    // Grid lines
-                                    Canvas {
+                                    // Loading indicator
+                                    Rectangle {
                                         anchors.fill: parent
-                                        onPaint: {
-                                            var ctx = getContext("2d")
-                                            ctx.strokeStyle = "#ffffff20"
-                                            ctx.lineWidth = 1
+                                        color: "#e0f0f5"
+                                        visible: parent.status === Image.Loading
 
-                                            var spacing = 40
-                                            for (var x = 0; x < width; x += spacing) {
-                                                ctx.beginPath()
-                                                ctx.moveTo(x, 0)
-                                                ctx.lineTo(x, height)
-                                                ctx.stroke()
-                                            }
-                                            for (var y = 0; y < height; y += spacing) {
-                                                ctx.beginPath()
-                                                ctx.moveTo(0, y)
-                                                ctx.lineTo(width, y)
-                                                ctx.stroke()
-                                            }
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "⏳"
+                                            font.pixelSize: 20
+                                            opacity: 0.5
                                         }
                                     }
 
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: "🗺"
-                                        font.pixelSize: 30
-                                        opacity: 0.3
+                                    // Error placeholder
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        color: "#f0f4f8"
+                                        visible: parent.status === Image.Error
+                                        border.color: "#d0d8e0"
+                                        border.width: 1
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                                text: "🗺"
+                                                font.pixelSize: 24
+                                                opacity: 0.4
+                                            }
+                                        }
                                     }
-                                }
-
-                                function getTileUrl(idx) {
-                                    var row = Math.floor(idx / 3) - 1
-                                    var col = (idx % 3) - 1
-
-                                    // Calculate center tile coordinates first
-                                    var n = Math.pow(2, mapZoom)
-                                    var centerXtile = Math.floor((mapCenterLon + 180) / 360 * n)
-                                    var centerYtile = Math.floor((1 - Math.log(Math.tan(mapCenterLat * Math.PI / 180) + 1 / Math.cos(mapCenterLat * Math.PI / 180)) / Math.PI) / 2 * n)
-
-                                    // Apply offset for neighboring tiles
-                                    var xtile = centerXtile + col
-                                    var ytile = centerYtile + row
-
-                                    // Carto basemaps (no access restrictions)
-                                    return "https://basemaps.cartocdn.com/rastertiles/voyager/" + mapZoom + "/" + xtile + "/" + ytile + ".png"
                                 }
                             }
                         }
@@ -217,6 +362,7 @@ Rectangle {
                         border.width: 3
                         border.color: root.primaryColor
                         radius: 4
+                        z: 10
 
                         // Corner handles
                         Repeater {
@@ -260,20 +406,20 @@ Rectangle {
                                             var deltaX = (currentX - startMouseX) / mapView.width
                                             var deltaY = (currentY - startMouseY) / mapView.height
 
-                                            if (index === 0) { // Top-left
+                                            if (index === 0) {
                                                 selectionX = Math.max(0, Math.min(startSelX + startSelW - 0.1, startSelX + deltaX))
                                                 selectionY = Math.max(0, Math.min(startSelY + startSelH - 0.1, startSelY + deltaY))
                                                 selectionWidth = startSelW - (selectionX - startSelX)
                                                 selectionHeight = startSelH - (selectionY - startSelY)
-                                            } else if (index === 1) { // Top-right
+                                            } else if (index === 1) {
                                                 selectionY = Math.max(0, Math.min(startSelY + startSelH - 0.1, startSelY + deltaY))
                                                 selectionWidth = Math.max(0.1, Math.min(1 - startSelX, startSelW + deltaX))
                                                 selectionHeight = startSelH - (selectionY - startSelY)
-                                            } else if (index === 2) { // Bottom-left
+                                            } else if (index === 2) {
                                                 selectionX = Math.max(0, Math.min(startSelX + startSelW - 0.1, startSelX + deltaX))
                                                 selectionWidth = startSelW - (selectionX - startSelX)
                                                 selectionHeight = Math.max(0.1, Math.min(1 - startSelY, startSelH + deltaY))
-                                            } else { // Bottom-right
+                                            } else {
                                                 selectionWidth = Math.max(0.1, Math.min(1 - startSelX, startSelW + deltaX))
                                                 selectionHeight = Math.max(0.1, Math.min(1 - startSelY, startSelH + deltaY))
                                             }
@@ -336,79 +482,13 @@ Rectangle {
                         }
                     }
 
-                    // Map Controls
-                    Column {
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.margins: 12
-                        spacing: 8
-
-                        // Zoom In
-                        Rectangle {
-                            width: 40
-                            height: 40
-                            radius: 8
-                            color: zoomInMa.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "+"
-                                font.pixelSize: 24
-                                color: root.textColor
-                            }
-
-                            MouseArea {
-                                id: zoomInMa
-                                anchors.fill: parent
-                                onClicked: {
-                                    if (mapZoom < 19) mapZoom++
-                                }
-                            }
-                        }
-
-                        // Zoom level indicator
-                        Rectangle {
-                            width: 40
-                            height: 24
-                            radius: 4
-                            color: Qt.rgba(0, 0, 0, 0.5)
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: mapZoom.toString()
-                                font.pixelSize: 12
-                                color: "white"
-                            }
-                        }
-
-                        // Zoom Out
-                        Rectangle {
-                            width: 40
-                            height: 40
-                            radius: 8
-                            color: zoomOutMa.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "−"
-                                font.pixelSize: 24
-                                color: root.textColor
-                            }
-
-                            MouseArea {
-                                id: zoomOutMa
-                                anchors.fill: parent
-                                onClicked: {
-                                    if (mapZoom > 1) mapZoom--
-                                }
-                            }
-                        }
-                    }
-
-                    // Pan controls
+                    // Pan handling
                     MouseArea {
+                        id: panArea
                         anchors.fill: parent
                         z: -1
+                        enabled: !isUpdating
+
                         property real lastX: 0
                         property real lastY: 0
 
@@ -418,39 +498,169 @@ Rectangle {
                         }
 
                         onPositionChanged: (mouse) => {
-                            if (pressed) {
-                                var deltaLat = (mouse.y - lastY) * 0.0001 * Math.pow(2, 15 - mapZoom)
-                                var deltaLon = -(mouse.x - lastX) * 0.0001 * Math.pow(2, 15 - mapZoom)
-                                mapCenterLat = Math.max(-85, Math.min(85, mapCenterLat + deltaLat))
-                                mapCenterLon = mapCenterLon + deltaLon
-                                lastX = mouse.x
-                                lastY = mouse.y
+                            if (!pressed) return
+
+                            var dx = mouse.x - lastX
+                            var dy = mouse.y - lastY
+
+                            offsetX += dx
+                            offsetY += dy
+
+                            lastX = mouse.x
+                            lastY = mouse.y
+                        }
+
+                        onReleased: {
+                            var shiftX = Math.round(offsetX / tileSize)
+                            var shiftY = Math.round(offsetY / tileSize)
+
+                            if (Math.abs(shiftX) >= 1 || Math.abs(shiftY) >= 1) {
+                                centerTileX -= shiftX
+                                centerTileY -= shiftY
+
+                                var maxTile = Math.pow(2, mapZoom) - 1
+                                centerTileX = Math.max(0, Math.min(maxTile, centerTileX))
+                                centerTileY = Math.max(0, Math.min(maxTile, centerTileY))
+
+                                offsetX = offsetX - shiftX * tileSize
+                                offsetY = offsetY - shiftY * tileSize
+
+                                // Update center coordinates
+                                var newCenter = tileToLatLon(centerTileX, centerTileY, mapZoom)
+                                mapCenterLat = newCenter.lat
+                                mapCenterLon = newCenter.lon
+
+                                tileModel.clear()
+                                populateTileModel()
                             }
                         }
 
                         onWheel: (wheel) => {
-                            var delta = wheel.angleDelta.y / 120
-                            mapZoom = Math.max(1, Math.min(19, mapZoom + delta))
+                            if (isUpdating) return
+                            if (wheel.angleDelta.y > 0) {
+                                changeZoom(1)
+                            } else if (wheel.angleDelta.y < 0) {
+                                changeZoom(-1)
+                            }
                         }
                     }
-                }
 
-                // Coordinate overlay
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.bottom: parent.bottom
-                    anchors.margins: 8
-                    width: coordText.width + 16
-                    height: 28
-                    radius: 4
-                    color: Qt.rgba(0, 0, 0, 0.7)
+                    // Map Controls
+                    Column {
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.margins: 12
+                        spacing: 8
+                        z: 20
 
+                        // Zoom In
+                        Rectangle {
+                            width: 44
+                            height: 44
+                            radius: 22
+                            color: zoomInMa.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
+                            border.color: root.primaryColor
+                            border.width: 2
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "+"
+                                font.pixelSize: 24
+                                font.bold: true
+                                color: root.primaryColor
+                            }
+
+                            MouseArea {
+                                id: zoomInMa
+                                anchors.fill: parent
+                                enabled: mapZoom < 18 && !isUpdating
+                                onClicked: changeZoom(1)
+                            }
+                        }
+
+                        // Zoom level indicator
+                        Rectangle {
+                            width: 44
+                            height: 28
+                            radius: 6
+                            color: Qt.rgba(0, 0, 0, 0.6)
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 0
+
+                                Text {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    text: "ZOOM"
+                                    font.pixelSize: 7
+                                    color: "#aaaaaa"
+                                }
+
+                                Text {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    text: mapZoom.toString()
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+                        }
+
+                        // Zoom Out
+                        Rectangle {
+                            width: 44
+                            height: 44
+                            radius: 22
+                            color: zoomOutMa.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
+                            border.color: root.primaryColor
+                            border.width: 2
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "−"
+                                font.pixelSize: 24
+                                font.bold: true
+                                color: root.primaryColor
+                            }
+
+                            MouseArea {
+                                id: zoomOutMa
+                                anchors.fill: parent
+                                enabled: mapZoom > 3 && !isUpdating
+                                onClicked: changeZoom(-1)
+                            }
+                        }
+                    }
+
+                    // Coordinate overlay
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.bottom: parent.bottom
+                        anchors.margins: 8
+                        width: coordText.width + 16
+                        height: 28
+                        radius: 6
+                        color: Qt.rgba(0, 0, 0, 0.7)
+                        z: 20
+
+                        Text {
+                            id: coordText
+                            anchors.centerIn: parent
+                            text: mapCenterLat.toFixed(4) + "°, " + mapCenterLon.toFixed(4) + "°"
+                            font.pixelSize: 11
+                            color: "white"
+                        }
+                    }
+
+                    // Attribution
                     Text {
-                        id: coordText
-                        anchors.centerIn: parent
-                        text: mapCenterLat.toFixed(4) + "°, " + mapCenterLon.toFixed(4) + "°"
-                        font.pixelSize: 11
-                        color: "white"
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.margins: 8
+                        text: "© CARTO © OpenStreetMap"
+                        font.pixelSize: 9
+                        color: "#666666"
+                        z: 20
                     }
                 }
             }
@@ -515,7 +725,7 @@ Rectangle {
                             onEditingFinished: {
                                 var val = parseFloat(text)
                                 if (!isNaN(val)) {
-                                    mapCenterLat = Math.max(-85, Math.min(85, val))
+                                    goToLocation(Math.max(-85, Math.min(85, val)), mapCenterLon, mapZoom)
                                 }
                             }
                         }
@@ -551,7 +761,7 @@ Rectangle {
                             onEditingFinished: {
                                 var val = parseFloat(text)
                                 if (!isNaN(val)) {
-                                    mapCenterLon = val
+                                    goToLocation(mapCenterLat, val, mapZoom)
                                 }
                             }
                         }
@@ -581,11 +791,7 @@ Rectangle {
                             border.color: root.borderColor
                         }
 
-                        onClicked: {
-                            mapCenterLat = 40.6500
-                            mapCenterLon = 29.2750
-                            mapZoom = 14
-                        }
+                        onClicked: goToLocation(40.6500, 29.2750, 14)
                     }
 
                     Button {
@@ -600,11 +806,7 @@ Rectangle {
                             border.color: root.borderColor
                         }
 
-                        onClicked: {
-                            mapCenterLat = 41.0082
-                            mapCenterLon = 28.9784
-                            mapZoom = 12
-                        }
+                        onClicked: goToLocation(41.0082, 28.9784, 12)
                     }
 
                     Button {
@@ -619,11 +821,7 @@ Rectangle {
                             border.color: root.borderColor
                         }
 
-                        onClicked: {
-                            mapCenterLat = 40.7000
-                            mapCenterLon = 29.5100
-                            mapZoom = 15
-                        }
+                        onClicked: goToLocation(40.7000, 29.5100, 15)
                     }
 
                     Item { Layout.fillWidth: true }
