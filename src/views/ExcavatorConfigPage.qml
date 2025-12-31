@@ -13,7 +13,7 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#e8eaf6"
+    color: themeManager ? themeManager.backgroundColor : "#f7fafc"
 
     signal back()
     signal configSaved()
@@ -32,13 +32,13 @@ Rectangle {
         }
     }
 
-    // Theme colors with fallbacks (light theme defaults)
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#0097a7"
+    // Theme colors with fallbacks (softer light theme defaults)
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color textColor: themeManager ? themeManager.textColor : "#1a237e"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#5c6bc0"
-    property color borderColor: themeManager ? themeManager.borderColor : "#c5cae9"
-    property color infoColor: themeManager ? themeManager.infoColor : "#2196f3"
+    property color textColor: themeManager ? themeManager.textColor : "#2d3748"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
+    property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
+    property color infoColor: themeManager ? themeManager.infoColor : "#4299e1"
 
     // Header
     Rectangle {
@@ -309,12 +309,12 @@ Rectangle {
         property string inputType: "text" // "text" or "number"
         property string suffix: ""
 
-        // Theme colors (passed from parent - light theme defaults)
-        property color fieldPrimaryColor: "#0097a7"
+        // Theme colors (passed from parent - softer light theme defaults)
+        property color fieldPrimaryColor: "#319795"
         property color fieldSurfaceColor: "#ffffff"
-        property color fieldTextColor: "#1a237e"
-        property color fieldTextSecondaryColor: "#5c6bc0"
-        property color fieldBorderColor: "#c5cae9"
+        property color fieldTextColor: "#2d3748"
+        property color fieldTextSecondaryColor: "#718096"
+        property color fieldBorderColor: "#e2e8f0"
 
         signal fieldTextChanged(string newText)
 

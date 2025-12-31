@@ -11,7 +11,7 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#e8eaf6"
+    color: themeManager ? themeManager.backgroundColor : "#f7fafc"
 
     signal back()
     signal configSaved()
@@ -30,12 +30,12 @@ Rectangle {
         }
     }
 
-    // Theme colors with fallbacks (light theme defaults)
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#0097a7"
+    // Theme colors with fallbacks (softer light theme defaults)
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color textColor: themeManager ? themeManager.textColor : "#1a237e"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#5c6bc0"
-    property color borderColor: themeManager ? themeManager.borderColor : "#c5cae9"
+    property color textColor: themeManager ? themeManager.textColor : "#2d3748"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
+    property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
 
     // Selected cell for editing
     property int selectedRow: -1
@@ -479,7 +479,7 @@ Rectangle {
         width: 300
 
         background: Rectangle {
-            color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
+            color: themeManager ? themeManager.backgroundColor : "#f7fafc"
             radius: 16
             border.width: 1
             border.color: root.borderColor

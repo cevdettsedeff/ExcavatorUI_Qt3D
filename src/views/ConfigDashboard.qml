@@ -14,7 +14,7 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#e8eaf6"
+    color: themeManager ? themeManager.backgroundColor : "#f7fafc"
 
     // Translation support
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -47,15 +47,15 @@ Rectangle {
         return count / 4;
     }
 
-    // Theme colors - themeManager'dan al
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#0097a7"
+    // Theme colors - themeManager'dan al (softer light theme fallbacks)
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#e8eaf6"
-    property color textColor: themeManager ? themeManager.textColor : "#1a237e"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#5c6bc0"
-    property color borderColor: themeManager ? themeManager.borderColor : "#c5cae9"
-    property color successColor: themeManager ? themeManager.successColor : "#4caf50"
-    property color warningColor: themeManager ? themeManager.warningColor : "#ff9800"
+    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f7fafc"
+    property color textColor: themeManager ? themeManager.textColor : "#2d3748"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
+    property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
+    property color successColor: themeManager ? themeManager.successColor : "#48bb78"
+    property color warningColor: themeManager ? themeManager.warningColor : "#ed8936"
 
     // StackView for navigation
     StackView {
@@ -428,13 +428,13 @@ Rectangle {
         property bool isConfigured: false
         property bool isEnabled: true
 
-        // Theme color properties (passed from parent)
-        property color tilePrimaryColor: "#0097a7"
+        // Theme color properties (passed from parent - softer fallbacks)
+        property color tilePrimaryColor: "#319795"
         property color tileSurfaceColor: "#ffffff"
-        property color tileTextColor: "#1a237e"
-        property color tileTextSecondaryColor: "#5c6bc0"
-        property color tileBorderColor: "#c5cae9"
-        property color tileWarningColor: "#ff9800"
+        property color tileTextColor: "#2d3748"
+        property color tileTextSecondaryColor: "#718096"
+        property color tileBorderColor: "#e2e8f0"
+        property color tileWarningColor: "#ed8936"
 
         signal clicked()
 

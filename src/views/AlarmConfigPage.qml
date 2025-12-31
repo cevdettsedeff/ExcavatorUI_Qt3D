@@ -13,7 +13,7 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#e8eaf6"
+    color: themeManager ? themeManager.backgroundColor : "#f7fafc"
 
     signal back()
     signal configSaved()
@@ -32,14 +32,14 @@ Rectangle {
         }
     }
 
-    // Theme colors with fallbacks (light theme defaults)
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#0097a7"
+    // Theme colors with fallbacks (softer light theme defaults)
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#e8eaf6"
-    property color textColor: themeManager ? themeManager.textColor : "#1a237e"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#5c6bc0"
-    property color borderColor: themeManager ? themeManager.borderColor : "#c5cae9"
-    property color themeInfoColor: themeManager ? themeManager.infoColor : "#2196f3"
+    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f7fafc"
+    property color textColor: themeManager ? themeManager.textColor : "#2d3748"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
+    property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
+    property color themeInfoColor: themeManager ? themeManager.infoColor : "#4299e1"
 
     // Current colors
     property string criticalColor: configManager ? configManager.alarmColorCritical : "#FF4444"
@@ -577,10 +577,10 @@ Rectangle {
         property string description: ""
         property string icon: ""
         property string currentColor: "#000000"
-        property color rowTextColor: "#1f2937"
-        property color rowTextSecondaryColor: "#6b7280"
+        property color rowTextColor: "#2d3748"
+        property color rowTextSecondaryColor: "#718096"
         property color rowSurfaceColor: "#ffffff"
-        property color rowBorderColor: "#e5e7eb"
+        property color rowBorderColor: "#e2e8f0"
 
         signal colorClicked()
 
@@ -651,8 +651,8 @@ Rectangle {
         property string title: ""
         property string message: ""
         property string icon: ""
-        property color cardTextColor: "#1f2937"
-        property color cardTextSecondaryColor: "#6b7280"
+        property color cardTextColor: "#2d3748"
+        property color cardTextSecondaryColor: "#718096"
 
         height: 60
         radius: 8

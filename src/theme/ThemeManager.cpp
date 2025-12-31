@@ -39,38 +39,38 @@ void ThemeManager::setDarkTheme(bool dark)
 void ThemeManager::updateColors()
 {
     if (m_isDarkTheme) {
-        // Dark theme colors
-        m_backgroundColor = QColor("#1a1a1a");
-        m_backgroundColorLight = QColor("#2a2a2a");
-        m_backgroundColorDark = QColor("#0d0d0d");
+        // Dark theme colors - soft grayish tones (not pure black)
+        m_backgroundColor = QColor("#2d3748");        // Slate gray background
+        m_backgroundColorLight = QColor("#4a5568");   // Medium slate gray
+        m_backgroundColorDark = QColor("#1a202c");    // Dark slate gray
 
-        m_textColor = QColor("#ffffff");
-        m_textColorSecondary = QColor("#888888");
-        m_textColorDisabled = QColor("#555555");
+        m_textColor = QColor("#e2e8f0");              // Light gray (not pure white)
+        m_textColorSecondary = QColor("#a0aec0");     // Medium gray
+        m_textColorDisabled = QColor("#718096");      // Muted gray
 
-        m_primaryColor = QColor("#00bcd4");
-        m_secondaryColor = QColor("#34495e");
-        m_accentColor = QColor("#FF6B35");
-        m_borderColor = QColor("#404040");
-        m_hoverColor = QColor("#333333");
-        m_selectedColor = QColor("#00bcd4");
+        m_primaryColor = QColor("#38b2ac");           // Teal
+        m_secondaryColor = QColor("#4a5568");         // Slate accent
+        m_accentColor = QColor("#ed8936");            // Soft orange
+        m_borderColor = QColor("#4a5568");            // Medium slate border
+        m_hoverColor = QColor("#3d4a5c");             // Subtle hover
+        m_selectedColor = QColor("#38b2ac");          // Same as primary
 
     } else {
-        // Light theme colors - optimized for better contrast
-        m_backgroundColor = QColor("#e8eaf6");        // Soft blue-grey background
-        m_backgroundColorLight = QColor("#f5f7fa");   // Very light blue-grey
-        m_backgroundColorDark = QColor("#c5cae9");    // Medium blue-grey
+        // Light theme colors - clean white tones
+        m_backgroundColor = QColor("#f7fafc");        // Almost white
+        m_backgroundColorLight = QColor("#ffffff");   // Pure white
+        m_backgroundColorDark = QColor("#edf2f7");    // Very light gray
 
-        m_textColor = QColor("#1a237e");              // Deep indigo for text
-        m_textColorSecondary = QColor("#5c6bc0");     // Medium indigo
-        m_textColorDisabled = QColor("#9fa8da");      // Light indigo
+        m_textColor = QColor("#2d3748");              // Dark gray (not pure black)
+        m_textColorSecondary = QColor("#718096");     // Medium gray
+        m_textColorDisabled = QColor("#a0aec0");      // Light gray
 
-        m_primaryColor = QColor("#0097a7");           // Cyan
-        m_secondaryColor = QColor("#7986cb");         // Indigo accent
-        m_accentColor = QColor("#ff6f00");            // Orange accent
-        m_borderColor = QColor("#c5cae9");            // Light border
-        m_hoverColor = QColor("#d1d9ff");             // Hover effect
-        m_selectedColor = QColor("#0097a7");          // Same as primary
+        m_primaryColor = QColor("#319795");           // Teal
+        m_secondaryColor = QColor("#4a5568");         // Slate accent
+        m_accentColor = QColor("#dd6b20");            // Orange accent
+        m_borderColor = QColor("#e2e8f0");            // Light gray border
+        m_hoverColor = QColor("#edf2f7");             // Subtle hover
+        m_selectedColor = QColor("#319795");          // Same as primary
     }
 }
 
