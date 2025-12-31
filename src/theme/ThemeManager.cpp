@@ -43,6 +43,7 @@ void ThemeManager::updateColors()
         m_backgroundColor = QColor("#2d3748");        // Slate gray background
         m_backgroundColorLight = QColor("#4a5568");   // Medium slate gray
         m_backgroundColorDark = QColor("#1a202c");    // Dark slate gray
+        m_surfaceColor = QColor("#3d4a5c");           // Card/tile background (lighter than bg)
 
         m_textColor = QColor("#e2e8f0");              // Light gray (not pure white)
         m_textColorSecondary = QColor("#a0aec0");     // Medium gray
@@ -60,6 +61,7 @@ void ThemeManager::updateColors()
         m_backgroundColor = QColor("#f7fafc");        // Almost white
         m_backgroundColorLight = QColor("#ffffff");   // Pure white
         m_backgroundColorDark = QColor("#edf2f7");    // Very light gray
+        m_surfaceColor = QColor("#ffffff");           // Card/tile background (pure white)
 
         m_textColor = QColor("#2d3748");              // Dark gray (not pure black)
         m_textColorSecondary = QColor("#718096");     // Medium gray
