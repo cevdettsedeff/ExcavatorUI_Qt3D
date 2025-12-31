@@ -13,18 +13,32 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
+    color: themeManager ? themeManager.backgroundColor : "#e8eaf6"
 
     signal back()
     signal configSaved()
 
-    // Theme colors with fallbacks
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#0891b2"
+    // Translation support
+    property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
+
+    function tr(text) {
+        return languageTrigger >= 0 ? qsTr(text) : ""
+    }
+
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            languageTrigger++
+        }
+    }
+
+    // Theme colors with fallbacks (light theme defaults)
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#0097a7"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color textColor: themeManager ? themeManager.textColor : "#1f2937"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#6b7280"
-    property color borderColor: themeManager ? themeManager.borderColor : "#e5e7eb"
-    property color infoColor: themeManager ? themeManager.infoColor : "#3b82f6"
+    property color textColor: themeManager ? themeManager.textColor : "#1a237e"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#5c6bc0"
+    property color borderColor: themeManager ? themeManager.borderColor : "#c5cae9"
+    property color infoColor: themeManager ? themeManager.infoColor : "#2196f3"
 
     // Header
     Rectangle {
@@ -63,7 +77,7 @@ Rectangle {
 
             Text {
                 Layout.fillWidth: true
-                text: qsTr("Ekskavatör Ayarları")
+                text: root.tr("Ekskavatör Ayarları")
                 font.pixelSize: 20
                 font.bold: true
                 color: "white"
@@ -111,8 +125,8 @@ Rectangle {
             ConfigInputField {
                 Layout.fillWidth: true
                 Layout.margins: 20
-                label: qsTr("Ekskavatör Adı")
-                placeholder: qsTr("Örn: CAT 320D")
+                label: root.tr("Ekskavatör Adı")
+                placeholder: root.tr("Örn: CAT 320D")
                 inputText: configManager ? configManager.excavatorName : ""
                 fieldPrimaryColor: root.primaryColor
                 fieldSurfaceColor: root.surfaceColor
@@ -129,8 +143,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                label: qsTr("Boom Uzunluğu (metre)")
-                placeholder: qsTr("Örn: 12.0")
+                label: root.tr("Boom Uzunluğu (metre)")
+                placeholder: root.tr("Örn: 12.0")
                 inputText: configManager ? configManager.boomLength.toFixed(1) : "0.0"
                 inputType: "number"
                 suffix: "m"
@@ -152,8 +166,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                label: qsTr("Arm Uzunluğu (metre)")
-                placeholder: qsTr("Örn: 10.0")
+                label: root.tr("Arm Uzunluğu (metre)")
+                placeholder: root.tr("Örn: 10.0")
                 inputText: configManager ? configManager.armLength.toFixed(1) : "0.0"
                 inputType: "number"
                 suffix: "m"
@@ -175,8 +189,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                label: qsTr("Bucket Genişliği (metre)")
-                placeholder: qsTr("Örn: 2.0")
+                label: root.tr("Bucket Genişliği (metre)")
+                placeholder: root.tr("Örn: 2.0")
                 inputText: configManager ? configManager.bucketWidth.toFixed(1) : "0.0"
                 inputType: "number"
                 suffix: "m"
@@ -218,7 +232,7 @@ Rectangle {
 
                     Text {
                         Layout.fillWidth: true
-                        text: qsTr("Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
+                        text: root.tr("Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
                         font.pixelSize: 13
                         color: root.textSecondaryColor
                         wrapMode: Text.WordWrap
@@ -251,7 +265,7 @@ Rectangle {
             anchors.centerIn: parent
             width: parent.width - 40
             height: 50
-            text: qsTr("Kaydet ve Devam Et")
+            text: root.tr("Kaydet ve Devam Et")
             enabled: isFormValid
 
             property bool isFormValid: {
@@ -295,12 +309,12 @@ Rectangle {
         property string inputType: "text" // "text" or "number"
         property string suffix: ""
 
-        // Theme colors (passed from parent)
-        property color fieldPrimaryColor: "#0891b2"
+        // Theme colors (passed from parent - light theme defaults)
+        property color fieldPrimaryColor: "#0097a7"
         property color fieldSurfaceColor: "#ffffff"
-        property color fieldTextColor: "#1f2937"
-        property color fieldTextSecondaryColor: "#6b7280"
-        property color fieldBorderColor: "#e5e7eb"
+        property color fieldTextColor: "#1a237e"
+        property color fieldTextSecondaryColor: "#5c6bc0"
+        property color fieldBorderColor: "#c5cae9"
 
         signal fieldTextChanged(string newText)
 

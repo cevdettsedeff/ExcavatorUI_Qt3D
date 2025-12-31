@@ -11,17 +11,31 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
+    color: themeManager ? themeManager.backgroundColor : "#e8eaf6"
 
     signal back()
     signal configSaved()
 
-    // Theme colors with fallbacks
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#0891b2"
+    // Translation support
+    property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
+
+    function tr(text) {
+        return languageTrigger >= 0 ? qsTr(text) : ""
+    }
+
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            languageTrigger++
+        }
+    }
+
+    // Theme colors with fallbacks (light theme defaults)
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#0097a7"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color textColor: themeManager ? themeManager.textColor : "#1f2937"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#6b7280"
-    property color borderColor: themeManager ? themeManager.borderColor : "#e5e7eb"
+    property color textColor: themeManager ? themeManager.textColor : "#1a237e"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#5c6bc0"
+    property color borderColor: themeManager ? themeManager.borderColor : "#c5cae9"
 
     // Selected cell for editing
     property int selectedRow: -1

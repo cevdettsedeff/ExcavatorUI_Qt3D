@@ -14,7 +14,21 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#f5f5f5"
+    color: themeManager ? themeManager.backgroundColor : "#e8eaf6"
+
+    // Translation support
+    property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
+
+    function tr(text) {
+        return languageTrigger >= 0 ? qsTr(text) : ""
+    }
+
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            languageTrigger++
+        }
+    }
 
     // Signals
     signal configurationComplete()
@@ -33,21 +47,76 @@ Rectangle {
         return count / 4;
     }
 
-    // Theme colors (fallback değerlerle)
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#0891b2"
+    // Theme colors - themeManager'dan al
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#0097a7"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f5f5f5"
-    property color textColor: themeManager ? themeManager.textColor : "#1f2937"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#6b7280"
-    property color borderColor: themeManager ? themeManager.borderColor : "#e5e7eb"
-    property color successColor: themeManager ? themeManager.successColor : "#10b981"
-    property color warningColor: themeManager ? themeManager.warningColor : "#f59e0b"
+    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#e8eaf6"
+    property color textColor: themeManager ? themeManager.textColor : "#1a237e"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#5c6bc0"
+    property color borderColor: themeManager ? themeManager.borderColor : "#c5cae9"
+    property color successColor: themeManager ? themeManager.successColor : "#4caf50"
+    property color warningColor: themeManager ? themeManager.warningColor : "#ff9800"
 
     // StackView for navigation
     StackView {
         id: stackView
         anchors.fill: parent
         initialItem: dashboardView
+    }
+
+    // Settings Menu
+    Menu {
+        id: settingsMenu
+        width: 200
+
+        background: Rectangle {
+            color: root.surfaceColor
+            radius: 8
+            border.width: 1
+            border.color: root.borderColor
+        }
+
+        MenuItem {
+            text: "🌐 " + (translationService && translationService.currentLanguage === "tr_TR" ? "English" : "Türkçe")
+            onTriggered: {
+                if (translationService) {
+                    translationService.switchLanguage(
+                        translationService.currentLanguage === "tr_TR" ? "en_US" : "tr_TR"
+                    )
+                }
+            }
+
+            background: Rectangle {
+                color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.1) : "transparent"
+            }
+
+            contentItem: Text {
+                text: parent.text
+                font.pixelSize: 14
+                color: root.textColor
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+
+        MenuItem {
+            text: (themeManager && themeManager.isDarkTheme ? "☀️ " : "🌙 ") + root.tr("Tema")
+            onTriggered: {
+                if (themeManager) {
+                    themeManager.toggleTheme()
+                }
+            }
+
+            background: Rectangle {
+                color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.1) : "transparent"
+            }
+
+            contentItem: Text {
+                text: parent.text
+                font.pixelSize: 14
+                color: root.textColor
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
     }
 
     // Dashboard Ana Görünümü
@@ -71,12 +140,36 @@ Rectangle {
                         Layout.preferredHeight: 120
                         color: root.primaryColor
 
+                        // Settings Button (Top Right)
+                        Button {
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 12
+                            width: 44
+                            height: 44
+                            flat: true
+
+                            contentItem: Text {
+                                text: "⚙️"
+                                font.pixelSize: 22
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                radius: 22
+                                color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : (parent.hovered ? Qt.rgba(1, 1, 1, 0.1) : "transparent")
+                            }
+
+                            onClicked: settingsMenu.popup()
+                        }
+
                         ColumnLayout {
                             anchors.centerIn: parent
                             spacing: 8
 
                             Text {
-                                text: qsTr("Konfigürasyon Merkezi")
+                                text: root.tr("Konfigürasyon Merkezi")
                                 font.pixelSize: 28
                                 font.bold: true
                                 color: "white"
@@ -84,7 +177,7 @@ Rectangle {
                             }
 
                             Text {
-                                text: qsTr("Lütfen aşağıdaki ayarları tamamlayın")
+                                text: root.tr("Lütfen aşağıdaki ayarları tamamlayın")
                                 font.pixelSize: 14
                                 color: Qt.rgba(1, 1, 1, 0.8)
                                 Layout.alignment: Qt.AlignHCenter
@@ -124,8 +217,8 @@ Rectangle {
                         ConfigTile {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 200
-                            title: qsTr("Ekskavatör Ayarları")
-                            description: qsTr("Boom, arm uzunlukları ve ekskavatör adı")
+                            title: root.tr("Ekskavatör Ayarları")
+                            description: root.tr("Boom, arm uzunlukları ve ekskavatör adı")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
                             stepNumber: 1
                             isConfigured: configManager ? configManager.excavatorConfigured : false
@@ -147,8 +240,8 @@ Rectangle {
                         ConfigTile {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 200
-                            title: qsTr("Kazı Alanı Ayarları")
-                            description: qsTr("Grid sistemi ve batimetrik veri girişi")
+                            title: root.tr("Kazı Alanı Ayarları")
+                            description: root.tr("Grid sistemi ve batimetrik veri girişi")
                             icon: "📐"
                             stepNumber: 2
                             isConfigured: configManager ? configManager.digAreaConfigured : false
@@ -170,8 +263,8 @@ Rectangle {
                         ConfigTile {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 200
-                            title: qsTr("Harita Ayarları")
-                            description: qsTr("Kazı yapılacak alanı haritadan seçin")
+                            title: root.tr("Harita Ayarları")
+                            description: root.tr("Kazı yapılacak alanı haritadan seçin")
                             icon: "🗺"
                             stepNumber: 3
                             isConfigured: configManager ? configManager.mapConfigured : false
@@ -193,8 +286,8 @@ Rectangle {
                         ConfigTile {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 200
-                            title: qsTr("Alarm Ayarları")
-                            description: qsTr("Alarm renklerini özelleştirin")
+                            title: root.tr("Alarm Ayarları")
+                            description: root.tr("Alarm renklerini özelleştirin")
                             icon: "🔔"
                             stepNumber: 4
                             isConfigured: configManager ? configManager.alarmConfigured : false
@@ -219,7 +312,7 @@ Rectangle {
                         Layout.preferredWidth: 300
                         Layout.preferredHeight: 56
                         Layout.bottomMargin: 40
-                        text: qsTr("Ana Ekrana Geç")
+                        text: root.tr("Ana Ekrana Geç")
                         enabled: configManager ? configManager.isConfigured : false
 
                         background: Rectangle {
@@ -253,8 +346,8 @@ Rectangle {
                         Layout.alignment: Qt.AlignHCenter
                         Layout.bottomMargin: 20
                         text: (configManager && configManager.isConfigured)
-                            ? qsTr("Tüm ayarlar tamamlandı!")
-                            : qsTr("Tüm adımları tamamladığınızda ana ekrana geçebilirsiniz")
+                            ? root.tr("Tüm ayarlar tamamlandı!")
+                            : root.tr("Tüm adımları tamamladığınızda ana ekrana geçebilirsiniz")
                         font.pixelSize: 12
                         color: (configManager && configManager.isConfigured) ? root.successColor : root.textSecondaryColor
                     }
@@ -336,12 +429,12 @@ Rectangle {
         property bool isEnabled: true
 
         // Theme color properties (passed from parent)
-        property color tilePrimaryColor: "#0891b2"
+        property color tilePrimaryColor: "#0097a7"
         property color tileSurfaceColor: "#ffffff"
-        property color tileTextColor: "#1f2937"
-        property color tileTextSecondaryColor: "#6b7280"
-        property color tileBorderColor: "#e5e7eb"
-        property color tileWarningColor: "#f59e0b"
+        property color tileTextColor: "#1a237e"
+        property color tileTextSecondaryColor: "#5c6bc0"
+        property color tileBorderColor: "#c5cae9"
+        property color tileWarningColor: "#ff9800"
 
         signal clicked()
 
@@ -468,7 +561,7 @@ Rectangle {
 
                 Text {
                     anchors.centerIn: parent
-                    text: tile.isConfigured ? qsTr("Düzenle") : qsTr("Yapılandır")
+                    text: tile.isConfigured ? root.tr("Düzenle") : root.tr("Yapılandır")
                     font.pixelSize: 12
                     font.bold: true
                     color: tile.isConfigured ? "white" : tile.tilePrimaryColor
