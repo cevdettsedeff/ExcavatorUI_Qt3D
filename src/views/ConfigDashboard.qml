@@ -219,7 +219,8 @@ Rectangle {
                             Layout.preferredHeight: 200
                             title: root.tr("Ekskavatör Ayarları")
                             description: root.tr("Boom, arm uzunlukları ve ekskavatör adı")
-                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
+                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_excavator.png"
+                            icon: "🚜"
                             stepNumber: 1
                             isConfigured: configManager ? configManager.excavatorConfigured : false
                             isEnabled: true
@@ -242,6 +243,7 @@ Rectangle {
                             Layout.preferredHeight: 200
                             title: root.tr("Kazı Alanı Ayarları")
                             description: root.tr("Grid sistemi ve batimetrik veri girişi")
+                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_dig_area.png"
                             icon: "📐"
                             stepNumber: 2
                             isConfigured: configManager ? configManager.digAreaConfigured : false
@@ -265,6 +267,7 @@ Rectangle {
                             Layout.preferredHeight: 200
                             title: root.tr("Harita Ayarları")
                             description: root.tr("Kazı yapılacak alanı haritadan seçin")
+                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_map.png"
                             icon: "🗺"
                             stepNumber: 3
                             isConfigured: configManager ? configManager.mapConfigured : false
@@ -288,6 +291,7 @@ Rectangle {
                             Layout.preferredHeight: 200
                             title: root.tr("Alarm Ayarları")
                             description: root.tr("Alarm renklerini özelleştirin")
+                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_alarm.png"
                             icon: "🔔"
                             stepNumber: 4
                             isConfigured: configManager ? configManager.alarmConfigured : false
@@ -422,8 +426,8 @@ Rectangle {
 
         property string title: ""
         property string description: ""
-        property string icon: ""
-        property string imageSource: ""
+        property string icon: ""  // Fallback emoji icon
+        property string imageSource: ""  // Primary image icon
         property int stepNumber: 1
         property bool isConfigured: false
         property bool isEnabled: true
@@ -510,23 +514,16 @@ Rectangle {
                 }
             }
 
-            // Icon - Emoji veya Image
+            // Icon - Image with emoji fallback
             Item {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.fillHeight: true
                 Layout.preferredWidth: 56
                 Layout.preferredHeight: 56
 
-                // Emoji icon - sadece imageSource boşsa göster
-                Text {
-                    anchors.centerIn: parent
-                    text: tile.icon
-                    font.pixelSize: 48
-                    visible: tile.imageSource.length === 0
-                }
-
-                // Image icon - imageSource doluysa göster
+                // Image icon (primary)
                 Image {
+                    id: tileIconImage
                     anchors.centerIn: parent
                     source: tile.imageSource
                     width: 52
@@ -534,7 +531,15 @@ Rectangle {
                     fillMode: Image.PreserveAspectFit
                     smooth: true
                     antialiasing: true
-                    visible: tile.imageSource.length > 0
+                    visible: status === Image.Ready
+                }
+
+                // Emoji icon (fallback when image not available)
+                Text {
+                    anchors.centerIn: parent
+                    text: tile.icon
+                    font.pixelSize: 48
+                    visible: tileIconImage.status !== Image.Ready
                 }
             }
 
