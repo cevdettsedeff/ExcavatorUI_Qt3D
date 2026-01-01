@@ -398,43 +398,82 @@ Rectangle {
                 }
             }
 
-            // Ekskavatör ikonu (merkez)
-            Rectangle {
-                id: excavatorIcon
+            // Ekskavatör konum noktası (merkez)
+            Item {
+                id: excavatorMarker
                 anchors.centerIn: parent
-                width: 50
-                height: 35
-                color: "#FF6B35"
-                radius: 5
-                rotation: -15
+                width: 60
+                height: 70
                 z: 10
 
+                // Dış halka - pulse animasyonu
                 Rectangle {
-                    anchors.left: parent.right
-                    anchors.leftMargin: -5
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 35
-                    height: 6
-                    color: "#FF6B35"
-                    rotation: -20
-                    transformOrigin: Item.Left
-                }
-
-                Rectangle {
-                    anchors.bottom: parent.bottom
+                    id: pulseRing
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: parent.width * 0.9
-                    height: 6
-                    color: "#333333"
-                    radius: 2
+                    anchors.top: parent.top
+                    anchors.topMargin: 5
+                    width: 40
+                    height: 40
+                    radius: 20
+                    color: "transparent"
+                    border.color: "#FF6B35"
+                    border.width: 3
+                    opacity: 0.6
+
+                    SequentialAnimation on scale {
+                        running: true
+                        loops: Animation.Infinite
+                        NumberAnimation { from: 1.0; to: 1.5; duration: 1000; easing.type: Easing.OutQuad }
+                        NumberAnimation { from: 1.5; to: 1.0; duration: 1000; easing.type: Easing.InQuad }
+                    }
+
+                    SequentialAnimation on opacity {
+                        running: true
+                        loops: Animation.Infinite
+                        NumberAnimation { from: 0.6; to: 0.0; duration: 1000 }
+                        NumberAnimation { from: 0.0; to: 0.6; duration: 1000 }
+                    }
                 }
 
-                // Pulse animation
-                SequentialAnimation on scale {
-                    running: true
-                    loops: Animation.Infinite
-                    NumberAnimation { from: 1.0; to: 1.1; duration: 800 }
-                    NumberAnimation { from: 1.1; to: 1.0; duration: 800 }
+                // Ana nokta
+                Rectangle {
+                    id: mainDot
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: 5
+                    width: 40
+                    height: 40
+                    radius: 20
+                    color: "#FF6B35"
+                    border.color: "white"
+                    border.width: 3
+
+                    // İç ikon
+                    Text {
+                        anchors.centerIn: parent
+                        text: "🚜"
+                        font.pixelSize: 20
+                    }
+                }
+
+                // Etiket
+                Rectangle {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: mainDot.bottom
+                    anchors.topMargin: 4
+                    width: excavatorLabel.width + 12
+                    height: 20
+                    radius: 10
+                    color: Qt.rgba(0, 0, 0, 0.75)
+
+                    Text {
+                        id: excavatorLabel
+                        anchors.centerIn: parent
+                        text: tr("Excavator")
+                        font.pixelSize: 10
+                        font.bold: true
+                        color: "white"
+                    }
                 }
             }
 
