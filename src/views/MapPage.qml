@@ -32,7 +32,7 @@ Rectangle {
     property color primaryColor: themeManager ? themeManager.primaryColor : "#38b2ac"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
     property color textColor: themeManager ? themeManager.textColor : "#ffffff"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#888888"
+    property color textSecondaryColor: themeManager ? themeManager.textColorSecondary : "#888888"
     property color borderColor: themeManager ? themeManager.borderColor : "#333333"
 
     function tr(text) {

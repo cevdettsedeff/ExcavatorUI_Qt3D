@@ -16,7 +16,7 @@ Rectangle {
 
     // Theme colors
     property color activeColor: themeManager ? themeManager.primaryColor : "#38b2ac"
-    property color inactiveColor: themeManager ? themeManager.textSecondaryColor : "#888888"
+    property color inactiveColor: themeManager ? themeManager.textColorSecondary : "#888888"
     property color borderColor: themeManager ? themeManager.borderColor : "#333333"
 
     function tr(text) {
