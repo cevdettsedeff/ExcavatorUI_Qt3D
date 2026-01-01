@@ -52,7 +52,7 @@ Rectangle {
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
     property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f7fafc"
     property color textColor: themeManager ? themeManager.textColor : "#2d3748"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
+    property color textSecondaryColor: themeManager ? themeManager.textColorSecondary : "#718096"
     property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
     property color successColor: themeManager ? themeManager.successColor : "#48bb78"
     property color warningColor: themeManager ? themeManager.warningColor : "#ed8936"
