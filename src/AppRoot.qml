@@ -54,14 +54,9 @@ ApplicationWindow {
         interval: 150
         repeat: false
         onTriggered: {
-            // Eğer konfigürasyon tamamlanmışsa direkt dashboard'a git
-            if (configManager.isConfigured) {
-                console.log("Konfigürasyon tamamlanmış, dashboard'a geçiliyor...")
-                currentView = "dashboard"
-            } else {
-                console.log("Konfigürasyon gerekli, config-dashboard'a geçiliyor...")
-                currentView = "config-dashboard"
-            }
+            // Her zaman config-dashboard'a git, kullanıcı oradan ana ekrana geçebilir
+            console.log("Login başarılı, config-dashboard'a geçiliyor...")
+            currentView = "config-dashboard"
         }
     }
 
