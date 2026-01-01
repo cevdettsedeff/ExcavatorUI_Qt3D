@@ -448,11 +448,14 @@ Rectangle {
                     border.color: "white"
                     border.width: 3
 
-                    // İç ikon
-                    Text {
+                    // İç ikon - resources'dan
+                    Image {
                         anchors.centerIn: parent
-                        text: "🚜"
-                        font.pixelSize: 20
+                        width: 24
+                        height: 24
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/icons/nav_excavator.png"
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
                     }
                 }
 
