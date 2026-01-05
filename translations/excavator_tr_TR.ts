@@ -481,5 +481,117 @@ Redirecting to login screen...</source>
 
 Giriş ekranına yönlendiriliyorsunuz...</translation>
     </message>
+    <message>
+        <source>Pending Approval</source>
+        <translation>Onay Bekleyenler</translation>
+    </message>
+    <message>
+        <source>users waiting</source>
+        <translation>kullanıcı bekliyor</translation>
+    </message>
+    <message>
+        <source>No pending requests</source>
+        <translation>Bekleyen istek yok</translation>
+    </message>
+    <message>
+        <source>registered</source>
+        <translation>kayıtlı</translation>
+    </message>
+    <message>
+        <source>Add User</source>
+        <translation>Kullanıcı Ekle</translation>
+    </message>
+    <message>
+        <source>Create a new user account</source>
+        <translation>Yeni kullanıcı hesabı oluştur</translation>
+    </message>
+    <message>
+        <source>Enter username...</source>
+        <translation>Kullanıcı adı girin...</translation>
+    </message>
+    <message>
+        <source>Minimum 6 characters</source>
+        <translation>Minimum 6 karakter</translation>
+    </message>
+    <message>
+        <source>Grant admin permission</source>
+        <translation>Admin yetkisi ver</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>İptal</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>Oluştur</translation>
+    </message>
+    <message>
+        <source>Update user information</source>
+        <translation>Kullanıcı bilgilerini güncelle</translation>
+    </message>
+    <message>
+        <source>Leave blank to keep current</source>
+        <translation>Mevcut şifreyi korumak için boş bırakın</translation>
+    </message>
+    <message>
+        <source>Admin permission</source>
+        <translation>Admin yetkisi</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>Kaydet</translation>
+    </message>
+    <message>
+        <source>Delete User?</source>
+        <translation>Kullanıcı Silinsin mi?</translation>
+    </message>
+    <message>
+        <source>This action cannot be undone</source>
+        <translation>Bu işlem geri alınamaz</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Ayarlar</translation>
+    </message>
+    <message>
+        <source>Sensors</source>
+        <translation>Sensörler</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation>Görünüm</translation>
+    </message>
+    <message>
+        <source>Language &amp; Units</source>
+        <translation>Dil &amp; Birimler</translation>
+    </message>
+    <message>
+        <source>Security</source>
+        <translation>Güvenlik</translation>
+    </message>
+    <message>
+        <source>Users</source>
+        <translation>Kullanıcılar</translation>
+    </message>
+    <message>
+        <source>Soon</source>
+        <translation>Yakında</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation>Geri</translation>
+    </message>
+    <message>
+        <source>Dig Area</source>
+        <translation>Kazı Alanı</translation>
+    </message>
+    <message>
+        <source>Alarms</source>
+        <translation>Alarmlar</translation>
+    </message>
+    <message>
+        <source>Work Area</source>
+        <translation>Çalışma Alanı</translation>
+    </message>
 </context>
 </TS>
