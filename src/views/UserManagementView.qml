@@ -115,7 +115,7 @@ Rectangle {
 
                             Rectangle {
                                 width: parent.width
-                                height: 70
+                                height: 80
                                 color: Qt.darker(root.surfaceColor, 1.1)
                                 radius: 8
                                 border.color: root.borderColor
@@ -127,15 +127,15 @@ Rectangle {
                                     spacing: 12
 
                                     Rectangle {
-                                        width: 44
-                                        height: 44
-                                        radius: 22
+                                        width: 50
+                                        height: 50
+                                        radius: 25
                                         color: "#ff9800"
 
                                         Text {
                                             anchors.centerIn: parent
                                             text: modelData.username.charAt(0).toUpperCase()
-                                            font.pixelSize: 18
+                                            font.pixelSize: 20
                                             font.bold: true
                                             color: "white"
                                         }
@@ -147,78 +147,100 @@ Rectangle {
 
                                         Text {
                                             text: modelData.username
-                                            font.pixelSize: 15
+                                            font.pixelSize: 16
                                             font.bold: true
                                             color: root.textColor
                                         }
 
                                         Text {
                                             text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
-                                            font.pixelSize: 11
+                                            font.pixelSize: 12
                                             color: root.textSecondaryColor
                                         }
                                     }
 
-                                    Row {
-                                        spacing: 8
+                                    // Onayla butonu - BÜYÜK
+                                    Rectangle {
+                                        width: approveText.width + 30
+                                        height: 44
+                                        radius: 8
+                                        color: approveArea.containsMouse ? "#4CAF50" : "#388e3c"
 
-                                        Rectangle {
-                                            width: 36
-                                            height: 36
-                                            radius: 18
-                                            color: approveArea.containsMouse ? "#4CAF50" : "#388e3c"
+                                        Row {
+                                            anchors.centerIn: parent
+                                            spacing: 6
 
                                             Text {
-                                                anchors.centerIn: parent
                                                 text: "✓"
-                                                font.pixelSize: 18
+                                                font.pixelSize: 16
                                                 font.bold: true
                                                 color: "white"
                                             }
-
-                                            MouseArea {
-                                                id: approveArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                cursorShape: Qt.PointingHandCursor
-                                                onClicked: {
-                                                    if (authService.approveUser(modelData.id)) {
-                                                        console.log("Kullanıcı onaylandı:", modelData.username)
-                                                    }
-                                                }
-                                            }
-
-                                            Behavior on color { ColorAnimation { duration: 150 } }
-                                        }
-
-                                        Rectangle {
-                                            width: 36
-                                            height: 36
-                                            radius: 18
-                                            color: rejectArea.containsMouse ? "#f44336" : "#d32f2f"
 
                                             Text {
-                                                anchors.centerIn: parent
+                                                id: approveText
+                                                text: tr("Approve")
+                                                font.pixelSize: 14
+                                                font.bold: true
+                                                color: "white"
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: approveArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                if (authService.approveUser(modelData.id)) {
+                                                    console.log("Kullanıcı onaylandı:", modelData.username)
+                                                }
+                                            }
+                                        }
+
+                                        Behavior on color { ColorAnimation { duration: 150 } }
+                                    }
+
+                                    // Reddet butonu - BÜYÜK
+                                    Rectangle {
+                                        width: rejectText.width + 30
+                                        height: 44
+                                        radius: 8
+                                        color: rejectArea.containsMouse ? "#f44336" : "#d32f2f"
+
+                                        Row {
+                                            anchors.centerIn: parent
+                                            spacing: 6
+
+                                            Text {
                                                 text: "✗"
-                                                font.pixelSize: 18
+                                                font.pixelSize: 16
                                                 font.bold: true
                                                 color: "white"
                                             }
 
-                                            MouseArea {
-                                                id: rejectArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                cursorShape: Qt.PointingHandCursor
-                                                onClicked: {
-                                                    if (authService.rejectUser(modelData.id)) {
-                                                        console.log("Kullanıcı reddedildi:", modelData.username)
-                                                    }
+                                            Text {
+                                                id: rejectText
+                                                text: tr("Reject")
+                                                font.pixelSize: 14
+                                                font.bold: true
+                                                color: "white"
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: rejectArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                if (authService.rejectUser(modelData.id)) {
+                                                    console.log("Kullanıcı reddedildi:", modelData.username)
                                                 }
                                             }
-
-                                            Behavior on color { ColorAnimation { duration: 150 } }
                                         }
+
+                                        Behavior on color { ColorAnimation { duration: 150 } }
                                     }
                                 }
                             }
@@ -300,26 +322,26 @@ Rectangle {
                         }
 
                         Rectangle {
-                            width: addUserRow.width + 24
-                            height: 38
-                            radius: 19
+                            width: addUserRow.width + 30
+                            height: 44
+                            radius: 8
                             color: addUserArea.containsMouse ? Qt.lighter(root.primaryColor, 1.1) : root.primaryColor
 
                             Row {
                                 id: addUserRow
                                 anchors.centerIn: parent
-                                spacing: 6
+                                spacing: 8
 
                                 Text {
                                     text: "+"
-                                    font.pixelSize: 18
+                                    font.pixelSize: 20
                                     font.bold: true
                                     color: "white"
                                 }
 
                                 Text {
                                     text: tr("Add User")
-                                    font.pixelSize: 13
+                                    font.pixelSize: 14
                                     font.bold: true
                                     color: "white"
                                     anchors.verticalCenter: parent.verticalCenter
@@ -331,7 +353,7 @@ Rectangle {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: addUserPopup.open()
+                                onClicked: addUserDialog.open()
                             }
 
                             Behavior on color { ColorAnimation { duration: 150 } }
@@ -348,7 +370,7 @@ Rectangle {
 
                             Rectangle {
                                 width: parent.width
-                                height: 70
+                                height: 80
                                 color: Qt.darker(root.surfaceColor, 1.1)
                                 radius: 8
                                 border.color: root.borderColor
@@ -360,15 +382,15 @@ Rectangle {
                                     spacing: 12
 
                                     Rectangle {
-                                        width: 44
-                                        height: 44
-                                        radius: 22
+                                        width: 50
+                                        height: 50
+                                        radius: 25
                                         color: modelData.isAdmin ? "#9c27b0" : root.primaryColor
 
                                         Text {
                                             anchors.centerIn: parent
                                             text: modelData.isAdmin ? "👑" : modelData.username.charAt(0).toUpperCase()
-                                            font.pixelSize: modelData.isAdmin ? 20 : 18
+                                            font.pixelSize: modelData.isAdmin ? 22 : 20
                                             font.bold: true
                                             color: "white"
                                         }
@@ -383,23 +405,23 @@ Rectangle {
 
                                             Text {
                                                 text: modelData.username
-                                                font.pixelSize: 15
+                                                font.pixelSize: 16
                                                 font.bold: true
                                                 color: root.textColor
                                             }
 
                                             Rectangle {
                                                 visible: modelData.isAdmin
-                                                width: adminLabel.width + 10
-                                                height: 18
-                                                radius: 9
+                                                width: adminLabel.width + 12
+                                                height: 20
+                                                radius: 10
                                                 color: "#9c27b0"
 
                                                 Text {
                                                     id: adminLabel
                                                     anchors.centerIn: parent
                                                     text: "ADMIN"
-                                                    font.pixelSize: 9
+                                                    font.pixelSize: 10
                                                     font.bold: true
                                                     color: "white"
                                                 }
@@ -408,73 +430,93 @@ Rectangle {
 
                                         Text {
                                             text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
-                                            font.pixelSize: 11
+                                            font.pixelSize: 12
                                             color: root.textSecondaryColor
                                         }
                                     }
 
-                                    Row {
-                                        spacing: 8
+                                    // Düzenle butonu - BÜYÜK
+                                    Rectangle {
+                                        width: editBtnText.width + 30
+                                        height: 44
+                                        radius: 8
+                                        color: editArea.containsMouse ? "#2196F3" : "#1976d2"
 
-                                        // Edit button
-                                        Rectangle {
-                                            width: 36
-                                            height: 36
-                                            radius: 8
-                                            color: editArea.containsMouse ? "#2196F3" : "#1976d2"
+                                        Row {
+                                            anchors.centerIn: parent
+                                            spacing: 6
 
                                             Text {
-                                                anchors.centerIn: parent
                                                 text: "✎"
                                                 font.pixelSize: 16
                                                 color: "white"
                                             }
 
-                                            MouseArea {
-                                                id: editArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                cursorShape: Qt.PointingHandCursor
-                                                onClicked: {
-                                                    editUserPopup.userId = modelData.id
-                                                    editUserPopup.username = modelData.username
-                                                    editUserPopup.isAdmin = modelData.isAdmin
-                                                    editUserPopup.open()
-                                                }
+                                            Text {
+                                                id: editBtnText
+                                                text: tr("Edit")
+                                                font.pixelSize: 14
+                                                font.bold: true
+                                                color: "white"
                                             }
-
-                                            Behavior on color { ColorAnimation { duration: 150 } }
                                         }
 
-                                        // Delete button
-                                        Rectangle {
-                                            width: 36
-                                            height: 36
-                                            radius: 8
-                                            color: deleteArea.enabled ? (deleteArea.containsMouse ? "#f44336" : "#d32f2f") : "#555555"
-                                            opacity: deleteArea.enabled ? 1.0 : 0.5
+                                        MouseArea {
+                                            id: editArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                editUserDialog.userId = modelData.id
+                                                editUserDialog.username = modelData.username
+                                                editUserDialog.isAdmin = modelData.isAdmin
+                                                editUserDialog.open()
+                                            }
+                                        }
+
+                                        Behavior on color { ColorAnimation { duration: 150 } }
+                                    }
+
+                                    // Sil butonu - BÜYÜK
+                                    Rectangle {
+                                        width: deleteBtnText.width + 30
+                                        height: 44
+                                        radius: 8
+                                        color: deleteArea.enabled ? (deleteArea.containsMouse ? "#f44336" : "#d32f2f") : "#555555"
+                                        opacity: deleteArea.enabled ? 1.0 : 0.5
+
+                                        Row {
+                                            anchors.centerIn: parent
+                                            spacing: 6
 
                                             Text {
-                                                anchors.centerIn: parent
                                                 text: "🗑"
-                                                font.pixelSize: 16
+                                                font.pixelSize: 14
                                             }
 
-                                            MouseArea {
-                                                id: deleteArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                                enabled: modelData.username !== authService.currentUser
-                                                onClicked: {
-                                                    deleteConfirmPopup.userId = modelData.id
-                                                    deleteConfirmPopup.username = modelData.username
-                                                    deleteConfirmPopup.open()
-                                                }
+                                            Text {
+                                                id: deleteBtnText
+                                                text: tr("Delete")
+                                                font.pixelSize: 14
+                                                font.bold: true
+                                                color: "white"
                                             }
-
-                                            Behavior on color { ColorAnimation { duration: 150 } }
                                         }
+
+                                        MouseArea {
+                                            id: deleteArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                            enabled: modelData.username !== authService.currentUser
+                                            onClicked: {
+                                                deleteConfirmDialog.userId = modelData.id
+                                                deleteConfirmDialog.username = modelData.username
+                                                deleteConfirmDialog.open()
+                                            }
+                                        }
+
+                                        Behavior on color { ColorAnimation { duration: 150 } }
                                     }
                                 }
                             }
@@ -485,70 +527,65 @@ Rectangle {
         }
     }
 
-    // ==================== POPUP'LAR ====================
+    // ==================== DIALOG'LAR (Karartılmış Arka Plan ile) ====================
 
-    // Yeni Kullanıcı Ekleme Popup
-    Popup {
-        id: addUserPopup
+    // Yeni Kullanıcı Ekleme Dialog
+    Dialog {
+        id: addUserDialog
+        title: ""
         anchors.centerIn: parent
-        width: 400
-        height: addUserContent.height + 40
+        width: 420
         modal: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        dim: true
+
+        // Karartılmış arka plan
+        Overlay.modal: Rectangle {
+            color: Qt.rgba(0, 0, 0, 0.7)
+        }
 
         background: Rectangle {
             color: root.surfaceColor
             radius: 16
             border.color: root.primaryColor
             border.width: 2
-
-            // Shadow effect
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#80000000"
-                shadowBlur: 1.0
-                shadowVerticalOffset: 8
-            }
         }
 
         contentItem: Column {
-            id: addUserContent
-            spacing: 20
+            spacing: 24
             padding: 24
 
             // Header
             Row {
-                spacing: 12
+                spacing: 16
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Rectangle {
-                    width: 48
-                    height: 48
-                    radius: 24
+                    width: 56
+                    height: 56
+                    radius: 28
                     color: root.primaryColor
 
                     Text {
                         anchors.centerIn: parent
                         text: "👤"
-                        font.pixelSize: 24
+                        font.pixelSize: 28
                     }
                 }
 
                 Column {
-                    spacing: 2
+                    spacing: 4
                     anchors.verticalCenter: parent.verticalCenter
 
                     Text {
                         text: tr("Add New User")
-                        font.pixelSize: 20
+                        font.pixelSize: 22
                         font.bold: true
                         color: root.textColor
                     }
 
                     Text {
                         text: tr("Create a new user account")
-                        font.pixelSize: 12
+                        font.pixelSize: 13
                         color: root.textSecondaryColor
                     }
                 }
@@ -565,16 +602,16 @@ Rectangle {
             Column {
                 width: parent.width - 48
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 16
+                spacing: 18
 
                 // Username
                 Column {
                     width: parent.width
-                    spacing: 6
+                    spacing: 8
 
                     Text {
                         text: tr("Username")
-                        font.pixelSize: 13
+                        font.pixelSize: 14
                         font.bold: true
                         color: root.textColor
                     }
@@ -582,19 +619,18 @@ Rectangle {
                     TextField {
                         id: addUsernameField
                         width: parent.width
-                        height: 44
+                        height: 48
                         placeholderText: tr("Enter username...")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         color: root.textColor
                         placeholderTextColor: root.textSecondaryColor
+                        leftPadding: 15
 
                         background: Rectangle {
-                            color: Qt.darker(root.surfaceColor, 1.2)
-                            radius: 8
+                            color: Qt.darker(root.surfaceColor, 1.3)
+                            radius: 10
                             border.color: addUsernameField.activeFocus ? root.primaryColor : root.borderColor
                             border.width: addUsernameField.activeFocus ? 2 : 1
-
-                            Behavior on border.color { ColorAnimation { duration: 150 } }
                         }
                     }
                 }
@@ -602,11 +638,11 @@ Rectangle {
                 // Password
                 Column {
                     width: parent.width
-                    spacing: 6
+                    spacing: 8
 
                     Text {
                         text: tr("Password")
-                        font.pixelSize: 13
+                        font.pixelSize: 14
                         font.bold: true
                         color: root.textColor
                     }
@@ -614,20 +650,19 @@ Rectangle {
                     TextField {
                         id: addPasswordField
                         width: parent.width
-                        height: 44
+                        height: 48
                         placeholderText: tr("Minimum 6 characters")
                         echoMode: TextInput.Password
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         color: root.textColor
                         placeholderTextColor: root.textSecondaryColor
+                        leftPadding: 15
 
                         background: Rectangle {
-                            color: Qt.darker(root.surfaceColor, 1.2)
-                            radius: 8
+                            color: Qt.darker(root.surfaceColor, 1.3)
+                            radius: 10
                             border.color: addPasswordField.activeFocus ? root.primaryColor : root.borderColor
                             border.width: addPasswordField.activeFocus ? 2 : 1
-
-                            Behavior on border.color { ColorAnimation { duration: 150 } }
                         }
                     }
                 }
@@ -635,20 +670,20 @@ Rectangle {
                 // Admin checkbox
                 Rectangle {
                     width: parent.width
-                    height: 44
-                    radius: 8
-                    color: addAdminCheck.checked ? Qt.rgba(156/255, 39/255, 176/255, 0.2) : Qt.darker(root.surfaceColor, 1.2)
+                    height: 52
+                    radius: 10
+                    color: addAdminCheck.checked ? Qt.rgba(156/255, 39/255, 176/255, 0.2) : Qt.darker(root.surfaceColor, 1.3)
                     border.color: addAdminCheck.checked ? "#9c27b0" : root.borderColor
                     border.width: 1
 
                     Row {
                         anchors.centerIn: parent
-                        spacing: 10
+                        spacing: 12
 
                         Rectangle {
-                            width: 22
-                            height: 22
-                            radius: 4
+                            width: 26
+                            height: 26
+                            radius: 6
                             color: addAdminCheck.checked ? "#9c27b0" : "transparent"
                             border.color: addAdminCheck.checked ? "#9c27b0" : root.textSecondaryColor
                             border.width: 2
@@ -656,18 +691,16 @@ Rectangle {
                             Text {
                                 anchors.centerIn: parent
                                 text: "✓"
-                                font.pixelSize: 14
+                                font.pixelSize: 16
                                 font.bold: true
                                 color: "white"
                                 visible: addAdminCheck.checked
                             }
-
-                            Behavior on color { ColorAnimation { duration: 150 } }
                         }
 
                         Text {
                             text: tr("Grant admin permission")
-                            font.pixelSize: 14
+                            font.pixelSize: 15
                             color: root.textColor
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -688,19 +721,19 @@ Rectangle {
 
             // Buttons
             Row {
-                spacing: 12
+                spacing: 16
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Rectangle {
-                    width: 120
-                    height: 44
-                    radius: 22
+                    width: 140
+                    height: 50
+                    radius: 10
                     color: cancelAddArea.containsMouse ? Qt.lighter(root.borderColor, 1.2) : root.borderColor
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Cancel")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         font.bold: true
                         color: root.textColor
                     }
@@ -710,22 +743,20 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: addUserPopup.close()
+                        onClicked: addUserDialog.close()
                     }
-
-                    Behavior on color { ColorAnimation { duration: 150 } }
                 }
 
                 Rectangle {
-                    width: 120
-                    height: 44
-                    radius: 22
+                    width: 140
+                    height: 50
+                    radius: 10
                     color: saveAddArea.containsMouse ? Qt.lighter(root.primaryColor, 1.1) : root.primaryColor
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Create")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         font.bold: true
                         color: "white"
                     }
@@ -741,26 +772,24 @@ Rectangle {
                                     addUsernameField.text = ""
                                     addPasswordField.text = ""
                                     addAdminCheck.checked = false
-                                    addUserPopup.close()
+                                    addUserDialog.close()
                                 }
                             }
                         }
                     }
-
-                    Behavior on color { ColorAnimation { duration: 150 } }
                 }
             }
         }
     }
 
-    // Kullanıcı Düzenleme Popup
-    Popup {
-        id: editUserPopup
+    // Kullanıcı Düzenleme Dialog
+    Dialog {
+        id: editUserDialog
+        title: ""
         anchors.centerIn: parent
-        width: 400
-        height: editUserContent.height + 40
+        width: 420
         modal: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        dim: true
 
         property int userId: 0
         property string username: ""
@@ -772,59 +801,54 @@ Rectangle {
             editPasswordField.text = ""
         }
 
+        Overlay.modal: Rectangle {
+            color: Qt.rgba(0, 0, 0, 0.7)
+        }
+
         background: Rectangle {
             color: root.surfaceColor
             radius: 16
             border.color: "#2196F3"
             border.width: 2
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#80000000"
-                shadowBlur: 1.0
-                shadowVerticalOffset: 8
-            }
         }
 
         contentItem: Column {
-            id: editUserContent
-            spacing: 20
+            spacing: 24
             padding: 24
 
             // Header
             Row {
-                spacing: 12
+                spacing: 16
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Rectangle {
-                    width: 48
-                    height: 48
-                    radius: 24
+                    width: 56
+                    height: 56
+                    radius: 28
                     color: "#2196F3"
 
                     Text {
                         anchors.centerIn: parent
                         text: "✎"
-                        font.pixelSize: 22
+                        font.pixelSize: 26
                         color: "white"
                     }
                 }
 
                 Column {
-                    spacing: 2
+                    spacing: 4
                     anchors.verticalCenter: parent.verticalCenter
 
                     Text {
                         text: tr("Edit User")
-                        font.pixelSize: 20
+                        font.pixelSize: 22
                         font.bold: true
                         color: root.textColor
                     }
 
                     Text {
                         text: tr("Update user information")
-                        font.pixelSize: 12
+                        font.pixelSize: 13
                         color: root.textSecondaryColor
                     }
                 }
@@ -841,16 +865,16 @@ Rectangle {
             Column {
                 width: parent.width - 48
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 16
+                spacing: 18
 
                 // Username
                 Column {
                     width: parent.width
-                    spacing: 6
+                    spacing: 8
 
                     Text {
                         text: tr("Username")
-                        font.pixelSize: 13
+                        font.pixelSize: 14
                         font.bold: true
                         color: root.textColor
                     }
@@ -858,13 +882,14 @@ Rectangle {
                     TextField {
                         id: editUsernameField
                         width: parent.width
-                        height: 44
-                        font.pixelSize: 14
+                        height: 48
+                        font.pixelSize: 15
                         color: root.textColor
+                        leftPadding: 15
 
                         background: Rectangle {
-                            color: Qt.darker(root.surfaceColor, 1.2)
-                            radius: 8
+                            color: Qt.darker(root.surfaceColor, 1.3)
+                            radius: 10
                             border.color: editUsernameField.activeFocus ? "#2196F3" : root.borderColor
                             border.width: editUsernameField.activeFocus ? 2 : 1
                         }
@@ -874,11 +899,11 @@ Rectangle {
                 // New Password
                 Column {
                     width: parent.width
-                    spacing: 6
+                    spacing: 8
 
                     Text {
                         text: tr("New Password")
-                        font.pixelSize: 13
+                        font.pixelSize: 14
                         font.bold: true
                         color: root.textColor
                     }
@@ -886,16 +911,17 @@ Rectangle {
                     TextField {
                         id: editPasswordField
                         width: parent.width
-                        height: 44
+                        height: 48
                         placeholderText: tr("Leave blank to keep current")
                         echoMode: TextInput.Password
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         color: root.textColor
                         placeholderTextColor: root.textSecondaryColor
+                        leftPadding: 15
 
                         background: Rectangle {
-                            color: Qt.darker(root.surfaceColor, 1.2)
-                            radius: 8
+                            color: Qt.darker(root.surfaceColor, 1.3)
+                            radius: 10
                             border.color: editPasswordField.activeFocus ? "#2196F3" : root.borderColor
                             border.width: editPasswordField.activeFocus ? 2 : 1
                         }
@@ -905,20 +931,20 @@ Rectangle {
                 // Admin checkbox
                 Rectangle {
                     width: parent.width
-                    height: 44
-                    radius: 8
-                    color: editAdminCheck.checked ? Qt.rgba(156/255, 39/255, 176/255, 0.2) : Qt.darker(root.surfaceColor, 1.2)
+                    height: 52
+                    radius: 10
+                    color: editAdminCheck.checked ? Qt.rgba(156/255, 39/255, 176/255, 0.2) : Qt.darker(root.surfaceColor, 1.3)
                     border.color: editAdminCheck.checked ? "#9c27b0" : root.borderColor
                     border.width: 1
 
                     Row {
                         anchors.centerIn: parent
-                        spacing: 10
+                        spacing: 12
 
                         Rectangle {
-                            width: 22
-                            height: 22
-                            radius: 4
+                            width: 26
+                            height: 26
+                            radius: 6
                             color: editAdminCheck.checked ? "#9c27b0" : "transparent"
                             border.color: editAdminCheck.checked ? "#9c27b0" : root.textSecondaryColor
                             border.width: 2
@@ -926,7 +952,7 @@ Rectangle {
                             Text {
                                 anchors.centerIn: parent
                                 text: "✓"
-                                font.pixelSize: 14
+                                font.pixelSize: 16
                                 font.bold: true
                                 color: "white"
                                 visible: editAdminCheck.checked
@@ -935,7 +961,7 @@ Rectangle {
 
                         Text {
                             text: tr("Admin permission")
-                            font.pixelSize: 14
+                            font.pixelSize: 15
                             color: root.textColor
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -956,19 +982,19 @@ Rectangle {
 
             // Buttons
             Row {
-                spacing: 12
+                spacing: 16
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Rectangle {
-                    width: 120
-                    height: 44
-                    radius: 22
+                    width: 140
+                    height: 50
+                    radius: 10
                     color: cancelEditArea.containsMouse ? Qt.lighter(root.borderColor, 1.2) : root.borderColor
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Cancel")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         font.bold: true
                         color: root.textColor
                     }
@@ -978,22 +1004,20 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: editUserPopup.close()
+                        onClicked: editUserDialog.close()
                     }
-
-                    Behavior on color { ColorAnimation { duration: 150 } }
                 }
 
                 Rectangle {
-                    width: 120
-                    height: 44
-                    radius: 22
+                    width: 140
+                    height: 50
+                    radius: 10
                     color: saveEditArea.containsMouse ? Qt.lighter("#2196F3", 1.1) : "#2196F3"
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Save")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         font.bold: true
                         color: "white"
                     }
@@ -1005,63 +1029,56 @@ Rectangle {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             if (editUsernameField.text.length >= 3) {
-                                if (authService.updateUser(editUserPopup.userId, editUsernameField.text, editPasswordField.text, editAdminCheck.checked)) {
-                                    editUserPopup.close()
+                                if (authService.updateUser(editUserDialog.userId, editUsernameField.text, editPasswordField.text, editAdminCheck.checked)) {
+                                    editUserDialog.close()
                                 }
                             }
                         }
                     }
-
-                    Behavior on color { ColorAnimation { duration: 150 } }
                 }
             }
         }
     }
 
-    // Silme Onay Popup
-    Popup {
-        id: deleteConfirmPopup
+    // Silme Onay Dialog
+    Dialog {
+        id: deleteConfirmDialog
+        title: ""
         anchors.centerIn: parent
-        width: 360
-        height: deleteContent.height + 40
+        width: 400
         modal: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        dim: true
 
         property int userId: 0
         property string username: ""
+
+        Overlay.modal: Rectangle {
+            color: Qt.rgba(0, 0, 0, 0.7)
+        }
 
         background: Rectangle {
             color: root.surfaceColor
             radius: 16
             border.color: "#f44336"
             border.width: 2
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#80000000"
-                shadowBlur: 1.0
-                shadowVerticalOffset: 8
-            }
         }
 
         contentItem: Column {
-            id: deleteContent
-            spacing: 20
+            spacing: 24
             padding: 24
 
             // Warning icon
             Rectangle {
-                width: 64
-                height: 64
-                radius: 32
+                width: 72
+                height: 72
+                radius: 36
                 color: "#f44336"
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Text {
                     anchors.centerIn: parent
                     text: "!"
-                    font.pixelSize: 36
+                    font.pixelSize: 42
                     font.bold: true
                     color: "white"
                 }
@@ -1073,7 +1090,7 @@ Rectangle {
 
                 Text {
                     text: tr("Delete User?")
-                    font.pixelSize: 20
+                    font.pixelSize: 22
                     font.bold: true
                     color: root.textColor
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -1081,7 +1098,7 @@ Rectangle {
 
                 Text {
                     text: tr("This action cannot be undone")
-                    font.pixelSize: 13
+                    font.pixelSize: 14
                     color: root.textSecondaryColor
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
@@ -1090,25 +1107,25 @@ Rectangle {
             // Username display
             Rectangle {
                 width: parent.width - 48
-                height: 50
-                radius: 8
-                color: Qt.rgba(244/255, 67/255, 54/255, 0.1)
+                height: 56
+                radius: 10
+                color: Qt.rgba(244/255, 67/255, 54/255, 0.15)
                 border.color: "#f44336"
                 border.width: 1
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Row {
                     anchors.centerIn: parent
-                    spacing: 10
+                    spacing: 12
 
                     Text {
                         text: "👤"
-                        font.pixelSize: 20
+                        font.pixelSize: 24
                     }
 
                     Text {
-                        text: deleteConfirmPopup.username
-                        font.pixelSize: 16
+                        text: deleteConfirmDialog.username
+                        font.pixelSize: 18
                         font.bold: true
                         color: root.textColor
                         anchors.verticalCenter: parent.verticalCenter
@@ -1118,19 +1135,19 @@ Rectangle {
 
             // Buttons
             Row {
-                spacing: 12
+                spacing: 16
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Rectangle {
-                    width: 120
-                    height: 44
-                    radius: 22
+                    width: 140
+                    height: 50
+                    radius: 10
                     color: cancelDeleteArea.containsMouse ? Qt.lighter(root.borderColor, 1.2) : root.borderColor
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Cancel")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         font.bold: true
                         color: root.textColor
                     }
@@ -1140,22 +1157,20 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: deleteConfirmPopup.close()
+                        onClicked: deleteConfirmDialog.close()
                     }
-
-                    Behavior on color { ColorAnimation { duration: 150 } }
                 }
 
                 Rectangle {
-                    width: 120
-                    height: 44
-                    radius: 22
+                    width: 140
+                    height: 50
+                    radius: 10
                     color: confirmDeleteArea.containsMouse ? Qt.lighter("#f44336", 1.1) : "#f44336"
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Delete")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         font.bold: true
                         color: "white"
                     }
@@ -1166,13 +1181,11 @@ Rectangle {
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
-                            if (authService.deleteUser(deleteConfirmPopup.userId)) {
-                                deleteConfirmPopup.close()
+                            if (authService.deleteUser(deleteConfirmDialog.userId)) {
+                                deleteConfirmDialog.close()
                             }
                         }
                     }
-
-                    Behavior on color { ColorAnimation { duration: 150 } }
                 }
             }
         }
