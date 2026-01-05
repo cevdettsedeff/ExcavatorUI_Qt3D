@@ -1,10 +1,32 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Effects
 
 Rectangle {
     id: root
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
+
+    // Theme colors
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#00bcd4"
+    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#2a2a2a"
+    property color textColor: themeManager ? themeManager.textColor : "#ffffff"
+    property color textSecondaryColor: themeManager ? themeManager.textColorSecondary : "#888888"
+    property color borderColor: themeManager ? themeManager.borderColor : "#404040"
+
+    // Dil desteği
+    property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
+
+    function tr(text) {
+        return languageTrigger >= 0 ? qsTr(text) : ""
+    }
+
+    Connections {
+        target: translationService
+        function onLanguageChanged() {
+            languageTrigger++
+        }
+    }
 
     property var pendingUsers: []
     property var allUsers: []
@@ -27,316 +49,175 @@ Rectangle {
         }
     }
 
-    // Gradient background
-    Rectangle {
-        anchors.fill: parent
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: "#1a1a1a" }
-            GradientStop { position: 1.0; color: "#0d0d0d" }
-        }
-    }
-
-    // Ana başlık
-    Rectangle {
-        id: header
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 80
-        color: "transparent"
-
-        Rectangle {
-            anchors.fill: parent
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "#2d2d2d" }
-                GradientStop { position: 1.0; color: "#1a1a1a" }
-            }
-        }
-
-        RowLayout {
-            anchors.centerIn: parent
-            spacing: 15
-
-            Text {
-                text: "👥"
-                font.pixelSize: 32
-            }
-
-            Text {
-                text: qsTr("User Management")
-                font.pixelSize: 28
-                font.bold: true
-                color: "#ffffff"
-            }
-        }
-
-        Rectangle {
-            anchors.bottom: parent.bottom
-            width: parent.width
-            height: 2
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 0.5; color: "#9c27b0" }
-                GradientStop { position: 1.0; color: "transparent" }
-            }
-        }
-    }
-
     // İçerik alanı
     ScrollView {
-        anchors.top: header.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 30
-        anchors.rightMargin: 10
+        anchors.fill: parent
+        anchors.margins: 20
         clip: true
-
-        ScrollBar.vertical: ScrollBar {
-            policy: ScrollBar.AlwaysOn
-            width: 12
-            anchors.right: parent.right
-            anchors.rightMargin: 5
-
-            background: Rectangle {
-                color: "#1a1a1a"
-                radius: 6
-                border.color: "#404040"
-                border.width: 1
-            }
-
-            contentItem: Rectangle {
-                implicitWidth: 12
-                radius: 6
-                color: parent.pressed ? "#ba68c8" : (parent.hovered ? "#9c27b0" : "#7b1fa2")
-
-                Behavior on color {
-                    ColorAnimation { duration: 200 }
-                }
-
-                // Glow effect simulation with gradient
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: parent.pressed ? "#ba68c8" : (parent.hovered ? "#ab47bc" : "#8e24aa") }
-                    GradientStop { position: 0.5; color: parent.pressed ? "#9c27b0" : (parent.hovered ? "#9c27b0" : "#7b1fa2") }
-                    GradientStop { position: 1.0; color: parent.pressed ? "#7b1fa2" : (parent.hovered ? "#8e24aa" : "#6a1b9a") }
-                }
-            }
-        }
 
         ColumnLayout {
             width: parent.width - 20
-            spacing: 30
+            spacing: 25
 
             // Onay Bekleyen Kullanıcılar
             Rectangle {
                 Layout.fillWidth: true
-                Layout.minimumHeight: pendingContent.implicitHeight + 50
-                color: "#252525"
-                radius: 15
+                Layout.minimumHeight: pendingContent.implicitHeight + 40
+                color: root.surfaceColor
+                radius: 12
                 border.color: "#ff9800"
-                border.width: 3
+                border.width: 2
 
                 Column {
                     id: pendingContent
                     anchors.fill: parent
-                    anchors.margins: 25
-                    spacing: 20
+                    anchors.margins: 20
+                    spacing: 15
 
                     // Başlık
                     RowLayout {
                         width: parent.width
-                        spacing: 15
+                        spacing: 12
 
                         Rectangle {
-                            width: 5
-                            height: 35
-                            radius: 2.5
-                            gradient: Gradient {
-                                GradientStop { position: 0.0; color: "#ffb74d" }
-                                GradientStop { position: 1.0; color: "#ff9800" }
-                            }
+                            width: 4
+                            height: 30
+                            radius: 2
+                            color: "#ff9800"
                         }
 
                         Column {
-                            spacing: 3
-                            Layout.alignment: Qt.AlignVCenter
+                            spacing: 2
+                            Layout.fillWidth: true
 
                             Text {
-                                text: qsTr("Pending Approval Users")
-                                font.pixelSize: 22
+                                text: tr("Pending Approval")
+                                font.pixelSize: 18
                                 font.bold: true
-                                color: "#ffffff"
+                                color: root.textColor
                             }
 
                             Text {
-                                text: pendingUsers.length + " " + qsTr("users waiting for approval")
-                                font.pixelSize: 14
+                                text: pendingUsers.length + " " + tr("users waiting")
+                                font.pixelSize: 12
                                 color: "#ff9800"
                             }
-                        }
-
-                        Item { Layout.fillWidth: true }
-                    }
-
-                    Rectangle {
-                        width: parent.width
-                        height: 1
-                        gradient: Gradient {
-                            orientation: Gradient.Horizontal
-                            GradientStop { position: 0.0; color: "transparent" }
-                            GradientStop { position: 0.5; color: "#404040" }
-                            GradientStop { position: 1.0; color: "transparent" }
                         }
                     }
 
                     // Pending user listesi
                     Column {
                         width: parent.width
-                        spacing: 12
+                        spacing: 10
 
                         Repeater {
                             model: pendingUsers
 
                             Rectangle {
                                 width: parent.width
-                                height: 85
-                                color: "#2a2a2a"
-                                radius: 10
-                                border.color: "#404040"
+                                height: 70
+                                color: Qt.darker(root.surfaceColor, 1.1)
+                                radius: 8
+                                border.color: root.borderColor
                                 border.width: 1
-
-                                Rectangle {
-                                    anchors.left: parent.left
-                                    width: 4
-                                    height: parent.height
-                                    radius: 10
-                                    color: "#ff9800"
-                                }
 
                                 RowLayout {
                                     anchors.fill: parent
-                                    anchors.leftMargin: 20
-                                    anchors.rightMargin: 15
-                                    spacing: 15
+                                    anchors.margins: 12
+                                    spacing: 12
 
-                                    // User icon
                                     Rectangle {
-                                        width: 50
-                                        height: 50
-                                        radius: 25
-                                        Layout.alignment: Qt.AlignVCenter
-                                        gradient: Gradient {
-                                            GradientStop { position: 0.0; color: "#ffb74d" }
-                                            GradientStop { position: 1.0; color: "#ff9800" }
-                                        }
+                                        width: 44
+                                        height: 44
+                                        radius: 22
+                                        color: "#ff9800"
 
                                         Text {
                                             anchors.centerIn: parent
-                                            text: "👤"
-                                            font.pixelSize: 24
+                                            text: modelData.username.charAt(0).toUpperCase()
+                                            font.pixelSize: 18
+                                            font.bold: true
+                                            color: "white"
                                         }
                                     }
 
-                                    // Kullanıcı bilgileri
                                     Column {
-                                        spacing: 5
-                                        Layout.alignment: Qt.AlignVCenter
+                                        spacing: 4
+                                        Layout.fillWidth: true
 
                                         Text {
                                             text: modelData.username
-                                            font.pixelSize: 17
+                                            font.pixelSize: 15
                                             font.bold: true
-                                            color: "#ffffff"
+                                            color: root.textColor
                                         }
 
-                                        Row {
-                                            spacing: 8
-
-                                            Text {
-                                                text: "🕐"
-                                                font.pixelSize: 12
-                                            }
-
-                                            Text {
-                                                text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
-                                                font.pixelSize: 13
-                                                color: "#999999"
-                                            }
+                                        Text {
+                                            text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
+                                            font.pixelSize: 11
+                                            color: root.textSecondaryColor
                                         }
                                     }
 
-                                    Item { Layout.fillWidth: true }
-
-                                    // Action buttons
                                     Row {
-                                        spacing: 10
-                                        Layout.alignment: Qt.AlignVCenter
+                                        spacing: 8
 
-                                        Button {
-                                            text: "✓ " + qsTr("Approve")
-                                            width: 110
-                                            height: 42
+                                        Rectangle {
+                                            width: 36
+                                            height: 36
+                                            radius: 18
+                                            color: approveArea.containsMouse ? "#4CAF50" : "#388e3c"
 
-                                            background: Rectangle {
-                                                radius: 8
-                                                gradient: Gradient {
-                                                    GradientStop { position: 0.0; color: parent.parent.pressed ? "#45a049" : (parent.parent.hovered ? "#5cb85c" : "#4CAF50") }
-                                                    GradientStop { position: 1.0; color: parent.parent.pressed ? "#388e3c" : (parent.parent.hovered ? "#4CAF50" : "#43a047") }
-                                                }
-                                                border.color: parent.parent.hovered ? "#66BB6A" : "transparent"
-                                                border.width: 2
-
-                                                Behavior on opacity {
-                                                    NumberAnimation { duration: 150 }
-                                                }
-                                            }
-
-                                            contentItem: Text {
-                                                text: parent.text
-                                                font.pixelSize: 13
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: "✓"
+                                                font.pixelSize: 18
                                                 font.bold: true
-                                                color: "#ffffff"
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
+                                                color: "white"
                                             }
 
-                                            onClicked: {
-                                                if (authService.approveUser(modelData.id)) {
-                                                    console.log("Kullanıcı onaylandı:", modelData.username)
+                                            MouseArea {
+                                                id: approveArea
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: {
+                                                    if (authService.approveUser(modelData.id)) {
+                                                        console.log("Kullanıcı onaylandı:", modelData.username)
+                                                    }
                                                 }
                                             }
+
+                                            Behavior on color { ColorAnimation { duration: 150 } }
                                         }
 
-                                        Button {
-                                            text: "✗ " + qsTr("Reject")
-                                            width: 110
-                                            height: 42
+                                        Rectangle {
+                                            width: 36
+                                            height: 36
+                                            radius: 18
+                                            color: rejectArea.containsMouse ? "#f44336" : "#d32f2f"
 
-                                            background: Rectangle {
-                                                radius: 8
-                                                gradient: Gradient {
-                                                    GradientStop { position: 0.0; color: parent.parent.pressed ? "#c0392b" : (parent.parent.hovered ? "#e74c3c" : "#d32f2f") }
-                                                    GradientStop { position: 1.0; color: parent.parent.pressed ? "#a93226" : (parent.parent.hovered ? "#d32f2f" : "#c62828") }
-                                                }
-                                                border.color: parent.parent.hovered ? "#e74c3c" : "transparent"
-                                                border.width: 2
-                                            }
-
-                                            contentItem: Text {
-                                                text: parent.text
-                                                font.pixelSize: 13
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: "✗"
+                                                font.pixelSize: 18
                                                 font.bold: true
-                                                color: "#ffffff"
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
+                                                color: "white"
                                             }
 
-                                            onClicked: {
-                                                if (authService.rejectUser(modelData.id)) {
-                                                    console.log("Kullanıcı reddedildi:", modelData.username)
+                                            MouseArea {
+                                                id: rejectArea
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: {
+                                                    if (authService.rejectUser(modelData.id)) {
+                                                        console.log("Kullanıcı reddedildi:", modelData.username)
+                                                    }
                                                 }
                                             }
+
+                                            Behavior on color { ColorAnimation { duration: 150 } }
                                         }
                                     }
                                 }
@@ -347,28 +228,25 @@ Rectangle {
                         Rectangle {
                             visible: pendingUsers.length === 0
                             width: parent.width
-                            height: 80
-                            color: "#2a2a2a"
-                            radius: 10
-                            border.color: "#404040"
-                            border.width: 1
+                            height: 60
+                            color: Qt.darker(root.surfaceColor, 1.1)
+                            radius: 8
 
-                            Column {
+                            Row {
                                 anchors.centerIn: parent
-                                spacing: 8
+                                spacing: 10
 
                                 Text {
                                     text: "✓"
-                                    font.pixelSize: 32
+                                    font.pixelSize: 24
                                     color: "#4CAF50"
-                                    anchors.horizontalCenter: parent.horizontalCenter
                                 }
 
                                 Text {
-                                    text: qsTr("All registration requests processed")
+                                    text: tr("No pending requests")
                                     font.pixelSize: 14
-                                    color: "#888888"
-                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    color: root.textSecondaryColor
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
                         }
@@ -379,286 +257,223 @@ Rectangle {
             // Tüm Kullanıcılar
             Rectangle {
                 Layout.fillWidth: true
-                Layout.minimumHeight: allUsersContent.implicitHeight + 50
-                color: "#252525"
-                radius: 15
-                border.color: "#00bcd4"
-                border.width: 3
+                Layout.minimumHeight: allUsersContent.implicitHeight + 40
+                color: root.surfaceColor
+                radius: 12
+                border.color: root.primaryColor
+                border.width: 2
 
                 Column {
                     id: allUsersContent
                     anchors.fill: parent
-                    anchors.margins: 25
-                    spacing: 20
+                    anchors.margins: 20
+                    spacing: 15
 
                     // Başlık ve Yeni Kullanıcı butonu
                     RowLayout {
                         width: parent.width
-                        spacing: 15
+                        spacing: 12
 
                         Rectangle {
-                            width: 5
-                            height: 35
-                            radius: 2.5
-                            gradient: Gradient {
-                                GradientStop { position: 0.0; color: "#4dd0e1" }
-                                GradientStop { position: 1.0; color: "#00bcd4" }
-                            }
+                            width: 4
+                            height: 30
+                            radius: 2
+                            color: root.primaryColor
                         }
 
                         Column {
-                            spacing: 3
-                            Layout.alignment: Qt.AlignVCenter
+                            spacing: 2
+                            Layout.fillWidth: true
 
                             Text {
-                                text: qsTr("All Users")
-                                font.pixelSize: 22
+                                text: tr("All Users")
+                                font.pixelSize: 18
                                 font.bold: true
-                                color: "#ffffff"
+                                color: root.textColor
                             }
 
                             Text {
-                                text: allUsers.length + " " + qsTr("registered users")
-                                font.pixelSize: 14
-                                color: "#00bcd4"
+                                text: allUsers.length + " " + tr("registered")
+                                font.pixelSize: 12
+                                color: root.primaryColor
                             }
                         }
 
-                        Item { Layout.fillWidth: true }
+                        Rectangle {
+                            width: addUserRow.width + 24
+                            height: 38
+                            radius: 19
+                            color: addUserArea.containsMouse ? Qt.lighter(root.primaryColor, 1.1) : root.primaryColor
 
-                        Button {
-                            text: "+ " + qsTr("Add New User")
-                            width: 200
-                            height: 42
-                            Layout.alignment: Qt.AlignVCenter
+                            Row {
+                                id: addUserRow
+                                anchors.centerIn: parent
+                                spacing: 6
 
-                            background: Rectangle {
-                                radius: 8
-                                gradient: Gradient {
-                                    GradientStop { position: 0.0; color: parent.parent.pressed ? "#0097a7" : (parent.parent.hovered ? "#00acc1" : "#00bcd4") }
-                                    GradientStop { position: 1.0; color: parent.parent.pressed ? "#00838f" : (parent.parent.hovered ? "#0097a7" : "#00acc1") }
+                                Text {
+                                    text: "+"
+                                    font.pixelSize: 18
+                                    font.bold: true
+                                    color: "white"
                                 }
-                                border.color: parent.parent.hovered ? "#4dd0e1" : "transparent"
-                                border.width: 2
+
+                                Text {
+                                    text: tr("Add User")
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: "white"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
                             }
 
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 14
-                                font.bold: true
-                                color: "#ffffff"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
+                            MouseArea {
+                                id: addUserArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: addUserPopup.open()
                             }
 
-                            onClicked: {
-                                addUserDialog.open()
-                            }
-                        }
-                    }
-
-                    Rectangle {
-                        width: parent.width
-                        height: 1
-                        gradient: Gradient {
-                            orientation: Gradient.Horizontal
-                            GradientStop { position: 0.0; color: "transparent" }
-                            GradientStop { position: 0.5; color: "#404040" }
-                            GradientStop { position: 1.0; color: "transparent" }
+                            Behavior on color { ColorAnimation { duration: 150 } }
                         }
                     }
 
                     // Kullanıcı listesi
                     Column {
                         width: parent.width
-                        spacing: 12
+                        spacing: 10
 
                         Repeater {
                             model: allUsers
 
                             Rectangle {
                                 width: parent.width
-                                height: 90
-                                color: "#2a2a2a"
-                                radius: 10
-                                border.color: "#404040"
+                                height: 70
+                                color: Qt.darker(root.surfaceColor, 1.1)
+                                radius: 8
+                                border.color: root.borderColor
                                 border.width: 1
-
-                                Rectangle {
-                                    anchors.left: parent.left
-                                    width: 4
-                                    height: parent.height
-                                    radius: 10
-                                    color: modelData.isAdmin ? "#9c27b0" : "#00bcd4"
-                                }
 
                                 RowLayout {
                                     anchors.fill: parent
-                                    anchors.leftMargin: 20
-                                    anchors.rightMargin: 15
-                                    spacing: 15
+                                    anchors.margins: 12
+                                    spacing: 12
 
-                                    // User icon
                                     Rectangle {
-                                        width: 55
-                                        height: 55
-                                        radius: 27.5
-                                        Layout.alignment: Qt.AlignVCenter
-                                        gradient: Gradient {
-                                            GradientStop { position: 0.0; color: modelData.isAdmin ? "#ba68c8" : "#4dd0e1" }
-                                            GradientStop { position: 1.0; color: modelData.isAdmin ? "#9c27b0" : "#00bcd4" }
-                                        }
+                                        width: 44
+                                        height: 44
+                                        radius: 22
+                                        color: modelData.isAdmin ? "#9c27b0" : root.primaryColor
 
                                         Text {
                                             anchors.centerIn: parent
-                                            text: modelData.isAdmin ? "👑" : "👤"
-                                            font.pixelSize: 28
+                                            text: modelData.isAdmin ? "👑" : modelData.username.charAt(0).toUpperCase()
+                                            font.pixelSize: modelData.isAdmin ? 20 : 18
+                                            font.bold: true
+                                            color: "white"
                                         }
                                     }
 
-                                    // Kullanıcı bilgileri
                                     Column {
-                                        spacing: 6
-                                        Layout.alignment: Qt.AlignVCenter
-                                        Layout.preferredWidth: 250
-
-                                        Row {
-                                            spacing: 10
-
-                                            Text {
-                                                text: modelData.username
-                                                font.pixelSize: 17
-                                                font.bold: true
-                                                color: "#ffffff"
-                                            }
-
-                                            Rectangle {
-                                                visible: modelData.isAdmin
-                                                width: 65
-                                                height: 22
-                                                radius: 11
-                                                gradient: Gradient {
-                                                    GradientStop { position: 0.0; color: "#ba68c8" }
-                                                    GradientStop { position: 1.0; color: "#9c27b0" }
-                                                }
-
-                                                Text {
-                                                    text: "ADMIN"
-                                                    font.pixelSize: 10
-                                                    font.bold: true
-                                                    color: "#ffffff"
-                                                    anchors.centerIn: parent
-                                                }
-                                            }
-
-                                            Rectangle {
-                                                visible: !modelData.approved
-                                                width: 80
-                                                height: 22
-                                                radius: 11
-                                                color: "#ff9800"
-
-                                                Text {
-                                                    text: qsTr("PENDING")
-                                                    font.pixelSize: 9
-                                                    font.bold: true
-                                                    color: "#ffffff"
-                                                    anchors.centerIn: parent
-                                                }
-                                            }
-                                        }
+                                        spacing: 4
+                                        Layout.fillWidth: true
 
                                         Row {
                                             spacing: 8
 
                                             Text {
-                                                text: "📅"
-                                                font.pixelSize: 12
+                                                text: modelData.username
+                                                font.pixelSize: 15
+                                                font.bold: true
+                                                color: root.textColor
                                             }
 
-                                            Text {
-                                                text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
-                                                font.pixelSize: 12
-                                                color: "#888888"
+                                            Rectangle {
+                                                visible: modelData.isAdmin
+                                                width: adminLabel.width + 10
+                                                height: 18
+                                                radius: 9
+                                                color: "#9c27b0"
+
+                                                Text {
+                                                    id: adminLabel
+                                                    anchors.centerIn: parent
+                                                    text: "ADMIN"
+                                                    font.pixelSize: 9
+                                                    font.bold: true
+                                                    color: "white"
+                                                }
                                             }
+                                        }
+
+                                        Text {
+                                            text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
+                                            font.pixelSize: 11
+                                            color: root.textSecondaryColor
                                         }
                                     }
 
-                                    Item { Layout.fillWidth: true }
-
-                                    // Action buttons
                                     Row {
-                                        spacing: 10
-                                        Layout.alignment: Qt.AlignVCenter
+                                        spacing: 8
 
-                                        Button {
-                                            text: "✎ " + qsTr("Edit")
-                                            width: 100
-                                            height: 38
+                                        // Edit button
+                                        Rectangle {
+                                            width: 36
+                                            height: 36
+                                            radius: 8
+                                            color: editArea.containsMouse ? "#2196F3" : "#1976d2"
 
-                                            background: Rectangle {
-                                                radius: 8
-                                                gradient: Gradient {
-                                                    GradientStop { position: 0.0; color: parent.parent.pressed ? "#1976d2" : (parent.parent.hovered ? "#2196F3" : "#1565c0") }
-                                                    GradientStop { position: 1.0; color: parent.parent.pressed ? "#1565c0" : (parent.parent.hovered ? "#1976d2" : "#0d47a1") }
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: "✎"
+                                                font.pixelSize: 16
+                                                color: "white"
+                                            }
+
+                                            MouseArea {
+                                                id: editArea
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: {
+                                                    editUserPopup.userId = modelData.id
+                                                    editUserPopup.username = modelData.username
+                                                    editUserPopup.isAdmin = modelData.isAdmin
+                                                    editUserPopup.open()
                                                 }
-                                                border.color: parent.parent.hovered ? "#42a5f5" : "transparent"
-                                                border.width: 2
                                             }
 
-                                            contentItem: Text {
-                                                text: parent.text
-                                                font.pixelSize: 13
-                                                font.bold: true
-                                                color: "#ffffff"
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
-                                            }
-
-                                            onClicked: {
-                                                editUserDialog.currentUserId = modelData.id
-                                                editUserDialog.currentUsername = modelData.username
-                                                editUserDialog.currentIsAdmin = modelData.isAdmin
-                                                editUserDialog.open()
-                                            }
+                                            Behavior on color { ColorAnimation { duration: 150 } }
                                         }
 
-                                        Button {
-                                            text: "✗ " + qsTr("Delete")
-                                            width: 80
-                                            height: 38
-                                            enabled: modelData.username !== authService.currentUser
+                                        // Delete button
+                                        Rectangle {
+                                            width: 36
+                                            height: 36
+                                            radius: 8
+                                            color: deleteArea.enabled ? (deleteArea.containsMouse ? "#f44336" : "#d32f2f") : "#555555"
+                                            opacity: deleteArea.enabled ? 1.0 : 0.5
 
-                                            background: Rectangle {
-                                                radius: 8
-                                                gradient: Gradient {
-                                                    GradientStop {
-                                                        position: 0.0
-                                                        color: parent.parent.enabled ? (parent.parent.pressed ? "#c0392b" : (parent.parent.hovered ? "#e74c3c" : "#d32f2f")) : "#404040"
-                                                    }
-                                                    GradientStop {
-                                                        position: 1.0
-                                                        color: parent.parent.enabled ? (parent.parent.pressed ? "#a93226" : (parent.parent.hovered ? "#d32f2f" : "#c62828")) : "#303030"
-                                                    }
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: "🗑"
+                                                font.pixelSize: 16
+                                            }
+
+                                            MouseArea {
+                                                id: deleteArea
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                                enabled: modelData.username !== authService.currentUser
+                                                onClicked: {
+                                                    deleteConfirmPopup.userId = modelData.id
+                                                    deleteConfirmPopup.username = modelData.username
+                                                    deleteConfirmPopup.open()
                                                 }
-                                                border.color: parent.parent.enabled && parent.parent.hovered ? "#e74c3c" : "transparent"
-                                                border.width: 2
                                             }
 
-                                            contentItem: Text {
-                                                text: parent.text
-                                                font.pixelSize: 13
-                                                font.bold: true
-                                                color: parent.enabled ? "#ffffff" : "#666666"
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
-                                            }
-
-                                            onClicked: {
-                                                deleteConfirmDialog.userIdToDelete = modelData.id
-                                                deleteConfirmDialog.usernameToDelete = modelData.username
-                                                deleteConfirmDialog.open()
-                                            }
+                                            Behavior on color { ColorAnimation { duration: 150 } }
                                         }
                                     }
                                 }
@@ -670,372 +485,695 @@ Rectangle {
         }
     }
 
-    // Yeni Kullanıcı Ekleme Dialog
-    Dialog {
-        id: addUserDialog
-        title: qsTr("Add New User")
-        modal: true
-        anchors.centerIn: parent
-        width: 450
+    // ==================== POPUP'LAR ====================
 
-        property alias username: usernameInput.text
-        property alias password: passwordInput.text
-        property alias isAdmin: adminCheckbox.checked
-
-        background: Rectangle {
-            color: "#2a2a2a"
-            radius: 12
-            border.color: "#00bcd4"
-            border.width: 3
-        }
-
-        header: Rectangle {
-            height: 60
-            color: "transparent"
-            radius: 12
-
-            Rectangle {
-                anchors.fill: parent
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#00bcd4" }
-                    GradientStop { position: 1.0; color: "#0097a7" }
-                }
-                radius: 12
-            }
-
-            Text {
-                anchors.centerIn: parent
-                text: "➕ " + qsTr("Add New User")
-                font.pixelSize: 18
-                font.bold: true
-                color: "#ffffff"
-            }
-        }
-
-        ColumnLayout {
-            spacing: 20
-            width: parent.width
-            anchors.margins: 20
-
-            TextField {
-                id: usernameInput
-                Layout.fillWidth: true
-                placeholderText: qsTr("Username")
-                font.pixelSize: 14
-                height: 45
-
-                background: Rectangle {
-                    color: "#1a1a1a"
-                    radius: 8
-                    border.color: usernameInput.activeFocus ? "#00bcd4" : "#404040"
-                    border.width: 2
-
-                    Behavior on border.color {
-                        ColorAnimation { duration: 200 }
-                    }
-                }
-
-                color: "#ffffff"
-            }
-
-            TextField {
-                id: passwordInput
-                Layout.fillWidth: true
-                placeholderText: qsTr("Password (minimum 6 characters)")
-                echoMode: TextInput.Password
-                font.pixelSize: 14
-                height: 45
-
-                background: Rectangle {
-                    color: "#1a1a1a"
-                    radius: 8
-                    border.color: passwordInput.activeFocus ? "#00bcd4" : "#404040"
-                    border.width: 2
-
-                    Behavior on border.color {
-                        ColorAnimation { duration: 200 }
-                    }
-                }
-
-                color: "#ffffff"
-            }
-
-            CheckBox {
-                id: adminCheckbox
-                text: qsTr("Grant Admin Permission")
-                font.pixelSize: 14
-
-                indicator: Rectangle {
-                    width: 22
-                    height: 22
-                    radius: 4
-                    border.color: adminCheckbox.checked ? "#9c27b0" : "#505050"
-                    border.width: 2
-                    color: adminCheckbox.checked ? "#9c27b0" : "transparent"
-
-                    Text {
-                        visible: adminCheckbox.checked
-                        text: "✓"
-                        anchors.centerIn: parent
-                        font.pixelSize: 14
-                        font.bold: true
-                        color: "#ffffff"
-                    }
-
-                    Behavior on color {
-                        ColorAnimation { duration: 150 }
-                    }
-                }
-
-                contentItem: Text {
-                    text: adminCheckbox.text
-                    font: adminCheckbox.font
-                    color: "#ffffff"
-                    leftPadding: adminCheckbox.indicator.width + 8
-                    verticalAlignment: Text.AlignVCenter
-                }
-            }
-        }
-
-        standardButtons: Dialog.Ok | Dialog.Cancel
-
-        onAccepted: {
-            if (username.length >= 3 && password.length >= 6) {
-                if (authService.createUserByAdmin(username, password, isAdmin)) {
-                    console.log("Yeni kullanıcı eklendi:", username)
-                    usernameInput.text = ""
-                    passwordInput.text = ""
-                    adminCheckbox.checked = false
-                }
-            } else {
-                console.log("Geçersiz kullanıcı bilgileri")
-            }
-        }
-    }
-
-    // Kullanıcı Düzenleme Dialog
-    Dialog {
-        id: editUserDialog
-        title: qsTr("Edit User")
-        modal: true
-        anchors.centerIn: parent
-        width: 450
-
-        property int currentUserId: 0
-        property alias currentUsername: editUsernameInput.text
-        property alias currentIsAdmin: editAdminCheckbox.checked
-
-        background: Rectangle {
-            color: "#2a2a2a"
-            radius: 12
-            border.color: "#2196F3"
-            border.width: 3
-        }
-
-        header: Rectangle {
-            height: 60
-            color: "transparent"
-            radius: 12
-
-            Rectangle {
-                anchors.fill: parent
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#2196F3" }
-                    GradientStop { position: 1.0; color: "#1976d2" }
-                }
-                radius: 12
-            }
-
-            Text {
-                anchors.centerIn: parent
-                text: "✎ " + qsTr("Edit User")
-                font.pixelSize: 18
-                font.bold: true
-                color: "#ffffff"
-            }
-        }
-
-        ColumnLayout {
-            spacing: 20
-            width: parent.width
-            anchors.margins: 20
-
-            TextField {
-                id: editUsernameInput
-                Layout.fillWidth: true
-                placeholderText: qsTr("Username")
-                font.pixelSize: 14
-                height: 45
-
-                background: Rectangle {
-                    color: "#1a1a1a"
-                    radius: 8
-                    border.color: editUsernameInput.activeFocus ? "#2196F3" : "#404040"
-                    border.width: 2
-
-                    Behavior on border.color {
-                        ColorAnimation { duration: 200 }
-                    }
-                }
-
-                color: "#ffffff"
-            }
-
-            TextField {
-                id: editPasswordInput
-                Layout.fillWidth: true
-                placeholderText: qsTr("New Password (can be left blank)")
-                echoMode: TextInput.Password
-                font.pixelSize: 14
-                height: 45
-
-                background: Rectangle {
-                    color: "#1a1a1a"
-                    radius: 8
-                    border.color: editPasswordInput.activeFocus ? "#2196F3" : "#404040"
-                    border.width: 2
-
-                    Behavior on border.color {
-                        ColorAnimation { duration: 200 }
-                    }
-                }
-
-                color: "#ffffff"
-            }
-
-            CheckBox {
-                id: editAdminCheckbox
-                text: qsTr("Admin Permission")
-                font.pixelSize: 14
-
-                indicator: Rectangle {
-                    width: 22
-                    height: 22
-                    radius: 4
-                    border.color: editAdminCheckbox.checked ? "#9c27b0" : "#505050"
-                    border.width: 2
-                    color: editAdminCheckbox.checked ? "#9c27b0" : "transparent"
-
-                    Text {
-                        visible: editAdminCheckbox.checked
-                        text: "✓"
-                        anchors.centerIn: parent
-                        font.pixelSize: 14
-                        font.bold: true
-                        color: "#ffffff"
-                    }
-
-                    Behavior on color {
-                        ColorAnimation { duration: 150 }
-                    }
-                }
-
-                contentItem: Text {
-                    text: editAdminCheckbox.text
-                    font: editAdminCheckbox.font
-                    color: "#ffffff"
-                    leftPadding: editAdminCheckbox.indicator.width + 8
-                    verticalAlignment: Text.AlignVCenter
-                }
-            }
-        }
-
-        standardButtons: Dialog.Ok | Dialog.Cancel
-
-        onAccepted: {
-            if (editUsernameInput.text.length >= 3) {
-                if (authService.updateUser(currentUserId, editUsernameInput.text, editPasswordInput.text, editAdminCheckbox.checked)) {
-                    console.log("Kullanıcı güncellendi")
-                    editPasswordInput.text = ""
-                }
-            }
-        }
-    }
-
-    // Silme Onay Dialog
-    Dialog {
-        id: deleteConfirmDialog
-        title: qsTr("Delete User")
-        modal: true
+    // Yeni Kullanıcı Ekleme Popup
+    Popup {
+        id: addUserPopup
         anchors.centerIn: parent
         width: 400
-
-        property int userIdToDelete: 0
-        property string usernameToDelete: ""
+        height: addUserContent.height + 40
+        modal: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         background: Rectangle {
-            color: "#2a2a2a"
-            radius: 12
-            border.color: "#d32f2f"
-            border.width: 3
+            color: root.surfaceColor
+            radius: 16
+            border.color: root.primaryColor
+            border.width: 2
+
+            // Shadow effect
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "#80000000"
+                shadowBlur: 1.0
+                shadowVerticalOffset: 8
+            }
         }
 
-        header: Rectangle {
-            height: 60
-            color: "transparent"
-            radius: 12
+        contentItem: Column {
+            id: addUserContent
+            spacing: 20
+            padding: 24
 
-            Rectangle {
-                anchors.fill: parent
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#e74c3c" }
-                    GradientStop { position: 1.0; color: "#d32f2f" }
+            // Header
+            Row {
+                spacing: 12
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 48
+                    height: 48
+                    radius: 24
+                    color: root.primaryColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "👤"
+                        font.pixelSize: 24
+                    }
                 }
-                radius: 12
-            }
 
-            Text {
-                anchors.centerIn: parent
-                text: "⚠️ " + qsTr("Delete User")
-                font.pixelSize: 18
-                font.bold: true
-                color: "#ffffff"
-            }
-        }
+                Column {
+                    spacing: 2
+                    anchors.verticalCenter: parent.verticalCenter
 
-        Column {
-            spacing: 15
-            width: parent.width
+                    Text {
+                        text: tr("Add New User")
+                        font.pixelSize: 20
+                        font.bold: true
+                        color: root.textColor
+                    }
 
-            Text {
-                text: qsTr("Are you sure you want to delete the following user?")
-                font.pixelSize: 14
-                color: "#cccccc"
-                wrapMode: Text.WordWrap
-                width: parent.width
+                    Text {
+                        text: tr("Create a new user account")
+                        font.pixelSize: 12
+                        color: root.textSecondaryColor
+                    }
+                }
             }
 
             Rectangle {
-                width: parent.width
-                height: 50
-                color: "#1a1a1a"
-                radius: 8
-                border.color: "#d32f2f"
-                border.width: 1
+                width: parent.width - 48
+                height: 1
+                color: root.borderColor
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            // Form
+            Column {
+                width: parent.width - 48
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 16
+
+                // Username
+                Column {
+                    width: parent.width
+                    spacing: 6
+
+                    Text {
+                        text: tr("Username")
+                        font.pixelSize: 13
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    TextField {
+                        id: addUsernameField
+                        width: parent.width
+                        height: 44
+                        placeholderText: tr("Enter username...")
+                        font.pixelSize: 14
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
+
+                        background: Rectangle {
+                            color: Qt.darker(root.surfaceColor, 1.2)
+                            radius: 8
+                            border.color: addUsernameField.activeFocus ? root.primaryColor : root.borderColor
+                            border.width: addUsernameField.activeFocus ? 2 : 1
+
+                            Behavior on border.color { ColorAnimation { duration: 150 } }
+                        }
+                    }
+                }
+
+                // Password
+                Column {
+                    width: parent.width
+                    spacing: 6
+
+                    Text {
+                        text: tr("Password")
+                        font.pixelSize: 13
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    TextField {
+                        id: addPasswordField
+                        width: parent.width
+                        height: 44
+                        placeholderText: tr("Minimum 6 characters")
+                        echoMode: TextInput.Password
+                        font.pixelSize: 14
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
+
+                        background: Rectangle {
+                            color: Qt.darker(root.surfaceColor, 1.2)
+                            radius: 8
+                            border.color: addPasswordField.activeFocus ? root.primaryColor : root.borderColor
+                            border.width: addPasswordField.activeFocus ? 2 : 1
+
+                            Behavior on border.color { ColorAnimation { duration: 150 } }
+                        }
+                    }
+                }
+
+                // Admin checkbox
+                Rectangle {
+                    width: parent.width
+                    height: 44
+                    radius: 8
+                    color: addAdminCheck.checked ? Qt.rgba(156/255, 39/255, 176/255, 0.2) : Qt.darker(root.surfaceColor, 1.2)
+                    border.color: addAdminCheck.checked ? "#9c27b0" : root.borderColor
+                    border.width: 1
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 10
+
+                        Rectangle {
+                            width: 22
+                            height: 22
+                            radius: 4
+                            color: addAdminCheck.checked ? "#9c27b0" : "transparent"
+                            border.color: addAdminCheck.checked ? "#9c27b0" : root.textSecondaryColor
+                            border.width: 2
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "✓"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "white"
+                                visible: addAdminCheck.checked
+                            }
+
+                            Behavior on color { ColorAnimation { duration: 150 } }
+                        }
+
+                        Text {
+                            text: tr("Grant admin permission")
+                            font.pixelSize: 14
+                            color: root.textColor
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: addAdminCheck.checked = !addAdminCheck.checked
+                    }
+
+                    CheckBox {
+                        id: addAdminCheck
+                        visible: false
+                    }
+                }
+            }
+
+            // Buttons
+            Row {
+                spacing: 12
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 120
+                    height: 44
+                    radius: 22
+                    color: cancelAddArea.containsMouse ? Qt.lighter(root.borderColor, 1.2) : root.borderColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Cancel")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    MouseArea {
+                        id: cancelAddArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: addUserPopup.close()
+                    }
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                }
+
+                Rectangle {
+                    width: 120
+                    height: 44
+                    radius: 22
+                    color: saveAddArea.containsMouse ? Qt.lighter(root.primaryColor, 1.1) : root.primaryColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Create")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: "white"
+                    }
+
+                    MouseArea {
+                        id: saveAddArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (addUsernameField.text.length >= 3 && addPasswordField.text.length >= 6) {
+                                if (authService.createUserByAdmin(addUsernameField.text, addPasswordField.text, addAdminCheck.checked)) {
+                                    addUsernameField.text = ""
+                                    addPasswordField.text = ""
+                                    addAdminCheck.checked = false
+                                    addUserPopup.close()
+                                }
+                            }
+                        }
+                    }
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                }
+            }
+        }
+    }
+
+    // Kullanıcı Düzenleme Popup
+    Popup {
+        id: editUserPopup
+        anchors.centerIn: parent
+        width: 400
+        height: editUserContent.height + 40
+        modal: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        property int userId: 0
+        property string username: ""
+        property bool isAdmin: false
+
+        onOpened: {
+            editUsernameField.text = username
+            editAdminCheck.checked = isAdmin
+            editPasswordField.text = ""
+        }
+
+        background: Rectangle {
+            color: root.surfaceColor
+            radius: 16
+            border.color: "#2196F3"
+            border.width: 2
+
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "#80000000"
+                shadowBlur: 1.0
+                shadowVerticalOffset: 8
+            }
+        }
+
+        contentItem: Column {
+            id: editUserContent
+            spacing: 20
+            padding: 24
+
+            // Header
+            Row {
+                spacing: 12
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 48
+                    height: 48
+                    radius: 24
+                    color: "#2196F3"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "✎"
+                        font.pixelSize: 22
+                        color: "white"
+                    }
+                }
+
+                Column {
+                    spacing: 2
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Text {
+                        text: tr("Edit User")
+                        font.pixelSize: 20
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    Text {
+                        text: tr("Update user information")
+                        font.pixelSize: 12
+                        color: root.textSecondaryColor
+                    }
+                }
+            }
+
+            Rectangle {
+                width: parent.width - 48
+                height: 1
+                color: root.borderColor
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            // Form
+            Column {
+                width: parent.width - 48
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 16
+
+                // Username
+                Column {
+                    width: parent.width
+                    spacing: 6
+
+                    Text {
+                        text: tr("Username")
+                        font.pixelSize: 13
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    TextField {
+                        id: editUsernameField
+                        width: parent.width
+                        height: 44
+                        font.pixelSize: 14
+                        color: root.textColor
+
+                        background: Rectangle {
+                            color: Qt.darker(root.surfaceColor, 1.2)
+                            radius: 8
+                            border.color: editUsernameField.activeFocus ? "#2196F3" : root.borderColor
+                            border.width: editUsernameField.activeFocus ? 2 : 1
+                        }
+                    }
+                }
+
+                // New Password
+                Column {
+                    width: parent.width
+                    spacing: 6
+
+                    Text {
+                        text: tr("New Password")
+                        font.pixelSize: 13
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    TextField {
+                        id: editPasswordField
+                        width: parent.width
+                        height: 44
+                        placeholderText: tr("Leave blank to keep current")
+                        echoMode: TextInput.Password
+                        font.pixelSize: 14
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
+
+                        background: Rectangle {
+                            color: Qt.darker(root.surfaceColor, 1.2)
+                            radius: 8
+                            border.color: editPasswordField.activeFocus ? "#2196F3" : root.borderColor
+                            border.width: editPasswordField.activeFocus ? 2 : 1
+                        }
+                    }
+                }
+
+                // Admin checkbox
+                Rectangle {
+                    width: parent.width
+                    height: 44
+                    radius: 8
+                    color: editAdminCheck.checked ? Qt.rgba(156/255, 39/255, 176/255, 0.2) : Qt.darker(root.surfaceColor, 1.2)
+                    border.color: editAdminCheck.checked ? "#9c27b0" : root.borderColor
+                    border.width: 1
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 10
+
+                        Rectangle {
+                            width: 22
+                            height: 22
+                            radius: 4
+                            color: editAdminCheck.checked ? "#9c27b0" : "transparent"
+                            border.color: editAdminCheck.checked ? "#9c27b0" : root.textSecondaryColor
+                            border.width: 2
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "✓"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "white"
+                                visible: editAdminCheck.checked
+                            }
+                        }
+
+                        Text {
+                            text: tr("Admin permission")
+                            font.pixelSize: 14
+                            color: root.textColor
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: editAdminCheck.checked = !editAdminCheck.checked
+                    }
+
+                    CheckBox {
+                        id: editAdminCheck
+                        visible: false
+                    }
+                }
+            }
+
+            // Buttons
+            Row {
+                spacing: 12
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 120
+                    height: 44
+                    radius: 22
+                    color: cancelEditArea.containsMouse ? Qt.lighter(root.borderColor, 1.2) : root.borderColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Cancel")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    MouseArea {
+                        id: cancelEditArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: editUserPopup.close()
+                    }
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                }
+
+                Rectangle {
+                    width: 120
+                    height: 44
+                    radius: 22
+                    color: saveEditArea.containsMouse ? Qt.lighter("#2196F3", 1.1) : "#2196F3"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Save")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: "white"
+                    }
+
+                    MouseArea {
+                        id: saveEditArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (editUsernameField.text.length >= 3) {
+                                if (authService.updateUser(editUserPopup.userId, editUsernameField.text, editPasswordField.text, editAdminCheck.checked)) {
+                                    editUserPopup.close()
+                                }
+                            }
+                        }
+                    }
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                }
+            }
+        }
+    }
+
+    // Silme Onay Popup
+    Popup {
+        id: deleteConfirmPopup
+        anchors.centerIn: parent
+        width: 360
+        height: deleteContent.height + 40
+        modal: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        property int userId: 0
+        property string username: ""
+
+        background: Rectangle {
+            color: root.surfaceColor
+            radius: 16
+            border.color: "#f44336"
+            border.width: 2
+
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "#80000000"
+                shadowBlur: 1.0
+                shadowVerticalOffset: 8
+            }
+        }
+
+        contentItem: Column {
+            id: deleteContent
+            spacing: 20
+            padding: 24
+
+            // Warning icon
+            Rectangle {
+                width: 64
+                height: 64
+                radius: 32
+                color: "#f44336"
+                anchors.horizontalCenter: parent.horizontalCenter
 
                 Text {
                     anchors.centerIn: parent
-                    text: "👤 " + deleteConfirmDialog.usernameToDelete
-                    font.pixelSize: 16
+                    text: "!"
+                    font.pixelSize: 36
                     font.bold: true
-                    color: "#ffffff"
+                    color: "white"
                 }
             }
 
-            Text {
-                text: qsTr("This action cannot be undone!")
-                font.pixelSize: 12
-                color: "#ff9800"
-                font.italic: true
+            Column {
+                spacing: 8
                 anchors.horizontalCenter: parent.horizontalCenter
+
+                Text {
+                    text: tr("Delete User?")
+                    font.pixelSize: 20
+                    font.bold: true
+                    color: root.textColor
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Text {
+                    text: tr("This action cannot be undone")
+                    font.pixelSize: 13
+                    color: root.textSecondaryColor
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
             }
-        }
 
-        standardButtons: Dialog.Yes | Dialog.No
+            // Username display
+            Rectangle {
+                width: parent.width - 48
+                height: 50
+                radius: 8
+                color: Qt.rgba(244/255, 67/255, 54/255, 0.1)
+                border.color: "#f44336"
+                border.width: 1
+                anchors.horizontalCenter: parent.horizontalCenter
 
-        onAccepted: {
-            if (authService.deleteUser(userIdToDelete)) {
-                console.log("Kullanıcı silindi:", usernameToDelete)
+                Row {
+                    anchors.centerIn: parent
+                    spacing: 10
+
+                    Text {
+                        text: "👤"
+                        font.pixelSize: 20
+                    }
+
+                    Text {
+                        text: deleteConfirmPopup.username
+                        font.pixelSize: 16
+                        font.bold: true
+                        color: root.textColor
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+            }
+
+            // Buttons
+            Row {
+                spacing: 12
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 120
+                    height: 44
+                    radius: 22
+                    color: cancelDeleteArea.containsMouse ? Qt.lighter(root.borderColor, 1.2) : root.borderColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Cancel")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    MouseArea {
+                        id: cancelDeleteArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: deleteConfirmPopup.close()
+                    }
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                }
+
+                Rectangle {
+                    width: 120
+                    height: 44
+                    radius: 22
+                    color: confirmDeleteArea.containsMouse ? Qt.lighter("#f44336", 1.1) : "#f44336"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Delete")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: "white"
+                    }
+
+                    MouseArea {
+                        id: confirmDeleteArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (authService.deleteUser(deleteConfirmPopup.userId)) {
+                                deleteConfirmPopup.close()
+                            }
+                        }
+                    }
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                }
             }
         }
     }
