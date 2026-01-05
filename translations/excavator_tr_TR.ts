@@ -481,5 +481,229 @@ Redirecting to login screen...</source>
 
 Giriş ekranına yönlendiriliyorsunuz...</translation>
     </message>
+    <message>
+        <source>Pending Approval</source>
+        <translation>Onay Bekleyenler</translation>
+    </message>
+    <message>
+        <source>users waiting</source>
+        <translation>kullanıcı bekliyor</translation>
+    </message>
+    <message>
+        <source>No pending requests</source>
+        <translation>Bekleyen istek yok</translation>
+    </message>
+    <message>
+        <source>registered</source>
+        <translation>kayıtlı</translation>
+    </message>
+    <message>
+        <source>Add User</source>
+        <translation>Kullanıcı Ekle</translation>
+    </message>
+    <message>
+        <source>Create a new user account</source>
+        <translation>Yeni kullanıcı hesabı oluştur</translation>
+    </message>
+    <message>
+        <source>Enter username...</source>
+        <translation>Kullanıcı adı girin...</translation>
+    </message>
+    <message>
+        <source>Minimum 6 characters</source>
+        <translation>Minimum 6 karakter</translation>
+    </message>
+    <message>
+        <source>Grant admin permission</source>
+        <translation>Admin yetkisi ver</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>İptal</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>Oluştur</translation>
+    </message>
+    <message>
+        <source>Update user information</source>
+        <translation>Kullanıcı bilgilerini güncelle</translation>
+    </message>
+    <message>
+        <source>Leave blank to keep current</source>
+        <translation>Mevcut şifreyi korumak için boş bırakın</translation>
+    </message>
+    <message>
+        <source>Admin permission</source>
+        <translation>Admin yetkisi</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>Kaydet</translation>
+    </message>
+    <message>
+        <source>Delete User?</source>
+        <translation>Kullanıcı Silinsin mi?</translation>
+    </message>
+    <message>
+        <source>This action cannot be undone</source>
+        <translation>Bu işlem geri alınamaz</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Ayarlar</translation>
+    </message>
+    <message>
+        <source>Sensors</source>
+        <translation>Sensörler</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation>Görünüm</translation>
+    </message>
+    <message>
+        <source>Language &amp; Units</source>
+        <translation>Dil &amp; Birimler</translation>
+    </message>
+    <message>
+        <source>Security</source>
+        <translation>Güvenlik</translation>
+    </message>
+    <message>
+        <source>Users</source>
+        <translation>Kullanıcılar</translation>
+    </message>
+    <message>
+        <source>Soon</source>
+        <translation>Yakında</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation>Geri</translation>
+    </message>
+    <message>
+        <source>Dig Area</source>
+        <translation>Kazı Alanı</translation>
+    </message>
+    <message>
+        <source>Alarms</source>
+        <translation>Alarmlar</translation>
+    </message>
+    <message>
+        <source>Work Area</source>
+        <translation>Çalışma Alanı</translation>
+    </message>
+    <message>
+        <source>Top-Down View</source>
+        <translation>Kuşbakışı Görünüm</translation>
+    </message>
+    <message>
+        <source>Target</source>
+        <translation>Hedef</translation>
+    </message>
+    <message>
+        <source>Layers</source>
+        <translation>Katmanlar</translation>
+    </message>
+    <message>
+        <source>Home</source>
+        <translation>Ana Sayfa</translation>
+    </message>
+    <message>
+        <source>LAT</source>
+        <translation>ENLEM</translation>
+    </message>
+    <message>
+        <source>LON</source>
+        <translation>BOYLAM</translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation>Izgara</translation>
+    </message>
+    <message>
+        <source>Depth Grid</source>
+        <translation>Derinlik Izgarası</translation>
+    </message>
+    <message>
+        <source>No data</source>
+        <translation>Veri yok</translation>
+    </message>
+    <message>
+        <source>Depth Scale</source>
+        <translation>Derinlik Skalası</translation>
+    </message>
+    <message>
+        <source>Very Shallow</source>
+        <translation>Çok Sığ</translation>
+    </message>
+    <message>
+        <source>Shallow</source>
+        <translation>Sığ</translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation>Orta</translation>
+    </message>
+    <message>
+        <source>Deep</source>
+        <translation>Derin</translation>
+    </message>
+    <message>
+        <source>Very Deep</source>
+        <translation>Çok Derin</translation>
+    </message>
+    <message>
+        <source>Statistics</source>
+        <translation>İstatistikler</translation>
+    </message>
+    <message>
+        <source>Total Cells</source>
+        <translation>Toplam Hücre</translation>
+    </message>
+    <message>
+        <source>Defined</source>
+        <translation>Tanımlı</translation>
+    </message>
+    <message>
+        <source>Min Depth</source>
+        <translation>Min Derinlik</translation>
+    </message>
+    <message>
+        <source>Max Depth</source>
+        <translation>Max Derinlik</translation>
+    </message>
+    <message>
+        <source>Configured</source>
+        <translation>Yapılandırıldı</translation>
+    </message>
+    <message>
+        <source>Not Configured</source>
+        <translation>Yapılandırılmadı</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>Aktif</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Yeni</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Tümü</translation>
+    </message>
+    <message>
+        <source>Critical</source>
+        <translation>Kritik</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Uyarı</translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation>Bilgi</translation>
+    </message>
 </context>
 </TS>

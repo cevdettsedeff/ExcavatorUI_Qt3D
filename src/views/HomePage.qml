@@ -20,7 +20,7 @@ Rectangle {
     property real roll: 0.8
 
     function tr(text) {
-        return languageTrigger >= 0 ? qsTr(text) : ""
+        return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
     }
 
     Connections {
@@ -273,7 +273,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "Top-Down View"
+                        text: tr("Top-Down View")
                         font.pixelSize: 14
                         font.bold: true
                         color: "#ffffff"
@@ -369,7 +369,7 @@ Rectangle {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "Hedef"
+                                text: tr("Target")
                                 font.pixelSize: 10
                                 color: "#4CAF50"
                             }

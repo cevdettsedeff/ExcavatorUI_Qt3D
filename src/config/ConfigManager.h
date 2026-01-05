@@ -4,7 +4,10 @@
 #include <QObject>
 #include <QString>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QColor>
+#include <QVariantList>
+#include <QVariantMap>
 
 /**
  * Manages application configuration from JSON file
@@ -15,6 +18,7 @@ class ConfigManager : public QObject
     Q_OBJECT
     Q_PROPERTY(QString configPath READ configPath WRITE setConfigPath NOTIFY configPathChanged)
     Q_PROPERTY(bool isLoaded READ isLoaded NOTIFY isLoadedChanged)
+    Q_PROPERTY(bool isConfigured READ isConfigured NOTIFY isConfiguredChanged)
 
     // Bathymetry settings
     Q_PROPERTY(QString vrtPath READ vrtPath NOTIFY vrtPathChanged)
@@ -27,6 +31,34 @@ class ConfigManager : public QObject
     Q_PROPERTY(bool gridVisible READ gridVisible NOTIFY gridVisibleChanged)
     Q_PROPERTY(bool legendVisible READ legendVisible NOTIFY legendVisibleChanged)
 
+    // Excavator settings
+    Q_PROPERTY(QString excavatorName READ excavatorName WRITE setExcavatorName NOTIFY excavatorNameChanged)
+    Q_PROPERTY(double boomLength READ boomLength WRITE setBoomLength NOTIFY boomLengthChanged)
+    Q_PROPERTY(double armLength READ armLength WRITE setArmLength NOTIFY armLengthChanged)
+    Q_PROPERTY(double bucketWidth READ bucketWidth WRITE setBucketWidth NOTIFY bucketWidthChanged)
+    Q_PROPERTY(bool excavatorConfigured READ excavatorConfigured NOTIFY excavatorConfiguredChanged)
+
+    // Dig Area / Grid settings
+    Q_PROPERTY(int gridRows READ gridRows WRITE setGridRows NOTIFY gridRowsChanged)
+    Q_PROPERTY(int gridCols READ gridCols WRITE setGridCols NOTIFY gridColsChanged)
+    Q_PROPERTY(QVariantList gridDepths READ gridDepths WRITE setGridDepths NOTIFY gridDepthsChanged)
+    Q_PROPERTY(bool digAreaConfigured READ digAreaConfigured NOTIFY digAreaConfiguredChanged)
+
+    // Map settings
+    Q_PROPERTY(double mapCenterLatitude READ mapCenterLatitude WRITE setMapCenterLatitude NOTIFY mapCenterLatitudeChanged)
+    Q_PROPERTY(double mapCenterLongitude READ mapCenterLongitude WRITE setMapCenterLongitude NOTIFY mapCenterLongitudeChanged)
+    Q_PROPERTY(int mapZoomLevel READ mapZoomLevel WRITE setMapZoomLevel NOTIFY mapZoomLevelChanged)
+    Q_PROPERTY(double mapAreaWidth READ mapAreaWidth WRITE setMapAreaWidth NOTIFY mapAreaWidthChanged)
+    Q_PROPERTY(double mapAreaHeight READ mapAreaHeight WRITE setMapAreaHeight NOTIFY mapAreaHeightChanged)
+    Q_PROPERTY(bool mapConfigured READ mapConfigured NOTIFY mapConfiguredChanged)
+
+    // Alarm settings
+    Q_PROPERTY(QString alarmColorCritical READ alarmColorCritical WRITE setAlarmColorCritical NOTIFY alarmColorCriticalChanged)
+    Q_PROPERTY(QString alarmColorWarning READ alarmColorWarning WRITE setAlarmColorWarning NOTIFY alarmColorWarningChanged)
+    Q_PROPERTY(QString alarmColorInfo READ alarmColorInfo WRITE setAlarmColorInfo NOTIFY alarmColorInfoChanged)
+    Q_PROPERTY(QString alarmColorSuccess READ alarmColorSuccess WRITE setAlarmColorSuccess NOTIFY alarmColorSuccessChanged)
+    Q_PROPERTY(bool alarmConfigured READ alarmConfigured NOTIFY alarmConfiguredChanged)
+
 public:
     explicit ConfigManager(QObject *parent = nullptr);
     ~ConfigManager();
@@ -34,6 +66,7 @@ public:
     // Property getters
     QString configPath() const { return m_configPath; }
     bool isLoaded() const { return m_isLoaded; }
+    bool isConfigured() const;
 
     QString vrtPath() const { return m_vrtPath; }
     int tileSize() const { return m_tileSize; }
@@ -44,8 +77,60 @@ public:
     bool gridVisible() const { return m_gridVisible; }
     bool legendVisible() const { return m_legendVisible; }
 
+    // Excavator getters
+    QString excavatorName() const { return m_excavatorName; }
+    double boomLength() const { return m_boomLength; }
+    double armLength() const { return m_armLength; }
+    double bucketWidth() const { return m_bucketWidth; }
+    bool excavatorConfigured() const { return m_excavatorConfigured; }
+
+    // Dig Area getters
+    int gridRows() const { return m_gridRows; }
+    int gridCols() const { return m_gridCols; }
+    QVariantList gridDepths() const { return m_gridDepths; }
+    bool digAreaConfigured() const { return m_digAreaConfigured; }
+
+    // Map getters
+    double mapCenterLatitude() const { return m_mapCenterLatitude; }
+    double mapCenterLongitude() const { return m_mapCenterLongitude; }
+    int mapZoomLevel() const { return m_mapZoomLevel; }
+    double mapAreaWidth() const { return m_mapAreaWidth; }
+    double mapAreaHeight() const { return m_mapAreaHeight; }
+    bool mapConfigured() const { return m_mapConfigured; }
+
+    // Alarm getters
+    QString alarmColorCritical() const { return m_alarmColorCritical; }
+    QString alarmColorWarning() const { return m_alarmColorWarning; }
+    QString alarmColorInfo() const { return m_alarmColorInfo; }
+    QString alarmColorSuccess() const { return m_alarmColorSuccess; }
+    bool alarmConfigured() const { return m_alarmConfigured; }
+
     // Property setters
     void setConfigPath(const QString &path);
+
+    // Excavator setters
+    void setExcavatorName(const QString &name);
+    void setBoomLength(double length);
+    void setArmLength(double length);
+    void setBucketWidth(double width);
+
+    // Dig Area setters
+    void setGridRows(int rows);
+    void setGridCols(int cols);
+    void setGridDepths(const QVariantList &depths);
+
+    // Map setters
+    void setMapCenterLatitude(double lat);
+    void setMapCenterLongitude(double lon);
+    void setMapZoomLevel(int zoom);
+    void setMapAreaWidth(double width);
+    void setMapAreaHeight(double height);
+
+    // Alarm setters
+    void setAlarmColorCritical(const QString &color);
+    void setAlarmColorWarning(const QString &color);
+    void setAlarmColorInfo(const QString &color);
+    void setAlarmColorSuccess(const QString &color);
 
     /**
      * Load configuration from JSON file
@@ -72,9 +157,57 @@ public:
      */
     Q_INVOKABLE QString getDepthRangeName(double depth) const;
 
+    /**
+     * Get depth for specific grid cell
+     * @param row Grid row index
+     * @param col Grid column index
+     * @return Depth value or 0 if invalid
+     */
+    Q_INVOKABLE double getGridDepth(int row, int col) const;
+
+    /**
+     * Set depth for specific grid cell
+     * @param row Grid row index
+     * @param col Grid column index
+     * @param depth Depth value
+     */
+    Q_INVOKABLE void setGridDepth(int row, int col, double depth);
+
+    /**
+     * Save current configuration to file
+     * @return true if successful
+     */
+    Q_INVOKABLE bool saveConfig();
+
+    /**
+     * Mark excavator configuration as complete
+     */
+    Q_INVOKABLE void markExcavatorConfigured();
+
+    /**
+     * Mark dig area configuration as complete
+     */
+    Q_INVOKABLE void markDigAreaConfigured();
+
+    /**
+     * Mark map configuration as complete
+     */
+    Q_INVOKABLE void markMapConfigured();
+
+    /**
+     * Mark alarm configuration as complete
+     */
+    Q_INVOKABLE void markAlarmConfigured();
+
+    /**
+     * Reset all configurations
+     */
+    Q_INVOKABLE void resetConfiguration();
+
 signals:
     void configPathChanged();
     void isLoadedChanged();
+    void isConfiguredChanged();
     void vrtPathChanged();
     void tileSizeChanged();
     void cacheSizeChanged();
@@ -84,6 +217,34 @@ signals:
     void legendVisibleChanged();
     void configLoaded();
     void errorOccurred(const QString &error);
+
+    // Excavator signals
+    void excavatorNameChanged();
+    void boomLengthChanged();
+    void armLengthChanged();
+    void bucketWidthChanged();
+    void excavatorConfiguredChanged();
+
+    // Dig Area signals
+    void gridRowsChanged();
+    void gridColsChanged();
+    void gridDepthsChanged();
+    void digAreaConfiguredChanged();
+
+    // Map signals
+    void mapCenterLatitudeChanged();
+    void mapCenterLongitudeChanged();
+    void mapZoomLevelChanged();
+    void mapAreaWidthChanged();
+    void mapAreaHeightChanged();
+    void mapConfiguredChanged();
+
+    // Alarm signals
+    void alarmColorCriticalChanged();
+    void alarmColorWarningChanged();
+    void alarmColorInfoChanged();
+    void alarmColorSuccessChanged();
+    void alarmConfiguredChanged();
 
 private:
     QString m_configPath;
@@ -114,14 +275,47 @@ private:
     bool m_gridVisible;
     bool m_legendVisible;
 
+    // Excavator settings
+    QString m_excavatorName;
+    double m_boomLength;
+    double m_armLength;
+    double m_bucketWidth;
+    bool m_excavatorConfigured;
+
+    // Dig Area / Grid settings
+    int m_gridRows;
+    int m_gridCols;
+    QVariantList m_gridDepths;
+    bool m_digAreaConfigured;
+
+    // Map settings
+    double m_mapCenterLatitude;
+    double m_mapCenterLongitude;
+    int m_mapZoomLevel;
+    double m_mapAreaWidth;
+    double m_mapAreaHeight;
+    bool m_mapConfigured;
+
+    // Alarm settings
+    QString m_alarmColorCritical;
+    QString m_alarmColorWarning;
+    QString m_alarmColorInfo;
+    QString m_alarmColorSuccess;
+    bool m_alarmConfigured;
+
     // JSON parsing helpers
     void parseConfig(const QJsonObject &json);
     void parseBathymetrySettings(const QJsonObject &bathymetry);
     void parseColorScheme(const QJsonObject &colorScheme);
     void parseDepthRanges(const QJsonObject &depthRanges);
     void parseRenderingSettings(const QJsonObject &rendering);
+    void parseExcavatorSettings(const QJsonObject &excavator);
+    void parseDigAreaSettings(const QJsonObject &digArea);
+    void parseMapSettings(const QJsonObject &mapSettings);
+    void parseAlarmSettings(const QJsonObject &alarmSettings);
     QColor parseColor(const QString &colorString) const;
     void setDefaultValues();
+    void initializeGridDepths();
 };
 
 #endif // CONFIGMANAGER_H

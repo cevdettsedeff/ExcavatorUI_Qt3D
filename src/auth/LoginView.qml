@@ -13,7 +13,7 @@ Item {
     // Helper fonksiyon - QML binding için
     function tr(text) {
         // languageTrigger kullanarak binding dependency oluştur
-        return languageTrigger >= 0 ? qsTr(text) : ""
+        return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
     }
 
     // TranslationService'i dinle

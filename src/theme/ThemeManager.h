@@ -40,6 +40,7 @@ class ThemeManager : public QObject
     Q_PROPERTY(QColor borderColor READ borderColor NOTIFY themeChanged)
     Q_PROPERTY(QColor hoverColor READ hoverColor NOTIFY themeChanged)
     Q_PROPERTY(QColor selectedColor READ selectedColor NOTIFY themeChanged)
+    Q_PROPERTY(QColor surfaceColor READ surfaceColor NOTIFY themeChanged)
 
     // Status colors (same for both themes)
     Q_PROPERTY(QColor successColor READ successColor CONSTANT)
@@ -72,6 +73,7 @@ public:
     QColor borderColor() const { return m_borderColor; }
     QColor hoverColor() const { return m_hoverColor; }
     QColor selectedColor() const { return m_selectedColor; }
+    QColor surfaceColor() const { return m_surfaceColor; }
 
     // Status colors
     QColor successColor() const { return QColor("#4CAF50"); }
@@ -107,6 +109,7 @@ private:
     QColor m_borderColor;
     QColor m_hoverColor;
     QColor m_selectedColor;
+    QColor m_surfaceColor;
 };
 
 #endif // THEMEMANAGER_H

@@ -2,27 +2,41 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-// Harita Sayfası - Mockup'a göre (Sol araç çubuğu + harita)
+// Harita Sayfası - ConfigManager'dan gelen koordinatları gösterir
 Rectangle {
     id: mapPage
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
-    // Konum verileri
-    property real posX: 124.32
-    property real posY: 842.11
-    property real posZ: -2.45
-    property real currentDepth: 5.5
+    // ConfigManager'dan gelen veriler
+    property real mapCenterLat: configManager ? configManager.mapCenterLatitude : 40.65
+    property real mapCenterLon: configManager ? configManager.mapCenterLongitude : 29.275
+    property int mapZoom: configManager ? configManager.mapZoomLevel : 14
+    property real areaWidth: configManager ? configManager.mapAreaWidth : 100
+    property real areaHeight: configManager ? configManager.mapAreaHeight : 100
 
-    // Harita durumu
-    property real mapZoom: 1.0
-    property real mapCenterX: 0.5
-    property real mapCenterY: 0.5
+    // Tile management
+    property real tileSize: 256
+    property int centerTileX: 0
+    property int centerTileY: 0
+    property real offsetX: 0
+    property real offsetY: 0
+    property int gridWidth: 5
+    property int gridHeight: 5
+    property bool isUpdating: false
+    property bool isInitialized: false
+
+    // Theme colors
+    property color primaryColor: themeManager ? themeManager.primaryColor : "#38b2ac"
+    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
+    property color textColor: themeManager ? themeManager.textColor : "#ffffff"
+    property color textSecondaryColor: themeManager ? themeManager.textColorSecondary : "#888888"
+    property color borderColor: themeManager ? themeManager.borderColor : "#333333"
 
     function tr(text) {
-        return languageTrigger >= 0 ? qsTr(text) : ""
+        return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
     }
 
     Connections {
@@ -30,6 +44,122 @@ Rectangle {
         function onLanguageChanged() {
             languageTrigger++
         }
+    }
+
+    Component.onCompleted: {
+        initializeMap()
+    }
+
+    function initializeMap() {
+        if (isInitialized) return
+        isInitialized = true
+
+        var tile = latLonToTile(mapCenterLat, mapCenterLon, mapZoom)
+        centerTileX = tile.x
+        centerTileY = tile.y
+        offsetX = 0
+        offsetY = 0
+
+        tileModel.clear()
+        populateTileModel()
+    }
+
+    function latLonToTile(lat, lon, zoom) {
+        var n = Math.pow(2, zoom)
+        var x = Math.floor((lon + 180) / 360 * n)
+        var latRad = lat * Math.PI / 180
+        var y = Math.floor((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * n)
+        return { x: x, y: y }
+    }
+
+    function tileToLatLon(x, y, zoom) {
+        var n = Math.pow(2, zoom)
+        var lon = x / n * 360 - 180
+        var lat = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n))) * 180 / Math.PI
+        return { lat: lat, lon: lon }
+    }
+
+    function populateTileModel() {
+        var maxTile = Math.pow(2, mapZoom) - 1
+        var halfW = Math.floor(gridWidth / 2)
+        var halfH = Math.floor(gridHeight / 2)
+
+        for (var dy = -halfH; dy <= halfH; dy++) {
+            for (var dx = -halfW; dx <= halfW; dx++) {
+                var tx = centerTileX + dx
+                var ty = centerTileY + dy
+
+                if (tx >= 0 && tx <= maxTile && ty >= 0 && ty <= maxTile) {
+                    tileModel.append({
+                        tileX: tx,
+                        tileY: ty,
+                        tileZ: mapZoom,
+                        gridX: dx,
+                        gridY: dy
+                    })
+                }
+            }
+        }
+    }
+
+    function changeZoom(delta) {
+        if (isUpdating) return
+
+        var newZoom = mapZoom + delta
+        if (newZoom < 3 || newZoom > 18) return
+
+        isUpdating = true
+
+        var currentCenter = tileToLatLon(
+            centerTileX + offsetX / tileSize,
+            centerTileY + offsetY / tileSize,
+            mapZoom
+        )
+
+        mapZoom = newZoom
+        mapCenterLat = currentCenter.lat
+        mapCenterLon = currentCenter.lon
+
+        var newTile = latLonToTile(currentCenter.lat, currentCenter.lon, newZoom)
+        centerTileX = newTile.x
+        centerTileY = newTile.y
+        offsetX = 0
+        offsetY = 0
+
+        tileModel.clear()
+        rebuildTimer.start()
+    }
+
+    function goToLocation(lat, lon, zoom) {
+        if (isUpdating) return
+
+        isUpdating = true
+        mapCenterLat = lat
+        mapCenterLon = lon
+        mapZoom = zoom
+
+        var tile = latLonToTile(lat, lon, zoom)
+        centerTileX = tile.x
+        centerTileY = tile.y
+        offsetX = 0
+        offsetY = 0
+
+        tileModel.clear()
+        rebuildTimer.start()
+    }
+
+    Timer {
+        id: rebuildTimer
+        interval: 100
+        repeat: false
+        onTriggered: {
+            populateTileModel()
+            isUpdating = false
+        }
+    }
+
+    ListModel {
+        id: tileModel
     }
 
     // Ana içerik
@@ -42,8 +172,8 @@ Rectangle {
             id: leftToolbar
             width: 70
             height: parent.height
-            color: "#1a1a1a"
-            border.color: "#333333"
+            color: mapPage.surfaceColor
+            border.color: mapPage.borderColor
             border.width: 1
 
             Column {
@@ -53,92 +183,86 @@ Rectangle {
 
                 // Hedef butonu
                 ToolbarButton {
-                    icon: "◎"
-                    label: "Hedef"
-                    onClicked: console.log("Hedef clicked")
-                }
-
-                // Şantiye butonu
-                ToolbarButton {
-                    icon: "🏗️"
-                    label: "Şantiye"
-                    onClicked: console.log("Şantiye clicked")
+                    iconPath: "qrc:/ExcavatorUI_Qt3D/resources/icons/icon_target.png"
+                    fallbackIcon: "◎"
+                    label: tr("Target")
+                    onClicked: goToLocation(mapCenterLat, mapCenterLon, mapZoom)
                 }
 
                 // Katmanlar butonu
                 ToolbarButton {
-                    icon: "☰"
-                    label: "Katmanlar"
+                    iconPath: "qrc:/ExcavatorUI_Qt3D/resources/icons/icon_layers.png"
+                    fallbackIcon: "☰"
+                    label: tr("Layers")
                     onClicked: console.log("Katmanlar clicked")
-                }
-
-                // Mod butonu
-                ToolbarButton {
-                    icon: "🎲"
-                    label: "Mod"
-                    onClicked: console.log("Mod clicked")
                 }
 
                 // Ayırıcı
                 Rectangle {
                     width: 50
                     height: 1
-                    color: "#333333"
+                    color: mapPage.borderColor
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 // Zoom In
                 ToolbarButton {
-                    icon: "+"
+                    fallbackIcon: "+"
                     label: ""
-                    onClicked: {
-                        mapPage.mapZoom = Math.min(3.0, mapPage.mapZoom + 0.2)
+                    onClicked: changeZoom(1)
+                }
+
+                // Zoom indicator
+                Rectangle {
+                    width: 50
+                    height: 28
+                    color: Qt.rgba(0, 0, 0, 0.3)
+                    radius: 4
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: mapZoom.toString()
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: mapPage.primaryColor
                     }
                 }
 
                 // Zoom Out
                 ToolbarButton {
-                    icon: "−"
+                    fallbackIcon: "−"
                     label: ""
-                    onClicked: {
-                        mapPage.mapZoom = Math.max(0.5, mapPage.mapZoom - 0.2)
-                    }
+                    onClicked: changeZoom(-1)
                 }
-
-                // Zoom reset
-                ToolbarButton {
-                    icon: "🔍"
-                    label: "Zoom"
-                    onClicked: {
-                        mapPage.mapZoom = 1.0
-                    }
-                }
-
-                Item { height: 20; width: 1 }
 
                 // Ayırıcı
                 Rectangle {
                     width: 50
                     height: 1
-                    color: "#333333"
+                    color: mapPage.borderColor
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
-                // 3D görünüm
+                // Home (configured area)
                 ToolbarButton {
-                    icon: "▲"
-                    label: ""
-                    onClicked: console.log("3D view clicked")
+                    iconPath: "qrc:/ExcavatorUI_Qt3D/resources/icons/icon_home.png"
+                    fallbackIcon: "⌂"
+                    label: tr("Home")
+                    onClicked: {
+                        if (configManager) {
+                            goToLocation(configManager.mapCenterLatitude, configManager.mapCenterLongitude, configManager.mapZoomLevel)
+                        }
+                    }
                 }
 
                 // Reset
                 ToolbarButton {
-                    icon: "⟲"
+                    fallbackIcon: "⟲"
                     label: ""
                     onClicked: {
-                        mapPage.mapZoom = 1.0
-                        mapPage.mapCenterX = 0.5
-                        mapPage.mapCenterY = 0.5
+                        offsetX = 0
+                        offsetY = 0
                     }
                 }
             }
@@ -148,413 +272,418 @@ Rectangle {
         Rectangle {
             width: parent.width - leftToolbar.width
             height: parent.height
-            color: "#0a2040"
+            color: "#e8f4f8"
+            clip: true
 
-            // Harita içeriği
-            Item {
-                id: mapContent
+            // Grid background pattern
+            Canvas {
                 anchors.fill: parent
+                onPaint: {
+                    var ctx = getContext("2d")
+                    ctx.strokeStyle = "#d0e0e8"
+                    ctx.lineWidth = 1
 
-                // Arka plan - deniz/su
-                Rectangle {
-                    anchors.fill: parent
-                    color: "#0a3050"
+                    var gridSize = 50
+                    for (var x = 0; x < width; x += gridSize) {
+                        ctx.beginPath()
+                        ctx.moveTo(x, 0)
+                        ctx.lineTo(x, height)
+                        ctx.stroke()
+                    }
+                    for (var y = 0; y < height; y += gridSize) {
+                        ctx.beginPath()
+                        ctx.moveTo(0, y)
+                        ctx.lineTo(width, y)
+                        ctx.stroke()
+                    }
+                }
+            }
 
-                    // Basit dalga efekti
-                    Rectangle {
-                        anchors.fill: parent
-                        opacity: 0.3
+            // Tile container
+            Item {
+                id: tileContainer
+                width: gridWidth * tileSize
+                height: gridHeight * tileSize
+                x: (parent.width - width) / 2 + offsetX
+                y: (parent.height - height) / 2 + offsetY
 
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: "#0a4060" }
-                            GradientStop { position: 0.5; color: "#0a3050" }
-                            GradientStop { position: 1.0; color: "#0a4060" }
+                Behavior on x { NumberAnimation { duration: 50 } }
+                Behavior on y { NumberAnimation { duration: 50 } }
+
+                Repeater {
+                    model: tileModel
+
+                    Item {
+                        required property int tileX
+                        required property int tileY
+                        required property int tileZ
+                        required property int gridX
+                        required property int gridY
+
+                        x: (gridX + Math.floor(gridWidth / 2)) * tileSize
+                        y: (gridY + Math.floor(gridHeight / 2)) * tileSize
+                        width: tileSize
+                        height: tileSize
+
+                        Image {
+                            anchors.fill: parent
+                            source: "https://basemaps.cartocdn.com/rastertiles/voyager/" + parent.tileZ + "/" + parent.tileX + "/" + parent.tileY + ".png"
+                            asynchronous: true
+                            cache: true
+                            fillMode: Image.PreserveAspectFit
+
+                            Rectangle {
+                                anchors.fill: parent
+                                color: "#e0f0f5"
+                                visible: parent.status === Image.Loading
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "⏳"
+                                    font.pixelSize: 20
+                                    opacity: 0.5
+                                }
+                            }
                         }
                     }
                 }
+            }
 
-                // Grid çizgileri
-                Canvas {
-                    anchors.fill: parent
-                    onPaint: {
-                        var ctx = getContext("2d")
-                        ctx.strokeStyle = "#ffffff20"
-                        ctx.lineWidth = 1
+            // Çalışma alanı göstergesi (Dashboard'da seçilen alan)
+            Rectangle {
+                id: workAreaIndicator
+                anchors.centerIn: parent
+                width: Math.min(parent.width * 0.6, 300)
+                height: Math.min(parent.height * 0.6, 300)
+                color: Qt.rgba(mapPage.primaryColor.r, mapPage.primaryColor.g, mapPage.primaryColor.b, 0.15)
+                border.color: mapPage.primaryColor
+                border.width: 3
+                radius: 8
 
-                        // Dikey çizgiler
-                        var gridSpacing = 80 * mapPage.mapZoom
-                        for (var x = 0; x < width; x += gridSpacing) {
-                            ctx.beginPath()
-                            ctx.moveTo(x, 0)
-                            ctx.lineTo(x, height)
-                            ctx.stroke()
-                        }
+                // Köşe işaretleri
+                Repeater {
+                    model: 4
 
-                        // Yatay çizgiler
-                        for (var y = 0; y < height; y += gridSpacing) {
-                            ctx.beginPath()
-                            ctx.moveTo(0, y)
-                            ctx.lineTo(width, y)
-                            ctx.stroke()
-                        }
-                    }
-                }
-
-                // Çalışma alanı (kesik çizgi ile gösterilen kare)
-                Rectangle {
-                    anchors.centerIn: parent
-                    width: 200 * mapPage.mapZoom
-                    height: 200 * mapPage.mapZoom
-                    color: "#ff444430"
-                    border.color: "#ff4444"
-                    border.width: 2
-                    radius: 5
-
-                    // Kesik çizgi simülasyonu
                     Rectangle {
-                        anchors.fill: parent
-                        anchors.margins: -1
-                        color: "transparent"
-                        border.color: "#ff4444"
-                        border.width: 2
-                        radius: 5
-                        opacity: 0.5
-                    }
-                }
-
-                // Derinlik haritası (renk gradient overlay)
-                Rectangle {
-                    anchors.centerIn: parent
-                    width: 180 * mapPage.mapZoom
-                    height: 180 * mapPage.mapZoom
-                    radius: 10
-                    opacity: 0.6
-
-                    gradient: Gradient {
-                        GradientStop { position: 0.0; color: "#40ff8040" }
-                        GradientStop { position: 0.3; color: "#ffff0040" }
-                        GradientStop { position: 0.6; color: "#ff800040" }
-                        GradientStop { position: 1.0; color: "#ff000040" }
-                    }
-
-                    // İç kısım (daha derin bölge)
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: parent.width * 0.5
-                        height: parent.height * 0.5
+                        width: 16
+                        height: 16
                         radius: 8
-                        color: "#ff600060"
+                        color: mapPage.primaryColor
+                        border.width: 2
+                        border.color: "white"
+
+                        x: (index % 2 === 0) ? -8 : workAreaIndicator.width - 8
+                        y: (index < 2) ? -8 : workAreaIndicator.height - 8
                     }
                 }
 
-                // Ekskavatör ikonu (merkez)
+                // Alan bilgisi etiketi
                 Rectangle {
-                    id: excavatorIcon
-                    anchors.centerIn: parent
-                    width: 60 * mapPage.mapZoom
-                    height: 40 * mapPage.mapZoom
-                    color: "#FFB300"
-                    radius: 5
-                    rotation: -30
-
-                    // Kova kolu
-                    Rectangle {
-                        anchors.left: parent.right
-                        anchors.leftMargin: -5
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 40 * mapPage.mapZoom
-                        height: 8 * mapPage.mapZoom
-                        color: "#FFB300"
-                        rotation: -20
-                        transformOrigin: Item.Left
-                    }
-
-                    // Palet
-                    Rectangle {
-                        anchors.bottom: parent.bottom
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        width: parent.width * 0.9
-                        height: 8 * mapPage.mapZoom
-                        color: "#333333"
-                        radius: 2
-                    }
-                }
-
-                // Koordinat etiketleri (kenarlar)
-                // Sol kenar
-                Column {
-                    anchors.left: parent.left
-                    anchors.leftMargin: 5
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 100
-
-                    Repeater {
-                        model: ["X840.5", "X840.5", "X844.5", "X841.5", "X840.5", "X845.5", "X124.5"]
-
-                        Text {
-                            text: modelData
-                            font.pixelSize: 10
-                            color: "#888888"
-                        }
-                    }
-                }
-
-                // Alt kenar
-                Row {
-                    anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 60
+                    anchors.top: parent.bottom
+                    anchors.topMargin: 10
                     anchors.horizontalCenter: parent.horizontalCenter
-                    spacing: 100
+                    width: areaInfoText.width + 24
+                    height: 32
+                    radius: 16
+                    color: mapPage.primaryColor
 
-                    Repeater {
-                        model: ["Y840.5", "Y845.5"]
-
-                        Text {
-                            text: modelData
-                            font.pixelSize: 10
-                            color: "#888888"
-                        }
-                    }
-                }
-
-                // Ölçek göstergesi (sağ üst)
-                Rectangle {
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.margins: 15
-                    width: 80
-                    height: 25
-                    color: "#00000080"
-                    radius: 3
-
-                    Row {
+                    Text {
+                        id: areaInfoText
                         anchors.centerIn: parent
-                        spacing: 5
-
-                        Rectangle {
-                            width: 40
-                            height: 3
-                            color: "#ffffff"
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Text {
-                            text: "10m"
-                            font.pixelSize: 11
-                            color: "#ffffff"
-                        }
+                        text: tr("Work Area") + ": " + areaWidth.toFixed(0) + "m x " + areaHeight.toFixed(0) + "m"
+                        font.pixelSize: 12
+                        font.bold: true
+                        color: "white"
                     }
                 }
+            }
 
-                // Arama butonu (sağ üst)
+            // Ekskavatör konum noktası (merkez)
+            Item {
+                id: excavatorMarker
+                anchors.centerIn: parent
+                width: 60
+                height: 70
+                z: 10
+
+                // Dış halka - pulse animasyonu
                 Rectangle {
+                    id: pulseRing
+                    anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.topMargin: 50
-                    anchors.rightMargin: 15
+                    anchors.topMargin: 5
                     width: 40
                     height: 40
                     radius: 20
-                    color: "#2a2a2a"
-                    border.color: "#505050"
-                    border.width: 1
+                    color: "transparent"
+                    border.color: "#FF6B35"
+                    border.width: 3
+                    opacity: 0.6
+
+                    SequentialAnimation on scale {
+                        running: true
+                        loops: Animation.Infinite
+                        NumberAnimation { from: 1.0; to: 1.5; duration: 1000; easing.type: Easing.OutQuad }
+                        NumberAnimation { from: 1.5; to: 1.0; duration: 1000; easing.type: Easing.InQuad }
+                    }
+
+                    SequentialAnimation on opacity {
+                        running: true
+                        loops: Animation.Infinite
+                        NumberAnimation { from: 0.6; to: 0.0; duration: 1000 }
+                        NumberAnimation { from: 0.0; to: 0.6; duration: 1000 }
+                    }
+                }
+
+                // Ana nokta
+                Rectangle {
+                    id: mainDot
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: 5
+                    width: 40
+                    height: 40
+                    radius: 20
+                    color: "#FF6B35"
+                    border.color: "white"
+                    border.width: 3
+
+                    // İç ikon - resources'dan
+                    Image {
+                        anchors.centerIn: parent
+                        width: 24
+                        height: 24
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/icons/nav_excavator.png"
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                    }
+                }
+
+                // Etiket
+                Rectangle {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: mainDot.bottom
+                    anchors.topMargin: 4
+                    width: excavatorLabel.width + 12
+                    height: 20
+                    radius: 10
+                    color: Qt.rgba(0, 0, 0, 0.75)
 
                     Text {
+                        id: excavatorLabel
                         anchors.centerIn: parent
-                        text: "🔍"
-                        font.pixelSize: 18
+                        text: tr("Excavator")
+                        font.pixelSize: 10
+                        font.bold: true
+                        color: "white"
                     }
+                }
+            }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: console.log("Search clicked")
+            // Pan handling
+            MouseArea {
+                id: panArea
+                anchors.fill: parent
+                enabled: !isUpdating
+
+                property real lastX: 0
+                property real lastY: 0
+
+                onPressed: (mouse) => {
+                    lastX = mouse.x
+                    lastY = mouse.y
+                }
+
+                onPositionChanged: (mouse) => {
+                    if (!pressed) return
+
+                    var dx = mouse.x - lastX
+                    var dy = mouse.y - lastY
+
+                    offsetX += dx
+                    offsetY += dy
+
+                    lastX = mouse.x
+                    lastY = mouse.y
+                }
+
+                onReleased: {
+                    var shiftX = Math.round(offsetX / tileSize)
+                    var shiftY = Math.round(offsetY / tileSize)
+
+                    if (Math.abs(shiftX) >= 1 || Math.abs(shiftY) >= 1) {
+                        centerTileX -= shiftX
+                        centerTileY -= shiftY
+
+                        var maxTile = Math.pow(2, mapZoom) - 1
+                        centerTileX = Math.max(0, Math.min(maxTile, centerTileX))
+                        centerTileY = Math.max(0, Math.min(maxTile, centerTileY))
+
+                        offsetX = offsetX - shiftX * tileSize
+                        offsetY = offsetY - shiftY * tileSize
+
+                        var newCenter = tileToLatLon(centerTileX, centerTileY, mapZoom)
+                        mapCenterLat = newCenter.lat
+                        mapCenterLon = newCenter.lon
+
+                        tileModel.clear()
+                        populateTileModel()
                     }
                 }
 
-                // Derinlik skalası (sağ alt)
-                Rectangle {
-                    id: depthLegend
-                    anchors.right: parent.right
-                    anchors.bottom: coordinateBar.top
-                    anchors.rightMargin: 15
-                    anchors.bottomMargin: 15
-                    width: 80
-                    height: 180
-                    color: "#1a1a1a90"
-                    radius: 5
-                    border.color: "#333333"
-                    border.width: 1
-
-                    Column {
-                        anchors.fill: parent
-                        anchors.margins: 8
-                        spacing: 3
-
-                        Repeater {
-                            model: [
-                                { depth: "-0.5m", color: "#4CAF50" },
-                                { depth: "-1.0m", color: "#8BC34A" },
-                                { depth: "-1.5m", color: "#CDDC39" },
-                                { depth: "-2.0m", color: "#FFEB3B" },
-                                { depth: "-2.5m", color: "#FFC107" },
-                                { depth: "-3.0m", color: "#FF9800" },
-                                { depth: "-3.5m", color: "#f44336" }
-                            ]
-
-                            Row {
-                                spacing: 5
-
-                                Rectangle {
-                                    width: 20
-                                    height: 18
-                                    color: modelData.color
-                                    radius: 2
-                                }
-
-                                Text {
-                                    text: modelData.depth
-                                    font.pixelSize: 11
-                                    color: "#ffffff"
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                            }
-                        }
+                onWheel: (wheel) => {
+                    if (isUpdating) return
+                    if (wheel.angleDelta.y > 0) {
+                        changeZoom(1)
+                    } else if (wheel.angleDelta.y < 0) {
+                        changeZoom(-1)
                     }
                 }
+            }
 
-                // Koordinat çubuğu (alt)
-                Rectangle {
-                    id: coordinateBar
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    height: 40
-                    color: "#1a1a1a"
-                    border.color: "#333333"
-                    border.width: 1
+            // Derinlik skalası (sağ)
+            Rectangle {
+                id: depthLegend
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: 15
+                width: 80
+                height: 200
+                color: Qt.rgba(0, 0, 0, 0.7)
+                radius: 8
+                z: 20
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 10
-                        spacing: 15
-
-                        Row {
-                            spacing: 5
-
-                            Text {
-                                text: "X:"
-                                font.pixelSize: 13
-                                color: "#888888"
-                            }
-
-                            Text {
-                                text: mapPage.posX.toFixed(2)
-                                font.pixelSize: 13
-                                font.bold: true
-                                color: "#ffffff"
-                            }
-                        }
-
-                        Row {
-                            spacing: 5
-
-                            Text {
-                                text: "Y:"
-                                font.pixelSize: 13
-                                color: "#888888"
-                            }
-
-                            Text {
-                                text: mapPage.posY.toFixed(2)
-                                font.pixelSize: 13
-                                font.bold: true
-                                color: "#ffffff"
-                            }
-                        }
-
-                        Row {
-                            spacing: 5
-
-                            Text {
-                                text: "Z:"
-                                font.pixelSize: 13
-                                color: "#888888"
-                            }
-
-                            Text {
-                                text: mapPage.posZ.toFixed(2)
-                                font.pixelSize: 13
-                                font.bold: true
-                                color: "#00bcd4"
-                            }
-                        }
-
-                        Item { Layout.fillWidth: true }
-
-                        Row {
-                            spacing: 5
-
-                            Text {
-                                text: "▲"
-                                font.pixelSize: 12
-                                color: "#888888"
-                            }
-
-                            Text {
-                                text: mapPage.currentDepth.toFixed(1) + "m"
-                                font.pixelSize: 13
-                                font.bold: true
-                                color: "#ffffff"
-                            }
-                        }
-
-                        // Tam ekran butonu
-                        Rectangle {
-                            width: 30
-                            height: 30
-                            radius: 5
-                            color: "#2a2a2a"
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "⊕"
-                                font.pixelSize: 16
-                                color: "#ffffff"
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: console.log("Fullscreen clicked")
-                            }
-                        }
-                    }
-                }
-
-                // Mouse drag ile harita kaydırma
-                MouseArea {
+                Column {
                     anchors.fill: parent
-                    property real lastX: 0
-                    property real lastY: 0
+                    anchors.margins: 10
+                    spacing: 4
 
-                    onPressed: (mouse) => {
-                        lastX = mouse.x
-                        lastY = mouse.y
+                    Text {
+                        text: tr("Depth")
+                        font.pixelSize: 11
+                        font.bold: true
+                        color: "white"
+                        anchors.horizontalCenter: parent.horizontalCenter
                     }
 
-                    onPositionChanged: (mouse) => {
-                        if (pressed) {
-                            var deltaX = (mouse.x - lastX) / width
-                            var deltaY = (mouse.y - lastY) / height
-                            mapPage.mapCenterX = Math.max(0, Math.min(1, mapPage.mapCenterX - deltaX * 0.5))
-                            mapPage.mapCenterY = Math.max(0, Math.min(1, mapPage.mapCenterY - deltaY * 0.5))
-                            lastX = mouse.x
-                            lastY = mouse.y
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: "#ffffff30"
+                    }
+
+                    Repeater {
+                        model: [
+                            { depth: "-0.5m", color: "#4CAF50" },
+                            { depth: "-1.0m", color: "#8BC34A" },
+                            { depth: "-1.5m", color: "#CDDC39" },
+                            { depth: "-2.0m", color: "#FFEB3B" },
+                            { depth: "-2.5m", color: "#FFC107" },
+                            { depth: "-3.0m", color: "#FF9800" },
+                            { depth: "-3.5m", color: "#f44336" }
+                        ]
+
+                        Row {
+                            spacing: 6
+
+                            Rectangle {
+                                width: 18
+                                height: 18
+                                color: modelData.color
+                                radius: 3
+                            }
+
+                            Text {
+                                text: modelData.depth
+                                font.pixelSize: 11
+                                color: "#ffffff"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Koordinat çubuğu (alt)
+            Rectangle {
+                id: coordinateBar
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: 45
+                color: mapPage.surfaceColor
+                z: 20
+
+                Rectangle {
+                    anchors.top: parent.top
+                    width: parent.width
+                    height: 1
+                    color: mapPage.borderColor
+                }
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 12
+                    spacing: 20
+
+                    Row {
+                        spacing: 6
+
+                        Text {
+                            text: tr("LAT") + ":"
+                            font.pixelSize: 12
+                            color: mapPage.textSecondaryColor
+                        }
+
+                        Text {
+                            text: mapCenterLat.toFixed(6) + "°"
+                            font.pixelSize: 12
+                            font.bold: true
+                            color: mapPage.textColor
                         }
                     }
 
-                    onWheel: (wheel) => {
-                        var delta = wheel.angleDelta.y / 120
-                        mapPage.mapZoom = Math.max(0.5, Math.min(3.0, mapPage.mapZoom + delta * 0.1))
+                    Row {
+                        spacing: 6
+
+                        Text {
+                            text: tr("LON") + ":"
+                            font.pixelSize: 12
+                            color: mapPage.textSecondaryColor
+                        }
+
+                        Text {
+                            text: mapCenterLon.toFixed(6) + "°"
+                            font.pixelSize: 12
+                            font.bold: true
+                            color: mapPage.textColor
+                        }
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Row {
+                        spacing: 6
+
+                        Text {
+                            text: "ZOOM:"
+                            font.pixelSize: 12
+                            color: mapPage.textSecondaryColor
+                        }
+
+                        Text {
+                            text: mapZoom.toString()
+                            font.pixelSize: 12
+                            font.bold: true
+                            color: mapPage.primaryColor
+                        }
+                    }
+
+                    // Attribution
+                    Text {
+                        text: "© CARTO © OSM"
+                        font.pixelSize: 9
+                        color: mapPage.textSecondaryColor
                     }
                 }
             }
@@ -563,13 +692,14 @@ Rectangle {
 
     // Araç çubuğu buton komponenti
     component ToolbarButton: Rectangle {
-        property string icon: ""
+        property string iconPath: ""
+        property string fallbackIcon: ""
         property string label: ""
         signal clicked()
 
         width: 60
         height: label !== "" ? 55 : 40
-        color: mouseArea.containsMouse ? "#2a2a2a" : "transparent"
+        color: mouseArea.containsMouse ? Qt.rgba(mapPage.primaryColor.r, mapPage.primaryColor.g, mapPage.primaryColor.b, 0.1) : "transparent"
         radius: 5
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -577,18 +707,33 @@ Rectangle {
             anchors.centerIn: parent
             spacing: 3
 
-            Text {
+            Item {
+                width: 24
+                height: 24
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: icon
-                font.pixelSize: label !== "" ? 20 : 24
-                color: "#ffffff"
+
+                Image {
+                    id: btnIcon
+                    anchors.fill: parent
+                    source: iconPath
+                    fillMode: Image.PreserveAspectFit
+                    visible: status === Image.Ready
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: fallbackIcon
+                    font.pixelSize: label !== "" ? 20 : 24
+                    color: mapPage.textColor
+                    visible: btnIcon.status !== Image.Ready
+                }
             }
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: label
                 font.pixelSize: 9
-                color: "#888888"
+                color: mapPage.textSecondaryColor
                 visible: label !== ""
             }
         }
