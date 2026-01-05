@@ -73,10 +73,10 @@ Rectangle {
 
             Repeater {
                 model: [
-                    { label: "All", labelTr: "Tümü", color: "#888888" },
-                    { label: "Critical", labelTr: "Kritik", color: "#f44336" },
-                    { label: "Warning", labelTr: "Uyarı", color: "#ff9800" },
-                    { label: "Info", labelTr: "Bilgi", color: "#2196F3" }
+                    { label: "All", color: "#888888" },
+                    { label: "Critical", color: "#f44336" },
+                    { label: "Warning", color: "#ff9800" },
+                    { label: "Info", color: "#2196F3" }
                 ]
 
                 delegate: Rectangle {
@@ -89,7 +89,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: translationService && translationService.currentLanguage === "tr_TR" ? modelData.labelTr : modelData.label
+                        text: tr(modelData.label)
                         font.pixelSize: 12
                         font.bold: true
                         color: alarmPage.activeFilter === index ? "#ffffff" : modelData.color

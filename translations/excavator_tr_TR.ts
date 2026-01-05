@@ -593,5 +593,117 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Work Area</source>
         <translation>Çalışma Alanı</translation>
     </message>
+    <message>
+        <source>Top-Down View</source>
+        <translation>Kuşbakışı Görünüm</translation>
+    </message>
+    <message>
+        <source>Target</source>
+        <translation>Hedef</translation>
+    </message>
+    <message>
+        <source>Layers</source>
+        <translation>Katmanlar</translation>
+    </message>
+    <message>
+        <source>Home</source>
+        <translation>Ana Sayfa</translation>
+    </message>
+    <message>
+        <source>LAT</source>
+        <translation>ENLEM</translation>
+    </message>
+    <message>
+        <source>LON</source>
+        <translation>BOYLAM</translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation>Izgara</translation>
+    </message>
+    <message>
+        <source>Depth Grid</source>
+        <translation>Derinlik Izgarası</translation>
+    </message>
+    <message>
+        <source>No data</source>
+        <translation>Veri yok</translation>
+    </message>
+    <message>
+        <source>Depth Scale</source>
+        <translation>Derinlik Skalası</translation>
+    </message>
+    <message>
+        <source>Very Shallow</source>
+        <translation>Çok Sığ</translation>
+    </message>
+    <message>
+        <source>Shallow</source>
+        <translation>Sığ</translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation>Orta</translation>
+    </message>
+    <message>
+        <source>Deep</source>
+        <translation>Derin</translation>
+    </message>
+    <message>
+        <source>Very Deep</source>
+        <translation>Çok Derin</translation>
+    </message>
+    <message>
+        <source>Statistics</source>
+        <translation>İstatistikler</translation>
+    </message>
+    <message>
+        <source>Total Cells</source>
+        <translation>Toplam Hücre</translation>
+    </message>
+    <message>
+        <source>Defined</source>
+        <translation>Tanımlı</translation>
+    </message>
+    <message>
+        <source>Min Depth</source>
+        <translation>Min Derinlik</translation>
+    </message>
+    <message>
+        <source>Max Depth</source>
+        <translation>Max Derinlik</translation>
+    </message>
+    <message>
+        <source>Configured</source>
+        <translation>Yapılandırıldı</translation>
+    </message>
+    <message>
+        <source>Not Configured</source>
+        <translation>Yapılandırılmadı</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>Aktif</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Yeni</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Tümü</translation>
+    </message>
+    <message>
+        <source>Critical</source>
+        <translation>Kritik</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Uyarı</translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation>Bilgi</translation>
+    </message>
 </context>
 </TS>

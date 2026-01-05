@@ -239,10 +239,12 @@ Rectangle {
                                                 spacing: 2
 
                                                 // Ekskavatör ikonu
-                                                Text {
+                                                Image {
                                                     anchors.horizontalCenter: parent.horizontalCenter
-                                                    text: isExcavatorHere ? "🚜" : ""
-                                                    font.pixelSize: 16
+                                                    width: 20
+                                                    height: 20
+                                                    source: "qrc:/ExcavatorUI_Qt3D/resources/icons/nav_excavator.png"
+                                                    fillMode: Image.PreserveAspectFit
                                                     visible: isExcavatorHere
                                                 }
 

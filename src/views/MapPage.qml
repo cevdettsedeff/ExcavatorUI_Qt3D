@@ -630,7 +630,7 @@ Rectangle {
                         spacing: 6
 
                         Text {
-                            text: "LAT:"
+                            text: tr("LAT") + ":"
                             font.pixelSize: 12
                             color: mapPage.textSecondaryColor
                         }
@@ -647,7 +647,7 @@ Rectangle {
                         spacing: 6
 
                         Text {
-                            text: "LON:"
+                            text: tr("LON") + ":"
                             font.pixelSize: 12
                             color: mapPage.textSecondaryColor
                         }

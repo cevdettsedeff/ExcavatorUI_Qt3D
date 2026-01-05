@@ -273,7 +273,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "Top-Down View"
+                        text: tr("Top-Down View")
                         font.pixelSize: 14
                         font.bold: true
                         color: "#ffffff"
@@ -369,7 +369,7 @@ Rectangle {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "Hedef"
+                                text: tr("Target")
                                 font.pixelSize: 10
                                 color: "#4CAF50"
                             }
