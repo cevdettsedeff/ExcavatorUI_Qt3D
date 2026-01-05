@@ -309,11 +309,10 @@ Rectangle {
                     }
                 }
 
-                // UserManagementView içeriği
-                Loader {
+                // UserManagementView içeriği - Loader yerine doğrudan kullanım
+                UserManagementView {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    source: "qrc:/ExcavatorUI_Qt3D/src/views/UserManagementView.qml"
                 }
             }
         }
