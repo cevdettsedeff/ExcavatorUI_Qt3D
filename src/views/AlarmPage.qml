@@ -12,7 +12,7 @@ Rectangle {
     property int activeFilter: 0 // 0: Tümü, 1: Kritik, 2: Uyarı, 3: Bilgi
 
     function tr(text) {
-        return languageTrigger >= 0 ? qsTr(text) : ""
+        return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
     }
 
     Connections {

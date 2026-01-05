@@ -36,7 +36,7 @@ Rectangle {
     property color borderColor: themeManager ? themeManager.borderColor : "#333333"
 
     function tr(text) {
-        return languageTrigger >= 0 ? qsTr(text) : ""
+        return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
     }
 
     Connections {

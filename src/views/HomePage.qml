@@ -20,7 +20,7 @@ Rectangle {
     property real roll: 0.8
 
     function tr(text) {
-        return languageTrigger >= 0 ? qsTr(text) : ""
+        return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
     }
 
     Connections {

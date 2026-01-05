@@ -20,7 +20,7 @@ Rectangle {
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
     function tr(text) {
-        return languageTrigger >= 0 ? qsTr(text) : ""
+        return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
     }
 
     Connections {
