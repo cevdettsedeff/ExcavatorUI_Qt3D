@@ -419,7 +419,12 @@ Rectangle {
                                                 id: inputCell
                                                 property int row: Math.floor(index / gridCols)
                                                 property int col: index % gridCols
-                                                property real depth: configManager ? configManager.getGridDepth(row, col) : 0
+                                                // gridDepths değiştiğinde depth'i yeniden hesapla
+                                                property real depth: {
+                                                    // root.gridDepths'e bağımlılık ekleyerek değişiklikleri yakalıyoruz
+                                                    var _ = root.gridDepths
+                                                    return configManager ? configManager.getGridDepth(row, col) : 0
+                                                }
                                                 property bool isSelected: selectedRow === row && selectedCol === col
 
                                                 width: Math.min((depthInputContent.width - 40) / gridCols, 50)
@@ -859,6 +864,10 @@ Rectangle {
                         showGrid: true
                         showCoordinates: true
                         smoothTransitions: true
+
+                        // Tema renkleri
+                        containerColor: Qt.lighter(root.surfaceColor, 1.02)
+                        labelColor: root.textSecondaryColor
                     }
                 }
 

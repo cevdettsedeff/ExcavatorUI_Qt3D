@@ -481,5 +481,137 @@ Redirecting to login screen...</source>
 
 Redirecting to login screen...</translation>
     </message>
+    <message>
+        <source>Coordinate Bounds</source>
+        <translation>Coordinate Bounds</translation>
+    </message>
+    <message>
+        <source>Define the geographic area for the grid</source>
+        <translation>Define the geographic area for the grid</translation>
+    </message>
+    <message>
+        <source>Start Lat</source>
+        <translation>Start Lat</translation>
+    </message>
+    <message>
+        <source>Start Lon</source>
+        <translation>Start Lon</translation>
+    </message>
+    <message>
+        <source>End Lat</source>
+        <translation>End Lat</translation>
+    </message>
+    <message>
+        <source>End Lon</source>
+        <translation>End Lon</translation>
+    </message>
+    <message>
+        <source>Quick Fill Tools</source>
+        <translation>Quick Fill Tools</translation>
+    </message>
+    <message>
+        <source>Fill All</source>
+        <translation>Fill All</translation>
+    </message>
+    <message>
+        <source>Random</source>
+        <translation>Random</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Clear</translation>
+    </message>
+    <message>
+        <source>Live Preview</source>
+        <translation>Live Preview</translation>
+    </message>
+    <message>
+        <source>Bathymetric Map</source>
+        <translation>Bathymetric Map</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <translation>Preview</translation>
+    </message>
+    <message>
+        <source>Enter Depth Value</source>
+        <translation>Enter Depth Value</translation>
+    </message>
+    <message>
+        <source>Cell</source>
+        <translation>Cell</translation>
+    </message>
+    <message>
+        <source>Current value</source>
+        <translation>Current value</translation>
+    </message>
+    <message>
+        <source>Fill All Cells</source>
+        <translation>Fill All Cells</translation>
+    </message>
+    <message>
+        <source>This will fill all</source>
+        <translation>This will fill all</translation>
+    </message>
+    <message>
+        <source>cells</source>
+        <translation>cells</translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation>Fill</translation>
+    </message>
+    <message>
+        <source>Contours</source>
+        <translation>Contours</translation>
+    </message>
+    <message>
+        <source>Contour Settings</source>
+        <translation>Contour Settings</translation>
+    </message>
+    <message>
+        <source>Interval</source>
+        <translation>Interval</translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation>Average</translation>
+    </message>
+    <message>
+        <source>Grid Size</source>
+        <translation>Grid Size</translation>
+    </message>
+    <message>
+        <source>Rows</source>
+        <translation>Rows</translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation>Columns</translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>Total</translation>
+    </message>
+    <message>
+        <source>Bathymetric Data Input</source>
+        <translation>Bathymetric Data Input</translation>
+    </message>
+    <message>
+        <source>Click cells to enter depth (m)</source>
+        <translation>Click cells to enter depth (m)</translation>
+    </message>
+    <message>
+        <source>Hover for depth info</source>
+        <translation>Hover for depth info</translation>
+    </message>
+    <message>
+        <source>Dig Area Settings</source>
+        <translation>Dig Area Settings</translation>
+    </message>
+    <message>
+        <source>Save and Continue</source>
+        <translation>Save and Continue</translation>
+    </message>
 </context>
 </TS>

@@ -34,6 +34,10 @@ Item {
     property int contourInterval: 5
     property bool smoothTransitions: true
 
+    // Tema renkleri
+    property color containerColor: "#E8EFF5"
+    property color labelColor: "#4A5568"
+
     // Hover durumu
     property real hoverX: -1
     property real hoverY: -1
@@ -82,7 +86,7 @@ Item {
     Rectangle {
         id: mapContainer
         anchors.fill: parent
-        color: "#E0E0E0"
+        color: root.containerColor
         clip: true
 
         // Boş veri mesajı
@@ -338,7 +342,7 @@ Item {
                             return lat.toFixed(4) + "°"
                         }
                         font.pixelSize: 8
-                        color: "#4A5568"
+                        color: root.labelColor
                     }
                 }
             }
@@ -366,7 +370,7 @@ Item {
                             return lon.toFixed(4) + "°"
                         }
                         font.pixelSize: 8
-                        color: "#4A5568"
+                        color: root.labelColor
                     }
                 }
             }
@@ -377,10 +381,10 @@ Item {
     Rectangle {
         id: hoverOverlay
         visible: isHovering && hoverRow >= 0 && hoverCol >= 0
-        x: (showCoordinates ? 25 : 0) + hoverCol * ((width - (showCoordinates ? 50 : 0)) / gridCols)
-        y: (showCoordinates ? 0 : 0) + hoverRow * ((height - (showCoordinates ? 25 : 0)) / gridRows)
+        x: (showCoordinates ? 25 : 0) + hoverCol * ((root.width - (showCoordinates ? 50 : 0)) / gridCols)
+        y: (showCoordinates ? 25 : 0) + hoverRow * ((root.height - (showCoordinates ? 50 : 0)) / gridRows)
         width: (root.width - (showCoordinates ? 50 : 0)) / gridCols
-        height: (root.height - (showCoordinates ? 25 : 0)) / gridRows
+        height: (root.height - (showCoordinates ? 50 : 0)) / gridRows
         color: "transparent"
         border.width: 3
         border.color: "#FF5722"
@@ -449,9 +453,9 @@ Item {
             hoverY = mouse.y
 
             var offsetX = showCoordinates ? 25 : 0
-            var offsetY = 0
+            var offsetY = showCoordinates ? 25 : 0
             var mapWidth = width - (showCoordinates ? 50 : 0)
-            var mapHeight = height - (showCoordinates ? 25 : 0)
+            var mapHeight = height - (showCoordinates ? 50 : 0)
 
             var relX = mouse.x - offsetX
             var relY = mouse.y - offsetY

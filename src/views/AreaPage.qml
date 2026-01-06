@@ -280,6 +280,10 @@ Rectangle {
                     showGrid: areaPage.showGrid
                     showCoordinates: true
                     smoothTransitions: true
+
+                    // Tema renkleri
+                    containerColor: Qt.lighter(areaPage.surfaceColor, 1.02)
+                    labelColor: areaPage.textSecondaryColor
                 }
 
                 // Ekskavatör konumu göstergesi
@@ -323,7 +327,7 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
                     height: 30
-                    color: "#F7FAFC"
+                    color: Qt.lighter(areaPage.surfaceColor, 1.02)
                     radius: 10
 
                     Rectangle {
@@ -342,7 +346,7 @@ Rectangle {
                         Text {
                             text: "Datum: WGS84"
                             font.pixelSize: 10
-                            color: "#718096"
+                            color: areaPage.textSecondaryColor
                         }
 
                         Item { Layout.fillWidth: true }
@@ -353,7 +357,7 @@ Rectangle {
                                   " | " + tr("Depth") + ": " + bathymetricMap.hoverDepth.toFixed(2) + "m" :
                                   tr("Hover for depth info")
                             font.pixelSize: 10
-                            color: "#4A5568"
+                            color: areaPage.textColor
                         }
 
                         Item { Layout.fillWidth: true }
@@ -361,7 +365,7 @@ Rectangle {
                         Text {
                             text: "© 2024 ExcavatorUI"
                             font.pixelSize: 10
-                            color: "#718096"
+                            color: areaPage.textSecondaryColor
                         }
                     }
                 }
@@ -513,7 +517,7 @@ Rectangle {
                                     text: maxDepth > 0 ? maxDepth.toFixed(2) + " m" : "-"
                                     font.pixelSize: 11
                                     font.bold: true
-                                    color: "#063554"
+                                    color: "#2B6CB0"
                                 }
                             }
 

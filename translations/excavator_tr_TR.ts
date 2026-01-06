@@ -705,5 +705,137 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Info</source>
         <translation>Bilgi</translation>
     </message>
+    <message>
+        <source>Coordinate Bounds</source>
+        <translation>Koordinat Sınırları</translation>
+    </message>
+    <message>
+        <source>Define the geographic area for the grid</source>
+        <translation>Grid için coğrafi alanı tanımlayın</translation>
+    </message>
+    <message>
+        <source>Start Lat</source>
+        <translation>Başl. Enlem</translation>
+    </message>
+    <message>
+        <source>Start Lon</source>
+        <translation>Başl. Boylam</translation>
+    </message>
+    <message>
+        <source>End Lat</source>
+        <translation>Bitiş Enlem</translation>
+    </message>
+    <message>
+        <source>End Lon</source>
+        <translation>Bitiş Boylam</translation>
+    </message>
+    <message>
+        <source>Quick Fill Tools</source>
+        <translation>Hızlı Doldurma Araçları</translation>
+    </message>
+    <message>
+        <source>Fill All</source>
+        <translation>Tümünü Doldur</translation>
+    </message>
+    <message>
+        <source>Random</source>
+        <translation>Rastgele</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Temizle</translation>
+    </message>
+    <message>
+        <source>Live Preview</source>
+        <translation>Canlı Önizleme</translation>
+    </message>
+    <message>
+        <source>Bathymetric Map</source>
+        <translation>Batimetrik Harita</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <translation>Önizleme</translation>
+    </message>
+    <message>
+        <source>Enter Depth Value</source>
+        <translation>Derinlik Değeri Girin</translation>
+    </message>
+    <message>
+        <source>Cell</source>
+        <translation>Hücre</translation>
+    </message>
+    <message>
+        <source>Current value</source>
+        <translation>Mevcut değer</translation>
+    </message>
+    <message>
+        <source>Fill All Cells</source>
+        <translation>Tüm Hücreleri Doldur</translation>
+    </message>
+    <message>
+        <source>This will fill all</source>
+        <translation>Bu işlem tüm</translation>
+    </message>
+    <message>
+        <source>cells</source>
+        <translation>hücreyi dolduracak</translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation>Doldur</translation>
+    </message>
+    <message>
+        <source>Contours</source>
+        <translation>Konturlar</translation>
+    </message>
+    <message>
+        <source>Contour Settings</source>
+        <translation>Kontur Ayarları</translation>
+    </message>
+    <message>
+        <source>Interval</source>
+        <translation>Aralık</translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation>Ortalama</translation>
+    </message>
+    <message>
+        <source>Grid Size</source>
+        <translation>Izgara Boyutu</translation>
+    </message>
+    <message>
+        <source>Rows</source>
+        <translation>Satır</translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation>Sütun</translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>Toplam</translation>
+    </message>
+    <message>
+        <source>Bathymetric Data Input</source>
+        <translation>Batimetrik Veri Girişi</translation>
+    </message>
+    <message>
+        <source>Click cells to enter depth (m)</source>
+        <translation>Derinlik girmek için hücrelere tıklayın (m)</translation>
+    </message>
+    <message>
+        <source>Hover for depth info</source>
+        <translation>Derinlik bilgisi için üzerine gelin</translation>
+    </message>
+    <message>
+        <source>Dig Area Settings</source>
+        <translation>Kazı Alanı Ayarları</translation>
+    </message>
+    <message>
+        <source>Save and Continue</source>
+        <translation>Kaydet ve Devam Et</translation>
+    </message>
 </context>
 </TS>
