@@ -43,6 +43,11 @@ class ConfigManager : public QObject
     Q_PROPERTY(int gridCols READ gridCols WRITE setGridCols NOTIFY gridColsChanged)
     Q_PROPERTY(QVariantList gridDepths READ gridDepths WRITE setGridDepths NOTIFY gridDepthsChanged)
     Q_PROPERTY(bool digAreaConfigured READ digAreaConfigured NOTIFY digAreaConfiguredChanged)
+    // Grid coordinate bounds
+    Q_PROPERTY(double gridStartLatitude READ gridStartLatitude WRITE setGridStartLatitude NOTIFY gridStartLatitudeChanged)
+    Q_PROPERTY(double gridStartLongitude READ gridStartLongitude WRITE setGridStartLongitude NOTIFY gridStartLongitudeChanged)
+    Q_PROPERTY(double gridEndLatitude READ gridEndLatitude WRITE setGridEndLatitude NOTIFY gridEndLatitudeChanged)
+    Q_PROPERTY(double gridEndLongitude READ gridEndLongitude WRITE setGridEndLongitude NOTIFY gridEndLongitudeChanged)
 
     // Map settings
     Q_PROPERTY(double mapCenterLatitude READ mapCenterLatitude WRITE setMapCenterLatitude NOTIFY mapCenterLatitudeChanged)
@@ -89,6 +94,10 @@ public:
     int gridCols() const { return m_gridCols; }
     QVariantList gridDepths() const { return m_gridDepths; }
     bool digAreaConfigured() const { return m_digAreaConfigured; }
+    double gridStartLatitude() const { return m_gridStartLatitude; }
+    double gridStartLongitude() const { return m_gridStartLongitude; }
+    double gridEndLatitude() const { return m_gridEndLatitude; }
+    double gridEndLongitude() const { return m_gridEndLongitude; }
 
     // Map getters
     double mapCenterLatitude() const { return m_mapCenterLatitude; }
@@ -118,6 +127,10 @@ public:
     void setGridRows(int rows);
     void setGridCols(int cols);
     void setGridDepths(const QVariantList &depths);
+    void setGridStartLatitude(double lat);
+    void setGridStartLongitude(double lon);
+    void setGridEndLatitude(double lat);
+    void setGridEndLongitude(double lon);
 
     // Map setters
     void setMapCenterLatitude(double lat);
@@ -230,6 +243,10 @@ signals:
     void gridColsChanged();
     void gridDepthsChanged();
     void digAreaConfiguredChanged();
+    void gridStartLatitudeChanged();
+    void gridStartLongitudeChanged();
+    void gridEndLatitudeChanged();
+    void gridEndLongitudeChanged();
 
     // Map signals
     void mapCenterLatitudeChanged();
@@ -287,6 +304,10 @@ private:
     int m_gridCols;
     QVariantList m_gridDepths;
     bool m_digAreaConfigured;
+    double m_gridStartLatitude;
+    double m_gridStartLongitude;
+    double m_gridEndLatitude;
+    double m_gridEndLongitude;
 
     // Map settings
     double m_mapCenterLatitude;

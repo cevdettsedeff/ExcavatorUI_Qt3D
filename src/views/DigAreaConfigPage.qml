@@ -469,6 +469,159 @@ Rectangle {
                         }
                     }
 
+                    // Koordinat Girişi
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.margins: 16
+                        Layout.preferredHeight: coordInputContent.height + 32
+                        color: Qt.lighter(root.surfaceColor, 0.97)
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            id: coordInputContent
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 16
+                            spacing: 12
+
+                            Text {
+                                text: tr("Coordinate Bounds")
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            Text {
+                                text: tr("Define the geographic area for the grid")
+                                font.pixelSize: 11
+                                color: root.textSecondaryColor
+                            }
+
+                            // Başlangıç koordinatları
+                            GridLayout {
+                                Layout.fillWidth: true
+                                columns: 2
+                                rowSpacing: 8
+                                columnSpacing: 12
+
+                                Text {
+                                    text: tr("Start Lat") + ":"
+                                    font.pixelSize: 11
+                                    color: root.textSecondaryColor
+                                }
+
+                                TextField {
+                                    id: startLatField
+                                    Layout.fillWidth: true
+                                    height: 36
+                                    text: configManager ? configManager.gridStartLatitude.toFixed(6) : "40.710000"
+                                    font.pixelSize: 12
+                                    horizontalAlignment: Text.AlignRight
+                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                    validator: DoubleValidator { bottom: -90; top: 90; decimals: 6 }
+
+                                    background: Rectangle {
+                                        color: root.surfaceColor
+                                        radius: 4
+                                        border.width: parent.activeFocus ? 2 : 1
+                                        border.color: parent.activeFocus ? "#1A75A8" : root.borderColor
+                                    }
+
+                                    onEditingFinished: {
+                                        if (configManager) configManager.gridStartLatitude = parseFloat(text)
+                                    }
+                                }
+
+                                Text {
+                                    text: tr("Start Lon") + ":"
+                                    font.pixelSize: 11
+                                    color: root.textSecondaryColor
+                                }
+
+                                TextField {
+                                    id: startLonField
+                                    Layout.fillWidth: true
+                                    height: 36
+                                    text: configManager ? configManager.gridStartLongitude.toFixed(6) : "29.000000"
+                                    font.pixelSize: 12
+                                    horizontalAlignment: Text.AlignRight
+                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                    validator: DoubleValidator { bottom: -180; top: 180; decimals: 6 }
+
+                                    background: Rectangle {
+                                        color: root.surfaceColor
+                                        radius: 4
+                                        border.width: parent.activeFocus ? 2 : 1
+                                        border.color: parent.activeFocus ? "#1A75A8" : root.borderColor
+                                    }
+
+                                    onEditingFinished: {
+                                        if (configManager) configManager.gridStartLongitude = parseFloat(text)
+                                    }
+                                }
+
+                                Text {
+                                    text: tr("End Lat") + ":"
+                                    font.pixelSize: 11
+                                    color: root.textSecondaryColor
+                                }
+
+                                TextField {
+                                    id: endLatField
+                                    Layout.fillWidth: true
+                                    height: 36
+                                    text: configManager ? configManager.gridEndLatitude.toFixed(6) : "40.720000"
+                                    font.pixelSize: 12
+                                    horizontalAlignment: Text.AlignRight
+                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                    validator: DoubleValidator { bottom: -90; top: 90; decimals: 6 }
+
+                                    background: Rectangle {
+                                        color: root.surfaceColor
+                                        radius: 4
+                                        border.width: parent.activeFocus ? 2 : 1
+                                        border.color: parent.activeFocus ? "#1A75A8" : root.borderColor
+                                    }
+
+                                    onEditingFinished: {
+                                        if (configManager) configManager.gridEndLatitude = parseFloat(text)
+                                    }
+                                }
+
+                                Text {
+                                    text: tr("End Lon") + ":"
+                                    font.pixelSize: 11
+                                    color: root.textSecondaryColor
+                                }
+
+                                TextField {
+                                    id: endLonField
+                                    Layout.fillWidth: true
+                                    height: 36
+                                    text: configManager ? configManager.gridEndLongitude.toFixed(6) : "29.010000"
+                                    font.pixelSize: 12
+                                    horizontalAlignment: Text.AlignRight
+                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                    validator: DoubleValidator { bottom: -180; top: 180; decimals: 6 }
+
+                                    background: Rectangle {
+                                        color: root.surfaceColor
+                                        radius: 4
+                                        border.width: parent.activeFocus ? 2 : 1
+                                        border.color: parent.activeFocus ? "#1A75A8" : root.borderColor
+                                    }
+
+                                    onEditingFinished: {
+                                        if (configManager) configManager.gridEndLongitude = parseFloat(text)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     // Hızlı doldurma araçları
                     Rectangle {
                         Layout.fillWidth: true
@@ -696,8 +849,16 @@ Rectangle {
                         gridDepths: root.gridDepths
                         maxDepth: root.maxDepth
 
+                        // Koordinatlar
+                        startLatitude: configManager ? configManager.gridStartLatitude : 40.71
+                        startLongitude: configManager ? configManager.gridStartLongitude : 29.00
+                        endLatitude: configManager ? configManager.gridEndLatitude : 40.72
+                        endLongitude: configManager ? configManager.gridEndLongitude : 29.01
+
                         showContours: false
                         showGrid: true
+                        showCoordinates: true
+                        smoothTransitions: true
                     }
                 }
 
@@ -757,13 +918,15 @@ Rectangle {
         }
     }
 
-    // Depth Input Dialog
+    // Depth Input Dialog - Klavyenin önünde görünmesi için z ve y ayarları
     Dialog {
         id: depthInputDialog
         title: tr("Enter Depth Value")
         modal: true
-        anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: Math.min((parent.height - height) / 4, 100)  // Ekranın üst kısmında
         width: 280
+        z: 999  // Klavyenin önünde
 
         background: Rectangle {
             color: themeManager ? themeManager.backgroundColor : "#f7fafc"
@@ -807,6 +970,7 @@ Rectangle {
                 placeholderText: tr("Depth") + " (m)"
                 font.pixelSize: 16
                 horizontalAlignment: Text.AlignHCenter
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: DoubleValidator { bottom: 0; decimals: 2 }
                 color: root.textColor
                 placeholderTextColor: root.textSecondaryColor
@@ -884,13 +1048,15 @@ Rectangle {
         }
     }
 
-    // Fill All Dialog
+    // Fill All Dialog - Klavyenin önünde görünmesi için z ve y ayarları
     Dialog {
         id: fillAllDialog
         title: tr("Fill All Cells")
         modal: true
-        anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: Math.min((parent.height - height) / 4, 100)  // Ekranın üst kısmında
         width: 280
+        z: 999  // Klavyenin önünde
 
         background: Rectangle {
             color: themeManager ? themeManager.backgroundColor : "#f7fafc"
@@ -934,6 +1100,7 @@ Rectangle {
                 placeholderText: tr("Depth") + " (m)"
                 font.pixelSize: 16
                 horizontalAlignment: Text.AlignHCenter
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: DoubleValidator { bottom: 0; decimals: 2 }
                 color: root.textColor
                 placeholderTextColor: root.textSecondaryColor

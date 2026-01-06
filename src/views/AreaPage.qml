@@ -269,79 +269,17 @@ Rectangle {
                     minDepth: areaPage.minDepth
                     maxDepth: areaPage.maxDepth
 
+                    // Koordinatlar
+                    startLatitude: configManager ? configManager.gridStartLatitude : 40.71
+                    startLongitude: configManager ? configManager.gridStartLongitude : 29.00
+                    endLatitude: configManager ? configManager.gridEndLatitude : 40.72
+                    endLongitude: configManager ? configManager.gridEndLongitude : 29.01
+
                     showContours: areaPage.showContours
                     contourInterval: areaPage.contourInterval
                     showGrid: areaPage.showGrid
-                }
-
-                // Koordinat çerçevesi - Sol (Y ekseni)
-                Column {
-                    anchors.left: parent.left
-                    anchors.top: mapTitle.bottom
-                    anchors.bottom: mapFooter.top
-                    anchors.leftMargin: 2
-                    anchors.topMargin: 8
-                    anchors.bottomMargin: 8
-                    width: 20
-                    spacing: 0
-
-                    Repeater {
-                        model: gridRows
-
-                        Item {
-                            width: 20
-                            height: (parent.height) / gridRows
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: (index + 1).toString()
-                                font.pixelSize: 10
-                                font.bold: true
-                                color: "#1A75A8"
-                            }
-                        }
-                    }
-                }
-
-                // Koordinat çerçevesi - Alt (X ekseni)
-                Row {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.bottom: mapFooter.top
-                    anchors.leftMargin: 28
-                    anchors.rightMargin: 8
-                    anchors.bottomMargin: 2
-                    height: 20
-                    spacing: 0
-
-                    Repeater {
-                        model: gridCols
-
-                        Item {
-                            width: (parent.width) / gridCols
-                            height: 20
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: String.fromCharCode(65 + index)
-                                font.pixelSize: 10
-                                font.bold: true
-                                color: "#1A75A8"
-                            }
-                        }
-                    }
-                }
-
-                // Kuzey oku ve ölçek (sağ üst)
-                MapDecorations {
-                    anchors.top: mapTitle.bottom
-                    anchors.right: parent.right
-                    anchors.topMargin: 16
-                    anchors.rightMargin: 16
-                    scale: (configManager && configManager.areaWidth > 0) ?
-                           configManager.areaWidth / bathymetricMap.width : 1.0
-                    textColor: "#2D3748"
-                    accentColor: "#1A75A8"
+                    showCoordinates: true
+                    smoothTransitions: true
                 }
 
                 // Ekskavatör konumu göstergesi
