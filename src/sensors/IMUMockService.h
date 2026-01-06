@@ -11,6 +11,7 @@ class IMUMockService : public QObject
     Q_PROPERTY(double boomAngle READ boomAngle NOTIFY boomAngleChanged)
     Q_PROPERTY(double armAngle READ armAngle NOTIFY armAngleChanged)
     Q_PROPERTY(double bucketAngle READ bucketAngle NOTIFY bucketAngleChanged)
+    Q_PROPERTY(double bucketDepth READ bucketDepth NOTIFY bucketDepthChanged)
     Q_PROPERTY(bool isDigging READ isDigging NOTIFY isDiggingChanged)
 
 public:
@@ -19,6 +20,7 @@ public:
     double boomAngle() const { return m_boomAngle; }
     double armAngle() const { return m_armAngle; }
     double bucketAngle() const { return m_bucketAngle; }
+    double bucketDepth() const { return m_bucketDepth; }
     bool isDigging() const { return m_isDigging; }
 
     // QML'den çağrılabilir metodlar
@@ -30,6 +32,7 @@ signals:
     void boomAngleChanged();
     void armAngleChanged();
     void bucketAngleChanged();
+    void bucketDepthChanged();
     void isDiggingChanged();
     void diggingCycleCompleted();
 
@@ -38,6 +41,7 @@ private slots:
 
 private:
     void updateDiggingSequence();
+    void calculateBucketDepth();
 
     QTimer* m_timer;
 
@@ -45,6 +49,7 @@ private:
     double m_boomAngle;      // Boom (ana kol) açısı
     double m_armAngle;       // Arm (ön kol) açısı
     double m_bucketAngle;    // Bucket (kova) açısı
+    double m_bucketDepth;    // Kepçe derinliği (metre)
 
     // Simülasyon durumu
     bool m_isDigging;

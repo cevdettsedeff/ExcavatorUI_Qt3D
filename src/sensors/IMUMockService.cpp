@@ -7,6 +7,7 @@ IMUMockService::IMUMockService(QObject *parent)
     , m_boomAngle(0.0)
     , m_armAngle(0.0)
     , m_bucketAngle(0.0)
+    , m_bucketDepth(0.0)
     , m_isDigging(false)
     , m_diggingPhase(0)
     , m_phaseProgress(0.0)
@@ -14,7 +15,38 @@ IMUMockService::IMUMockService(QObject *parent)
     // Timer'ı bağla - 16ms (yaklaşık 60 FPS)
     connect(m_timer, &QTimer::timeout, this, &IMUMockService::updateAngles);
 
+    // İlk derinliği hesapla
+    calculateBucketDepth();
+
     qDebug() << "IMUMockService initialized";
+}
+
+void IMUMockService::calculateBucketDepth()
+{
+    // Ekskavatör kol uzunlukları (metre)
+    const double BOOM_LENGTH = 6.0;   // Ana kol
+    const double ARM_LENGTH = 4.0;    // Ön kol
+    const double BUCKET_LENGTH = 1.5; // Kepçe
+    const double PIVOT_HEIGHT = 2.0;  // Döner eksenin yerden yüksekliği
+
+    // Açıları radyana çevir
+    double boomRad = qDegreesToRadians(m_boomAngle);
+    double armRad = qDegreesToRadians(m_armAngle);
+    double bucketRad = qDegreesToRadians(m_bucketAngle);
+
+    // Kepçe ucu pozisyonunu hesapla (basitleştirilmiş kinematik)
+    // Negatif açılar aşağıyı gösterir
+    double boomEndY = PIVOT_HEIGHT - BOOM_LENGTH * qSin(boomRad);
+    double armEndY = boomEndY - ARM_LENGTH * qSin(boomRad + armRad);
+    double bucketEndY = armEndY - BUCKET_LENGTH * qSin(boomRad + armRad + bucketRad);
+
+    // Derinlik = su seviyesinden (0) aşağıya doğru negatif
+    double newDepth = -bucketEndY;
+
+    if (qAbs(newDepth - m_bucketDepth) > 0.01) {
+        m_bucketDepth = newDepth;
+        emit bucketDepthChanged();
+    }
 }
 
 void IMUMockService::startDigging()
@@ -53,6 +85,8 @@ void IMUMockService::reset()
     emit boomAngleChanged();
     emit armAngleChanged();
     emit bucketAngleChanged();
+
+    calculateBucketDepth();
 }
 
 void IMUMockService::updateAngles()
@@ -141,4 +175,7 @@ void IMUMockService::updateDiggingSequence()
     emit boomAngleChanged();
     emit armAngleChanged();
     emit bucketAngleChanged();
+
+    // Kepçe derinliğini hesapla
+    calculateBucketDepth();
 }
