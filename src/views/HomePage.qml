@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick3D
 import ExcavatorUI_Qt3D
-import "../components"
 
 // Ana Sayfa - 3D Ekskavatör Görünümü (Mockup'a göre)
 Rectangle {
