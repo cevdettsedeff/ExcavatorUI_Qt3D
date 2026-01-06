@@ -9,7 +9,7 @@ import QtQuick.Controls
  */
 Rectangle {
     id: root
-    width: 80
+    width: 100
     height: 400
     color: "transparent"
 
@@ -20,9 +20,13 @@ Rectangle {
     property real targetDepth: -10.0      // Hedef kazı derinliği
     property real currentBucketDepth: -5.0 // Kepçenin mevcut derinliği
 
+    // Tema renkleri
+    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#2d3748"
+    property color borderColor: themeManager ? themeManager.borderColor : "#4a5568"
+
     // Görsel ayarlar
-    property real barWidth: 25
-    property real labelWidth: 50
+    property real barWidth: 35            // Daha kalın bar
+    property real labelWidth: 55
     property color aboveWaterColor: "#E8E8E8"      // Su seviyesi üstü (beyaz/gri)
     property color waterColor: "#4DD0E1"           // Su (cyan)
     property color normalDigColor: "#2196F3"       // Normal kazı (mavi)
@@ -39,7 +43,7 @@ Rectangle {
         return (maxDepth - depth) * pixelsPerMeter
     }
 
-    // Bar container
+    // Bar container - Tema rengi ile
     Rectangle {
         id: barContainer
         anchors.left: parent.left
@@ -49,11 +53,21 @@ Rectangle {
         anchors.topMargin: 25
         anchors.bottomMargin: 25
         width: root.barWidth
-        color: "#1a1a1a"
-        radius: 3
-        border.width: 1
-        border.color: "#404040"
+        color: root.backgroundColor      // Tema arka plan rengi
+        radius: 4
+        border.width: 2                  // Daha kalın kenarlık
+        border.color: root.borderColor
         clip: true
+
+        // İç gölge efekti
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: 2
+            color: "transparent"
+            radius: parent.radius - 2
+            border.width: 1
+            border.color: "#00000040"
+        }
 
         // Su seviyesi üstü (beyaz/gri alan)
         Rectangle {
@@ -61,9 +75,10 @@ Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            height: Math.max(0, depthToY(waterLevel))
+            anchors.margins: 2
+            height: Math.max(0, depthToY(waterLevel) - 2)
             color: root.aboveWaterColor
-            radius: 2
+            radius: 3
 
             // Alt köşeleri düzleştir
             Rectangle {
@@ -80,6 +95,8 @@ Rectangle {
             id: waterSection
             anchors.left: parent.left
             anchors.right: parent.right
+            anchors.leftMargin: 2
+            anchors.rightMargin: 2
             y: depthToY(waterLevel)
             height: Math.max(0, depthToY(Math.max(currentBucketDepth, targetDepth)) - y)
             clip: true
@@ -95,11 +112,11 @@ Rectangle {
                 onPaint: {
                     var ctx = getContext("2d")
                     ctx.clearRect(0, 0, width, height)
-                    ctx.strokeStyle = "#00000030"
-                    ctx.lineWidth = 1
+                    ctx.strokeStyle = "#00000040"
+                    ctx.lineWidth = 2        // Daha kalın çizgiler
 
                     // Diagonal lines
-                    for (var i = -height; i < width + height; i += 6) {
+                    for (var i = -height; i < width + height; i += 8) {
                         ctx.beginPath()
                         ctx.moveTo(i, 0)
                         ctx.lineTo(i + height, height)
@@ -114,6 +131,8 @@ Rectangle {
             id: normalDigSection
             anchors.left: parent.left
             anchors.right: parent.right
+            anchors.leftMargin: 2
+            anchors.rightMargin: 2
             y: depthToY(waterLevel)
             height: {
                 var digStart = depthToY(waterLevel)
@@ -129,6 +148,8 @@ Rectangle {
             id: overDigSection
             anchors.left: parent.left
             anchors.right: parent.right
+            anchors.leftMargin: 2
+            anchors.rightMargin: 2
             y: depthToY(targetDepth)
             height: {
                 if (currentBucketDepth < targetDepth) {
@@ -151,11 +172,11 @@ Rectangle {
                 onPaint: {
                     var ctx = getContext("2d")
                     ctx.clearRect(0, 0, width, height)
-                    ctx.strokeStyle = "#00000050"
-                    ctx.lineWidth = 2
+                    ctx.strokeStyle = "#00000060"
+                    ctx.lineWidth = 3        // Daha kalın çizgiler
 
                     // Diagonal lines (daha belirgin)
-                    for (var i = -height; i < width + height; i += 8) {
+                    for (var i = -height; i < width + height; i += 10) {
                         ctx.beginPath()
                         ctx.moveTo(i, 0)
                         ctx.lineTo(i + height, height)
@@ -170,8 +191,8 @@ Rectangle {
             id: targetLine
             anchors.left: parent.left
             anchors.right: parent.right
-            y: depthToY(targetDepth) - 2
-            height: 4
+            y: depthToY(targetDepth) - 3
+            height: 6                    // Daha kalın çizgi
             color: root.targetLineColor
             visible: targetDepth >= minDepth && targetDepth <= maxDepth
 
@@ -183,14 +204,14 @@ Rectangle {
             }
         }
 
-        // Kepçe konumu göstergesi (üçgen)
+        // Kepçe konumu göstergesi (üçgen) - Daha büyük
         Item {
             id: bucketIndicator
             anchors.right: parent.right
-            anchors.rightMargin: -8
-            y: depthToY(currentBucketDepth) - 8
-            width: 16
-            height: 16
+            anchors.rightMargin: -12
+            y: depthToY(currentBucketDepth) - 10
+            width: 20
+            height: 20
 
             Canvas {
                 anchors.fill: parent
@@ -201,15 +222,15 @@ Rectangle {
                     // Üçgen çiz
                     ctx.fillStyle = "#FF5722"
                     ctx.beginPath()
-                    ctx.moveTo(0, 8)
-                    ctx.lineTo(16, 0)
-                    ctx.lineTo(16, 16)
+                    ctx.moveTo(0, 10)
+                    ctx.lineTo(20, 0)
+                    ctx.lineTo(20, 20)
                     ctx.closePath()
                     ctx.fill()
 
                     // Kenarlık
                     ctx.strokeStyle = "#FFFFFF"
-                    ctx.lineWidth = 1
+                    ctx.lineWidth = 2
                     ctx.stroke()
                 }
             }
@@ -219,9 +240,37 @@ Rectangle {
         Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
-            y: depthToY(waterLevel) - 1
-            height: 2
+            y: depthToY(waterLevel) - 2
+            height: 4                    // Daha kalın çizgi
             color: "#00BCD4"
+        }
+
+        // Skala çizgileri - Bar içinde
+        Repeater {
+            model: Math.floor(totalRange / 5) + 1
+
+            Rectangle {
+                x: 0
+                y: barContainer.height * index / (totalRange / 5)
+                width: 12                // Daha uzun çizgiler
+                height: 3                // Daha kalın çizgiler
+                color: "#FFFFFFA0"
+                visible: index > 0 && index < Math.floor(totalRange / 5)
+            }
+        }
+
+        // Ara skala çizgileri
+        Repeater {
+            model: Math.floor(totalRange) + 1
+
+            Rectangle {
+                x: 0
+                y: barContainer.height * index / totalRange
+                width: index % 5 === 0 ? 0 : 6    // 5'in katları için ana çizgi var
+                height: 2
+                color: "#FFFFFF50"
+                visible: index > 0 && index < Math.floor(totalRange) && index % 5 !== 0
+            }
         }
     }
 
@@ -229,20 +278,20 @@ Rectangle {
     Text {
         anchors.top: parent.top
         anchors.left: barContainer.right
-        anchors.leftMargin: 5
+        anchors.leftMargin: 8
         text: maxDepth.toFixed(1) + "m"
-        font.pixelSize: 11
+        font.pixelSize: 12
         font.bold: true
         color: root.textColor
     }
 
-    // Alt etiket (min depth / current bucket)
+    // Alt etiket (current bucket depth)
     Text {
         anchors.bottom: parent.bottom
         anchors.left: barContainer.right
-        anchors.leftMargin: 5
+        anchors.leftMargin: 8
         text: currentBucketDepth.toFixed(2) + "m"
-        font.pixelSize: 11
+        font.pixelSize: 12
         font.bold: true
         color: currentBucketDepth < targetDepth ? root.overDigColor : root.textColor
     }
@@ -250,10 +299,10 @@ Rectangle {
     // Hedef derinlik etiketi
     Text {
         anchors.left: barContainer.right
-        anchors.leftMargin: 5
-        y: barContainer.y + depthToY(targetDepth) - 6
+        anchors.leftMargin: 8
+        y: barContainer.y + depthToY(targetDepth) - 8
         text: "▶ " + targetDepth.toFixed(1) + "m"
-        font.pixelSize: 10
+        font.pixelSize: 11
         font.bold: true
         color: root.targetLineColor
         visible: targetDepth >= minDepth && targetDepth <= maxDepth
@@ -262,51 +311,13 @@ Rectangle {
     // Su seviyesi etiketi
     Text {
         anchors.left: barContainer.right
-        anchors.leftMargin: 5
-        y: barContainer.y + depthToY(waterLevel) - 6
+        anchors.leftMargin: 8
+        y: barContainer.y + depthToY(waterLevel) - 8
         text: "~~ 0m"
-        font.pixelSize: 10
+        font.pixelSize: 11
+        font.bold: true
         color: "#00BCD4"
         visible: waterLevel >= minDepth && waterLevel <= maxDepth
-    }
-
-    // Skala çizgileri
-    Column {
-        anchors.left: barContainer.left
-        anchors.top: barContainer.top
-        anchors.bottom: barContainer.bottom
-        width: barContainer.width
-
-        Repeater {
-            model: Math.floor(totalRange / 5) + 1
-
-            Item {
-                width: parent.width
-                height: barContainer.height / (totalRange / 5)
-                y: index * height
-
-                // Ana çizgi
-                Rectangle {
-                    anchors.left: parent.left
-                    width: 8
-                    height: 2
-                    color: "#FFFFFF60"
-                }
-
-                // Ara çizgiler
-                Repeater {
-                    model: 4
-
-                    Rectangle {
-                        anchors.left: parent.left
-                        y: (index + 1) * parent.height / 5
-                        width: 4
-                        height: 1
-                        color: "#FFFFFF30"
-                    }
-                }
-            }
-        }
     }
 
     // Değişiklik animasyonları
