@@ -235,6 +235,9 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/components/Grid3D.qml
         src/components/BathymetricPlane.qml
         src/components/LoadingScreen.qml
+        src/components/BathymetricMapCanvas.qml
+        src/components/BathymetricLegend.qml
+        src/components/MapDecorations.qml
     RESOURCES
         ${MESH_FILES}
         ${LOGO_FILES}

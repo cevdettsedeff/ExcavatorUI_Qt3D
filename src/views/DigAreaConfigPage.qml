@@ -1,13 +1,15 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components"
 
 /**
  * DigAreaConfigPage - Kazı Alanı Ayarları Sayfası
  *
- * Kullanıcı grid sistemini ayarlar:
- * - Satır ve sütun sayısı
- * - Her grid hücresine derinlik değeri girişi
+ * Batimetrik veri girişi ve önizleme
+ * - Grid boyutu ayarı
+ * - Her hücreye derinlik girişi
+ * - Canlı batimetrik harita önizlemesi
  */
 Rectangle {
     id: root
@@ -30,7 +32,7 @@ Rectangle {
         }
     }
 
-    // Theme colors with fallbacks (softer light theme defaults)
+    // Theme colors with fallbacks
     property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
     property color textColor: themeManager ? themeManager.textColor : "#2d3748"
@@ -40,6 +42,21 @@ Rectangle {
     // Selected cell for editing
     property int selectedRow: -1
     property int selectedCol: -1
+
+    // Grid verileri
+    property int gridRows: configManager ? configManager.gridRows : 5
+    property int gridCols: configManager ? configManager.gridCols : 5
+    property var gridDepths: configManager ? configManager.gridDepths : []
+
+    // Hesaplanan değerler
+    property real maxDepth: {
+        if (!gridDepths || gridDepths.length === 0) return 30
+        var max = 0
+        for (var i = 0; i < gridDepths.length; i++) {
+            if (gridDepths[i] > max) max = gridDepths[i]
+        }
+        return max > 0 ? max : 30
+    }
 
     // Header
     Rectangle {
@@ -61,7 +78,7 @@ Rectangle {
                 flat: true
 
                 contentItem: Text {
-                    text: "←"
+                    text: "<"
                     font.pixelSize: 24
                     color: "white"
                     horizontalAlignment: Text.AlignHCenter
@@ -78,7 +95,7 @@ Rectangle {
 
             Text {
                 Layout.fillWidth: true
-                text: qsTr("Kazı Alanı Ayarları")
+                text: tr("Dig Area Settings")
                 font.pixelSize: 20
                 font.bold: true
                 color: "white"
@@ -89,341 +106,612 @@ Rectangle {
         }
     }
 
-    // Content
-    ScrollView {
+    // Content - Split view
+    RowLayout {
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: footer.top
-        contentWidth: parent.width
+        anchors.margins: 16
+        spacing: 16
 
-        ColumnLayout {
-            width: parent.width
-            spacing: 20
+        // Sol panel - Ayarlar ve veri girişi
+        Rectangle {
+            Layout.preferredWidth: parent.width * 0.45
+            Layout.fillHeight: true
+            color: root.surfaceColor
+            radius: 12
 
-            Item { Layout.preferredHeight: 10 }
-
-            // Grid Size Controls
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.margins: 20
-                Layout.preferredHeight: gridSizeContent.height + 32
-                color: root.surfaceColor
-                radius: 12
+            ScrollView {
+                anchors.fill: parent
+                contentWidth: parent.width
 
                 ColumnLayout {
-                    id: gridSizeContent
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.margins: 16
+                    width: parent.width
                     spacing: 16
 
-                    Text {
-                        text: qsTr("Grid Boyutu")
-                        font.pixelSize: 16
-                        font.bold: true
-                        color: root.textColor
-                    }
+                    Item { Layout.preferredHeight: 8 }
 
-                    RowLayout {
+                    // Grid Boyutu Kontrolleri
+                    Rectangle {
                         Layout.fillWidth: true
-                        spacing: 20
+                        Layout.margins: 16
+                        Layout.preferredHeight: gridSizeContent.height + 32
+                        color: Qt.lighter(root.surfaceColor, 0.97)
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
 
-                        // Rows
                         ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 8
+                            id: gridSizeContent
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 16
+                            spacing: 12
 
                             Text {
-                                text: qsTr("Satır Sayısı")
-                                font.pixelSize: 13
-                                color: root.textSecondaryColor
+                                text: tr("Grid Size")
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: root.textColor
                             }
 
                             RowLayout {
-                                spacing: 8
+                                Layout.fillWidth: true
+                                spacing: 20
 
-                                Button {
-                                    Layout.preferredWidth: 40
-                                    Layout.preferredHeight: 40
-                                    text: "-"
-                                    font.pixelSize: 20
-                                    enabled: configManager ? configManager.gridRows > 1 : false
+                                // Rows
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 6
 
-                                    background: Rectangle {
-                                        radius: 8
-                                        color: parent.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
-                                        border.width: 1
-                                        border.color: root.borderColor
+                                    Text {
+                                        text: tr("Rows")
+                                        font.pixelSize: 12
+                                        color: root.textSecondaryColor
                                     }
 
-                                    onClicked: if (configManager) configManager.gridRows = configManager.gridRows - 1
+                                    RowLayout {
+                                        spacing: 8
+
+                                        Button {
+                                            Layout.preferredWidth: 36
+                                            Layout.preferredHeight: 36
+                                            text: "-"
+                                            font.pixelSize: 18
+                                            enabled: configManager ? configManager.gridRows > 1 : false
+
+                                            background: Rectangle {
+                                                radius: 6
+                                                color: parent.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
+                                                border.width: 1
+                                                border.color: root.borderColor
+                                            }
+
+                                            onClicked: if (configManager) configManager.gridRows = configManager.gridRows - 1
+                                        }
+
+                                        Text {
+                                            Layout.preferredWidth: 32
+                                            text: configManager ? configManager.gridRows.toString() : "5"
+                                            font.pixelSize: 16
+                                            font.bold: true
+                                            color: root.textColor
+                                            horizontalAlignment: Text.AlignHCenter
+                                        }
+
+                                        Button {
+                                            Layout.preferredWidth: 36
+                                            Layout.preferredHeight: 36
+                                            text: "+"
+                                            font.pixelSize: 18
+                                            enabled: configManager ? configManager.gridRows < 15 : false
+
+                                            background: Rectangle {
+                                                radius: 6
+                                                color: parent.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
+                                                border.width: 1
+                                                border.color: root.borderColor
+                                            }
+
+                                            onClicked: if (configManager) configManager.gridRows = configManager.gridRows + 1
+                                        }
+                                    }
                                 }
 
-                                Text {
-                                    Layout.preferredWidth: 40
-                                    text: configManager ? configManager.gridRows.toString() : "4"
-                                    font.pixelSize: 18
-                                    font.bold: true
-                                    color: root.textColor
-                                    horizontalAlignment: Text.AlignHCenter
-                                }
+                                // Columns
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 6
 
-                                Button {
-                                    Layout.preferredWidth: 40
-                                    Layout.preferredHeight: 40
-                                    text: "+"
-                                    font.pixelSize: 20
-                                    enabled: configManager ? configManager.gridRows < 10 : false
-
-                                    background: Rectangle {
-                                        radius: 8
-                                        color: parent.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
-                                        border.width: 1
-                                        border.color: root.borderColor
+                                    Text {
+                                        text: tr("Columns")
+                                        font.pixelSize: 12
+                                        color: root.textSecondaryColor
                                     }
 
-                                    onClicked: if (configManager) configManager.gridRows = configManager.gridRows + 1
+                                    RowLayout {
+                                        spacing: 8
+
+                                        Button {
+                                            Layout.preferredWidth: 36
+                                            Layout.preferredHeight: 36
+                                            text: "-"
+                                            font.pixelSize: 18
+                                            enabled: configManager ? configManager.gridCols > 1 : false
+
+                                            background: Rectangle {
+                                                radius: 6
+                                                color: parent.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
+                                                border.width: 1
+                                                border.color: root.borderColor
+                                            }
+
+                                            onClicked: if (configManager) configManager.gridCols = configManager.gridCols - 1
+                                        }
+
+                                        Text {
+                                            Layout.preferredWidth: 32
+                                            text: configManager ? configManager.gridCols.toString() : "5"
+                                            font.pixelSize: 16
+                                            font.bold: true
+                                            color: root.textColor
+                                            horizontalAlignment: Text.AlignHCenter
+                                        }
+
+                                        Button {
+                                            Layout.preferredWidth: 36
+                                            Layout.preferredHeight: 36
+                                            text: "+"
+                                            font.pixelSize: 18
+                                            enabled: configManager ? configManager.gridCols < 15 : false
+
+                                            background: Rectangle {
+                                                radius: 6
+                                                color: parent.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
+                                                border.width: 1
+                                                border.color: root.borderColor
+                                            }
+
+                                            onClicked: if (configManager) configManager.gridCols = configManager.gridCols + 1
+                                        }
+                                    }
                                 }
                             }
-                        }
-
-                        // Columns
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 8
 
                             Text {
-                                text: qsTr("Sütun Sayısı")
-                                font.pixelSize: 13
+                                text: tr("Total") + ": " + (configManager ? (configManager.gridRows * configManager.gridCols) : 25) + " " + tr("cells")
+                                font.pixelSize: 11
                                 color: root.textSecondaryColor
                             }
+                        }
+                    }
 
-                            RowLayout {
+                    // Derinlik Veri Girişi Grid'i
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.margins: 16
+                        Layout.preferredHeight: depthInputContent.height + 32
+                        color: Qt.lighter(root.surfaceColor, 0.97)
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            id: depthInputContent
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 16
+                            spacing: 12
+
+                            Row {
                                 spacing: 8
 
-                                Button {
-                                    Layout.preferredWidth: 40
-                                    Layout.preferredHeight: 40
-                                    text: "-"
-                                    font.pixelSize: 20
-                                    enabled: configManager ? configManager.gridCols > 1 : false
-
-                                    background: Rectangle {
-                                        radius: 8
-                                        color: parent.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
-                                        border.width: 1
-                                        border.color: root.borderColor
-                                    }
-
-                                    onClicked: if (configManager) configManager.gridCols = configManager.gridCols - 1
-                                }
-
                                 Text {
-                                    Layout.preferredWidth: 40
-                                    text: configManager ? configManager.gridCols.toString() : "4"
-                                    font.pixelSize: 18
+                                    text: tr("Bathymetric Data Input")
+                                    font.pixelSize: 14
                                     font.bold: true
                                     color: root.textColor
-                                    horizontalAlignment: Text.AlignHCenter
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
-
-                                Button {
-                                    Layout.preferredWidth: 40
-                                    Layout.preferredHeight: 40
-                                    text: "+"
-                                    font.pixelSize: 20
-                                    enabled: configManager ? configManager.gridCols < 10 : false
-
-                                    background: Rectangle {
-                                        radius: 8
-                                        color: parent.pressed ? Qt.darker(root.surfaceColor, 1.2) : root.surfaceColor
-                                        border.width: 1
-                                        border.color: root.borderColor
-                                    }
-
-                                    onClicked: if (configManager) configManager.gridCols = configManager.gridCols + 1
-                                }
-                            }
-                        }
-                    }
-
-                    Text {
-                        text: qsTr("Toplam: %1 grid hücresi").arg(
-                            configManager ? (configManager.gridRows * configManager.gridCols) : 16
-                        )
-                        font.pixelSize: 12
-                        color: root.textSecondaryColor
-                    }
-                }
-            }
-
-            // Grid Visualization
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.margins: 20
-                Layout.preferredHeight: gridArea.height + 80
-                color: root.surfaceColor
-                radius: 12
-
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 12
-
-                    Text {
-                        text: qsTr("Batimetrik Veri Girişi")
-                        font.pixelSize: 16
-                        font.bold: true
-                        color: root.textColor
-                    }
-
-                    Text {
-                        text: qsTr("Her hücreye tıklayarak derinlik değeri girin")
-                        font.pixelSize: 12
-                        color: root.textSecondaryColor
-                    }
-
-                    // Grid
-                    Item {
-                        id: gridArea
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: {
-                            var cols = configManager ? configManager.gridCols : 4
-                            var rows = configManager ? configManager.gridRows : 4
-                            var availableWidth = parent.width - 32
-                            var cellSize = Math.min(availableWidth / cols, 80)
-                            return cellSize * rows
-                        }
-
-                        Grid {
-                            anchors.centerIn: parent
-                            columns: configManager ? configManager.gridCols : 4
-                            spacing: 4
-
-                            Repeater {
-                                model: configManager ? (configManager.gridRows * configManager.gridCols) : 16
 
                                 Rectangle {
-                                    id: gridCell
-                                    property int row: Math.floor(index / (configManager ? configManager.gridCols : 4))
-                                    property int col: index % (configManager ? configManager.gridCols : 4)
-                                    property real depth: configManager ? configManager.getGridDepth(row, col) : 0
+                                    width: infoIcon.width + 8
+                                    height: infoIcon.height + 8
+                                    radius: height / 2
+                                    color: "#1A75A8"
 
-                                    width: {
-                                        var cols = configManager ? configManager.gridCols : 4
-                                        var availableWidth = gridArea.width - (cols - 1) * 4
-                                        return Math.min(availableWidth / cols, 76)
-                                    }
-                                    height: width
-                                    radius: 8
-                                    color: getDepthColor(depth)
-                                    border.width: (selectedRow === row && selectedCol === col) ? 3 : 1
-                                    border.color: (selectedRow === row && selectedCol === col)
-                                        ? root.primaryColor
-                                        : Qt.darker(color, 1.2)
-
-                                    function getDepthColor(d) {
-                                        if (d === 0) return root.surfaceColor
-                                        var intensity = Math.min(d / 30, 1)
-                                        return Qt.rgba(
-                                            0.2 + (1 - intensity) * 0.3,
-                                            0.6 - intensity * 0.4,
-                                            0.9 - intensity * 0.3,
-                                            1
-                                        )
-                                    }
-
-                                    ColumnLayout {
+                                    Text {
+                                        id: infoIcon
                                         anchors.centerIn: parent
-                                        spacing: 2
-
-                                        Text {
-                                            Layout.alignment: Qt.AlignHCenter
-                                            text: depth > 0 ? depth.toFixed(1) : "-"
-                                            font.pixelSize: gridCell.width > 50 ? 14 : 10
-                                            font.bold: true
-                                            color: depth > 15 ? "white" : root.textColor
-                                        }
-
-                                        Text {
-                                            Layout.alignment: Qt.AlignHCenter
-                                            text: depth > 0 ? "m" : ""
-                                            font.pixelSize: 9
-                                            color: depth > 15 ? Qt.rgba(1,1,1,0.7) : root.textSecondaryColor
-                                            visible: gridCell.width > 40
-                                        }
+                                        text: "?"
+                                        font.pixelSize: 10
+                                        font.bold: true
+                                        color: "white"
                                     }
 
                                     MouseArea {
                                         anchors.fill: parent
-                                        onClicked: {
-                                            selectedRow = row
-                                            selectedCol = col
-                                            depthInputDialog.open()
+                                        hoverEnabled: true
+                                        ToolTip.visible: containsMouse
+                                        ToolTip.text: tr("Click on cells to enter depth values. The bathymetric map will update in real-time.")
+                                    }
+                                }
+                            }
+
+                            Text {
+                                text: tr("Click cells to enter depth (m)")
+                                font.pixelSize: 11
+                                color: root.textSecondaryColor
+                            }
+
+                            // Veri giriş grid'i
+                            Item {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: {
+                                    var cellSize = Math.min((parent.width - 40) / gridCols, 50)
+                                    return cellSize * gridRows + 25
+                                }
+
+                                // Sütun başlıkları
+                                Row {
+                                    id: colHeaders
+                                    anchors.top: parent.top
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    anchors.horizontalCenterOffset: 15
+                                    spacing: 2
+
+                                    Repeater {
+                                        model: gridCols
+                                        Rectangle {
+                                            width: Math.min((depthInputContent.width - 40) / gridCols, 50)
+                                            height: 20
+                                            color: "transparent"
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: String.fromCharCode(65 + index)
+                                                font.pixelSize: 10
+                                                font.bold: true
+                                                color: "#1A75A8"
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Grid
+                                Row {
+                                    anchors.top: colHeaders.bottom
+                                    anchors.topMargin: 2
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    spacing: 2
+
+                                    // Satır başlıkları
+                                    Column {
+                                        spacing: 2
+                                        Repeater {
+                                            model: gridRows
+                                            Rectangle {
+                                                width: 25
+                                                height: Math.min((depthInputContent.width - 40) / gridCols, 50)
+                                                color: "transparent"
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: (index + 1).toString()
+                                                    font.pixelSize: 10
+                                                    font.bold: true
+                                                    color: "#1A75A8"
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Grid hücreleri
+                                    Grid {
+                                        columns: gridCols
+                                        spacing: 2
+
+                                        Repeater {
+                                            model: gridRows * gridCols
+
+                                            Rectangle {
+                                                id: inputCell
+                                                property int row: Math.floor(index / gridCols)
+                                                property int col: index % gridCols
+                                                property real depth: configManager ? configManager.getGridDepth(row, col) : 0
+                                                property bool isSelected: selectedRow === row && selectedCol === col
+
+                                                width: Math.min((depthInputContent.width - 40) / gridCols, 50)
+                                                height: width
+                                                radius: 4
+                                                color: getDepthColor(depth)
+                                                border.width: isSelected ? 2 : 1
+                                                border.color: isSelected ? root.primaryColor : Qt.darker(color, 1.1)
+
+                                                function getDepthColor(d) {
+                                                    if (d <= 0) return root.surfaceColor
+                                                    // Batimetrik renk skalası
+                                                    var intensity = Math.min(d / 30, 1)
+                                                    if (intensity < 0.1) return "#C6E7F2"
+                                                    if (intensity < 0.2) return "#A8DAEB"
+                                                    if (intensity < 0.3) return "#7AC5DE"
+                                                    if (intensity < 0.4) return "#55B0D4"
+                                                    if (intensity < 0.5) return "#3A9CC8"
+                                                    if (intensity < 0.6) return "#2589BC"
+                                                    if (intensity < 0.7) return "#1A75A8"
+                                                    if (intensity < 0.8) return "#125E8C"
+                                                    if (intensity < 0.9) return "#0B4770"
+                                                    return "#063554"
+                                                }
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: depth > 0 ? depth.toFixed(1) : "-"
+                                                    font.pixelSize: parent.width > 40 ? 11 : 9
+                                                    font.bold: true
+                                                    color: depth > 10 ? "white" : root.textColor
+                                                }
+
+                                                MouseArea {
+                                                    anchors.fill: parent
+                                                    onClicked: {
+                                                        selectedRow = row
+                                                        selectedCol = col
+                                                        depthInputDialog.open()
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            }
 
-            // Depth Scale Legend
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.margins: 20
-                Layout.preferredHeight: 80
-                color: root.surfaceColor
-                radius: 12
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 8
-
-                    Text {
-                        text: qsTr("Derinlik Skalası:")
-                        font.pixelSize: 12
-                        color: root.textSecondaryColor
-                    }
-
+                    // Hızlı doldurma araçları
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 24
-                        radius: 4
+                        Layout.margins: 16
+                        Layout.preferredHeight: quickFillContent.height + 32
+                        color: Qt.lighter(root.surfaceColor, 0.97)
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
 
-                        gradient: Gradient {
-                            orientation: Gradient.Horizontal
-                            GradientStop { position: 0.0; color: "#4DB8FF" }
-                            GradientStop { position: 0.5; color: "#2196F3" }
-                            GradientStop { position: 1.0; color: "#0D47A1" }
+                        ColumnLayout {
+                            id: quickFillContent
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 16
+                            spacing: 12
+
+                            Text {
+                                text: tr("Quick Fill Tools")
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 8
+
+                                Button {
+                                    Layout.fillWidth: true
+                                    height: 36
+                                    text: tr("Fill All")
+
+                                    background: Rectangle {
+                                        radius: 6
+                                        color: parent.pressed ? Qt.darker("#1A75A8", 1.1) : "#1A75A8"
+                                    }
+
+                                    contentItem: Text {
+                                        text: parent.text
+                                        font.pixelSize: 11
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: fillAllDialog.open()
+                                }
+
+                                Button {
+                                    Layout.fillWidth: true
+                                    height: 36
+                                    text: tr("Random")
+
+                                    background: Rectangle {
+                                        radius: 6
+                                        color: parent.pressed ? Qt.darker("#2589BC", 1.1) : "#2589BC"
+                                    }
+
+                                    contentItem: Text {
+                                        text: parent.text
+                                        font.pixelSize: 11
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        if (configManager) {
+                                            for (var r = 0; r < gridRows; r++) {
+                                                for (var c = 0; c < gridCols; c++) {
+                                                    var depth = 2 + Math.random() * 25
+                                                    configManager.setGridDepth(r, c, depth)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Button {
+                                    Layout.fillWidth: true
+                                    height: 36
+                                    text: tr("Clear")
+
+                                    background: Rectangle {
+                                        radius: 6
+                                        color: parent.pressed ? Qt.darker("#E53E3E", 1.1) : "#E53E3E"
+                                    }
+
+                                    contentItem: Text {
+                                        text: parent.text
+                                        font.pixelSize: 11
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        if (configManager) {
+                                            for (var r = 0; r < gridRows; r++) {
+                                                for (var c = 0; c < gridCols; c++) {
+                                                    configManager.setGridDepth(r, c, 0)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    Text {
-                        text: "0m"
-                        font.pixelSize: 11
-                        color: root.textSecondaryColor
-                    }
-
-                    Text {
-                        text: "→"
-                        font.pixelSize: 11
-                        color: root.textSecondaryColor
-                    }
-
-                    Text {
-                        text: "30m+"
-                        font.pixelSize: 11
-                        color: root.textSecondaryColor
-                    }
+                    Item { Layout.preferredHeight: 16 }
                 }
             }
+        }
 
-            Item { Layout.preferredHeight: 20 }
+        // Sağ panel - Canlı önizleme
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: root.surfaceColor
+            radius: 12
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 16
+                spacing: 12
+
+                // Önizleme başlığı
+                RowLayout {
+                    Layout.fillWidth: true
+
+                    Text {
+                        text: tr("Live Preview")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Rectangle {
+                        width: liveText.width + 16
+                        height: 24
+                        radius: 12
+                        color: "#38A169"
+
+                        Row {
+                            anchors.centerIn: parent
+                            spacing: 4
+
+                            Rectangle {
+                                width: 6
+                                height: 6
+                                radius: 3
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                SequentialAnimation on opacity {
+                                    loops: Animation.Infinite
+                                    NumberAnimation { to: 0.3; duration: 500 }
+                                    NumberAnimation { to: 1; duration: 500 }
+                                }
+                            }
+
+                            Text {
+                                id: liveText
+                                text: "LIVE"
+                                font.pixelSize: 10
+                                font.bold: true
+                                color: "white"
+                            }
+                        }
+                    }
+                }
+
+                // Batimetrik harita önizlemesi
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: "#F7FAFC"
+                    radius: 8
+                    border.width: 2
+                    border.color: "#1A75A8"
+
+                    // Harita başlığı
+                    Rectangle {
+                        id: previewTitle
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: 32
+                        color: "#1A75A8"
+                        radius: 6
+
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            height: parent.radius
+                            color: parent.color
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: tr("Bathymetric Map") + " - " + tr("Preview")
+                            font.pixelSize: 12
+                            font.bold: true
+                            color: "white"
+                        }
+                    }
+
+                    // Batimetrik harita canvas'ı
+                    BathymetricMapCanvas {
+                        id: previewMap
+                        anchors.top: previewTitle.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.margins: 8
+
+                        gridRows: root.gridRows
+                        gridCols: root.gridCols
+                        gridDepths: root.gridDepths
+                        maxDepth: root.maxDepth
+
+                        showContours: true
+                        contourInterval: 5
+                        showGrid: false
+                    }
+                }
+
+                // Lejant
+                BathymetricLegend {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 180
+                    title: tr("Depth Scale") + " (m)"
+                    maxDepth: Math.max(root.maxDepth, 10)
+                    textColor: root.textColor
+                    backgroundColor: Qt.lighter(root.surfaceColor, 0.97)
+                }
+            }
         }
     }
 
@@ -433,7 +721,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 80
+        height: 70
         color: root.surfaceColor
 
         Rectangle {
@@ -446,18 +734,18 @@ Rectangle {
 
         Button {
             anchors.centerIn: parent
-            width: parent.width - 40
-            height: 50
-            text: qsTr("Kaydet ve Devam Et")
+            width: Math.min(parent.width - 40, 300)
+            height: 48
+            text: tr("Save and Continue")
 
             background: Rectangle {
-                radius: 12
+                radius: 10
                 color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
             }
 
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 16
+                font.pixelSize: 15
                 font.bold: true
                 color: "white"
                 horizontalAlignment: Text.AlignHCenter
@@ -473,23 +761,23 @@ Rectangle {
     // Depth Input Dialog
     Dialog {
         id: depthInputDialog
-        title: qsTr("Derinlik Değeri Girin")
+        title: tr("Enter Depth Value")
         modal: true
         anchors.centerIn: parent
-        width: 300
+        width: 280
 
         background: Rectangle {
             color: themeManager ? themeManager.backgroundColor : "#f7fafc"
-            radius: 16
+            radius: 12
             border.width: 1
             border.color: root.borderColor
         }
 
         header: Rectangle {
             width: parent.width
-            height: 50
+            height: 45
             color: root.primaryColor
-            radius: 16
+            radius: 12
 
             Rectangle {
                 anchors.bottom: parent.bottom
@@ -501,24 +789,24 @@ Rectangle {
 
             Text {
                 anchors.centerIn: parent
-                text: qsTr("Grid [%1, %2] Derinliği").arg(selectedRow + 1).arg(selectedCol + 1)
-                font.pixelSize: 16
+                text: tr("Cell") + " [" + String.fromCharCode(65 + selectedCol) + (selectedRow + 1) + "]"
+                font.pixelSize: 14
                 font.bold: true
                 color: "white"
             }
         }
 
         contentItem: ColumnLayout {
-            spacing: 16
+            spacing: 12
 
-            Item { Layout.preferredHeight: 8 }
+            Item { Layout.preferredHeight: 4 }
 
             TextField {
                 id: depthInput
                 Layout.fillWidth: true
-                Layout.preferredHeight: 50
-                placeholderText: qsTr("Derinlik (metre)")
-                font.pixelSize: 18
+                Layout.preferredHeight: 45
+                placeholderText: tr("Depth") + " (m)"
+                font.pixelSize: 16
                 horizontalAlignment: Text.AlignHCenter
                 validator: DoubleValidator { bottom: 0; decimals: 2 }
                 color: root.textColor
@@ -526,40 +814,36 @@ Rectangle {
 
                 background: Rectangle {
                     color: root.surfaceColor
-                    radius: 8
+                    radius: 6
                     border.width: depthInput.activeFocus ? 2 : 1
                     border.color: depthInput.activeFocus ? root.primaryColor : root.borderColor
-                }
-
-                Component.onCompleted: {
-                    text = ""
                 }
             }
 
             Text {
                 Layout.alignment: Qt.AlignHCenter
-                text: qsTr("Mevcut değer: %1 m").arg(
+                text: tr("Current value") + ": " + (
                     (selectedRow >= 0 && selectedCol >= 0 && configManager)
-                        ? configManager.getGridDepth(selectedRow, selectedCol).toFixed(1)
-                        : "0.0"
+                        ? configManager.getGridDepth(selectedRow, selectedCol).toFixed(1) + " m"
+                        : "0.0 m"
                 )
-                font.pixelSize: 12
+                font.pixelSize: 11
                 color: root.textSecondaryColor
             }
         }
 
         footer: RowLayout {
-            spacing: 12
+            spacing: 10
 
             Item { Layout.fillWidth: true }
 
             Button {
-                text: qsTr("İptal")
+                text: tr("Cancel")
                 flat: true
 
                 contentItem: Text {
                     text: parent.text
-                    font.pixelSize: 14
+                    font.pixelSize: 13
                     color: root.textSecondaryColor
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -568,16 +852,16 @@ Rectangle {
             }
 
             Button {
-                text: qsTr("Kaydet")
+                text: tr("Save")
 
                 background: Rectangle {
-                    radius: 8
+                    radius: 6
                     color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
                 }
 
                 contentItem: Text {
                     text: parent.text
-                    font.pixelSize: 14
+                    font.pixelSize: 13
                     font.bold: true
                     color: "white"
                     horizontalAlignment: Text.AlignHCenter
@@ -592,12 +876,139 @@ Rectangle {
                 }
             }
 
-            Item { Layout.preferredWidth: 8 }
+            Item { Layout.preferredWidth: 6 }
         }
 
         onOpened: {
             depthInput.text = ""
             depthInput.forceActiveFocus()
+        }
+    }
+
+    // Fill All Dialog
+    Dialog {
+        id: fillAllDialog
+        title: tr("Fill All Cells")
+        modal: true
+        anchors.centerIn: parent
+        width: 280
+
+        background: Rectangle {
+            color: themeManager ? themeManager.backgroundColor : "#f7fafc"
+            radius: 12
+            border.width: 1
+            border.color: root.borderColor
+        }
+
+        header: Rectangle {
+            width: parent.width
+            height: 45
+            color: "#1A75A8"
+            radius: 12
+
+            Rectangle {
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: parent.radius
+                color: parent.color
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: tr("Fill All Cells")
+                font.pixelSize: 14
+                font.bold: true
+                color: "white"
+            }
+        }
+
+        contentItem: ColumnLayout {
+            spacing: 12
+
+            Item { Layout.preferredHeight: 4 }
+
+            TextField {
+                id: fillAllInput
+                Layout.fillWidth: true
+                Layout.preferredHeight: 45
+                placeholderText: tr("Depth") + " (m)"
+                font.pixelSize: 16
+                horizontalAlignment: Text.AlignHCenter
+                validator: DoubleValidator { bottom: 0; decimals: 2 }
+                color: root.textColor
+                placeholderTextColor: root.textSecondaryColor
+
+                background: Rectangle {
+                    color: root.surfaceColor
+                    radius: 6
+                    border.width: fillAllInput.activeFocus ? 2 : 1
+                    border.color: fillAllInput.activeFocus ? "#1A75A8" : root.borderColor
+                }
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: tr("This will fill all") + " " + (gridRows * gridCols) + " " + tr("cells")
+                font.pixelSize: 11
+                color: root.textSecondaryColor
+            }
+        }
+
+        footer: RowLayout {
+            spacing: 10
+
+            Item { Layout.fillWidth: true }
+
+            Button {
+                text: tr("Cancel")
+                flat: true
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: 13
+                    color: root.textSecondaryColor
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                onClicked: fillAllDialog.close()
+            }
+
+            Button {
+                text: tr("Fill")
+
+                background: Rectangle {
+                    radius: 6
+                    color: parent.pressed ? Qt.darker("#1A75A8", 1.2) : "#1A75A8"
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: 13
+                    font.bold: true
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                onClicked: {
+                    var val = parseFloat(fillAllInput.text)
+                    if (!isNaN(val) && val >= 0 && configManager) {
+                        for (var r = 0; r < gridRows; r++) {
+                            for (var c = 0; c < gridCols; c++) {
+                                configManager.setGridDepth(r, c, val)
+                            }
+                        }
+                    }
+                    fillAllDialog.close()
+                }
+            }
+
+            Item { Layout.preferredWidth: 6 }
+        }
+
+        onOpened: {
+            fillAllInput.text = ""
+            fillAllInput.forceActiveFocus()
         }
     }
 }
