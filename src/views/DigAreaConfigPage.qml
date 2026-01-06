@@ -682,7 +682,7 @@ Rectangle {
                         }
                     }
 
-                    // Batimetrik harita canvas'ı
+                    // Batimetrik harita canvas'ı - konturlar kapalı (performans için)
                     BathymetricMapCanvas {
                         id: previewMap
                         anchors.top: previewTitle.bottom
@@ -696,9 +696,8 @@ Rectangle {
                         gridDepths: root.gridDepths
                         maxDepth: root.maxDepth
 
-                        showContours: true
-                        contourInterval: 5
-                        showGrid: false
+                        showContours: false
+                        showGrid: true
                     }
                 }
 

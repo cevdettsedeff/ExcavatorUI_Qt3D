@@ -24,9 +24,21 @@ Rectangle {
     property int gridCols: configManager ? configManager.gridCols : 5
     property var gridDepths: configManager ? configManager.gridDepths : []
 
-    // Hesaplanan değerler
-    property real minDepth: calculateMinDepth()
-    property real maxDepth: calculateMaxDepth()
+    // Hesaplanan değerler (cache'lenmiş - performans için)
+    property real minDepth: 0
+    property real maxDepth: 30
+
+    // Değerleri güncelle (debounce ile)
+    Timer {
+        id: depthCalcTimer
+        interval: 200
+        onTriggered: {
+            areaPage.minDepth = calculateMinDepth()
+            areaPage.maxDepth = calculateMaxDepth()
+        }
+    }
+
+    onGridDepthsChanged: depthCalcTimer.restart()
 
     // Theme colors
     property color primaryColor: themeManager ? themeManager.primaryColor : "#38b2ac"
