@@ -948,13 +948,16 @@ Rectangle {
             border.width: 2
             border.color: root.primaryColor
 
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#80000000"
-                shadowBlur: 0.5
-                shadowVerticalOffset: 4
-                shadowHorizontalOffset: 0
+            // Basit gölge efekti
+            Rectangle {
+                anchors.fill: parent
+                anchors.topMargin: 4
+                anchors.leftMargin: 2
+                anchors.rightMargin: -2
+                anchors.bottomMargin: -4
+                z: -1
+                radius: parent.radius
+                color: "#40000000"
             }
         }
 
@@ -1121,13 +1124,16 @@ Rectangle {
             border.width: 2
             border.color: "#1A75A8"
 
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#80000000"
-                shadowBlur: 0.5
-                shadowVerticalOffset: 4
-                shadowHorizontalOffset: 0
+            // Basit gölge efekti
+            Rectangle {
+                anchors.fill: parent
+                anchors.topMargin: 4
+                anchors.leftMargin: 2
+                anchors.rightMargin: -2
+                anchors.bottomMargin: -4
+                z: -1
+                radius: parent.radius
+                color: "#40000000"
             }
         }
 
