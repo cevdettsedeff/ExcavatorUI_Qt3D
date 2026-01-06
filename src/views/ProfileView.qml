@@ -4,13 +4,13 @@ import QtQuick.Layouts
 
 Rectangle {
     id: root
-    color: "#1a1a1a"
+    color: "#2d3748"
 
     // Gradient background
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#1a1a1a" }
+            GradientStop { position: 0.0; color: "#2d3748" }
             GradientStop { position: 1.0; color: "#0d0d0d" }
         }
     }
@@ -28,7 +28,7 @@ Rectangle {
             anchors.fill: parent
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "#2d2d2d" }
-                GradientStop { position: 1.0; color: "#1a1a1a" }
+                GradientStop { position: 1.0; color: "#2d3748" }
             }
         }
 
@@ -153,7 +153,7 @@ Rectangle {
                         Rectangle {
                             width: parent.width
                             height: 50
-                            color: "#1a1a1a"
+                            color: "#2d3748"
                             radius: 8
                             border.color: "#404040"
                             border.width: 2
@@ -197,7 +197,7 @@ Rectangle {
                             font.pixelSize: 14
 
                             background: Rectangle {
-                                color: "#1a1a1a"
+                                color: "#2d3748"
                                 radius: 8
                                 border.color: newUsernameField.activeFocus ? "#3498db" : "#404040"
                                 border.width: 2
@@ -239,7 +239,7 @@ Rectangle {
                                 rightPadding: 45
 
                                 background: Rectangle {
-                                    color: "#1a1a1a"
+                                    color: "#2d3748"
                                     radius: 8
                                     border.color: newPasswordField.activeFocus ? "#3498db" : "#404040"
                                     border.width: 2
@@ -304,7 +304,7 @@ Rectangle {
                                 rightPadding: 45
 
                                 background: Rectangle {
-                                    color: "#1a1a1a"
+                                    color: "#2d3748"
                                     radius: 8
                                     border.color: confirmPasswordField.activeFocus ? "#3498db" : "#404040"
                                     border.width: 2

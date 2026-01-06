@@ -27,7 +27,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
         // Dil seçici butonu (sağ üst köşe)
         Rectangle {

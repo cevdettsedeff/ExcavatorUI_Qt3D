@@ -10,7 +10,7 @@ import ExcavatorUI_Qt3D
  */
 Rectangle {
     id: root
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     property bool contentLoaded: false
     property int currentPageIndex: 0
@@ -146,7 +146,7 @@ Rectangle {
         id: loadingScreen
         anchors.fill: parent
         z: 1000
-        color: "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColor : "#2d3748"
         visible: !root.contentLoaded
         opacity: root.contentLoaded ? 0 : 1
 

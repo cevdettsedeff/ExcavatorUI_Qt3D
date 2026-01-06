@@ -8,7 +8,7 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: offlineMapRoot
-    color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     Behavior on color {
         ColorAnimation { duration: 300 }
@@ -239,7 +239,7 @@ Rectangle {
                     Rectangle {
                         anchors.fill: parent
                         visible: !parent.isCached
-                        color: "#1a1a1a"
+                        color: "#2d3748"
                         border.color: "#333333"
                         border.width: 1
 
@@ -400,7 +400,7 @@ Rectangle {
         anchors.leftMargin: 20
         width: cacheColumn.width + 30
         height: cacheColumn.height + 30
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: "#ff9800"
@@ -496,7 +496,7 @@ Rectangle {
         anchors.bottomMargin: 15
         width: controlRow.width + 30
         height: controlRow.height + 20
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 25
         border.color: "#333333"
@@ -628,7 +628,7 @@ Rectangle {
         width: helpText.width + 20
         height: helpText.height + 10
         radius: 5
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.9
         z: 10
 

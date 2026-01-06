@@ -542,7 +542,7 @@ Rectangle {
         width: 100
         height: 40
         radius: 5
-        color: themeManager ? themeManager.backgroundColorDark : "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColorDark : "#2d3748"
         opacity: 0.9
         visible: isUpdating
         z: 100
@@ -571,7 +571,7 @@ Rectangle {
         anchors.leftMargin: 20
         width: infoColumn.width + 30
         height: infoColumn.height + 30
-        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColor : "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: themeManager ? themeManager.primaryColor : "#00bcd4"
@@ -663,7 +663,7 @@ Rectangle {
         anchors.bottomMargin: 15
         width: controlRow.width + 30
         height: controlRow.height + 20
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 25
         border.color: "#333333"
@@ -689,7 +689,7 @@ Rectangle {
                 width: 44
                 height: 44
                 radius: 22
-                color: zoomOutArea.pressed ? "#333333" : (zoomLevel > 3 && !isUpdating ? "#252525" : "#1a1a1a")
+                color: zoomOutArea.pressed ? "#333333" : (zoomLevel > 3 && !isUpdating ? "#252525" : "#2d3748")
                 border.color: zoomLevel > 3 && !isUpdating ? "#00bcd4" : "#333333"
                 border.width: 1
 
@@ -742,7 +742,7 @@ Rectangle {
                 width: 44
                 height: 44
                 radius: 22
-                color: zoomInArea.pressed ? "#333333" : (zoomLevel < 18 && !isUpdating ? "#252525" : "#1a1a1a")
+                color: zoomInArea.pressed ? "#333333" : (zoomLevel < 18 && !isUpdating ? "#252525" : "#2d3748")
                 border.color: zoomLevel < 18 && !isUpdating ? "#00bcd4" : "#333333"
                 border.width: 1
 
@@ -912,7 +912,7 @@ Rectangle {
         anchors.rightMargin: 20
         width: 220
         height: offlinePanelExpanded ? offlineColumn.height + 30 : 45
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: "#ff9800"
@@ -1343,7 +1343,7 @@ Rectangle {
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
         background: Rectangle {
-            color: "#1a1a1a"
+            color: "#2d3748"
             radius: 10
             border.color: "#4CAF50"
             border.width: 2

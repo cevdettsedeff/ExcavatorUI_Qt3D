@@ -150,7 +150,7 @@ Rectangle {
         anchors.bottomMargin: 10
         width: 240
         height: gpsColumn.height + 30
-        color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
+        color: themeManager ? themeManager.backgroundColor : "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: themeManager ? themeManager.borderColor : "#505050"
@@ -227,7 +227,7 @@ Rectangle {
         // Gradient arka plan için
         gradient: Gradient {
             GradientStop { position: 0.0; color: themeManager ? themeManager.backgroundColorDark : "#252525" }
-            GradientStop { position: 1.0; color: themeManager ? themeManager.backgroundColor : "#1a1a1a" }
+            GradientStop { position: 1.0; color: themeManager ? themeManager.backgroundColor : "#2d3748" }
         }
 
         CheckBox {

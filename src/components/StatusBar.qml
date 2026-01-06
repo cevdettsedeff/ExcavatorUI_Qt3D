@@ -6,7 +6,7 @@ import QtQuick.Layouts
 Rectangle {
     id: statusBar
     height: 50
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     // Proje adı property'si
     property string projectName: "AŞ-KAZI-042"

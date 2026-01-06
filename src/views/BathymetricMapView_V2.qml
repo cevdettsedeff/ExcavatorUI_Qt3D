@@ -326,7 +326,7 @@ Rectangle {
         anchors.leftMargin: 20
         width: statusColumn.width + 30
         height: statusColumn.height + 30
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: vrtLoaded ? "#00bcd4" : "#ff5555"
@@ -390,7 +390,7 @@ Rectangle {
         anchors.rightMargin: 30
         width: 200
         height: legendColumn.height + 30
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: "#404040"
@@ -457,7 +457,7 @@ Rectangle {
         anchors.leftMargin: 30
         width: controlColumn.width + 30
         height: controlColumn.height + 30
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: "#404040"

@@ -16,7 +16,7 @@ ApplicationWindow {
     height: 1280
     visible: true
     title: qsTr("EHK - Harita Ve Görselleştirme Yönetimi")
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     // Mevcut görünüm durumu
     // "login" -> "config-dashboard" -> "dashboard"

@@ -8,7 +8,7 @@ ApplicationWindow {
     height: 1280
     visible: true
     title: qsTr("Excavator Dashboard")
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     // Dil değişikliği için trigger
     property int retranslationTrigger: 0

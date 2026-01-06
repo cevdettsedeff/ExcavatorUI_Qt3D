@@ -128,7 +128,7 @@ Rectangle {
                 text: "📍 İstanbul, Türkiye"
                 font.pixelSize: 14
                 font.bold: true
-                color: "#1a1a1a"
+                color: "#2d3748"
             }
             Text {
                 text: "Lat: 41.0082"
@@ -183,7 +183,7 @@ Rectangle {
         anchors.bottomMargin: 20
         width: mapControlsColumn.width + 40
         height: mapControlsColumn.height + 40
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.9
         radius: 10
         border.color: "#404040"
@@ -257,7 +257,7 @@ Rectangle {
         anchors.rightMargin: 30
         width: infoText.width + 20
         height: infoText.height + 20
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.9
         radius: 5
         border.color: "#404040"

@@ -5,7 +5,7 @@ import QtQuick.Layouts
 // Alarm Sayfası - Uyarılar ve bildirimler
 Rectangle {
     id: alarmPage
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0

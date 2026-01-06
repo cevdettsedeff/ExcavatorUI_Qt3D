@@ -5,7 +5,7 @@ import QtQuick.Layouts
 // Ayarlar Sayfası - StackView ile alt sayfa navigasyonu
 Rectangle {
     id: settingsPage
-    color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     // Theme colors
     property color primaryColor: themeManager ? themeManager.primaryColor : "#38b2ac"

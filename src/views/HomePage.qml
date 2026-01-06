@@ -7,7 +7,7 @@ import ExcavatorUI_Qt3D
 // Ana Sayfa - 3D Ekskavatör Görünümü (Mockup'a göre)
 Rectangle {
     id: homePage
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -491,7 +491,7 @@ Rectangle {
             id: coordinateBar
             Layout.fillWidth: true
             Layout.preferredHeight: 45
-            color: "#1a1a1a"
+            color: themeManager ? themeManager.backgroundColor : "#2d3748"
             border.color: "#333333"
             border.width: 1
 
