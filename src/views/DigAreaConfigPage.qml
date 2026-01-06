@@ -934,9 +934,10 @@ Rectangle {
         x: (parent.width - width) / 2
         y: 50  // Ekranın en üstünde, klavye altında kalmayacak
         width: 300
-        height: dialogContent.height
+        height: 220
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         z: 1000
+        padding: 0
 
         // Mevcut değeri sakla
         property real currentDepthValue: 0
@@ -947,18 +948,19 @@ Rectangle {
             border.width: 2
             border.color: root.primaryColor
 
-            // Gölge efekti
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: -4
-                z: -1
-                radius: 16
-                color: "#40000000"
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "#80000000"
+                shadowBlur: 0.5
+                shadowVerticalOffset: 4
+                shadowHorizontalOffset: 0
             }
         }
 
         contentItem: Column {
             id: dialogContent
+            width: parent.width
             spacing: 0
 
             // Header
@@ -986,96 +988,101 @@ Rectangle {
             }
 
             // Content
-            Column {
+            Item {
                 width: parent.width
-                padding: 16
-                spacing: 12
+                height: 170
 
-                TextField {
-                    id: depthInput
-                    width: parent.width - 32
-                    height: 50
-                    placeholderText: tr("Depth") + " (m)"
-                    font.pixelSize: 18
-                    horizontalAlignment: Text.AlignHCenter
-                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                    color: root.textColor
-                    placeholderTextColor: root.textSecondaryColor
-
-                    background: Rectangle {
-                        color: Qt.lighter(root.surfaceColor, 1.1)
-                        radius: 8
-                        border.width: depthInput.activeFocus ? 2 : 1
-                        border.color: depthInput.activeFocus ? root.primaryColor : root.borderColor
-                    }
-                }
-
-                Text {
-                    width: parent.width - 32
-                    horizontalAlignment: Text.AlignHCenter
-                    text: tr("Current value") + ": " + depthInputDialog.currentDepthValue.toFixed(1) + " m"
-                    font.pixelSize: 12
-                    color: root.textColor
-                }
-
-                // Buttons
-                Row {
-                    width: parent.width - 32
+                Column {
+                    anchors.fill: parent
+                    anchors.margins: 16
                     spacing: 12
-                    layoutDirection: Qt.RightToLeft
 
-                    Button {
-                        width: 100
-                        height: 42
-                        text: tr("Save")
+                    TextField {
+                        id: depthInput
+                        width: parent.width
+                        height: 50
+                        placeholderText: tr("Depth") + " (m)"
+                        font.pixelSize: 18
+                        horizontalAlignment: Text.AlignHCenter
+                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
 
                         background: Rectangle {
+                            color: Qt.lighter(root.surfaceColor, 1.1)
                             radius: 8
-                            color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
-                        }
-
-                        contentItem: Text {
-                            text: parent.text
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "white"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-
-                        onClicked: {
-                            // Virgülü noktaya çevir (Türkçe klavye desteği)
-                            var inputText = depthInput.text.replace(",", ".")
-                            var val = parseFloat(inputText)
-                            if (!isNaN(val) && val >= 0 && selectedRow >= 0 && selectedCol >= 0 && configManager) {
-                                configManager.setGridDepth(selectedRow, selectedCol, val)
-                            }
-                            depthInputDialog.close()
+                            border.width: depthInput.activeFocus ? 2 : 1
+                            border.color: depthInput.activeFocus ? root.primaryColor : root.borderColor
                         }
                     }
 
-                    Button {
-                        width: 80
-                        height: 42
-                        text: tr("Cancel")
-                        flat: true
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: tr("Current value") + ": " + depthInputDialog.currentDepthValue.toFixed(1) + " m"
+                        font.pixelSize: 12
+                        color: root.textColor
+                    }
 
-                        background: Rectangle {
-                            radius: 8
-                            color: parent.pressed ? Qt.rgba(0.5, 0.5, 0.5, 0.2) : "transparent"
-                            border.width: 1
-                            border.color: root.borderColor
+                    // Buttons
+                    Row {
+                        width: parent.width
+                        spacing: 12
+                        layoutDirection: Qt.RightToLeft
+
+                        Button {
+                            width: 100
+                            height: 42
+                            text: tr("Save")
+
+                            background: Rectangle {
+                                radius: 8
+                                color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                // Virgülü noktaya çevir (Türkçe klavye desteği)
+                                var inputText = depthInput.text.replace(",", ".")
+                                var val = parseFloat(inputText)
+                                if (!isNaN(val) && val >= 0 && selectedRow >= 0 && selectedCol >= 0 && configManager) {
+                                    configManager.setGridDepth(selectedRow, selectedCol, val)
+                                }
+                                depthInputDialog.close()
+                            }
                         }
 
-                        contentItem: Text {
-                            text: parent.text
-                            font.pixelSize: 14
-                            color: root.textColor
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
+                        Button {
+                            width: 80
+                            height: 42
+                            text: tr("Cancel")
+                            flat: true
 
-                        onClicked: depthInputDialog.close()
+                            background: Rectangle {
+                                radius: 8
+                                color: parent.pressed ? Qt.rgba(0.5, 0.5, 0.5, 0.2) : "transparent"
+                                border.width: 1
+                                border.color: root.borderColor
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 14
+                                color: root.textColor
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: depthInputDialog.close()
+                        }
                     }
                 }
             }
@@ -1103,9 +1110,10 @@ Rectangle {
         x: (parent.width - width) / 2
         y: 50  // Ekranın en üstünde
         width: 300
-        height: fillAllContent.height
+        height: 220
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         z: 1000
+        padding: 0
 
         background: Rectangle {
             color: root.surfaceColor
@@ -1113,18 +1121,19 @@ Rectangle {
             border.width: 2
             border.color: "#1A75A8"
 
-            // Gölge efekti
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: -4
-                z: -1
-                radius: 16
-                color: "#40000000"
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowColor: "#80000000"
+                shadowBlur: 0.5
+                shadowVerticalOffset: 4
+                shadowHorizontalOffset: 0
             }
         }
 
         contentItem: Column {
             id: fillAllContent
+            width: parent.width
             spacing: 0
 
             // Header
@@ -1152,100 +1161,105 @@ Rectangle {
             }
 
             // Content
-            Column {
+            Item {
                 width: parent.width
-                padding: 16
-                spacing: 12
+                height: 170
 
-                TextField {
-                    id: fillAllInput
-                    width: parent.width - 32
-                    height: 50
-                    placeholderText: tr("Depth") + " (m)"
-                    font.pixelSize: 18
-                    horizontalAlignment: Text.AlignHCenter
-                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                    color: root.textColor
-                    placeholderTextColor: root.textSecondaryColor
-
-                    background: Rectangle {
-                        color: Qt.lighter(root.surfaceColor, 1.1)
-                        radius: 8
-                        border.width: fillAllInput.activeFocus ? 2 : 1
-                        border.color: fillAllInput.activeFocus ? "#1A75A8" : root.borderColor
-                    }
-                }
-
-                Text {
-                    width: parent.width - 32
-                    horizontalAlignment: Text.AlignHCenter
-                    text: tr("This will fill all") + " " + (gridRows * gridCols) + " " + tr("cells")
-                    font.pixelSize: 12
-                    color: root.textColor
-                }
-
-                // Buttons
-                Row {
-                    width: parent.width - 32
+                Column {
+                    anchors.fill: parent
+                    anchors.margins: 16
                     spacing: 12
-                    layoutDirection: Qt.RightToLeft
 
-                    Button {
-                        width: 100
-                        height: 42
-                        text: tr("Fill")
+                    TextField {
+                        id: fillAllInput
+                        width: parent.width
+                        height: 50
+                        placeholderText: tr("Depth") + " (m)"
+                        font.pixelSize: 18
+                        horizontalAlignment: Text.AlignHCenter
+                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
 
                         background: Rectangle {
+                            color: Qt.lighter(root.surfaceColor, 1.1)
                             radius: 8
-                            color: parent.pressed ? Qt.darker("#1A75A8", 1.2) : "#1A75A8"
+                            border.width: fillAllInput.activeFocus ? 2 : 1
+                            border.color: fillAllInput.activeFocus ? "#1A75A8" : root.borderColor
                         }
+                    }
 
-                        contentItem: Text {
-                            text: parent.text
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "white"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        text: tr("This will fill all") + " " + (gridRows * gridCols) + " " + tr("cells")
+                        font.pixelSize: 12
+                        color: root.textColor
+                    }
 
-                        onClicked: {
-                            // Virgülü noktaya çevir (Türkçe klavye desteği)
-                            var inputText = fillAllInput.text.replace(",", ".")
-                            var val = parseFloat(inputText)
-                            if (!isNaN(val) && val >= 0 && configManager) {
-                                for (var r = 0; r < gridRows; r++) {
-                                    for (var c = 0; c < gridCols; c++) {
-                                        configManager.setGridDepth(r, c, val)
+                    // Buttons
+                    Row {
+                        width: parent.width
+                        spacing: 12
+                        layoutDirection: Qt.RightToLeft
+
+                        Button {
+                            width: 100
+                            height: 42
+                            text: tr("Fill")
+
+                            background: Rectangle {
+                                radius: 8
+                                color: parent.pressed ? Qt.darker("#1A75A8", 1.2) : "#1A75A8"
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                // Virgülü noktaya çevir (Türkçe klavye desteği)
+                                var inputText = fillAllInput.text.replace(",", ".")
+                                var val = parseFloat(inputText)
+                                if (!isNaN(val) && val >= 0 && configManager) {
+                                    for (var r = 0; r < gridRows; r++) {
+                                        for (var c = 0; c < gridCols; c++) {
+                                            configManager.setGridDepth(r, c, val)
+                                        }
                                     }
                                 }
+                                fillAllDialog.close()
                             }
-                            fillAllDialog.close()
-                        }
-                    }
-
-                    Button {
-                        width: 80
-                        height: 42
-                        text: tr("Cancel")
-                        flat: true
-
-                        background: Rectangle {
-                            radius: 8
-                            color: parent.pressed ? Qt.rgba(0.5, 0.5, 0.5, 0.2) : "transparent"
-                            border.width: 1
-                            border.color: root.borderColor
                         }
 
-                        contentItem: Text {
-                            text: parent.text
-                            font.pixelSize: 14
-                            color: root.textColor
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
+                        Button {
+                            width: 80
+                            height: 42
+                            text: tr("Cancel")
+                            flat: true
 
-                        onClicked: fillAllDialog.close()
+                            background: Rectangle {
+                                radius: 8
+                                color: parent.pressed ? Qt.rgba(0.5, 0.5, 0.5, 0.2) : "transparent"
+                                border.width: 1
+                                border.color: root.borderColor
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 14
+                                color: root.textColor
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: fillAllDialog.close()
+                        }
                     }
                 }
             }
