@@ -15,6 +15,22 @@ Rectangle {
     // Arka plan tema rengiyle uyumlu (biraz daha koyu)
     color: themeManager ? Qt.darker(themeManager.backgroundColor, 1.3) : "#1a202c"
 
+    // Türkçe gün ve ay isimleri
+    property var turkishDays: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"]
+    property var turkishMonths: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
+
+    // Türkçe tarih formatı
+    function formatTurkishDate(date) {
+        var dayName = turkishDays[date.getDay()]
+        var day = date.getDate()
+        var monthName = turkishMonths[date.getMonth()]
+        var year = date.getFullYear()
+        return dayName + ", " + day + " " + monthName + " " + year
+    }
+
+    // Dil kontrolü
+    property bool isTurkish: translationService && translationService.currentLanguage === "tr_TR"
+
     // Saat ve tarih için timer
     Timer {
         id: clockTimer
@@ -26,7 +42,12 @@ Rectangle {
             var now = new Date()
             timeText.text = Qt.formatTime(now, "HH:mm")
             secondsText.text = Qt.formatTime(now, ":ss")
-            dateText.text = Qt.formatDate(now, "dddd, d MMMM yyyy")
+            // Türkçe ise Türkçe format, değilse İngilizce
+            if (screenSaver.isTurkish) {
+                dateText.text = screenSaver.formatTurkishDate(now)
+            } else {
+                dateText.text = Qt.formatDate(now, "dddd, d MMMM yyyy")
+            }
         }
     }
 
@@ -105,12 +126,12 @@ Rectangle {
         y: screenSaver.contentY
         spacing: 25
 
-        // Ekskavatör resmi (PNG)
+        // Ekskavatör resmi (PNG) - Büyütülmüş boyut
         Image {
             id: excavatorImage
             source: "qrc:/ExcavatorUI_Qt3D/resources/screensaver/excavator_screensaver.png"
-            width: 300
-            height: 180
+            width: 450
+            height: 270
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             smooth: true
@@ -128,11 +149,11 @@ Rectangle {
             }
         }
 
-        // Fallback: Resim yoksa Canvas ile çiz
+        // Fallback: Resim yoksa Canvas ile çiz - Büyütülmüş boyut
         Canvas {
             id: excavatorCanvas
-            width: 300
-            height: 180
+            width: 450
+            height: 270
             anchors.horizontalCenter: parent.horizontalCenter
             visible: excavatorImage.status !== Image.Ready
 
@@ -140,9 +161,9 @@ Rectangle {
                 var ctx = getContext("2d")
                 ctx.reset()
 
-                var scale = 2.2
-                var offsetX = 15
-                var offsetY = 25
+                var scale = 3.3  // Büyütülmüş ölçek
+                var offsetX = 20
+                var offsetY = 35
 
                 // Silüet rengi (sarı-turuncu tonları)
                 var mainColor = "#F5A623"
@@ -232,14 +253,14 @@ Rectangle {
             }
         }
 
-        // Saat
+        // Saat - Büyütülmüş boyut
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
 
             Text {
                 id: timeText
                 text: "00:00"
-                font.pixelSize: 96
+                font.pixelSize: 140
                 font.weight: Font.Light
                 font.family: "Segoe UI"
                 color: "#ffffff"
@@ -248,7 +269,7 @@ Rectangle {
             Text {
                 id: secondsText
                 text: ":00"
-                font.pixelSize: 48
+                font.pixelSize: 70
                 font.weight: Font.Light
                 font.family: "Segoe UI"
                 color: "#888888"
@@ -256,11 +277,11 @@ Rectangle {
             }
         }
 
-        // Tarih
+        // Tarih - Büyütülmüş boyut
         Text {
             id: dateText
             text: "Pazartesi, 1 Ocak 2024"
-            font.pixelSize: 24
+            font.pixelSize: 36
             font.weight: Font.Normal
             font.family: "Segoe UI"
             color: "#aaaaaa"
@@ -311,19 +332,5 @@ Rectangle {
         }
     }
 
-    // Fade in/out animasyonları
-    opacity: 0
-
-    Behavior on opacity {
-        NumberAnimation { duration: 800 }
-    }
-
-    // Görünürlük kontrolü için states
-    states: [
-        State {
-            name: "visible"
-            when: screenSaver.visible
-            PropertyChanges { target: screenSaver; opacity: 1 }
-        }
-    ]
+    // Opacity AppRoot tarafından kontrol edilir (binding loop önlemek için)
 }

@@ -93,6 +93,8 @@ ApplicationWindow {
 
         function onLoginSucceeded() {
             console.log("Login başarılı...")
+            // Screensaver'ı kapat (varsa)
+            screenSaverActive = false
             // Önce klavyeyi kapat
             Qt.inputMethod.hide()
             // Kısa bir gecikme ile geçiş yap (klavye animasyonu için)
@@ -234,20 +236,16 @@ ApplicationWindow {
         }
     }
 
-    // ScreenSaver - login ekranında inaktivite durumunda gösterilir
+    // ScreenSaver - SADECE login ekranında inaktivite durumunda gösterilir
     ScreenSaver {
         id: screenSaver
         anchors.fill: parent
         z: 1000  // Her şeyin üstünde
-        visible: screenSaverActive
-        opacity: screenSaverActive ? 1 : 0
+        // Sadece login ekranında VE screenSaverActive ise görünür
+        visible: screenSaverActive && currentView === "login"
 
         onDismissed: {
             dismissScreenSaver()
-        }
-
-        Behavior on opacity {
-            NumberAnimation { duration: 500 }
         }
     }
 }
