@@ -38,6 +38,8 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_alarmColorInfo("#2196F3")
     , m_alarmColorSuccess("#4CAF50")
     , m_alarmConfigured(false)
+    , m_screenSaverEnabled(true)
+    , m_screenSaverTimeoutSeconds(120)  // Varsayılan 2 dakika = 120 saniye
 {
     setDefaultValues();
     initializeGridDepths();
@@ -155,6 +157,11 @@ void ConfigManager::parseConfig(const QJsonObject &json)
     // Parse alarm settings
     if (json.contains("alarm") && json["alarm"].isObject()) {
         parseAlarmSettings(json["alarm"].toObject());
+    }
+
+    // Parse screen saver settings
+    if (json.contains("screen_saver") && json["screen_saver"].isObject()) {
+        parseScreenSaverSettings(json["screen_saver"].toObject());
     }
 }
 
@@ -692,6 +699,37 @@ void ConfigManager::parseAlarmSettings(const QJsonObject &alarmSettings)
     }
 }
 
+void ConfigManager::parseScreenSaverSettings(const QJsonObject &screenSaverSettings)
+{
+    if (screenSaverSettings.contains("enabled")) {
+        setScreenSaverEnabled(screenSaverSettings["enabled"].toBool(true));
+    }
+    if (screenSaverSettings.contains("timeout_seconds")) {
+        setScreenSaverTimeoutSeconds(screenSaverSettings["timeout_seconds"].toInt(120));
+    }
+}
+
+// Screen Saver setters
+void ConfigManager::setScreenSaverEnabled(bool enabled)
+{
+    if (m_screenSaverEnabled != enabled) {
+        m_screenSaverEnabled = enabled;
+        emit screenSaverEnabledChanged();
+        saveConfig();  // Ayar değiştiğinde kaydet
+    }
+}
+
+void ConfigManager::setScreenSaverTimeoutSeconds(int seconds)
+{
+    // Min: 10 saniye, Max: 1800 saniye (30 dakika)
+    int clampedSeconds = qBound(10, seconds, 1800);
+    if (m_screenSaverTimeoutSeconds != clampedSeconds) {
+        m_screenSaverTimeoutSeconds = clampedSeconds;
+        emit screenSaverTimeoutSecondsChanged();
+        saveConfig();  // Ayar değiştiğinde kaydet
+    }
+}
+
 bool ConfigManager::saveConfig()
 {
     QJsonObject root;
@@ -774,6 +812,12 @@ bool ConfigManager::saveConfig()
     alarm["color_success"] = m_alarmColorSuccess;
     alarm["configured"] = m_alarmConfigured;
     root["alarm"] = alarm;
+
+    // Screen Saver settings
+    QJsonObject screenSaver;
+    screenSaver["enabled"] = m_screenSaverEnabled;
+    screenSaver["timeout_seconds"] = m_screenSaverTimeoutSeconds;
+    root["screen_saver"] = screenSaver;
 
     // Write to file
     QJsonDocument doc(root);

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.VirtualKeyboard
+import ExcavatorUI_Qt3D
 
 /**
  * AppRoot - Uygulamanın kalıcı root container'ı
@@ -9,6 +10,7 @@ import QtQuick.VirtualKeyboard
  * 1. Tek bir InputPanel instance'ı tutar (VirtualKeyboard crash'ini önler)
  * 2. Loader ile Login/ConfigDashboard/Dashboard arasında geçiş yapar
  * 3. AuthService sinyallerini merkezi olarak yönetir
+ * 4. Inactivity timeout ile screensaver gösterir (login ekranında)
  */
 ApplicationWindow {
     id: appRoot
@@ -22,11 +24,66 @@ ApplicationWindow {
     // "login" -> "config-dashboard" -> "dashboard"
     property string currentView: "login"
 
+    // Screensaver durumu
+    property bool screenSaverActive: false
+
+    // ConfigManager'dan screensaver ayarlarını al
+    property bool screenSaverEnabled: configManager ? configManager.screenSaverEnabled : true
+    property int screenSaverTimeoutSeconds: configManager ? configManager.screenSaverTimeoutSeconds : 120
+
+    // Inactivity timeout süresi (saniyeden milisaniyeye çevir)
+    readonly property int inactivityTimeout: screenSaverTimeoutSeconds * 1000
+
     // Window'u ortala (masaüstünde)
     Component.onCompleted: {
         if (Screen.width > 800) {
             appRoot.x = (Screen.width - appRoot.width) / 2
             appRoot.y = (Screen.height - appRoot.height) / 2
+        }
+    }
+
+    // ConfigManager değişikliklerini dinle
+    Connections {
+        target: configManager
+        function onScreenSaverEnabledChanged() {
+            console.log("Screensaver enabled changed:", configManager.screenSaverEnabled)
+            if (!configManager.screenSaverEnabled && screenSaverActive) {
+                dismissScreenSaver()
+            }
+        }
+        function onScreenSaverTimeoutSecondsChanged() {
+            console.log("Screensaver timeout changed:", configManager.screenSaverTimeoutSeconds, "seconds")
+            inactivityTimer.restart()
+        }
+    }
+
+    // Inactivity timer - sadece login ekranında ve screensaver etkinse çalışır
+    Timer {
+        id: inactivityTimer
+        interval: appRoot.inactivityTimeout
+        running: (currentView === "login") && !screenSaverActive && screenSaverEnabled
+        repeat: false
+        onTriggered: {
+            console.log("Inactivity timeout (" + screenSaverTimeoutSeconds + " sn) - Screensaver aktif")
+            screenSaverActive = true
+        }
+    }
+
+    // Kullanıcı aktivitesini algıla ve timer'ı sıfırla
+    function resetInactivityTimer() {
+        if (currentView === "login" && !screenSaverActive && screenSaverEnabled) {
+            inactivityTimer.restart()
+        }
+    }
+
+    // Screensaver'ı kapat
+    function dismissScreenSaver() {
+        if (screenSaverActive) {
+            console.log("Screensaver kapatıldı")
+            screenSaverActive = false
+            if (screenSaverEnabled) {
+                inactivityTimer.restart()
+            }
         }
     }
 
@@ -36,6 +93,8 @@ ApplicationWindow {
 
         function onLoginSucceeded() {
             console.log("Login başarılı...")
+            // Screensaver'ı kapat (varsa)
+            screenSaverActive = false
             // Önce klavyeyi kapat
             Qt.inputMethod.hide()
             // Kısa bir gecikme ile geçiş yap (klavye animasyonu için)
@@ -67,6 +126,37 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: inputPanel.top
+
+        // Global aktivite algılama (inactivity timer için)
+        // Login ekranında mouse/touch hareketlerini yakalar
+        MouseArea {
+            id: globalActivityDetector
+            anchors.fill: parent
+            propagateComposedEvents: true
+            hoverEnabled: true
+            enabled: currentView === "login" && !screenSaverActive
+
+            // Tüm olayları geçir ama timer'ı sıfırla
+            onPressed: function(mouse) {
+                resetInactivityTimer()
+                mouse.accepted = false
+            }
+            onReleased: function(mouse) {
+                mouse.accepted = false
+            }
+            onClicked: function(mouse) {
+                resetInactivityTimer()
+                mouse.accepted = false
+            }
+            onPositionChanged: function(mouse) {
+                resetInactivityTimer()
+                mouse.accepted = false
+            }
+            onWheel: function(wheel) {
+                resetInactivityTimer()
+                wheel.accepted = false
+            }
+        }
 
         // View Loader - Login, ConfigDashboard veya Dashboard yükler
         Loader {
@@ -143,6 +233,19 @@ ApplicationWindow {
                     easing.type: Easing.InOutQuad
                 }
             }
+        }
+    }
+
+    // ScreenSaver - SADECE login ekranında inaktivite durumunda gösterilir
+    ScreenSaver {
+        id: screenSaver
+        anchors.fill: parent
+        z: 1000  // Her şeyin üstünde
+        // Sadece login ekranında VE screenSaverActive ise görünür
+        visible: screenSaverActive && currentView === "login"
+
+        onDismissed: {
+            dismissScreenSaver()
         }
     }
 }

@@ -837,5 +837,37 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Save and Continue</source>
         <translation>Kaydet ve Devam Et</translation>
     </message>
+    <message>
+        <source>Screen Settings</source>
+        <translation>Ekran Ayarları</translation>
+    </message>
+    <message>
+        <source>Screensaver</source>
+        <translation>Bekleme Ekranı</translation>
+    </message>
+    <message>
+        <source>Enable Screensaver</source>
+        <translation>Bekleme Ekranını Etkinleştir</translation>
+    </message>
+    <message>
+        <source>When enabled, screensaver will appear after inactivity on login screen</source>
+        <translation>Etkinleştirildiğinde, giriş ekranında belirli bir süre işlem yapılmadığında bekleme ekranı görünür</translation>
+    </message>
+    <message>
+        <source>Timeout Duration</source>
+        <translation>Bekleme Süresi</translation>
+    </message>
+    <message>
+        <source>sec</source>
+        <translation>sn</translation>
+    </message>
+    <message>
+        <source>min</source>
+        <translation>dk</translation>
+    </message>
+    <message>
+        <source>Screensaver activates only on login screen when there is no user activity. Touch or move mouse to dismiss.</source>
+        <translation>Bekleme ekranı yalnızca giriş ekranında, kullanıcı aktivitesi olmadığında aktif olur. Kapatmak için dokunun veya fareyi hareket ettirin.</translation>
+    </message>
 </context>
 </TS>

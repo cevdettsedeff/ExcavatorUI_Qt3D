@@ -66,6 +66,10 @@ class ConfigManager : public QObject
     Q_PROPERTY(QString alarmColorSuccess READ alarmColorSuccess WRITE setAlarmColorSuccess NOTIFY alarmColorSuccessChanged)
     Q_PROPERTY(bool alarmConfigured READ alarmConfigured NOTIFY alarmConfiguredChanged)
 
+    // Screen Saver settings
+    Q_PROPERTY(bool screenSaverEnabled READ screenSaverEnabled WRITE setScreenSaverEnabled NOTIFY screenSaverEnabledChanged)
+    Q_PROPERTY(int screenSaverTimeoutSeconds READ screenSaverTimeoutSeconds WRITE setScreenSaverTimeoutSeconds NOTIFY screenSaverTimeoutSecondsChanged)
+
 public:
     explicit ConfigManager(QObject *parent = nullptr);
     ~ConfigManager();
@@ -118,6 +122,10 @@ public:
     QString alarmColorSuccess() const { return m_alarmColorSuccess; }
     bool alarmConfigured() const { return m_alarmConfigured; }
 
+    // Screen Saver getters
+    bool screenSaverEnabled() const { return m_screenSaverEnabled; }
+    int screenSaverTimeoutSeconds() const { return m_screenSaverTimeoutSeconds; }
+
     // Property setters
     void setConfigPath(const QString &path);
 
@@ -149,6 +157,10 @@ public:
     void setAlarmColorWarning(const QString &color);
     void setAlarmColorInfo(const QString &color);
     void setAlarmColorSuccess(const QString &color);
+
+    // Screen Saver setters
+    void setScreenSaverEnabled(bool enabled);
+    void setScreenSaverTimeoutSeconds(int seconds);
 
     /**
      * Load configuration from JSON file
@@ -270,6 +282,10 @@ signals:
     void alarmColorSuccessChanged();
     void alarmConfiguredChanged();
 
+    // Screen Saver signals
+    void screenSaverEnabledChanged();
+    void screenSaverTimeoutSecondsChanged();
+
 private:
     QString m_configPath;
     bool m_isLoaded;
@@ -332,6 +348,10 @@ private:
     QString m_alarmColorSuccess;
     bool m_alarmConfigured;
 
+    // Screen Saver settings
+    bool m_screenSaverEnabled;
+    int m_screenSaverTimeoutSeconds;  // saniye cinsinden (min: 10, max: 1800)
+
     // JSON parsing helpers
     void parseConfig(const QJsonObject &json);
     void parseBathymetrySettings(const QJsonObject &bathymetry);
@@ -342,6 +362,7 @@ private:
     void parseDigAreaSettings(const QJsonObject &digArea);
     void parseMapSettings(const QJsonObject &mapSettings);
     void parseAlarmSettings(const QJsonObject &alarmSettings);
+    void parseScreenSaverSettings(const QJsonObject &screenSaverSettings);
     QColor parseColor(const QString &colorString) const;
     void setDefaultValues();
     void initializeGridDepths();
