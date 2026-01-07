@@ -27,7 +27,7 @@ Rectangle {
     // Görsel ayarlar
     property real barWidth: 35            // Daha kalın bar
     property real labelWidth: 55
-    property color aboveWaterColor: "#E8E8E8"      // Su seviyesi üstü (beyaz/gri)
+    property color aboveWaterColor: "#D4C5A9"      // Su seviyesi üstü (krem/bej rengi)
     property color waterColor: "#4DD0E1"           // Su (cyan)
     property color normalDigColor: "#2196F3"       // Normal kazı (mavi)
     property color overDigColor: "#F44336"         // Hedef altı kazı (kırmızı)
