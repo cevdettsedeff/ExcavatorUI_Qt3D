@@ -125,6 +125,9 @@ Rectangle {
             // Taralı desen
             Canvas {
                 anchors.fill: parent
+                onWidthChanged: requestPaint()
+                onHeightChanged: requestPaint()
+                Component.onCompleted: requestPaint()
                 onPaint: {
                     var ctx = getContext("2d")
                     ctx.clearRect(0, 0, width, height)
@@ -160,6 +163,9 @@ Rectangle {
 
             Canvas {
                 anchors.fill: parent
+                onWidthChanged: requestPaint()
+                onHeightChanged: requestPaint()
+                Component.onCompleted: requestPaint()
                 onPaint: {
                     var ctx = getContext("2d")
                     ctx.clearRect(0, 0, width, height)
@@ -202,11 +208,14 @@ Rectangle {
 
         // Kepçe göstergesi (turuncu üçgen)
         Canvas {
+            id: bucketIndicator
             x: parent.width - 5
             y: (maxDepth - currentBucketDepth) / totalRange * parent.height - 10
             width: 20
             height: 20
 
+            Component.onCompleted: requestPaint()
+            onYChanged: requestPaint()
             onPaint: {
                 var ctx = getContext("2d")
                 ctx.clearRect(0, 0, width, height)
