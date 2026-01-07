@@ -239,6 +239,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/components/BathymetricLegend.qml
         src/components/MapDecorations.qml
         src/components/BucketDepthIndicator.qml
+        src/components/ScreenSaver.qml
     RESOURCES
         ${MESH_FILES}
         ${LOGO_FILES}
