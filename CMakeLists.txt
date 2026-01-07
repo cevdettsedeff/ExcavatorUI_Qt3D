@@ -189,6 +189,18 @@ else()
     message(STATUS "ℹ Logo dosyaları bulunamadı - placeholder'lar kullanılacak")
 endif()
 
+# Screensaver dosyalarını bul (opsiyonel - varsa ekle)
+file(GLOB SCREENSAVER_FILES
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    "resources/screensaver/*.png"
+)
+list(LENGTH SCREENSAVER_FILES SCREENSAVER_COUNT)
+if(SCREENSAVER_COUNT GREATER 0)
+    message(STATUS "✓ Bulunan screensaver dosyası sayısı: ${SCREENSAVER_COUNT}")
+else()
+    message(STATUS "ℹ Screensaver resmi bulunamadı - Canvas fallback kullanılacak")
+endif()
+
 # Add translations to the executable
 qt_add_translations(ExcavatorUI_Qt3DApp
     TS_FILES ${TS_FILES}
@@ -243,6 +255,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
     RESOURCES
         ${MESH_FILES}
         ${LOGO_FILES}
+        ${SCREENSAVER_FILES}
         resources/textures/deniz.png
         resources/textures/toprak.png
         resources/icons/app_icon.ico

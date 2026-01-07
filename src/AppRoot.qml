@@ -27,8 +27,12 @@ ApplicationWindow {
     // Screensaver durumu
     property bool screenSaverActive: false
 
-    // Inactivity timeout süresi (2 dakika = 120000 ms)
-    readonly property int inactivityTimeout: 120000
+    // ConfigManager'dan screensaver ayarlarını al
+    property bool screenSaverEnabled: configManager ? configManager.screenSaverEnabled : true
+    property int screenSaverTimeoutMinutes: configManager ? configManager.screenSaverTimeout : 2
+
+    // Inactivity timeout süresi (dakikadan milisaniyeye çevir)
+    readonly property int inactivityTimeout: screenSaverTimeoutMinutes * 60 * 1000
 
     // Window'u ortala (masaüstünde)
     Component.onCompleted: {
@@ -38,21 +42,36 @@ ApplicationWindow {
         }
     }
 
-    // Inactivity timer - sadece login ekranında çalışır
+    // ConfigManager değişikliklerini dinle
+    Connections {
+        target: configManager
+        function onScreenSaverEnabledChanged() {
+            console.log("Screensaver enabled changed:", configManager.screenSaverEnabled)
+            if (!configManager.screenSaverEnabled && screenSaverActive) {
+                dismissScreenSaver()
+            }
+        }
+        function onScreenSaverTimeoutChanged() {
+            console.log("Screensaver timeout changed:", configManager.screenSaverTimeout, "minutes")
+            inactivityTimer.restart()
+        }
+    }
+
+    // Inactivity timer - sadece login ekranında ve screensaver etkinse çalışır
     Timer {
         id: inactivityTimer
         interval: appRoot.inactivityTimeout
-        running: (currentView === "login") && !screenSaverActive
+        running: (currentView === "login") && !screenSaverActive && screenSaverEnabled
         repeat: false
         onTriggered: {
-            console.log("Inactivity timeout - Screensaver aktif")
+            console.log("Inactivity timeout (" + screenSaverTimeoutMinutes + " dk) - Screensaver aktif")
             screenSaverActive = true
         }
     }
 
     // Kullanıcı aktivitesini algıla ve timer'ı sıfırla
     function resetInactivityTimer() {
-        if (currentView === "login" && !screenSaverActive) {
+        if (currentView === "login" && !screenSaverActive && screenSaverEnabled) {
             inactivityTimer.restart()
         }
     }
@@ -62,7 +81,9 @@ ApplicationWindow {
         if (screenSaverActive) {
             console.log("Screensaver kapatıldı")
             screenSaverActive = false
-            inactivityTimer.restart()
+            if (screenSaverEnabled) {
+                inactivityTimer.restart()
+            }
         }
     }
 

@@ -4,7 +4,7 @@ import QtQuick.Controls
 /**
  * ScreenSaver - Windows tarzı bekleme ekranı
  *
- * Saat, tarih ve ekskavatör silüeti gösterir.
+ * Saat, tarih ve ekskavatör resmi gösterir.
  * Herhangi bir dokunma/fare hareketi ile kapanır.
  */
 Rectangle {
@@ -12,7 +12,8 @@ Rectangle {
 
     signal dismissed()
 
-    color: "#000000"
+    // Arka plan tema rengiyle uyumlu (biraz daha koyu)
+    color: themeManager ? Qt.darker(themeManager.backgroundColor, 1.3) : "#1a202c"
 
     // Saat ve tarih için timer
     Timer {
@@ -30,10 +31,10 @@ Rectangle {
     }
 
     // Yavaş hareket animasyonu için pozisyon
-    property real contentX: (parent.width - contentColumn.width) / 2
-    property real contentY: (parent.height - contentColumn.height) / 2
+    property real contentX: (width - contentColumn.width) / 2
+    property real contentY: (height - contentColumn.height) / 2
 
-    // Yavaş drift animasyonu (Windows screensaver gibi)
+    // Çok yavaş drift animasyonu (Windows screensaver gibi)
     SequentialAnimation {
         id: driftAnimation
         running: screenSaver.visible
@@ -43,17 +44,17 @@ Rectangle {
             NumberAnimation {
                 target: screenSaver
                 property: "contentX"
-                from: screenSaver.width * 0.2
-                to: screenSaver.width * 0.5
-                duration: 15000
+                from: screenSaver.width * 0.25
+                to: screenSaver.width * 0.45
+                duration: 45000  // 45 saniye - çok yavaş
                 easing.type: Easing.InOutSine
             }
             NumberAnimation {
                 target: screenSaver
                 property: "contentY"
                 from: screenSaver.height * 0.3
-                to: screenSaver.height * 0.5
-                duration: 12000
+                to: screenSaver.height * 0.45
+                duration: 40000  // 40 saniye
                 easing.type: Easing.InOutSine
             }
         }
@@ -62,17 +63,17 @@ Rectangle {
             NumberAnimation {
                 target: screenSaver
                 property: "contentX"
-                from: screenSaver.width * 0.5
-                to: screenSaver.width * 0.3
-                duration: 13000
+                from: screenSaver.width * 0.45
+                to: screenSaver.width * 0.35
+                duration: 50000  // 50 saniye
                 easing.type: Easing.InOutSine
             }
             NumberAnimation {
                 target: screenSaver
                 property: "contentY"
-                from: screenSaver.height * 0.5
-                to: screenSaver.height * 0.2
-                duration: 14000
+                from: screenSaver.height * 0.45
+                to: screenSaver.height * 0.25
+                duration: 42000  // 42 saniye
                 easing.type: Easing.InOutSine
             }
         }
@@ -81,17 +82,17 @@ Rectangle {
             NumberAnimation {
                 target: screenSaver
                 property: "contentX"
-                from: screenSaver.width * 0.3
-                to: screenSaver.width * 0.2
-                duration: 11000
+                from: screenSaver.width * 0.35
+                to: screenSaver.width * 0.25
+                duration: 38000  // 38 saniye
                 easing.type: Easing.InOutSine
             }
             NumberAnimation {
                 target: screenSaver
                 property: "contentY"
-                from: screenSaver.height * 0.2
+                from: screenSaver.height * 0.25
                 to: screenSaver.height * 0.3
-                duration: 16000
+                duration: 48000  // 48 saniye
                 easing.type: Easing.InOutSine
             }
         }
@@ -102,26 +103,51 @@ Rectangle {
         id: contentColumn
         x: screenSaver.contentX
         y: screenSaver.contentY
-        spacing: 20
+        spacing: 25
 
-        // Ekskavatör silüeti (Canvas ile çizim)
+        // Ekskavatör resmi (PNG)
+        Image {
+            id: excavatorImage
+            source: "qrc:/ExcavatorUI_Qt3D/resources/screensaver/excavator_screensaver.png"
+            width: 300
+            height: 180
+            fillMode: Image.PreserveAspectFit
+            anchors.horizontalCenter: parent.horizontalCenter
+            smooth: true
+            antialiasing: true
+
+            // Resim yüklenemezse Canvas ile fallback çiz
+            visible: status === Image.Ready
+
+            // Hafif parıldama efekti
+            SequentialAnimation on opacity {
+                running: excavatorImage.visible && screenSaver.visible
+                loops: Animation.Infinite
+                NumberAnimation { from: 0.85; to: 1.0; duration: 3000 }
+                NumberAnimation { from: 1.0; to: 0.85; duration: 3000 }
+            }
+        }
+
+        // Fallback: Resim yoksa Canvas ile çiz
         Canvas {
             id: excavatorCanvas
-            width: 280
-            height: 160
+            width: 300
+            height: 180
             anchors.horizontalCenter: parent.horizontalCenter
+            visible: excavatorImage.status !== Image.Ready
 
             onPaint: {
                 var ctx = getContext("2d")
                 ctx.reset()
 
-                var scale = 2.0
-                var offsetX = 20
-                var offsetY = 30
+                var scale = 2.2
+                var offsetX = 15
+                var offsetY = 25
 
                 // Silüet rengi (sarı-turuncu tonları)
-                ctx.fillStyle = "#F5A623"
-                ctx.strokeStyle = "#F5A623"
+                var mainColor = "#F5A623"
+                ctx.fillStyle = mainColor
+                ctx.strokeStyle = mainColor
                 ctx.lineWidth = 2
 
                 // Alt şasi (paletler)
@@ -134,7 +160,7 @@ Rectangle {
                 }
 
                 // Üst yapı (döner platform)
-                ctx.fillStyle = "#F5A623"
+                ctx.fillStyle = mainColor
                 ctx.beginPath()
                 ctx.moveTo(offsetX + 25 * scale, offsetY + 50 * scale)
                 ctx.lineTo(offsetX + 30 * scale, offsetY + 25 * scale)
@@ -150,7 +176,7 @@ Rectangle {
                 ctx.fillRect(offsetX + 34 * scale, offsetY + 30 * scale, 16 * scale, 12 * scale)
 
                 // Boom (ana kol)
-                ctx.fillStyle = "#F5A623"
+                ctx.fillStyle = mainColor
                 ctx.save()
                 ctx.translate(offsetX + 55 * scale, offsetY + 35 * scale)
                 ctx.rotate(-0.6)
@@ -187,7 +213,7 @@ Rectangle {
                 }
 
                 // Karşı ağırlık
-                ctx.fillStyle = "#F5A623"
+                ctx.fillStyle = mainColor
                 ctx.beginPath()
                 ctx.moveTo(offsetX + 15 * scale, offsetY + 50 * scale)
                 ctx.lineTo(offsetX + 10 * scale, offsetY + 35 * scale)
@@ -195,6 +221,14 @@ Rectangle {
                 ctx.lineTo(offsetX + 25 * scale, offsetY + 50 * scale)
                 ctx.closePath()
                 ctx.fill()
+            }
+
+            // Hafif parıldama efekti
+            SequentialAnimation on opacity {
+                running: excavatorCanvas.visible && screenSaver.visible
+                loops: Animation.Infinite
+                NumberAnimation { from: 0.85; to: 1.0; duration: 3000 }
+                NumberAnimation { from: 1.0; to: 0.85; duration: 3000 }
             }
         }
 
@@ -243,8 +277,8 @@ Rectangle {
             SequentialAnimation on opacity {
                 running: screenSaver.visible
                 loops: Animation.Infinite
-                NumberAnimation { from: 0.3; to: 1.0; duration: 1500 }
-                NumberAnimation { from: 1.0; to: 0.3; duration: 1500 }
+                NumberAnimation { from: 0.3; to: 1.0; duration: 2000 }
+                NumberAnimation { from: 1.0; to: 0.3; duration: 2000 }
             }
         }
     }
@@ -281,7 +315,7 @@ Rectangle {
     opacity: 0
 
     Behavior on opacity {
-        NumberAnimation { duration: 500 }
+        NumberAnimation { duration: 800 }
     }
 
     // Görünürlük kontrolü için states
