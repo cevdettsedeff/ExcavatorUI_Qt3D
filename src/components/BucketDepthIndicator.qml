@@ -43,9 +43,10 @@ Rectangle {
     Column {
         id: scaleColumn
         anchors.left: parent.left
+        anchors.leftMargin: 2
         anchors.top: parent.top
         anchors.topMargin: barTop
-        width: 40
+        width: 38
 
         Repeater {
             id: scaleRepeater
@@ -75,23 +76,22 @@ Rectangle {
                 }
 
                 Text {
-                    anchors.right: parent.right
-                    anchors.rightMargin: 4
+                    anchors.left: parent.left
                     anchors.top: parent.top
                     text: modelData + "m"
-                    font.pixelSize: 11
+                    font.pixelSize: 10
                     font.bold: modelData === 0
-                    color: modelData === 0 ? "#00BCD4" : "#CCCCCC"
+                    color: modelData === 0 ? "#00BCD4" : "#AAAAAA"
                 }
 
                 // Tick çizgisi
                 Rectangle {
                     anchors.right: parent.right
                     anchors.top: parent.top
-                    anchors.topMargin: 6
-                    width: 8
-                    height: modelData === 0 ? 3 : 2
-                    color: modelData === 0 ? "#00BCD4" : "#888888"
+                    anchors.topMargin: 5
+                    width: 6
+                    height: modelData === 0 ? 3 : 1
+                    color: modelData === 0 ? "#00BCD4" : "#666666"
                 }
             }
         }
@@ -100,7 +100,7 @@ Rectangle {
     // Ana Bar
     Rectangle {
         id: mainBar
-        x: 48
+        x: 42
         y: barTop
         width: 40
         height: barHeight
