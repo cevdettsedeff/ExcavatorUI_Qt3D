@@ -265,6 +265,28 @@ Rectangle {
                 ctx.stroke()
             }
         }
+
+        // Kepçe derinlik değeri (okun yanında)
+        Rectangle {
+            id: bucketDepthLabel
+            x: parent.width + 8
+            y: (maxDepth - currentBucketDepth) / totalRange * parent.height - 11
+            width: 42
+            height: 22
+            radius: 3
+            color: currentBucketDepth < targetDepth ? root.overDigColor : "#FF5722"
+            border.width: 1
+            border.color: Qt.lighter(color, 1.3)
+            z: 30
+
+            Text {
+                anchors.centerIn: parent
+                text: currentBucketDepth.toFixed(1)
+                font.pixelSize: 10
+                font.bold: true
+                color: "#FFFFFF"
+            }
+        }
     }
 
     // Hedef derinlik etiketi (bar sağında)
@@ -283,27 +305,6 @@ Rectangle {
             font.pixelSize: 10
             font.bold: true
             color: "#000000"
-        }
-    }
-
-    // Mevcut derinlik göstergesi (alt kısımda)
-    Rectangle {
-        anchors.horizontalCenter: mainBar.horizontalCenter
-        anchors.top: mainBar.bottom
-        anchors.topMargin: 6
-        width: 60
-        height: 22
-        radius: 4
-        color: currentBucketDepth < targetDepth ? root.overDigColor : root.backgroundColor
-        border.width: 1
-        border.color: currentBucketDepth < targetDepth ? Qt.darker(root.overDigColor, 1.3) : root.borderColor
-
-        Text {
-            anchors.centerIn: parent
-            text: currentBucketDepth.toFixed(1) + "m"
-            font.pixelSize: 11
-            font.bold: true
-            color: "#FFFFFF"
         }
     }
 
