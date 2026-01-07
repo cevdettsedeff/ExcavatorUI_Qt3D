@@ -130,8 +130,8 @@ Rectangle {
         Image {
             id: excavatorImage
             source: "qrc:/ExcavatorUI_Qt3D/resources/screensaver/excavator_screensaver.png"
-            width: 450
-            height: 270
+            width: 550
+            height: 330
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             smooth: true
@@ -152,8 +152,8 @@ Rectangle {
         // Fallback: Resim yoksa Canvas ile çiz - Büyütülmüş boyut
         Canvas {
             id: excavatorCanvas
-            width: 450
-            height: 270
+            width: 550
+            height: 330
             anchors.horizontalCenter: parent.horizontalCenter
             visible: excavatorImage.status !== Image.Ready
 
@@ -161,9 +161,9 @@ Rectangle {
                 var ctx = getContext("2d")
                 ctx.reset()
 
-                var scale = 3.3  // Büyütülmüş ölçek
-                var offsetX = 20
-                var offsetY = 35
+                var scale = 4.0  // Büyütülmüş ölçek
+                var offsetX = 25
+                var offsetY = 45
 
                 // Silüet rengi (sarı-turuncu tonları)
                 var mainColor = "#F5A623"
