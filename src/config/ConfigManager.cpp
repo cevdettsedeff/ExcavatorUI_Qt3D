@@ -39,7 +39,7 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_alarmColorSuccess("#4CAF50")
     , m_alarmConfigured(false)
     , m_screenSaverEnabled(true)
-    , m_screenSaverTimeout(2)  // Varsayılan 2 dakika
+    , m_screenSaverTimeoutSeconds(120)  // Varsayılan 2 dakika = 120 saniye
 {
     setDefaultValues();
     initializeGridDepths();
@@ -704,8 +704,8 @@ void ConfigManager::parseScreenSaverSettings(const QJsonObject &screenSaverSetti
     if (screenSaverSettings.contains("enabled")) {
         setScreenSaverEnabled(screenSaverSettings["enabled"].toBool(true));
     }
-    if (screenSaverSettings.contains("timeout_minutes")) {
-        setScreenSaverTimeout(screenSaverSettings["timeout_minutes"].toInt(2));
+    if (screenSaverSettings.contains("timeout_seconds")) {
+        setScreenSaverTimeoutSeconds(screenSaverSettings["timeout_seconds"].toInt(120));
     }
 }
 
@@ -719,11 +719,13 @@ void ConfigManager::setScreenSaverEnabled(bool enabled)
     }
 }
 
-void ConfigManager::setScreenSaverTimeout(int minutes)
+void ConfigManager::setScreenSaverTimeoutSeconds(int seconds)
 {
-    if (m_screenSaverTimeout != minutes && minutes >= 1) {
-        m_screenSaverTimeout = minutes;
-        emit screenSaverTimeoutChanged();
+    // Min: 10 saniye, Max: 1800 saniye (30 dakika)
+    int clampedSeconds = qBound(10, seconds, 1800);
+    if (m_screenSaverTimeoutSeconds != clampedSeconds) {
+        m_screenSaverTimeoutSeconds = clampedSeconds;
+        emit screenSaverTimeoutSecondsChanged();
         saveConfig();  // Ayar değiştiğinde kaydet
     }
 }
@@ -814,7 +816,7 @@ bool ConfigManager::saveConfig()
     // Screen Saver settings
     QJsonObject screenSaver;
     screenSaver["enabled"] = m_screenSaverEnabled;
-    screenSaver["timeout_minutes"] = m_screenSaverTimeout;
+    screenSaver["timeout_seconds"] = m_screenSaverTimeoutSeconds;
     root["screen_saver"] = screenSaver;
 
     // Write to file

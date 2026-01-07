@@ -450,22 +450,27 @@ Rectangle {
                                 anchors.margins: 20
                                 spacing: 20
 
+                                // Timeout değerini formatlama fonksiyonu
+                                function formatTimeout(seconds) {
+                                    if (seconds < 60) {
+                                        return seconds + " " + tr("sec")
+                                    } else {
+                                        var mins = Math.floor(seconds / 60)
+                                        var secs = seconds % 60
+                                        if (secs === 0) {
+                                            return mins + " " + tr("min")
+                                        } else {
+                                            return mins + " " + tr("min") + " " + secs + " " + tr("sec")
+                                        }
+                                    }
+                                }
+
                                 // Başlık
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 10
-
-                                    Text {
-                                        text: "🖵"
-                                        font.pixelSize: 24
-                                    }
-
-                                    Text {
-                                        text: tr("Screensaver")
-                                        font.pixelSize: 18
-                                        font.bold: true
-                                        color: settingsPage.textColor
-                                    }
+                                Text {
+                                    text: tr("Screensaver")
+                                    font.pixelSize: 18
+                                    font.bold: true
+                                    color: settingsPage.textColor
                                 }
 
                                 // Açık/Kapalı Switch
@@ -487,6 +492,35 @@ Rectangle {
                                         onCheckedChanged: {
                                             if (configManager) {
                                                 configManager.screenSaverEnabled = checked
+                                            }
+                                        }
+
+                                        // Özel switch stili
+                                        indicator: Rectangle {
+                                            implicitWidth: 52
+                                            implicitHeight: 28
+                                            x: screenSaverSwitch.leftPadding
+                                            y: parent.height / 2 - height / 2
+                                            radius: 14
+                                            color: screenSaverSwitch.checked ? settingsPage.primaryColor : Qt.darker(settingsPage.surfaceColor, 1.3)
+                                            border.color: screenSaverSwitch.checked ? Qt.darker(settingsPage.primaryColor, 1.1) : settingsPage.borderColor
+                                            border.width: 1
+
+                                            Behavior on color {
+                                                ColorAnimation { duration: 150 }
+                                            }
+
+                                            Rectangle {
+                                                x: screenSaverSwitch.checked ? parent.width - width - 3 : 3
+                                                y: 3
+                                                width: 22
+                                                height: 22
+                                                radius: 11
+                                                color: "white"
+
+                                                Behavior on x {
+                                                    NumberAnimation { duration: 150 }
+                                                }
                                             }
                                         }
                                     }
@@ -528,14 +562,14 @@ Rectangle {
                                         Slider {
                                             id: timeoutSlider
                                             Layout.fillWidth: true
-                                            from: 1
-                                            to: 10
-                                            stepSize: 1
-                                            value: configManager ? configManager.screenSaverTimeout : 2
+                                            from: 10      // 10 saniye minimum
+                                            to: 1800      // 30 dakika maksimum
+                                            stepSize: 10  // 10 saniye adımlarla
+                                            value: configManager ? configManager.screenSaverTimeoutSeconds : 120
 
                                             onValueChanged: {
                                                 if (configManager) {
-                                                    configManager.screenSaverTimeout = value
+                                                    configManager.screenSaverTimeoutSeconds = value
                                                 }
                                             }
 
@@ -569,7 +603,7 @@ Rectangle {
 
                                         // Değer göstergesi
                                         Rectangle {
-                                            width: 60
+                                            width: 80
                                             height: 35
                                             radius: 8
                                             color: Qt.darker(settingsPage.surfaceColor, 1.2)
@@ -578,30 +612,43 @@ Rectangle {
 
                                             Text {
                                                 anchors.centerIn: parent
-                                                text: timeoutSlider.value + " " + tr("min")
-                                                font.pixelSize: 14
+                                                text: screenSaverContent.formatTimeout(timeoutSlider.value)
+                                                font.pixelSize: 12
                                                 font.bold: true
                                                 color: settingsPage.primaryColor
                                             }
                                         }
                                     }
 
-                                    // Preset butonları
-                                    RowLayout {
+                                    // Preset butonları - 2 satır halinde
+                                    GridLayout {
                                         Layout.fillWidth: true
-                                        spacing: 10
+                                        columns: 3
+                                        rowSpacing: 8
+                                        columnSpacing: 8
 
                                         Repeater {
-                                            model: [1, 2, 5, 10]
+                                            // [saniye değeri, gösterim metni]
+                                            model: ListModel {
+                                                ListElement { seconds: 10; labelKey: "10 sec"; labelTr: "10 sn" }
+                                                ListElement { seconds: 30; labelKey: "30 sec"; labelTr: "30 sn" }
+                                                ListElement { seconds: 60; labelKey: "1 min"; labelTr: "1 dk" }
+                                                ListElement { seconds: 120; labelKey: "2 min"; labelTr: "2 dk" }
+                                                ListElement { seconds: 300; labelKey: "5 min"; labelTr: "5 dk" }
+                                                ListElement { seconds: 1800; labelKey: "30 min"; labelTr: "30 dk" }
+                                            }
 
                                             Button {
-                                                text: modelData + " " + tr("min")
+                                                property string btnLabel: (translationService && translationService.currentLanguage === "tr_TR") ? model.labelTr : model.labelKey
+
+                                                text: btnLabel
                                                 flat: true
                                                 Layout.fillWidth: true
+                                                Layout.preferredHeight: 36
 
                                                 background: Rectangle {
                                                     radius: 8
-                                                    color: timeoutSlider.value === modelData ?
+                                                    color: timeoutSlider.value === model.seconds ?
                                                            settingsPage.primaryColor :
                                                            Qt.darker(settingsPage.surfaceColor, 1.2)
                                                     border.color: settingsPage.primaryColor
@@ -611,13 +658,13 @@ Rectangle {
                                                 contentItem: Text {
                                                     text: parent.text
                                                     font.pixelSize: 12
-                                                    color: timeoutSlider.value === modelData ? "white" : settingsPage.textColor
+                                                    color: timeoutSlider.value === model.seconds ? "white" : settingsPage.textColor
                                                     horizontalAlignment: Text.AlignHCenter
                                                     verticalAlignment: Text.AlignVCenter
                                                 }
 
                                                 onClicked: {
-                                                    timeoutSlider.value = modelData
+                                                    timeoutSlider.value = model.seconds
                                                 }
                                             }
                                         }
@@ -643,11 +690,6 @@ Rectangle {
                                 anchors.top: parent.top
                                 anchors.margins: 15
                                 spacing: 15
-
-                                Text {
-                                    text: "ℹ️"
-                                    font.pixelSize: 24
-                                }
 
                                 Text {
                                     text: tr("Screensaver activates only on login screen when there is no user activity. Touch or move mouse to dismiss.")

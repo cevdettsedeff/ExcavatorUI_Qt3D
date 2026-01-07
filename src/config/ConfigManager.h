@@ -68,7 +68,7 @@ class ConfigManager : public QObject
 
     // Screen Saver settings
     Q_PROPERTY(bool screenSaverEnabled READ screenSaverEnabled WRITE setScreenSaverEnabled NOTIFY screenSaverEnabledChanged)
-    Q_PROPERTY(int screenSaverTimeout READ screenSaverTimeout WRITE setScreenSaverTimeout NOTIFY screenSaverTimeoutChanged)
+    Q_PROPERTY(int screenSaverTimeoutSeconds READ screenSaverTimeoutSeconds WRITE setScreenSaverTimeoutSeconds NOTIFY screenSaverTimeoutSecondsChanged)
 
 public:
     explicit ConfigManager(QObject *parent = nullptr);
@@ -124,7 +124,7 @@ public:
 
     // Screen Saver getters
     bool screenSaverEnabled() const { return m_screenSaverEnabled; }
-    int screenSaverTimeout() const { return m_screenSaverTimeout; }
+    int screenSaverTimeoutSeconds() const { return m_screenSaverTimeoutSeconds; }
 
     // Property setters
     void setConfigPath(const QString &path);
@@ -160,7 +160,7 @@ public:
 
     // Screen Saver setters
     void setScreenSaverEnabled(bool enabled);
-    void setScreenSaverTimeout(int minutes);
+    void setScreenSaverTimeoutSeconds(int seconds);
 
     /**
      * Load configuration from JSON file
@@ -284,7 +284,7 @@ signals:
 
     // Screen Saver signals
     void screenSaverEnabledChanged();
-    void screenSaverTimeoutChanged();
+    void screenSaverTimeoutSecondsChanged();
 
 private:
     QString m_configPath;
@@ -350,7 +350,7 @@ private:
 
     // Screen Saver settings
     bool m_screenSaverEnabled;
-    int m_screenSaverTimeout;  // dakika cinsinden
+    int m_screenSaverTimeoutSeconds;  // saniye cinsinden (min: 10, max: 1800)
 
     // JSON parsing helpers
     void parseConfig(const QJsonObject &json);

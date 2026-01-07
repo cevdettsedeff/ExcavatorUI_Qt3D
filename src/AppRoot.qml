@@ -29,10 +29,10 @@ ApplicationWindow {
 
     // ConfigManager'dan screensaver ayarlarını al
     property bool screenSaverEnabled: configManager ? configManager.screenSaverEnabled : true
-    property int screenSaverTimeoutMinutes: configManager ? configManager.screenSaverTimeout : 2
+    property int screenSaverTimeoutSeconds: configManager ? configManager.screenSaverTimeoutSeconds : 120
 
-    // Inactivity timeout süresi (dakikadan milisaniyeye çevir)
-    readonly property int inactivityTimeout: screenSaverTimeoutMinutes * 60 * 1000
+    // Inactivity timeout süresi (saniyeden milisaniyeye çevir)
+    readonly property int inactivityTimeout: screenSaverTimeoutSeconds * 1000
 
     // Window'u ortala (masaüstünde)
     Component.onCompleted: {
@@ -51,8 +51,8 @@ ApplicationWindow {
                 dismissScreenSaver()
             }
         }
-        function onScreenSaverTimeoutChanged() {
-            console.log("Screensaver timeout changed:", configManager.screenSaverTimeout, "minutes")
+        function onScreenSaverTimeoutSecondsChanged() {
+            console.log("Screensaver timeout changed:", configManager.screenSaverTimeoutSeconds, "seconds")
             inactivityTimer.restart()
         }
     }
@@ -64,7 +64,7 @@ ApplicationWindow {
         running: (currentView === "login") && !screenSaverActive && screenSaverEnabled
         repeat: false
         onTriggered: {
-            console.log("Inactivity timeout (" + screenSaverTimeoutMinutes + " dk) - Screensaver aktif")
+            console.log("Inactivity timeout (" + screenSaverTimeoutSeconds + " sn) - Screensaver aktif")
             screenSaverActive = true
         }
     }
