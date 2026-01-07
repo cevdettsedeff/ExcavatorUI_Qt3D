@@ -22,6 +22,7 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_gridRows(4)
     , m_gridCols(4)
     , m_digAreaConfigured(false)
+    , m_targetDepth(15.0)
     , m_gridStartLatitude(40.7100)
     , m_gridStartLongitude(29.0000)
     , m_gridEndLatitude(40.7200)
@@ -377,6 +378,27 @@ void ConfigManager::setGridDepths(const QVariantList &depths)
 {
     m_gridDepths = depths;
     emit gridDepthsChanged();
+    emit calculatedMaxDepthChanged();
+}
+
+void ConfigManager::setTargetDepth(double depth)
+{
+    if (m_targetDepth != depth) {
+        m_targetDepth = depth;
+        emit targetDepthChanged();
+    }
+}
+
+double ConfigManager::calculatedMaxDepth() const
+{
+    double maxVal = 0.0;
+    for (const auto &depth : m_gridDepths) {
+        double d = depth.toDouble();
+        if (d > maxVal) {
+            maxVal = d;
+        }
+    }
+    return maxVal > 0 ? maxVal : 15.0; // Default 15m if no depths set
 }
 
 void ConfigManager::setGridStartLatitude(double lat)
@@ -601,8 +623,12 @@ void ConfigManager::parseDigAreaSettings(const QJsonObject &digArea)
             m_gridDepths.append(val.toDouble(0.0));
         }
         emit gridDepthsChanged();
+        emit calculatedMaxDepthChanged();
     } else {
         initializeGridDepths();
+    }
+    if (digArea.contains("target_depth")) {
+        setTargetDepth(digArea["target_depth"].toDouble(15.0));
     }
     // Grid coordinate bounds
     if (digArea.contains("start_latitude")) {
@@ -722,6 +748,7 @@ bool ConfigManager::saveConfig()
         depthsArray.append(depth.toDouble());
     }
     digArea["grid_depths"] = depthsArray;
+    digArea["target_depth"] = m_targetDepth;
     digArea["start_latitude"] = m_gridStartLatitude;
     digArea["start_longitude"] = m_gridStartLongitude;
     digArea["end_latitude"] = m_gridEndLatitude;

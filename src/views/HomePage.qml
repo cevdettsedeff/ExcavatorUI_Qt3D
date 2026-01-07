@@ -21,9 +21,9 @@ Rectangle {
 
     // Kepçe derinlik verileri (IMU servisinden veya simülasyon)
     property real bucketMaxDepth: 10.0      // Su üstü yükseklik (sabit)
-    property real bucketMinDepth: configManager ? -Math.max(configManager.maxDepth + 5, 20) : -25.0  // Batimetrik max + 5m
+    property real bucketMinDepth: configManager ? -Math.max(configManager.calculatedMaxDepth + 5, 20) : -25.0  // Batimetrik max + 5m
     property real bucketWaterLevel: 0.0     // Su seviyesi
-    property real bucketTargetDepth: configManager ? -configManager.maxDepth : -15.0  // Hedef derinlik
+    property real bucketTargetDepth: configManager ? -configManager.targetDepth : -15.0  // Hedef derinlik
     property real bucketCurrentDepth: imuService ? imuService.bucketDepth : -5.0      // Mevcut kepçe derinliği
 
     function tr(text) {

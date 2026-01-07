@@ -43,6 +43,8 @@ class ConfigManager : public QObject
     Q_PROPERTY(int gridCols READ gridCols WRITE setGridCols NOTIFY gridColsChanged)
     Q_PROPERTY(QVariantList gridDepths READ gridDepths WRITE setGridDepths NOTIFY gridDepthsChanged)
     Q_PROPERTY(bool digAreaConfigured READ digAreaConfigured NOTIFY digAreaConfiguredChanged)
+    Q_PROPERTY(double targetDepth READ targetDepth WRITE setTargetDepth NOTIFY targetDepthChanged)
+    Q_PROPERTY(double calculatedMaxDepth READ calculatedMaxDepth NOTIFY calculatedMaxDepthChanged)
     // Grid coordinate bounds
     Q_PROPERTY(double gridStartLatitude READ gridStartLatitude WRITE setGridStartLatitude NOTIFY gridStartLatitudeChanged)
     Q_PROPERTY(double gridStartLongitude READ gridStartLongitude WRITE setGridStartLongitude NOTIFY gridStartLongitudeChanged)
@@ -94,6 +96,8 @@ public:
     int gridCols() const { return m_gridCols; }
     QVariantList gridDepths() const { return m_gridDepths; }
     bool digAreaConfigured() const { return m_digAreaConfigured; }
+    double targetDepth() const { return m_targetDepth; }
+    double calculatedMaxDepth() const;
     double gridStartLatitude() const { return m_gridStartLatitude; }
     double gridStartLongitude() const { return m_gridStartLongitude; }
     double gridEndLatitude() const { return m_gridEndLatitude; }
@@ -127,6 +131,7 @@ public:
     void setGridRows(int rows);
     void setGridCols(int cols);
     void setGridDepths(const QVariantList &depths);
+    void setTargetDepth(double depth);
     void setGridStartLatitude(double lat);
     void setGridStartLongitude(double lon);
     void setGridEndLatitude(double lat);
@@ -243,6 +248,8 @@ signals:
     void gridColsChanged();
     void gridDepthsChanged();
     void digAreaConfiguredChanged();
+    void targetDepthChanged();
+    void calculatedMaxDepthChanged();
     void gridStartLatitudeChanged();
     void gridStartLongitudeChanged();
     void gridEndLatitudeChanged();
@@ -304,6 +311,7 @@ private:
     int m_gridCols;
     QVariantList m_gridDepths;
     bool m_digAreaConfigured;
+    double m_targetDepth;
     double m_gridStartLatitude;
     double m_gridStartLongitude;
     double m_gridEndLatitude;
