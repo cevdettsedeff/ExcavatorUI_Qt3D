@@ -220,8 +220,8 @@ Rectangle {
             id: targetLine
             anchors.left: parent.left
             anchors.right: parent.right
-            y: (maxDepth - targetDepth) / totalRange * parent.height - 3
-            height: 6
+            y: (maxDepth - targetDepth) / totalRange * parent.height - 5
+            height: 10
             color: root.targetLineColor
             visible: targetDepth >= minDepth && targetDepth <= maxDepth
             z: 20
@@ -229,8 +229,8 @@ Rectangle {
             SequentialAnimation on opacity {
                 loops: Animation.Infinite
                 running: targetLine.visible
-                NumberAnimation { to: 0.4; duration: 500 }
-                NumberAnimation { to: 1.0; duration: 500 }
+                NumberAnimation { to: 0.5; duration: 400 }
+                NumberAnimation { to: 1.0; duration: 400 }
             }
         }
 
