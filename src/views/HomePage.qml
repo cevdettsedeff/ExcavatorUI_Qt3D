@@ -7,7 +7,7 @@ import ExcavatorUI_Qt3D
 // Ana Sayfa - 3D Ekskavatör Görünümü (Mockup'a göre)
 Rectangle {
     id: homePage
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -18,6 +18,13 @@ Rectangle {
     property real posZ: -2.45
     property real pitch: 2.1
     property real roll: 0.8
+
+    // Kepçe derinlik verileri (IMU servisinden veya simülasyon)
+    property real bucketMaxDepth: 10.0      // Su üstü yükseklik (sabit)
+    property real bucketMinDepth: configManager ? -Math.max(configManager.calculatedMaxDepth + 5, 20) : -25.0  // Batimetrik max + 5m
+    property real bucketWaterLevel: 0.0     // Su seviyesi
+    property real bucketTargetDepth: configManager ? -configManager.targetDepth : -15.0  // Hedef derinlik
+    property real bucketCurrentDepth: imuService ? imuService.bucketDepth : -5.0      // Mevcut kepçe derinliği
 
     function tr(text) {
         return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
@@ -136,89 +143,20 @@ Rectangle {
                 }
             }
 
-            // Derinlik Skalası - Gridli (Sol taraf)
-            Rectangle {
-                id: depthScale
+            // Kepçe Derinlik Göstergesi (Sol taraf)
+            BucketDepthIndicator {
+                id: bucketDepthIndicator
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.margins: 10
-                width: 55
-                color: "transparent"
+                anchors.margins: 8
+                width: 120
 
-                // Gradient bar with grid lines
-                Item {
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 18
-                    height: parent.height * 0.7
-
-                    // Ana gradient bar
-                    Rectangle {
-                        anchors.fill: parent
-                        radius: 3
-
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: "#4CAF50" }
-                            GradientStop { position: 0.3; color: "#FFEB3B" }
-                            GradientStop { position: 0.6; color: "#FF9800" }
-                            GradientStop { position: 1.0; color: "#f44336" }
-                        }
-                    }
-
-                    // Grid çizgileri
-                    Column {
-                        anchors.fill: parent
-                        spacing: 0
-
-                        Repeater {
-                            model: 5
-
-                            Item {
-                                width: parent.width
-                                height: parent.height / 5
-
-                                // Yatay çizgi
-                                Rectangle {
-                                    anchors.bottom: parent.bottom
-                                    width: parent.width
-                                    height: 1
-                                    color: "#00000060"
-                                    visible: index < 4
-                                }
-
-                                // Küçük işaret çizgileri
-                                Rectangle {
-                                    anchors.right: parent.right
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    width: 5
-                                    height: 2
-                                    color: "#ffffff80"
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Derinlik etiketleri
-                Column {
-                    anchors.left: parent.left
-                    anchors.leftMargin: 24
-                    anchors.top: parent.top
-                    anchors.topMargin: parent.height * 0.15
-                    spacing: (parent.height * 0.7) / 4 - 18
-
-                    Repeater {
-                        model: ["0M", "-5M", "-10M", "-15M", "-20M"]
-
-                        Text {
-                            text: modelData
-                            font.pixelSize: 12
-                            font.bold: true
-                            color: "#ffffff"
-                        }
-                    }
-                }
+                maxDepth: homePage.bucketMaxDepth
+                minDepth: homePage.bucketMinDepth
+                waterLevel: homePage.bucketWaterLevel
+                targetDepth: homePage.bucketTargetDepth
+                currentBucketDepth: homePage.bucketCurrentDepth
             }
 
             // Mouse kontrolü
@@ -491,7 +429,7 @@ Rectangle {
             id: coordinateBar
             Layout.fillWidth: true
             Layout.preferredHeight: 45
-            color: "#1a1a1a"
+            color: themeManager ? themeManager.backgroundColor : "#2d3748"
             border.color: "#333333"
             border.width: 1
 

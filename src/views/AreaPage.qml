@@ -1,11 +1,20 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components"
 
-// Kazı Alanı Sayfası - Derinlik grid'i ile görselleştirme
+/**
+ * AreaPage - Kazı Alanı Sayfası
+ *
+ * ArcGIS tarzı profesyonel batimetrik harita görselleştirmesi
+ * - Interpolasyonlu derinlik haritası
+ * - Kontur çizgileri
+ * - Profesyonel lejant
+ * - Kuzey oku ve ölçek çubuğu
+ */
 Rectangle {
     id: areaPage
-    color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -15,12 +24,34 @@ Rectangle {
     property int gridCols: configManager ? configManager.gridCols : 5
     property var gridDepths: configManager ? configManager.gridDepths : []
 
+    // Hesaplanan değerler (cache'lenmiş - performans için)
+    property real minDepth: 0
+    property real maxDepth: 30
+
+    // Değerleri güncelle (debounce ile)
+    Timer {
+        id: depthCalcTimer
+        interval: 200
+        onTriggered: {
+            areaPage.minDepth = calculateMinDepth()
+            areaPage.maxDepth = calculateMaxDepth()
+        }
+    }
+
+    onGridDepthsChanged: depthCalcTimer.restart()
+
     // Theme colors
     property color primaryColor: themeManager ? themeManager.primaryColor : "#38b2ac"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
     property color textColor: themeManager ? themeManager.textColor : "#ffffff"
     property color textSecondaryColor: themeManager ? themeManager.textColorSecondary : "#888888"
     property color borderColor: themeManager ? themeManager.borderColor : "#333333"
+
+    // Harita ayarları
+    property bool showContours: true
+    property int contourInterval: 5
+    property bool showGrid: false
+    property bool show3DView: false
 
     function tr(text) {
         return languageTrigger >= 0 ? qsTranslate("Main", text) : ""
@@ -33,31 +64,28 @@ Rectangle {
         }
     }
 
-    // Derinliğe göre renk hesapla
-    function getDepthColor(depth) {
-        if (depth === undefined || depth === null || isNaN(depth)) {
-            return "#cccccc"  // Tanımsız
+    function calculateMinDepth() {
+        if (!gridDepths || gridDepths.length === 0) return 0
+        var min = Infinity
+        for (var i = 0; i < gridDepths.length; i++) {
+            var d = gridDepths[i]
+            if (d !== null && d !== undefined && !isNaN(d) && d > 0 && d < min) {
+                min = d
+            }
         }
-
-        var absDepth = Math.abs(depth)
-
-        if (absDepth < 0.5) return "#4CAF50"       // Yeşil - sığ
-        if (absDepth < 1.0) return "#8BC34A"       // Açık yeşil
-        if (absDepth < 1.5) return "#CDDC39"       // Sarı-yeşil
-        if (absDepth < 2.0) return "#FFEB3B"       // Sarı
-        if (absDepth < 2.5) return "#FFC107"       // Amber
-        if (absDepth < 3.0) return "#FF9800"       // Turuncu
-        if (absDepth < 3.5) return "#FF5722"       // Koyu turuncu
-        return "#f44336"                           // Kırmızı - derin
+        return isFinite(min) ? min : 0
     }
 
-    // Hücre derinlik değerini al
-    function getCellDepth(row, col) {
-        var index = row * gridCols + col
-        if (gridDepths && index < gridDepths.length) {
-            return gridDepths[index]
+    function calculateMaxDepth() {
+        if (!gridDepths || gridDepths.length === 0) return 30
+        var max = 0
+        for (var i = 0; i < gridDepths.length; i++) {
+            var d = gridDepths[i]
+            if (d !== null && d !== undefined && !isNaN(d) && d > max) {
+                max = d
+            }
         }
-        return null
+        return max > 0 ? max : 30
     }
 
     ColumnLayout {
@@ -84,10 +112,87 @@ Rectangle {
 
                 Item { Layout.fillWidth: true }
 
+                // Görünüm seçenekleri
+                Row {
+                    spacing: 8
+
+                    // Kontur toggle
+                    Rectangle {
+                        width: contourToggleRow.width + 16
+                        height: 32
+                        radius: 16
+                        color: showContours ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.1)
+
+                        Row {
+                            id: contourToggleRow
+                            anchors.centerIn: parent
+                            spacing: 6
+
+                            Text {
+                                text: "~"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Text {
+                                text: tr("Contours")
+                                font.pixelSize: 11
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: showContours = !showContours
+                            cursorShape: Qt.PointingHandCursor
+                        }
+                    }
+
+                    // Grid toggle
+                    Rectangle {
+                        width: gridToggleRow.width + 16
+                        height: 32
+                        radius: 16
+                        color: showGrid ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.1)
+
+                        Row {
+                            id: gridToggleRow
+                            anchors.centerIn: parent
+                            spacing: 6
+
+                            Text {
+                                text: "#"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Text {
+                                text: tr("Grid")
+                                font.pixelSize: 11
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: showGrid = !showGrid
+                            cursorShape: Qt.PointingHandCursor
+                        }
+                    }
+                }
+
+                Item { width: 16 }
+
                 // Grid bilgisi
                 Rectangle {
-                    Layout.preferredWidth: gridInfoText.width + 20
-                    Layout.preferredHeight: 32
+                    width: gridInfoText.width + 20
+                    height: 32
                     radius: 16
                     color: Qt.rgba(1, 1, 1, 0.2)
 
@@ -104,248 +209,192 @@ Rectangle {
         }
 
         // Ana içerik
-        RowLayout {
+        Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 16
-            spacing: 16
 
-            // Sol: Derinlik Grid'i
+            // Harita çerçevesi
             Rectangle {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                id: mapFrame
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.right: rightPanel.left
+                anchors.rightMargin: 16
                 color: areaPage.surfaceColor
                 radius: 12
+                border.width: 2
+                border.color: "#1A75A8"
 
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 12
+                // Harita başlığı
+                Rectangle {
+                    id: mapTitle
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: 40
+                    color: "#1A75A8"
+                    radius: 10
 
-                    // Grid başlığı
-                    RowLayout {
-                        Layout.fillWidth: true
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        height: parent.radius
+                        color: parent.color
+                    }
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Bathymetric Map") + " - " + tr("Dig Area")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: "white"
+                    }
+                }
+
+                // Batimetrik harita canvas'ı
+                BathymetricMapCanvas {
+                    id: bathymetricMap
+                    anchors.top: mapTitle.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: mapFooter.top
+                    anchors.margins: 8
+
+                    gridRows: areaPage.gridRows
+                    gridCols: areaPage.gridCols
+                    gridDepths: areaPage.gridDepths
+                    minDepth: areaPage.minDepth
+                    maxDepth: areaPage.maxDepth
+
+                    // Koordinatlar
+                    startLatitude: configManager ? configManager.gridStartLatitude : 40.71
+                    startLongitude: configManager ? configManager.gridStartLongitude : 29.00
+                    endLatitude: configManager ? configManager.gridEndLatitude : 40.72
+                    endLongitude: configManager ? configManager.gridEndLongitude : 29.01
+
+                    showContours: areaPage.showContours
+                    contourInterval: areaPage.contourInterval
+                    showGrid: areaPage.showGrid
+                    showCoordinates: true
+                    smoothTransitions: true
+
+                    // Tema renkleri
+                    containerColor: Qt.lighter(areaPage.surfaceColor, 1.02)
+                    labelColor: areaPage.textSecondaryColor
+                }
+
+                // Ekskavatör konumu göstergesi
+                Rectangle {
+                    anchors.top: mapTitle.bottom
+                    anchors.left: parent.left
+                    anchors.topMargin: 16
+                    anchors.leftMargin: 36
+                    width: excavatorPosRow.width + 16
+                    height: 32
+                    radius: 16
+                    color: "#FF6B35"
+
+                    Row {
+                        id: excavatorPosRow
+                        anchors.centerIn: parent
+                        spacing: 6
+
+                        Image {
+                            width: 18
+                            height: 18
+                            source: "qrc:/ExcavatorUI_Qt3D/resources/icons/nav_excavator.png"
+                            fillMode: Image.PreserveAspectFit
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
 
                         Text {
-                            text: tr("Depth Grid")
-                            font.pixelSize: 16
+                            text: "C3"
+                            font.pixelSize: 12
                             font.bold: true
+                            color: "white"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
+
+                // Alt bilgi çubuğu
+                Rectangle {
+                    id: mapFooter
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    height: 30
+                    color: Qt.lighter(areaPage.surfaceColor, 1.02)
+                    radius: 10
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        height: parent.radius
+                        color: parent.color
+                    }
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 12
+                        anchors.rightMargin: 12
+
+                        Text {
+                            text: "Datum: WGS84"
+                            font.pixelSize: 10
+                            color: areaPage.textSecondaryColor
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Text {
+                            text: bathymetricMap.isHovering ?
+                                  "X: " + bathymetricMap.hoverX.toFixed(0) + " Y: " + bathymetricMap.hoverY.toFixed(0) +
+                                  " | " + tr("Depth") + ": " + bathymetricMap.hoverDepth.toFixed(2) + "m" :
+                                  tr("Hover for depth info")
+                            font.pixelSize: 10
                             color: areaPage.textColor
                         }
 
                         Item { Layout.fillWidth: true }
 
-                        // Ekskavatör konumu göstergesi
-                        Rectangle {
-                            width: excavatorPosText.width + 16
-                            height: 28
-                            radius: 14
-                            color: "#FF6B35"
-
-                            Text {
-                                id: excavatorPosText
-                                anchors.centerIn: parent
-                                text: "📍 C3"
-                                font.pixelSize: 11
-                                font.bold: true
-                                color: "white"
-                            }
-                        }
-                    }
-
-                    // Sütun başlıkları
-                    Row {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 25
-                        spacing: 2
-
-                        // Boş köşe
-                        Item {
-                            width: 35
-                            height: 25
-                        }
-
-                        Repeater {
-                            model: gridCols
-
-                            Rectangle {
-                                width: (parent.parent.width - 37) / gridCols - 2
-                                height: 25
-                                color: "transparent"
-
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: String.fromCharCode(65 + index)  // A, B, C, ...
-                                    font.pixelSize: 12
-                                    font.bold: true
-                                    color: areaPage.textSecondaryColor
-                                }
-                            }
-                        }
-                    }
-
-                    // Grid satırları
-                    Item {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-
-                        Column {
-                            anchors.fill: parent
-                            spacing: 2
-
-                            Repeater {
-                                model: gridRows
-
-                                Row {
-                                    property int rowIndex: index
-                                    width: parent.width
-                                    height: (parent.height - (gridRows - 1) * 2) / gridRows
-                                    spacing: 2
-
-                                    // Satır başlığı
-                                    Rectangle {
-                                        width: 35
-                                        height: parent.height
-                                        color: "transparent"
-
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: (rowIndex + 1).toString()
-                                            font.pixelSize: 12
-                                            font.bold: true
-                                            color: areaPage.textSecondaryColor
-                                        }
-                                    }
-
-                                    // Grid hücreleri
-                                    Repeater {
-                                        model: gridCols
-
-                                        Rectangle {
-                                            property int colIndex: index
-                                            property var depth: getCellDepth(rowIndex, colIndex)
-                                            property bool hasDepth: depth !== null && !isNaN(depth)
-                                            property bool isExcavatorHere: rowIndex === 2 && colIndex === 2  // Örnek konum
-
-                                            width: (parent.width - 37 - (gridCols - 1) * 2) / gridCols
-                                            height: parent.height
-                                            radius: 4
-                                            color: hasDepth ? getDepthColor(depth) : "#e0e0e0"
-                                            border.width: isExcavatorHere ? 3 : 1
-                                            border.color: isExcavatorHere ? "#FF6B35" : Qt.darker(color, 1.1)
-
-                                            Column {
-                                                anchors.centerIn: parent
-                                                spacing: 2
-
-                                                // Ekskavatör ikonu
-                                                Image {
-                                                    anchors.horizontalCenter: parent.horizontalCenter
-                                                    width: 20
-                                                    height: 20
-                                                    source: "qrc:/ExcavatorUI_Qt3D/resources/icons/nav_excavator.png"
-                                                    fillMode: Image.PreserveAspectFit
-                                                    visible: isExcavatorHere
-                                                }
-
-                                                // Derinlik değeri
-                                                Text {
-                                                    anchors.horizontalCenter: parent.horizontalCenter
-                                                    text: hasDepth ? depth.toFixed(1) + "m" : "-"
-                                                    font.pixelSize: parent.parent.height > 50 ? 12 : 10
-                                                    font.bold: true
-                                                    color: hasDepth ? "#ffffff" : "#888888"
-                                                    style: hasDepth ? Text.Outline : Text.Normal
-                                                    styleColor: "#00000040"
-                                                }
-                                            }
-
-                                            // Hover efekti
-                                            MouseArea {
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-
-                                                ToolTip.visible: containsMouse && hasDepth
-                                                ToolTip.text: String.fromCharCode(65 + colIndex) + (rowIndex + 1) + ": " + (hasDepth ? depth.toFixed(2) + "m" : tr("No data"))
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                        Text {
+                            text: "© 2024 ExcavatorUI"
+                            font.pixelSize: 10
+                            color: areaPage.textSecondaryColor
                         }
                     }
                 }
             }
 
-            // Sağ: Derinlik skalası ve istatistikler
+            // Sağ panel
             Rectangle {
-                Layout.preferredWidth: 200
-                Layout.fillHeight: true
+                id: rightPanel
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: 220
                 color: areaPage.surfaceColor
                 radius: 12
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 16
+                    anchors.margins: 12
+                    spacing: 12
 
-                    // Derinlik skalası başlık
-                    Text {
-                        text: tr("Depth Scale")
-                        font.pixelSize: 14
-                        font.bold: true
-                        color: areaPage.textColor
-                    }
-
-                    // Derinlik renk skalası
-                    Column {
+                    // Lejant
+                    BathymetricLegend {
                         Layout.fillWidth: true
-                        spacing: 4
-
-                        Repeater {
-                            model: [
-                                { depth: "0 - 0.5m", color: "#4CAF50", label: tr("Very Shallow") },
-                                { depth: "0.5 - 1.0m", color: "#8BC34A", label: tr("Shallow") },
-                                { depth: "1.0 - 1.5m", color: "#CDDC39", label: "" },
-                                { depth: "1.5 - 2.0m", color: "#FFEB3B", label: tr("Medium") },
-                                { depth: "2.0 - 2.5m", color: "#FFC107", label: "" },
-                                { depth: "2.5 - 3.0m", color: "#FF9800", label: tr("Deep") },
-                                { depth: "3.0 - 3.5m", color: "#FF5722", label: "" },
-                                { depth: "> 3.5m", color: "#f44336", label: tr("Very Deep") }
-                            ]
-
-                            Row {
-                                spacing: 8
-                                width: parent.width
-
-                                Rectangle {
-                                    width: 24
-                                    height: 24
-                                    color: modelData.color
-                                    radius: 4
-                                    border.width: 1
-                                    border.color: Qt.darker(modelData.color, 1.1)
-                                }
-
-                                Column {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    spacing: 0
-
-                                    Text {
-                                        text: modelData.depth
-                                        font.pixelSize: 11
-                                        color: areaPage.textColor
-                                    }
-
-                                    Text {
-                                        text: modelData.label
-                                        font.pixelSize: 9
-                                        color: areaPage.textSecondaryColor
-                                        visible: modelData.label !== ""
-                                    }
-                                }
-                            }
-                        }
+                        Layout.preferredHeight: 220
+                        title: tr("Depth") + " (m)"
+                        minDepth: areaPage.minDepth
+                        maxDepth: Math.max(areaPage.maxDepth, 10)
+                        textColor: areaPage.textColor
+                        backgroundColor: Qt.lighter(areaPage.surfaceColor, 1.05)
                     }
 
                     // Ayırıcı
@@ -356,86 +405,216 @@ Rectangle {
                     }
 
                     // İstatistikler
-                    Text {
-                        text: tr("Statistics")
-                        font.pixelSize: 14
-                        font.bold: true
-                        color: areaPage.textColor
-                    }
-
-                    Column {
+                    Rectangle {
                         Layout.fillWidth: true
-                        spacing: 8
+                        Layout.preferredHeight: statsColumn.height + 24
+                        color: Qt.lighter(areaPage.surfaceColor, 1.05)
+                        radius: 8
+                        border.width: 1
+                        border.color: areaPage.borderColor
 
-                        // Toplam hücre
-                        Row {
-                            spacing: 8
+                        Column {
+                            id: statsColumn
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 12
+                            spacing: 10
+
                             Text {
-                                text: tr("Total Cells") + ":"
-                                font.pixelSize: 12
-                                color: areaPage.textSecondaryColor
-                            }
-                            Text {
-                                text: (gridRows * gridCols).toString()
-                                font.pixelSize: 12
+                                text: tr("Statistics")
+                                font.pixelSize: 13
                                 font.bold: true
                                 color: areaPage.textColor
                             }
-                        }
 
-                        // Tanımlı hücre
-                        Row {
-                            spacing: 8
-                            Text {
-                                text: tr("Defined") + ":"
-                                font.pixelSize: 12
-                                color: areaPage.textSecondaryColor
-                            }
-                            Text {
-                                text: gridDepths ? gridDepths.length.toString() : "0"
-                                font.pixelSize: 12
-                                font.bold: true
-                                color: "#4CAF50"
-                            }
-                        }
-
-                        // Min derinlik
-                        Row {
-                            spacing: 8
-                            Text {
-                                text: tr("Min Depth") + ":"
-                                font.pixelSize: 12
-                                color: areaPage.textSecondaryColor
-                            }
-                            Text {
-                                text: {
-                                    if (!gridDepths || gridDepths.length === 0) return "-"
-                                    var min = Math.min.apply(null, gridDepths.filter(d => !isNaN(d)))
-                                    return isFinite(min) ? min.toFixed(2) + "m" : "-"
+                            // Grid boyutu
+                            Row {
+                                width: parent.width
+                                Text {
+                                    width: parent.width * 0.6
+                                    text: tr("Grid Size") + ":"
+                                    font.pixelSize: 11
+                                    color: areaPage.textSecondaryColor
                                 }
-                                font.pixelSize: 12
-                                font.bold: true
-                                color: "#4CAF50"
+                                Text {
+                                    text: gridRows + " x " + gridCols
+                                    font.pixelSize: 11
+                                    font.bold: true
+                                    color: areaPage.textColor
+                                }
+                            }
+
+                            // Toplam hücre
+                            Row {
+                                width: parent.width
+                                Text {
+                                    width: parent.width * 0.6
+                                    text: tr("Total Cells") + ":"
+                                    font.pixelSize: 11
+                                    color: areaPage.textSecondaryColor
+                                }
+                                Text {
+                                    text: (gridRows * gridCols).toString()
+                                    font.pixelSize: 11
+                                    font.bold: true
+                                    color: areaPage.textColor
+                                }
+                            }
+
+                            // Tanımlı hücre
+                            Row {
+                                width: parent.width
+                                Text {
+                                    width: parent.width * 0.6
+                                    text: tr("Defined") + ":"
+                                    font.pixelSize: 11
+                                    color: areaPage.textSecondaryColor
+                                }
+                                Text {
+                                    property int definedCount: {
+                                        if (!gridDepths) return 0
+                                        var count = 0
+                                        for (var i = 0; i < gridDepths.length; i++) {
+                                            if (gridDepths[i] > 0) count++
+                                        }
+                                        return count
+                                    }
+                                    text: definedCount.toString()
+                                    font.pixelSize: 11
+                                    font.bold: true
+                                    color: "#38A169"
+                                }
+                            }
+
+                            // Min derinlik
+                            Row {
+                                width: parent.width
+                                Text {
+                                    width: parent.width * 0.6
+                                    text: tr("Min Depth") + ":"
+                                    font.pixelSize: 11
+                                    color: areaPage.textSecondaryColor
+                                }
+                                Text {
+                                    text: minDepth > 0 ? minDepth.toFixed(2) + " m" : "-"
+                                    font.pixelSize: 11
+                                    font.bold: true
+                                    color: "#55B0D4"
+                                }
+                            }
+
+                            // Max derinlik
+                            Row {
+                                width: parent.width
+                                Text {
+                                    width: parent.width * 0.6
+                                    text: tr("Max Depth") + ":"
+                                    font.pixelSize: 11
+                                    color: areaPage.textSecondaryColor
+                                }
+                                Text {
+                                    text: maxDepth > 0 ? maxDepth.toFixed(2) + " m" : "-"
+                                    font.pixelSize: 11
+                                    font.bold: true
+                                    color: "#2B6CB0"
+                                }
+                            }
+
+                            // Ortalama derinlik
+                            Row {
+                                width: parent.width
+                                Text {
+                                    width: parent.width * 0.6
+                                    text: tr("Average") + ":"
+                                    font.pixelSize: 11
+                                    color: areaPage.textSecondaryColor
+                                }
+                                Text {
+                                    property real avgDepth: {
+                                        if (!gridDepths || gridDepths.length === 0) return 0
+                                        var sum = 0
+                                        var count = 0
+                                        for (var i = 0; i < gridDepths.length; i++) {
+                                            if (gridDepths[i] > 0) {
+                                                sum += gridDepths[i]
+                                                count++
+                                            }
+                                        }
+                                        return count > 0 ? sum / count : 0
+                                    }
+                                    text: avgDepth > 0 ? avgDepth.toFixed(2) + " m" : "-"
+                                    font.pixelSize: 11
+                                    font.bold: true
+                                    color: "#1A75A8"
+                                }
                             }
                         }
+                    }
 
-                        // Max derinlik
-                        Row {
+                    // Kontur aralığı ayarı
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: contourSettingsCol.height + 24
+                        color: Qt.lighter(areaPage.surfaceColor, 1.05)
+                        radius: 8
+                        border.width: 1
+                        border.color: areaPage.borderColor
+                        visible: showContours
+
+                        Column {
+                            id: contourSettingsCol
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 12
                             spacing: 8
+
                             Text {
-                                text: tr("Max Depth") + ":"
-                                font.pixelSize: 12
-                                color: areaPage.textSecondaryColor
-                            }
-                            Text {
-                                text: {
-                                    if (!gridDepths || gridDepths.length === 0) return "-"
-                                    var max = Math.max.apply(null, gridDepths.filter(d => !isNaN(d)))
-                                    return isFinite(max) ? max.toFixed(2) + "m" : "-"
-                                }
-                                font.pixelSize: 12
+                                text: tr("Contour Settings")
+                                font.pixelSize: 13
                                 font.bold: true
-                                color: "#f44336"
+                                color: areaPage.textColor
+                            }
+
+                            Row {
+                                width: parent.width
+                                spacing: 8
+
+                                Text {
+                                    text: tr("Interval") + ":"
+                                    font.pixelSize: 11
+                                    color: areaPage.textSecondaryColor
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                ComboBox {
+                                    id: contourIntervalCombo
+                                    width: 80
+                                    height: 28
+                                    model: ["1m", "2m", "5m", "10m"]
+                                    currentIndex: {
+                                        switch(contourInterval) {
+                                            case 1: return 0
+                                            case 2: return 1
+                                            case 5: return 2
+                                            case 10: return 3
+                                            default: return 2
+                                        }
+                                    }
+
+                                    onCurrentIndexChanged: {
+                                        var values = [1, 2, 5, 10]
+                                        contourInterval = values[currentIndex]
+                                    }
+
+                                    background: Rectangle {
+                                        color: areaPage.surfaceColor
+                                        radius: 4
+                                        border.width: 1
+                                        border.color: areaPage.borderColor
+                                    }
+                                }
                             }
                         }
                     }
@@ -448,17 +627,21 @@ Rectangle {
                         height: 50
                         radius: 8
                         color: configManager && configManager.digAreaConfigured
-                            ? Qt.rgba(0.3, 0.69, 0.31, 0.2)
-                            : Qt.rgba(1, 0.6, 0, 0.2)
+                            ? Qt.rgba(0.22, 0.65, 0.41, 0.15)
+                            : Qt.rgba(1, 0.6, 0, 0.15)
+                        border.width: 1
+                        border.color: configManager && configManager.digAreaConfigured
+                            ? "#38A169" : "#DD6B20"
 
                         Row {
                             anchors.centerIn: parent
                             spacing: 8
 
                             Text {
-                                text: configManager && configManager.digAreaConfigured ? "✓" : "⚠"
+                                text: configManager && configManager.digAreaConfigured ? "✓" : "!"
                                 font.pixelSize: 18
-                                color: configManager && configManager.digAreaConfigured ? "#4CAF50" : "#FF9800"
+                                font.bold: true
+                                color: configManager && configManager.digAreaConfigured ? "#38A169" : "#DD6B20"
                             }
 
                             Text {
@@ -467,7 +650,7 @@ Rectangle {
                                     : tr("Not Configured")
                                 font.pixelSize: 12
                                 font.bold: true
-                                color: configManager && configManager.digAreaConfigured ? "#4CAF50" : "#FF9800"
+                                color: configManager && configManager.digAreaConfigured ? "#38A169" : "#DD6B20"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }

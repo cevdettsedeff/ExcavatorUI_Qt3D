@@ -204,7 +204,7 @@ Rectangle {
         anchors.rightMargin: 30
         width: 200
         height: legendColumn.height + 30
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: "#404040"
@@ -284,7 +284,7 @@ Rectangle {
         anchors.leftMargin: 30
         width: controlColumn.width + 30
         height: controlColumn.height + 30
-        color: "#1a1a1a"
+        color: "#2d3748"
         opacity: 0.95
         radius: 10
         border.color: "#404040"
@@ -405,7 +405,7 @@ Rectangle {
         anchors.rightMargin: 20
         width: 350
         height: 260
-        color: "#1a1a1a"
+        color: "#2d3748"
         radius: 10
         border.color: "#00bcd4"
         border.width: 2

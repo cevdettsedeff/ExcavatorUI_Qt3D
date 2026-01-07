@@ -6,7 +6,7 @@ import QtQuick.Layouts
 Rectangle {
     id: bottomNav
     height: 70
-    color: themeManager ? themeManager.backgroundColor : "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     property int currentIndex: 0
     signal tabChanged(int index)

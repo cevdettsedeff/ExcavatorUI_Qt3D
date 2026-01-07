@@ -4,7 +4,7 @@ import QtQuick.Controls
 Rectangle {
     id: loadingScreen
     anchors.fill: parent
-    color: "#1a1a1a"
+    color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     property real progress: 0.0
 

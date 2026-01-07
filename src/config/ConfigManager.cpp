@@ -22,6 +22,11 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_gridRows(4)
     , m_gridCols(4)
     , m_digAreaConfigured(false)
+    , m_targetDepth(15.0)
+    , m_gridStartLatitude(40.7100)
+    , m_gridStartLongitude(29.0000)
+    , m_gridEndLatitude(40.7200)
+    , m_gridEndLongitude(29.0100)
     , m_mapCenterLatitude(40.7128)
     , m_mapCenterLongitude(29.0060)
     , m_mapZoomLevel(15)
@@ -373,6 +378,59 @@ void ConfigManager::setGridDepths(const QVariantList &depths)
 {
     m_gridDepths = depths;
     emit gridDepthsChanged();
+    emit calculatedMaxDepthChanged();
+}
+
+void ConfigManager::setTargetDepth(double depth)
+{
+    if (m_targetDepth != depth) {
+        m_targetDepth = depth;
+        emit targetDepthChanged();
+    }
+}
+
+double ConfigManager::calculatedMaxDepth() const
+{
+    double maxVal = 0.0;
+    for (const auto &depth : m_gridDepths) {
+        double d = depth.toDouble();
+        if (d > maxVal) {
+            maxVal = d;
+        }
+    }
+    return maxVal > 0 ? maxVal : 15.0; // Default 15m if no depths set
+}
+
+void ConfigManager::setGridStartLatitude(double lat)
+{
+    if (m_gridStartLatitude != lat) {
+        m_gridStartLatitude = lat;
+        emit gridStartLatitudeChanged();
+    }
+}
+
+void ConfigManager::setGridStartLongitude(double lon)
+{
+    if (m_gridStartLongitude != lon) {
+        m_gridStartLongitude = lon;
+        emit gridStartLongitudeChanged();
+    }
+}
+
+void ConfigManager::setGridEndLatitude(double lat)
+{
+    if (m_gridEndLatitude != lat) {
+        m_gridEndLatitude = lat;
+        emit gridEndLatitudeChanged();
+    }
+}
+
+void ConfigManager::setGridEndLongitude(double lon)
+{
+    if (m_gridEndLongitude != lon) {
+        m_gridEndLongitude = lon;
+        emit gridEndLongitudeChanged();
+    }
 }
 
 void ConfigManager::initializeGridDepths()
@@ -565,8 +623,25 @@ void ConfigManager::parseDigAreaSettings(const QJsonObject &digArea)
             m_gridDepths.append(val.toDouble(0.0));
         }
         emit gridDepthsChanged();
+        emit calculatedMaxDepthChanged();
     } else {
         initializeGridDepths();
+    }
+    if (digArea.contains("target_depth")) {
+        setTargetDepth(digArea["target_depth"].toDouble(15.0));
+    }
+    // Grid coordinate bounds
+    if (digArea.contains("start_latitude")) {
+        setGridStartLatitude(digArea["start_latitude"].toDouble(40.7100));
+    }
+    if (digArea.contains("start_longitude")) {
+        setGridStartLongitude(digArea["start_longitude"].toDouble(29.0000));
+    }
+    if (digArea.contains("end_latitude")) {
+        setGridEndLatitude(digArea["end_latitude"].toDouble(40.7200));
+    }
+    if (digArea.contains("end_longitude")) {
+        setGridEndLongitude(digArea["end_longitude"].toDouble(29.0100));
     }
     if (digArea.contains("configured")) {
         m_digAreaConfigured = digArea["configured"].toBool(false);
@@ -673,6 +748,11 @@ bool ConfigManager::saveConfig()
         depthsArray.append(depth.toDouble());
     }
     digArea["grid_depths"] = depthsArray;
+    digArea["target_depth"] = m_targetDepth;
+    digArea["start_latitude"] = m_gridStartLatitude;
+    digArea["start_longitude"] = m_gridStartLongitude;
+    digArea["end_latitude"] = m_gridEndLatitude;
+    digArea["end_longitude"] = m_gridEndLongitude;
     digArea["configured"] = m_digAreaConfigured;
     root["dig_area"] = digArea;
 
