@@ -636,7 +636,7 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(40, 20, 0)
+                        position: Qt.vector3d(45, 20, 0)
                         eulerRotation.y: 90
                         clipNear: 1
                         clipFar: 500
