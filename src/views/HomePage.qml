@@ -636,11 +636,11 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(35, 20, 0)
+                        position: Qt.vector3d(50, 20, 0)
                         eulerRotation.y: 90
                         clipNear: 1
                         clipFar: 500
-                        fieldOfView: 35
+                        fieldOfView: 50
                     }
 
                     DirectionalLight {
@@ -692,7 +692,7 @@ Rectangle {
                     }
                 }
 
-                // Derinlik etiketleri (sağ taraf) - Geliştirilmiş
+                // Derinlik etiketleri (sağ taraf) - İnce ve kompakt
                 Rectangle {
                     id: depthLabels
                     anchors.right: parent.right
@@ -701,21 +701,21 @@ Rectangle {
                     anchors.rightMargin: 5
                     anchors.topMargin: 10
                     anchors.bottomMargin: 10
-                    width: 70
-                    color: "#0f1a2a"
-                    radius: 6
-                    border.color: "#2a4a6a"
+                    width: 50
+                    color: "#2a2a2a"
+                    radius: 4
+                    border.color: "#444444"
                     border.width: 1
 
                     Column {
                         anchors.fill: parent
-                        anchors.margins: 8
+                        anchors.margins: 6
                         spacing: 0
 
                         // Başlık
                         Text {
                             text: "Derinlik"
-                            font.pixelSize: 10
+                            font.pixelSize: 8
                             font.bold: true
                             color: "#00bcd4"
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -724,15 +724,15 @@ Rectangle {
                         Rectangle {
                             width: parent.width
                             height: 1
-                            color: "#2a4a6a"
+                            color: "#444444"
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
 
-                        // Derinlik değerleri - Çizgi olarak
+                        // Derinlik değerleri - İnce çizgiler
                         Column {
                             width: parent.width
-                            spacing: 35
-                            topPadding: 15
+                            spacing: 25
+                            topPadding: 12
 
                             Repeater {
                                 model: [
@@ -744,45 +744,45 @@ Rectangle {
 
                                 Item {
                                     width: parent.width
-                                    height: 20
+                                    height: 16
 
-                                    // Yatay çizgi
+                                    // Yatay çizgi - İnce
                                     Rectangle {
                                         width: parent.width
-                                        height: 2
+                                        height: 1
                                         color: modelData.color
                                         anchors.verticalCenter: parent.verticalCenter
                                     }
 
-                                    // Sol uç daire
+                                    // Sol uç daire - Küçük
                                     Rectangle {
-                                        width: 6
-                                        height: 6
-                                        radius: 3
+                                        width: 4
+                                        height: 4
+                                        radius: 2
                                         color: modelData.color
                                         anchors.left: parent.left
                                         anchors.verticalCenter: parent.verticalCenter
                                     }
 
-                                    // Sağ uç daire
+                                    // Sağ uç daire - Küçük
                                     Rectangle {
-                                        width: 6
-                                        height: 6
-                                        radius: 3
+                                        width: 4
+                                        height: 4
+                                        radius: 2
                                         color: modelData.color
                                         anchors.right: parent.right
                                         anchors.verticalCenter: parent.verticalCenter
                                     }
 
-                                    // Derinlik metni (çizginin altında)
+                                    // Derinlik metni - Küçük font
                                     Text {
                                         text: modelData.depth
-                                        font.pixelSize: 10
+                                        font.pixelSize: 8
                                         font.bold: true
                                         color: modelData.color
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         anchors.top: parent.verticalCenter
-                                        anchors.topMargin: 5
+                                        anchors.topMargin: 3
                                     }
                                 }
                             }

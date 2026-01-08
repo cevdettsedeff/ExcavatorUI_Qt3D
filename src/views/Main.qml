@@ -45,6 +45,7 @@ Rectangle {
             rtkConnected: true
             imuOk: true
             alarmCount: 3
+            z: 100
 
             onUserIconClicked: {
                 userMenu.open()
