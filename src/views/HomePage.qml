@@ -214,27 +214,27 @@ Rectangle {
                 }
             }
 
-            // Sürüklenebilir Kontroller (Sağ taraf)
+            // Sürüklenebilir Kontroller (Sağ taraf) - Responsive
             Column {
                 id: manualControls
                 anchors.right: parent.right
                 anchors.top: view3DHeader.bottom
                 anchors.bottom: parent.bottom
-                anchors.margins: 10
-                width: 130
-                spacing: 10
+                anchors.margins: Math.max(5, parent.width * 0.01)
+                width: Math.max(100, Math.min(150, parent.width * 0.15))
+                spacing: Math.max(5, parent.height * 0.01)
 
                 // Başlık
                 Rectangle {
                     width: parent.width
-                    height: 35
+                    height: Math.max(30, Math.min(40, parent.width * 0.3))
                     color: themeManager ? themeManager.backgroundColorDark : "#1a2a3a"
                     radius: 6
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Manual Control")
-                        font.pixelSize: 12
+                        font.pixelSize: Math.max(9, Math.min(12, parent.width * 0.09))
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -243,7 +243,7 @@ Rectangle {
                 // Rastgele Hareket Butonu
                 Button {
                     width: parent.width
-                    height: 40
+                    height: Math.max(35, Math.min(45, parent.width * 0.35))
 
                     background: Rectangle {
                         color: imuService && imuService.isRandomMode ? "#e91e63" : "#9c27b0"
@@ -259,7 +259,7 @@ Rectangle {
                     contentItem: Text {
                         anchors.centerIn: parent
                         text: imuService && imuService.isRandomMode ? tr("Stop") : tr("Test")
-                        font.pixelSize: 12
+                        font.pixelSize: Math.max(9, Math.min(12, parent.width * 0.1))
                         font.bold: true
                         color: "#ffffff"
                         horizontalAlignment: Text.AlignHCenter
@@ -282,11 +282,11 @@ Rectangle {
                 // Boom Kontrolü
                 Column {
                     width: parent.width
-                    spacing: 5
+                    spacing: Math.max(3, parent.width * 0.03)
 
                     Text {
                         text: "Boom"
-                        font.pixelSize: 11
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
                         font.bold: true
                         color: "#ffc107"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -294,7 +294,7 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: 110
+                        height: Math.max(90, Math.min(120, parent.width * 0.9))
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
                         radius: 6
                         border.color: "#ffc107"
@@ -343,7 +343,7 @@ Rectangle {
 
                     Text {
                         text: (imuService ? imuService.boomAngle.toFixed(1) : "0.0") + "°"
-                        font.pixelSize: 11
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
                         color: "#ffc107"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -352,11 +352,11 @@ Rectangle {
                 // Arm Kontrolü
                 Column {
                     width: parent.width
-                    spacing: 5
+                    spacing: Math.max(3, parent.width * 0.03)
 
                     Text {
                         text: "Arm"
-                        font.pixelSize: 11
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
                         font.bold: true
                         color: "#4CAF50"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -364,7 +364,7 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: 110
+                        height: Math.max(90, Math.min(120, parent.width * 0.9))
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
                         radius: 6
                         border.color: "#4CAF50"
@@ -413,7 +413,7 @@ Rectangle {
 
                     Text {
                         text: (imuService ? imuService.armAngle.toFixed(1) : "0.0") + "°"
-                        font.pixelSize: 11
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
                         color: "#4CAF50"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -422,11 +422,11 @@ Rectangle {
                 // Bucket Kontrolü
                 Column {
                     width: parent.width
-                    spacing: 5
+                    spacing: Math.max(3, parent.width * 0.03)
 
                     Text {
                         text: "Bucket"
-                        font.pixelSize: 11
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
                         font.bold: true
                         color: "#2196F3"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -434,7 +434,7 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: 110
+                        height: Math.max(90, Math.min(120, parent.width * 0.9))
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
                         radius: 6
                         border.color: "#2196F3"
@@ -483,7 +483,7 @@ Rectangle {
 
                     Text {
                         text: (imuService ? imuService.bucketAngle.toFixed(1) : "0.0") + "°"
-                        font.pixelSize: 11
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
                         color: "#2196F3"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -636,8 +636,8 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(50, 20, 0)
-                        eulerRotation.y: 90
+                        position: Qt.vector3d(-50, 20, 0)
+                        eulerRotation.y: -90
                         clipNear: 1
                         clipFar: 500
                         fieldOfView: 50
@@ -692,7 +692,7 @@ Rectangle {
                     }
                 }
 
-                // Derinlik etiketleri (sağ taraf) - İnce ve kompakt
+                // Derinlik göstergesi (sağ taraf) - Termometre tarzı
                 Rectangle {
                     id: depthLabels
                     anchors.right: parent.right
@@ -709,8 +709,8 @@ Rectangle {
 
                     Column {
                         anchors.fill: parent
-                        anchors.margins: 6
-                        spacing: 0
+                        anchors.margins: 8
+                        spacing: 5
 
                         // Başlık
                         Text {
@@ -721,68 +721,75 @@ Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
 
-                        Rectangle {
+                        // Termometre stili bar
+                        Item {
                             width: parent.width
-                            height: 1
-                            color: "#444444"
-                            anchors.horizontalCenter: parent.horizontalCenter
-                        }
+                            height: parent.height - 20
 
-                        // Derinlik değerleri - İnce çizgiler
-                        Column {
-                            width: parent.width
-                            spacing: 25
-                            topPadding: 12
+                            // Ana dikey çubuk (gri background)
+                            Rectangle {
+                                id: thermometerBar
+                                anchors.centerIn: parent
+                                width: 8
+                                height: parent.height - 20
+                                radius: 4
+                                color: "#1a1a1a"
+                                border.color: "#555555"
+                                border.width: 1
 
-                            Repeater {
-                                model: [
-                                    {depth: "-1.0m", color: "#4CAF50"},
-                                    {depth: "-1.5m", color: "#FFC107"},
-                                    {depth: "-2.0m", color: "#FF5722"},
-                                    {depth: "-2.5m", color: "#9C27B0"}
-                                ]
+                                // Renkli gradyan dolgu (aşağıdan yukarı)
+                                Rectangle {
+                                    anchors.bottom: parent.bottom
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    width: parent.width - 2
+                                    height: parent.height * 0.75
+                                    radius: 3
+                                    gradient: Gradient {
+                                        GradientStop { position: 0.0; color: "#9C27B0" }
+                                        GradientStop { position: 0.33; color: "#FF5722" }
+                                        GradientStop { position: 0.66; color: "#FFC107" }
+                                        GradientStop { position: 1.0; color: "#4CAF50" }
+                                    }
+                                }
+                            }
 
-                                Item {
-                                    width: parent.width
-                                    height: 16
+                            // Scala işaretleri ve metinler
+                            Column {
+                                anchors.fill: parent
+                                spacing: 0
 
-                                    // Yatay çizgi - İnce
-                                    Rectangle {
+                                Repeater {
+                                    model: [
+                                        {depth: "-1.0", color: "#4CAF50", position: 0.0},
+                                        {depth: "-1.5", color: "#FFC107", position: 0.33},
+                                        {depth: "-2.0", color: "#FF5722", position: 0.66},
+                                        {depth: "-2.5", color: "#9C27B0", position: 1.0}
+                                    ]
+
+                                    Item {
                                         width: parent.width
-                                        height: 1
-                                        color: modelData.color
-                                        anchors.verticalCenter: parent.verticalCenter
-                                    }
+                                        height: parent.height / 4
 
-                                    // Sol uç daire - Küçük
-                                    Rectangle {
-                                        width: 4
-                                        height: 4
-                                        radius: 2
-                                        color: modelData.color
-                                        anchors.left: parent.left
-                                        anchors.verticalCenter: parent.verticalCenter
-                                    }
+                                        // Yatay çizgi (skala)
+                                        Rectangle {
+                                            anchors.left: thermometerBar.right
+                                            anchors.leftMargin: -4
+                                            anchors.verticalCenter: parent.top
+                                            width: 8
+                                            height: 2
+                                            color: modelData.color
+                                        }
 
-                                    // Sağ uç daire - Küçük
-                                    Rectangle {
-                                        width: 4
-                                        height: 4
-                                        radius: 2
-                                        color: modelData.color
-                                        anchors.right: parent.right
-                                        anchors.verticalCenter: parent.verticalCenter
-                                    }
-
-                                    // Derinlik metni - Küçük font
-                                    Text {
-                                        text: modelData.depth
-                                        font.pixelSize: 8
-                                        font.bold: true
-                                        color: modelData.color
-                                        anchors.horizontalCenter: parent.horizontalCenter
-                                        anchors.top: parent.verticalCenter
-                                        anchors.topMargin: 3
+                                        // Derinlik metni
+                                        Text {
+                                            anchors.left: thermometerBar.right
+                                            anchors.leftMargin: 6
+                                            anchors.verticalCenter: parent.top
+                                            text: modelData.depth + "m"
+                                            font.pixelSize: 7
+                                            font.bold: true
+                                            color: modelData.color
+                                        }
                                     }
                                 }
                             }
