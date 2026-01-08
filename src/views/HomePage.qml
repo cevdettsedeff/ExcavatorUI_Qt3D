@@ -624,7 +624,7 @@ Rectangle {
                 View3D {
                     anchors.top: sideViewHeader.bottom
                     anchors.left: parent.left
-                    anchors.right: depthLabels.left
+                    anchors.right: parent.right
                     anchors.bottom: parent.bottom
                     anchors.margins: 2
 
@@ -636,7 +636,7 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(50, 20, 0)
+                        position: Qt.vector3d(40, 20, 0)
                         eulerRotation.y: 90
                         clipNear: 1
                         clipFar: 500
@@ -688,139 +688,6 @@ Rectangle {
                             boomAngle: imuService ? imuService.boomAngle : 0.0
                             armAngle: imuService ? imuService.armAngle : 0.0
                             bucketAngle: imuService ? imuService.bucketAngle : 0.0
-                        }
-                    }
-                }
-
-                // Derinlik göstergesi (sağ taraf) - Termometre tarzı
-                Rectangle {
-                    id: depthLabels
-                    anchors.right: parent.right
-                    anchors.top: sideViewHeader.bottom
-                    anchors.bottom: parent.bottom
-                    anchors.rightMargin: 5
-                    anchors.topMargin: 10
-                    anchors.bottomMargin: 10
-                    width: 50
-                    color: "#2a2a2a"
-                    radius: 4
-                    border.color: "#444444"
-                    border.width: 1
-
-                    Column {
-                        anchors.fill: parent
-                        anchors.margins: 8
-                        spacing: 5
-
-                        // Başlık
-                        Text {
-                            text: "Derinlik"
-                            font.pixelSize: 8
-                            font.bold: true
-                            color: "#00bcd4"
-                            anchors.horizontalCenter: parent.horizontalCenter
-                        }
-
-                        // Termometre stili bar
-                        Item {
-                            width: parent.width
-                            height: parent.height - 20
-
-                            // Ana dikey çubuk (gri background)
-                            Rectangle {
-                                id: thermometerBar
-                                x: 4
-                                y: 0
-                                width: 8
-                                height: parent.height - 20
-                                radius: 4
-                                color: "#1a1a1a"
-                                border.color: "#555555"
-                                border.width: 1
-
-                                // Renkli gradyan dolgu (aşağıdan yukarı)
-                                Rectangle {
-                                    anchors.bottom: parent.bottom
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    width: parent.width - 2
-                                    height: parent.height * 0.75
-                                    radius: 3
-                                    gradient: Gradient {
-                                        GradientStop { position: 0.0; color: "#9C27B0" }
-                                        GradientStop { position: 0.33; color: "#FF5722" }
-                                        GradientStop { position: 0.66; color: "#FFC107" }
-                                        GradientStop { position: 1.0; color: "#4CAF50" }
-                                    }
-                                }
-                            }
-
-                            // Skala -1.0m (yeşil - üstte)
-                            Rectangle {
-                                x: thermometerBar.x + thermometerBar.width
-                                y: 0
-                                width: 8
-                                height: 2
-                                color: "#4CAF50"
-                            }
-                            Text {
-                                x: thermometerBar.x + thermometerBar.width + 10
-                                y: -2
-                                text: "-1.0m"
-                                font.pixelSize: 7
-                                font.bold: true
-                                color: "#4CAF50"
-                            }
-
-                            // Skala -1.5m (sarı)
-                            Rectangle {
-                                x: thermometerBar.x + thermometerBar.width
-                                y: parent.height * 0.25
-                                width: 8
-                                height: 2
-                                color: "#FFC107"
-                            }
-                            Text {
-                                x: thermometerBar.x + thermometerBar.width + 10
-                                y: parent.height * 0.25 - 2
-                                text: "-1.5m"
-                                font.pixelSize: 7
-                                font.bold: true
-                                color: "#FFC107"
-                            }
-
-                            // Skala -2.0m (turuncu)
-                            Rectangle {
-                                x: thermometerBar.x + thermometerBar.width
-                                y: parent.height * 0.5
-                                width: 8
-                                height: 2
-                                color: "#FF5722"
-                            }
-                            Text {
-                                x: thermometerBar.x + thermometerBar.width + 10
-                                y: parent.height * 0.5 - 2
-                                text: "-2.0m"
-                                font.pixelSize: 7
-                                font.bold: true
-                                color: "#FF5722"
-                            }
-
-                            // Skala -2.5m (mor - altta)
-                            Rectangle {
-                                x: thermometerBar.x + thermometerBar.width
-                                y: parent.height * 0.75
-                                width: 8
-                                height: 2
-                                color: "#9C27B0"
-                            }
-                            Text {
-                                x: thermometerBar.x + thermometerBar.width + 10
-                                y: parent.height * 0.75 - 2
-                                text: "-2.5m"
-                                font.pixelSize: 7
-                                font.bold: true
-                                color: "#9C27B0"
-                            }
                         }
                     }
                 }
