@@ -165,7 +165,7 @@ private:
 
     // Tile cache (LRU)
     QHash<QString, std::shared_ptr<BathymetricTile>> m_tileCache;
-    QMutex m_cacheMutex;
+    mutable QMutex m_cacheMutex;
     QThreadPool m_threadPool;
 
     // Cache management
