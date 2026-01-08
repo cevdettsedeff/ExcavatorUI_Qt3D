@@ -636,7 +636,7 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(60, 20, 0)
+                        position: Qt.vector3d(45, 20, 0)
                         eulerRotation.y: 90
                         clipNear: 1
                         clipFar: 500
@@ -692,36 +692,85 @@ Rectangle {
                     }
                 }
 
-                // Derinlik etiketleri (sağ taraf)
-                Column {
+                // Derinlik etiketleri (sağ taraf) - Geliştirilmiş
+                Rectangle {
                     id: depthLabels
                     anchors.right: parent.right
                     anchors.top: sideViewHeader.bottom
                     anchors.bottom: parent.bottom
-                    anchors.rightMargin: 8
-                    anchors.topMargin: 20
-                    width: 60
-                    spacing: 35
+                    anchors.rightMargin: 5
+                    anchors.topMargin: 10
+                    anchors.bottomMargin: 10
+                    width: 70
+                    color: "#0f1a2a"
+                    radius: 6
+                    border.color: "#2a4a6a"
+                    border.width: 1
 
-                    Repeater {
-                        model: ["-1.0m", "-1.5m", "-2.0m", "-2.5m"]
+                    Column {
+                        anchors.fill: parent
+                        anchors.margins: 8
+                        spacing: 0
 
-                        Row {
-                            spacing: 5
-                            layoutDirection: Qt.RightToLeft
+                        // Başlık
+                        Text {
+                            text: "Derinlik"
+                            font.pixelSize: 10
+                            font.bold: true
+                            color: "#00bcd4"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
 
-                            Text {
-                                text: modelData
-                                font.pixelSize: 11
-                                color: "#888888"
-                            }
+                        Rectangle {
+                            width: parent.width
+                            height: 1
+                            color: "#2a4a6a"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
 
-                            Rectangle {
-                                width: 6
-                                height: 6
-                                radius: 3
-                                color: index === 2 ? "#f44336" : "#888888"
-                                anchors.verticalCenter: parent.verticalCenter
+                        // Derinlik değerleri
+                        Column {
+                            width: parent.width
+                            spacing: 30
+                            topPadding: 15
+
+                            Repeater {
+                                model: [
+                                    {depth: "-1.0m", color: "#4CAF50"},
+                                    {depth: "-1.5m", color: "#FFC107"},
+                                    {depth: "-2.0m", color: "#FF5722"},
+                                    {depth: "-2.5m", color: "#9C27B0"}
+                                ]
+
+                                Rectangle {
+                                    width: parent.width
+                                    height: 24
+                                    color: "#1a2a3a"
+                                    radius: 4
+                                    border.color: modelData.color
+                                    border.width: 1
+
+                                    Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+
+                                        Rectangle {
+                                            width: 8
+                                            height: 8
+                                            radius: 4
+                                            color: modelData.color
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+
+                                        Text {
+                                            text: modelData.depth
+                                            font.pixelSize: 11
+                                            font.bold: true
+                                            color: modelData.color
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
