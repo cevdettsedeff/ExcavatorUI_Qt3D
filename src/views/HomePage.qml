@@ -184,6 +184,243 @@ Rectangle {
                     }
                 }
             }
+
+            // Sürüklenebilir Kontroller (Sağ taraf)
+            Column {
+                id: manualControls
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.margins: 15
+                width: 150
+                spacing: 20
+
+                // Başlık
+                Rectangle {
+                    width: parent.width
+                    height: 40
+                    color: themeManager ? themeManager.backgroundColorDark : "#1a2a3a"
+                    radius: 8
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Manual Control")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: "#ffffff"
+                    }
+                }
+
+                // Boom Kontrolü
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: "Boom"
+                        font.pixelSize: 12
+                        font.bold: true
+                        color: "#ffc107"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: 150
+                        color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+                        radius: 8
+                        border.color: "#ffc107"
+                        border.width: 2
+
+                        Slider {
+                            id: boomSlider
+                            anchors.centerIn: parent
+                            width: parent.height - 20
+                            height: parent.width - 20
+                            orientation: Qt.Vertical
+                            from: -15
+                            to: 35
+                            value: imuService ? imuService.boomAngle : 0
+                            enabled: imuService && !imuService.isDigging
+
+                            onValueChanged: {
+                                if (imuService && !imuService.isDigging) {
+                                    imuService.setBoomAngle(value)
+                                }
+                            }
+
+                            background: Rectangle {
+                                x: boomSlider.leftPadding + (boomSlider.horizontal ? 0 : boomSlider.availableWidth / 2 - width / 2)
+                                y: boomSlider.topPadding + (boomSlider.horizontal ? boomSlider.availableHeight / 2 - height / 2 : 0)
+                                implicitWidth: boomSlider.horizontal ? 200 : 4
+                                implicitHeight: boomSlider.horizontal ? 4 : 200
+                                width: boomSlider.horizontal ? boomSlider.availableWidth : implicitWidth
+                                height: boomSlider.horizontal ? implicitHeight : boomSlider.availableHeight
+                                radius: 2
+                                color: "#444444"
+                            }
+
+                            handle: Rectangle {
+                                x: boomSlider.leftPadding + (boomSlider.horizontal ? boomSlider.visualPosition * (boomSlider.availableWidth - width) : boomSlider.availableWidth / 2 - width / 2)
+                                y: boomSlider.topPadding + (boomSlider.horizontal ? boomSlider.availableHeight / 2 - height / 2 : boomSlider.visualPosition * (boomSlider.availableHeight - height))
+                                implicitWidth: 26
+                                implicitHeight: 26
+                                radius: 13
+                                color: boomSlider.pressed ? "#f0a000" : "#ffc107"
+                                border.color: "#ffffff"
+                                border.width: 2
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: (imuService ? imuService.boomAngle.toFixed(1) : "0.0") + "°"
+                        font.pixelSize: 11
+                        color: "#ffc107"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
+
+                // Arm Kontrolü
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: "Arm"
+                        font.pixelSize: 12
+                        font.bold: true
+                        color: "#4CAF50"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: 150
+                        color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+                        radius: 8
+                        border.color: "#4CAF50"
+                        border.width: 2
+
+                        Slider {
+                            id: armSlider
+                            anchors.centerIn: parent
+                            width: parent.height - 20
+                            height: parent.width - 20
+                            orientation: Qt.Vertical
+                            from: -45
+                            to: 25
+                            value: imuService ? imuService.armAngle : 0
+                            enabled: imuService && !imuService.isDigging
+
+                            onValueChanged: {
+                                if (imuService && !imuService.isDigging) {
+                                    imuService.setArmAngle(value)
+                                }
+                            }
+
+                            background: Rectangle {
+                                x: armSlider.leftPadding + (armSlider.horizontal ? 0 : armSlider.availableWidth / 2 - width / 2)
+                                y: armSlider.topPadding + (armSlider.horizontal ? armSlider.availableHeight / 2 - height / 2 : 0)
+                                implicitWidth: armSlider.horizontal ? 200 : 4
+                                implicitHeight: armSlider.horizontal ? 4 : 200
+                                width: armSlider.horizontal ? armSlider.availableWidth : implicitWidth
+                                height: armSlider.horizontal ? implicitHeight : armSlider.availableHeight
+                                radius: 2
+                                color: "#444444"
+                            }
+
+                            handle: Rectangle {
+                                x: armSlider.leftPadding + (armSlider.horizontal ? armSlider.visualPosition * (armSlider.availableWidth - width) : armSlider.availableWidth / 2 - width / 2)
+                                y: armSlider.topPadding + (armSlider.horizontal ? armSlider.availableHeight / 2 - height / 2 : armSlider.visualPosition * (armSlider.availableHeight - height))
+                                implicitWidth: 26
+                                implicitHeight: 26
+                                radius: 13
+                                color: armSlider.pressed ? "#2e7d32" : "#4CAF50"
+                                border.color: "#ffffff"
+                                border.width: 2
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: (imuService ? imuService.armAngle.toFixed(1) : "0.0") + "°"
+                        font.pixelSize: 11
+                        color: "#4CAF50"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
+
+                // Bucket Kontrolü
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: "Bucket"
+                        font.pixelSize: 12
+                        font.bold: true
+                        color: "#2196F3"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: 150
+                        color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+                        radius: 8
+                        border.color: "#2196F3"
+                        border.width: 2
+
+                        Slider {
+                            id: bucketSlider
+                            anchors.centerIn: parent
+                            width: parent.height - 20
+                            height: parent.width - 20
+                            orientation: Qt.Vertical
+                            from: -60
+                            to: 40
+                            value: imuService ? imuService.bucketAngle : 0
+                            enabled: imuService && !imuService.isDigging
+
+                            onValueChanged: {
+                                if (imuService && !imuService.isDigging) {
+                                    imuService.setBucketAngle(value)
+                                }
+                            }
+
+                            background: Rectangle {
+                                x: bucketSlider.leftPadding + (bucketSlider.horizontal ? 0 : bucketSlider.availableWidth / 2 - width / 2)
+                                y: bucketSlider.topPadding + (bucketSlider.horizontal ? bucketSlider.availableHeight / 2 - height / 2 : 0)
+                                implicitWidth: bucketSlider.horizontal ? 200 : 4
+                                implicitHeight: bucketSlider.horizontal ? 4 : 200
+                                width: bucketSlider.horizontal ? bucketSlider.availableWidth : implicitWidth
+                                height: bucketSlider.horizontal ? implicitHeight : bucketSlider.availableHeight
+                                radius: 2
+                                color: "#444444"
+                            }
+
+                            handle: Rectangle {
+                                x: bucketSlider.leftPadding + (bucketSlider.horizontal ? bucketSlider.visualPosition * (bucketSlider.availableWidth - width) : bucketSlider.availableWidth / 2 - width / 2)
+                                y: bucketSlider.topPadding + (bucketSlider.horizontal ? bucketSlider.availableHeight / 2 - height / 2 : bucketSlider.visualPosition * (bucketSlider.availableHeight - height))
+                                implicitWidth: 26
+                                implicitHeight: 26
+                                radius: 13
+                                color: bucketSlider.pressed ? "#1565c0" : "#2196F3"
+                                border.color: "#ffffff"
+                                border.width: 2
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: (imuService ? imuService.bucketAngle.toFixed(1) : "0.0") + "°"
+                        font.pixelSize: 11
+                        color: "#2196F3"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
+            }
         }
 
         // ALT: Mini Görünümler (yan yana) - Daha büyük

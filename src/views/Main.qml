@@ -39,8 +39,9 @@ Rectangle {
         StatusBar {
             id: statusBar
             Layout.fillWidth: true
-            Layout.preferredHeight: 50
+            Layout.preferredHeight: 100
             projectName: "AŞ-KAZI-042"
+            excavatorName: "CAT 390F LME"
             rtkConnected: true
             imuOk: true
             alarmCount: 3

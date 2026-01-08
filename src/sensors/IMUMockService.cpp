@@ -179,3 +179,49 @@ void IMUMockService::updateDiggingSequence()
     // Kepçe derinliğini hesapla
     calculateBucketDepth();
 }
+
+// Manuel kontrol metodları
+void IMUMockService::setBoomAngle(double angle)
+{
+    // Otomatik kazı modundaysa manuel kontrolü devre dışı bırak
+    if (m_isDigging) {
+        return;
+    }
+
+    double clampedAngle = qBound(BOOM_MIN, angle, BOOM_MAX);
+    if (qAbs(m_boomAngle - clampedAngle) > 0.01) {
+        m_boomAngle = clampedAngle;
+        emit boomAngleChanged();
+        calculateBucketDepth();
+    }
+}
+
+void IMUMockService::setArmAngle(double angle)
+{
+    // Otomatik kazı modundaysa manuel kontrolü devre dışı bırak
+    if (m_isDigging) {
+        return;
+    }
+
+    double clampedAngle = qBound(ARM_MIN, angle, ARM_MAX);
+    if (qAbs(m_armAngle - clampedAngle) > 0.01) {
+        m_armAngle = clampedAngle;
+        emit armAngleChanged();
+        calculateBucketDepth();
+    }
+}
+
+void IMUMockService::setBucketAngle(double angle)
+{
+    // Otomatik kazı modundaysa manuel kontrolü devre dışı bırak
+    if (m_isDigging) {
+        return;
+    }
+
+    double clampedAngle = qBound(BUCKET_MIN, angle, BUCKET_MAX);
+    if (qAbs(m_bucketAngle - clampedAngle) > 0.01) {
+        m_bucketAngle = clampedAngle;
+        emit bucketAngleChanged();
+        calculateBucketDepth();
+    }
+}

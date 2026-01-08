@@ -28,6 +28,11 @@ public:
     Q_INVOKABLE void stopDigging();
     Q_INVOKABLE void reset();
 
+    // Manuel kontrol metodları
+    Q_INVOKABLE void setBoomAngle(double angle);
+    Q_INVOKABLE void setArmAngle(double angle);
+    Q_INVOKABLE void setBucketAngle(double angle);
+
 signals:
     void boomAngleChanged();
     void armAngleChanged();
