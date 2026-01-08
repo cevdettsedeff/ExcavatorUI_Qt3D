@@ -11,6 +11,10 @@ IMUMockService::IMUMockService(QObject *parent)
     , m_isDigging(false)
     , m_diggingPhase(0)
     , m_phaseProgress(0.0)
+    , m_isRandomMode(false)
+    , m_randomBoomTarget(0.0)
+    , m_randomArmTarget(0.0)
+    , m_randomBucketTarget(0.0)
 {
     // Timer'ı bağla - 16ms (yaklaşık 60 FPS)
     connect(m_timer, &QTimer::timeout, this, &IMUMockService::updateAngles);
@@ -91,9 +95,11 @@ void IMUMockService::reset()
 
 void IMUMockService::updateAngles()
 {
-    if (!m_isDigging) return;
-
-    updateDiggingSequence();
+    if (m_isDigging) {
+        updateDiggingSequence();
+    } else if (m_isRandomMode) {
+        updateRandomMovement();
+    }
 }
 
 void IMUMockService::updateDiggingSequence()
@@ -183,8 +189,8 @@ void IMUMockService::updateDiggingSequence()
 // Manuel kontrol metodları
 void IMUMockService::setBoomAngle(double angle)
 {
-    // Otomatik kazı modundaysa manuel kontrolü devre dışı bırak
-    if (m_isDigging) {
+    // Otomatik kazı veya rastgele modundaysa manuel kontrolü devre dışı bırak
+    if (m_isDigging || m_isRandomMode) {
         return;
     }
 
@@ -198,8 +204,8 @@ void IMUMockService::setBoomAngle(double angle)
 
 void IMUMockService::setArmAngle(double angle)
 {
-    // Otomatik kazı modundaysa manuel kontrolü devre dışı bırak
-    if (m_isDigging) {
+    // Otomatik kazı veya rastgele modundaysa manuel kontrolü devre dışı bırak
+    if (m_isDigging || m_isRandomMode) {
         return;
     }
 
@@ -214,7 +220,7 @@ void IMUMockService::setArmAngle(double angle)
 void IMUMockService::setBucketAngle(double angle)
 {
     // Otomatik kazı modundaysa manuel kontrolü devre dışı bırak
-    if (m_isDigging) {
+    if (m_isDigging || m_isRandomMode) {
         return;
     }
 
@@ -224,4 +230,68 @@ void IMUMockService::setBucketAngle(double angle)
         emit bucketAngleChanged();
         calculateBucketDepth();
     }
+}
+
+// Rastgele hareket modu fonksiyonları
+void IMUMockService::startRandomMovement()
+{
+    if (!m_isRandomMode && !m_isDigging) {
+        qDebug() << "Starting random movement mode";
+        m_isRandomMode = true;
+
+        // İlk rastgele hedefleri ayarla
+        m_randomBoomTarget = BOOM_MIN + (qrand() % 100) / 100.0 * (BOOM_MAX - BOOM_MIN);
+        m_randomArmTarget = ARM_MIN + (qrand() % 100) / 100.0 * (ARM_MAX - ARM_MIN);
+        m_randomBucketTarget = BUCKET_MIN + (qrand() % 100) / 100.0 * (BUCKET_MAX - BUCKET_MIN);
+
+        m_timer->start(16); // ~60 FPS
+        emit isRandomModeChanged();
+    }
+}
+
+void IMUMockService::stopRandomMovement()
+{
+    if (m_isRandomMode) {
+        qDebug() << "Stopping random movement mode";
+        m_isRandomMode = false;
+        m_timer->stop();
+        emit isRandomModeChanged();
+    }
+}
+
+void IMUMockService::updateRandomMovement()
+{
+    // Her açı için smooth interpolation
+    const double SPEED = 0.5; // Hareket hızı
+
+    // Boom hareketi
+    double boomDiff = m_randomBoomTarget - m_boomAngle;
+    if (qAbs(boomDiff) < 1.0) {
+        // Hedefe ulaşıldı, yeni hedef belirle
+        m_randomBoomTarget = BOOM_MIN + (qrand() % 100) / 100.0 * (BOOM_MAX - BOOM_MIN);
+    } else {
+        m_boomAngle += boomDiff * SPEED * 0.016; // 60 FPS için normalize
+        emit boomAngleChanged();
+    }
+
+    // Arm hareketi
+    double armDiff = m_randomArmTarget - m_armAngle;
+    if (qAbs(armDiff) < 1.0) {
+        m_randomArmTarget = ARM_MIN + (qrand() % 100) / 100.0 * (ARM_MAX - ARM_MIN);
+    } else {
+        m_armAngle += armDiff * SPEED * 0.016;
+        emit armAngleChanged();
+    }
+
+    // Bucket hareketi
+    double bucketDiff = m_randomBucketTarget - m_bucketAngle;
+    if (qAbs(bucketDiff) < 1.0) {
+        m_randomBucketTarget = BUCKET_MIN + (qrand() % 100) / 100.0 * (BUCKET_MAX - BUCKET_MIN);
+    } else {
+        m_bucketAngle += bucketDiff * SPEED * 0.016;
+        emit bucketAngleChanged();
+    }
+
+    // Kepçe derinliğini hesapla
+    calculateBucketDepth();
 }

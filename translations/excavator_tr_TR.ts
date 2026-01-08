@@ -873,5 +873,13 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Manual Control</source>
         <translation>Manuel Kontrol</translation>
     </message>
+    <message>
+        <source>Random Test</source>
+        <translation>Rastgele Test</translation>
+    </message>
+    <message>
+        <source>Stop Random</source>
+        <translation>Durdur</translation>
+    </message>
 </context>
 </TS>

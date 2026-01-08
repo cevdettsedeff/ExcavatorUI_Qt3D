@@ -211,6 +211,55 @@ Rectangle {
                     }
                 }
 
+                // Rastgele Hareket Butonu
+                Button {
+                    width: parent.width
+                    height: 50
+
+                    background: Rectangle {
+                        color: imuService && imuService.isRandomMode ? "#e91e63" : "#9c27b0"
+                        radius: 8
+                        border.color: imuService && imuService.isRandomMode ? "#f06292" : "#ba68c8"
+                        border.width: 2
+
+                        Behavior on color {
+                            ColorAnimation { duration: 200 }
+                        }
+                    }
+
+                    contentItem: Column {
+                        anchors.centerIn: parent
+                        spacing: 2
+
+                        Text {
+                            text: imuService && imuService.isRandomMode ? "⏹" : "🎲"
+                            font.pixelSize: 18
+                            color: "#ffffff"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+
+                        Text {
+                            text: imuService && imuService.isRandomMode ? tr("Stop Random") : tr("Random Test")
+                            font.pixelSize: 10
+                            font.bold: true
+                            color: "#ffffff"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                    }
+
+                    enabled: imuService && !imuService.isDigging
+
+                    onClicked: {
+                        if (imuService) {
+                            if (imuService.isRandomMode) {
+                                imuService.stopRandomMovement()
+                            } else {
+                                imuService.startRandomMovement()
+                            }
+                        }
+                    }
+                }
+
                 // Boom Kontrolü
                 Column {
                     width: parent.width
@@ -241,7 +290,7 @@ Rectangle {
                             from: -15
                             to: 35
                             value: imuService ? imuService.boomAngle : 0
-                            enabled: imuService && !imuService.isDigging
+                            enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
 
                             onValueChanged: {
                                 if (imuService && !imuService.isDigging) {
@@ -311,7 +360,7 @@ Rectangle {
                             from: -45
                             to: 25
                             value: imuService ? imuService.armAngle : 0
-                            enabled: imuService && !imuService.isDigging
+                            enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
 
                             onValueChanged: {
                                 if (imuService && !imuService.isDigging) {
@@ -381,7 +430,7 @@ Rectangle {
                             from: -60
                             to: 40
                             value: imuService ? imuService.bucketAngle : 0
-                            enabled: imuService && !imuService.isDigging
+                            enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
 
                             onValueChanged: {
                                 if (imuService && !imuService.isDigging) {
