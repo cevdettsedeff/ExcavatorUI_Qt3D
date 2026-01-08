@@ -183,148 +183,7 @@ Rectangle {
                 anchors.rightMargin: 10
                 spacing: 8
 
-        // RTK Durumu - Detaylı
-        Rectangle {
-            Layout.preferredWidth: 85
-            Layout.preferredHeight: 36
-            radius: 5
-            color: "#2a2a2a"
-            border.color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
-            border.width: 1
-
-            Row {
-                anchors.centerIn: parent
-                spacing: 5
-
-                // Sinyal ikonu - Row ile yatay dizilim
-                Row {
-                    spacing: 1
-                    anchors.verticalCenter: parent.verticalCenter
-                    height: 16
-
-                    Repeater {
-                        model: 4
-
-                        Rectangle {
-                            width: 3
-                            height: 4 + index * 3
-                            radius: 1
-                            anchors.bottom: parent.bottom
-                            color: {
-                                var strength = statusBar.rtkConnected ? (statusBar.rtkStatus === "FIX" ? 4 : (statusBar.rtkStatus === "FLOAT" ? 3 : 2)) : 0
-                                return index < strength ? "#4CAF50" : "#555555"
-                            }
-                        }
-                    }
-                }
-
-                Column {
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 0
-
-                    Text {
-                        text: "RTK"
-                        font.pixelSize: 11
-                        font.bold: true
-                        color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
-                    }
-
-                    Text {
-                        text: statusBar.rtkStatus
-                        font.pixelSize: 9
-                        color: "#888888"
-                    }
-                }
-            }
-        }
-
-        // IMU Durumu - Detaylı
-        Rectangle {
-            Layout.preferredWidth: 80
-            Layout.preferredHeight: 36
-            radius: 5
-            color: "#2a2a2a"
-            border.color: statusBar.imuOk ? "#4CAF50" : "#f44336"
-            border.width: 1
-
-            Row {
-                anchors.centerIn: parent
-                spacing: 5
-
-                // Durum ikonu
-                Rectangle {
-                    width: 18
-                    height: 18
-                    radius: 9
-                    color: statusBar.imuOk ? "#4CAF50" : "#f44336"
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: statusBar.imuOk ? "✓" : "!"
-                        font.pixelSize: 11
-                        font.bold: true
-                        color: "#ffffff"
-                    }
-                }
-
-                Column {
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 0
-
-                    Text {
-                        text: "IMU"
-                        font.pixelSize: 11
-                        font.bold: true
-                        color: "#ffffff"
-                    }
-
-                    Text {
-                        text: statusBar.imuOk ? "OK" : "ERR"
-                        font.pixelSize: 9
-                        color: statusBar.imuOk ? "#4CAF50" : "#f44336"
-                    }
-                }
-            }
-        }
-
-        // Alarm Badge
-        Rectangle {
-            Layout.preferredWidth: 32
-            Layout.preferredHeight: 32
-            radius: 5
-            color: statusBar.alarmCount > 0 ? "#f44336" : "#2a2a2a"
-            visible: true
-            border.color: statusBar.alarmCount > 0 ? "#ff6b6b" : "#444444"
-            border.width: 1
-
-            Column {
-                anchors.centerIn: parent
-                spacing: 0
-
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: "▲"
-                    font.pixelSize: 10
-                    color: statusBar.alarmCount > 0 ? "#ffffff" : "#666666"
-                }
-
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: statusBar.alarmCount.toString()
-                    font.pixelSize: 12
-                    font.bold: true
-                    color: statusBar.alarmCount > 0 ? "#ffffff" : "#666666"
-                }
-            }
-        }
-
-                // Boşluk
-                Item {
-                    Layout.fillWidth: true
-                }
-
-                // Proje Adı
+                // Proje Adı - SOLDA
                 Rectangle {
                     Layout.preferredHeight: 36
                     Layout.preferredWidth: projeText.width + 20
@@ -340,6 +199,147 @@ Rectangle {
                         font.pixelSize: 12
                         font.bold: true
                         color: "#ffffff"
+                    }
+                }
+
+                // Boşluk
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                // RTK Durumu - Detaylı
+                Rectangle {
+                    Layout.preferredWidth: 110
+                    Layout.preferredHeight: 36
+                    radius: 5
+                    color: "#2a2a2a"
+                    border.color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
+                    border.width: 1
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 5
+
+                        // Sinyal ikonu - Row ile yatay dizilim
+                        Row {
+                            spacing: 1
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: 16
+
+                            Repeater {
+                                model: 4
+
+                                Rectangle {
+                                    width: 3
+                                    height: 4 + index * 3
+                                    radius: 1
+                                    anchors.bottom: parent.bottom
+                                    color: {
+                                        var strength = statusBar.rtkConnected ? (statusBar.rtkStatus === "FIX" ? 4 : (statusBar.rtkStatus === "FLOAT" ? 3 : 2)) : 0
+                                        return index < strength ? "#4CAF50" : "#555555"
+                                    }
+                                }
+                            }
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 0
+
+                            Text {
+                                text: "RTK"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
+                            }
+
+                            Text {
+                                text: statusBar.rtkStatus
+                                font.pixelSize: 9
+                                color: "#888888"
+                            }
+                        }
+                    }
+                }
+
+                // IMU Durumu - Detaylı
+                Rectangle {
+                    Layout.preferredWidth: 105
+                    Layout.preferredHeight: 36
+                    radius: 5
+                    color: "#2a2a2a"
+                    border.color: statusBar.imuOk ? "#4CAF50" : "#f44336"
+                    border.width: 1
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 5
+
+                        // Durum ikonu
+                        Rectangle {
+                            width: 18
+                            height: 18
+                            radius: 9
+                            color: statusBar.imuOk ? "#4CAF50" : "#f44336"
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: statusBar.imuOk ? "✓" : "!"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: "#ffffff"
+                            }
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 0
+
+                            Text {
+                                text: "IMU"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: "#ffffff"
+                            }
+
+                            Text {
+                                text: statusBar.imuOk ? "OK" : "ERR"
+                                font.pixelSize: 9
+                                color: statusBar.imuOk ? "#4CAF50" : "#f44336"
+                            }
+                        }
+                    }
+                }
+
+                // Alarm Badge
+                Rectangle {
+                    Layout.preferredWidth: 32
+                    Layout.preferredHeight: 32
+                    radius: 5
+                    color: statusBar.alarmCount > 0 ? "#f44336" : "#2a2a2a"
+                    visible: true
+                    border.color: statusBar.alarmCount > 0 ? "#ff6b6b" : "#444444"
+                    border.width: 1
+
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: 0
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "▲"
+                            font.pixelSize: 10
+                            color: statusBar.alarmCount > 0 ? "#ffffff" : "#666666"
+                        }
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: statusBar.alarmCount.toString()
+                            font.pixelSize: 12
+                            font.bold: true
+                            color: statusBar.alarmCount > 0 ? "#ffffff" : "#666666"
+                        }
                     }
                 }
             }

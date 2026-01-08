@@ -636,11 +636,11 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(45, 20, 0)
+                        position: Qt.vector3d(35, 20, 0)
                         eulerRotation.y: 90
                         clipNear: 1
                         clipFar: 500
-                        fieldOfView: 45
+                        fieldOfView: 35
                     }
 
                     DirectionalLight {
@@ -728,10 +728,10 @@ Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
 
-                        // Derinlik değerleri
+                        // Derinlik değerleri - Çizgi olarak
                         Column {
                             width: parent.width
-                            spacing: 30
+                            spacing: 35
                             topPadding: 15
 
                             Repeater {
@@ -742,33 +742,47 @@ Rectangle {
                                     {depth: "-2.5m", color: "#9C27B0"}
                                 ]
 
-                                Rectangle {
+                                Item {
                                     width: parent.width
-                                    height: 24
-                                    color: "#1a2a3a"
-                                    radius: 4
-                                    border.color: modelData.color
-                                    border.width: 1
+                                    height: 20
 
-                                    Row {
-                                        anchors.centerIn: parent
-                                        spacing: 6
+                                    // Yatay çizgi
+                                    Rectangle {
+                                        width: parent.width
+                                        height: 2
+                                        color: modelData.color
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
 
-                                        Rectangle {
-                                            width: 8
-                                            height: 8
-                                            radius: 4
-                                            color: modelData.color
-                                            anchors.verticalCenter: parent.verticalCenter
-                                        }
+                                    // Sol uç daire
+                                    Rectangle {
+                                        width: 6
+                                        height: 6
+                                        radius: 3
+                                        color: modelData.color
+                                        anchors.left: parent.left
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
 
-                                        Text {
-                                            text: modelData.depth
-                                            font.pixelSize: 11
-                                            font.bold: true
-                                            color: modelData.color
-                                            anchors.verticalCenter: parent.verticalCenter
-                                        }
+                                    // Sağ uç daire
+                                    Rectangle {
+                                        width: 6
+                                        height: 6
+                                        radius: 3
+                                        color: modelData.color
+                                        anchors.right: parent.right
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    // Derinlik metni (çizginin altında)
+                                    Text {
+                                        text: modelData.depth
+                                        font.pixelSize: 10
+                                        font.bold: true
+                                        color: modelData.color
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        anchors.top: parent.verticalCenter
+                                        anchors.topMargin: 5
                                     }
                                 }
                             }
