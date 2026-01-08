@@ -1,5 +1,6 @@
 #include "IMUMockService.h"
 #include <QDebug>
+#include <QRandomGenerator>
 
 IMUMockService::IMUMockService(QObject *parent)
     : QObject(parent)
@@ -240,9 +241,9 @@ void IMUMockService::startRandomMovement()
         m_isRandomMode = true;
 
         // İlk rastgele hedefleri ayarla
-        m_randomBoomTarget = BOOM_MIN + (qrand() % 100) / 100.0 * (BOOM_MAX - BOOM_MIN);
-        m_randomArmTarget = ARM_MIN + (qrand() % 100) / 100.0 * (ARM_MAX - ARM_MIN);
-        m_randomBucketTarget = BUCKET_MIN + (qrand() % 100) / 100.0 * (BUCKET_MAX - BUCKET_MIN);
+        m_randomBoomTarget = BOOM_MIN + QRandomGenerator::global()->generateDouble() * (BOOM_MAX - BOOM_MIN);
+        m_randomArmTarget = ARM_MIN + QRandomGenerator::global()->generateDouble() * (ARM_MAX - ARM_MIN);
+        m_randomBucketTarget = BUCKET_MIN + QRandomGenerator::global()->generateDouble() * (BUCKET_MAX - BUCKET_MIN);
 
         m_timer->start(16); // ~60 FPS
         emit isRandomModeChanged();
@@ -268,7 +269,7 @@ void IMUMockService::updateRandomMovement()
     double boomDiff = m_randomBoomTarget - m_boomAngle;
     if (qAbs(boomDiff) < 1.0) {
         // Hedefe ulaşıldı, yeni hedef belirle
-        m_randomBoomTarget = BOOM_MIN + (qrand() % 100) / 100.0 * (BOOM_MAX - BOOM_MIN);
+        m_randomBoomTarget = BOOM_MIN + QRandomGenerator::global()->generateDouble() * (BOOM_MAX - BOOM_MIN);
     } else {
         m_boomAngle += boomDiff * SPEED * 0.016; // 60 FPS için normalize
         emit boomAngleChanged();
@@ -277,7 +278,7 @@ void IMUMockService::updateRandomMovement()
     // Arm hareketi
     double armDiff = m_randomArmTarget - m_armAngle;
     if (qAbs(armDiff) < 1.0) {
-        m_randomArmTarget = ARM_MIN + (qrand() % 100) / 100.0 * (ARM_MAX - ARM_MIN);
+        m_randomArmTarget = ARM_MIN + QRandomGenerator::global()->generateDouble() * (ARM_MAX - ARM_MIN);
     } else {
         m_armAngle += armDiff * SPEED * 0.016;
         emit armAngleChanged();
@@ -286,7 +287,7 @@ void IMUMockService::updateRandomMovement()
     // Bucket hareketi
     double bucketDiff = m_randomBucketTarget - m_bucketAngle;
     if (qAbs(bucketDiff) < 1.0) {
-        m_randomBucketTarget = BUCKET_MIN + (qrand() % 100) / 100.0 * (BUCKET_MAX - BUCKET_MIN);
+        m_randomBucketTarget = BUCKET_MIN + QRandomGenerator::global()->generateDouble() * (BUCKET_MAX - BUCKET_MIN);
     } else {
         m_bucketAngle += bucketDiff * SPEED * 0.016;
         emit bucketAngleChanged();
