@@ -51,10 +51,39 @@ Rectangle {
             border.color: "#2a4a6a"
             border.width: 1
 
+            // Başlık
+            Rectangle {
+                id: view3DHeader
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 40
+                color: themeManager ? themeManager.backgroundColorDark : "#1a2a3a"
+                z: 10
+
+                Text {
+                    anchors.centerIn: parent
+                    text: tr("3D Excavator View")
+                    font.pixelSize: 16
+                    font.bold: true
+                    color: "#ffffff"
+                }
+
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: 1
+                    color: "#444444"
+                }
+            }
+
             // 3D Görünüm
             View3D {
                 id: view3D
-                anchors.fill: parent
+                anchors.top: view3DHeader.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
                 anchors.margins: 2
 
                 environment: SceneEnvironment {
@@ -189,23 +218,23 @@ Rectangle {
             Column {
                 id: manualControls
                 anchors.right: parent.right
-                anchors.top: parent.top
+                anchors.top: view3DHeader.bottom
                 anchors.bottom: parent.bottom
-                anchors.margins: 15
-                width: 150
-                spacing: 20
+                anchors.margins: 10
+                width: 130
+                spacing: 10
 
                 // Başlık
                 Rectangle {
                     width: parent.width
-                    height: 40
+                    height: 35
                     color: themeManager ? themeManager.backgroundColorDark : "#1a2a3a"
-                    radius: 8
+                    radius: 6
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Manual Control")
-                        font.pixelSize: 14
+                        font.pixelSize: 12
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -214,11 +243,11 @@ Rectangle {
                 // Rastgele Hareket Butonu
                 Button {
                     width: parent.width
-                    height: 50
+                    height: 40
 
                     background: Rectangle {
                         color: imuService && imuService.isRandomMode ? "#e91e63" : "#9c27b0"
-                        radius: 8
+                        radius: 6
                         border.color: imuService && imuService.isRandomMode ? "#f06292" : "#ba68c8"
                         border.width: 2
 
@@ -227,24 +256,14 @@ Rectangle {
                         }
                     }
 
-                    contentItem: Column {
+                    contentItem: Text {
                         anchors.centerIn: parent
-                        spacing: 2
-
-                        Text {
-                            text: imuService && imuService.isRandomMode ? "⏹" : "🎲"
-                            font.pixelSize: 18
-                            color: "#ffffff"
-                            anchors.horizontalCenter: parent.horizontalCenter
-                        }
-
-                        Text {
-                            text: imuService && imuService.isRandomMode ? tr("Stop Random") : tr("Random Test")
-                            font.pixelSize: 10
-                            font.bold: true
-                            color: "#ffffff"
-                            anchors.horizontalCenter: parent.horizontalCenter
-                        }
+                        text: imuService && imuService.isRandomMode ? tr("Stop") : tr("Test")
+                        font.pixelSize: 12
+                        font.bold: true
+                        color: "#ffffff"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
                     }
 
                     enabled: imuService && !imuService.isDigging
@@ -263,11 +282,11 @@ Rectangle {
                 // Boom Kontrolü
                 Column {
                     width: parent.width
-                    spacing: 8
+                    spacing: 5
 
                     Text {
                         text: "Boom"
-                        font.pixelSize: 12
+                        font.pixelSize: 11
                         font.bold: true
                         color: "#ffc107"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -275,9 +294,9 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: 150
+                        height: 110
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
-                        radius: 8
+                        radius: 6
                         border.color: "#ffc107"
                         border.width: 2
 
@@ -287,8 +306,8 @@ Rectangle {
                             width: parent.height - 20
                             height: parent.width - 20
                             orientation: Qt.Vertical
-                            from: -15
-                            to: 35
+                            from: -25
+                            to: 45
                             value: imuService ? imuService.boomAngle : 0
                             enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
 
@@ -333,11 +352,11 @@ Rectangle {
                 // Arm Kontrolü
                 Column {
                     width: parent.width
-                    spacing: 8
+                    spacing: 5
 
                     Text {
                         text: "Arm"
-                        font.pixelSize: 12
+                        font.pixelSize: 11
                         font.bold: true
                         color: "#4CAF50"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -345,9 +364,9 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: 150
+                        height: 110
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
-                        radius: 8
+                        radius: 6
                         border.color: "#4CAF50"
                         border.width: 2
 
@@ -357,8 +376,8 @@ Rectangle {
                             width: parent.height - 20
                             height: parent.width - 20
                             orientation: Qt.Vertical
-                            from: -45
-                            to: 25
+                            from: -60
+                            to: 35
                             value: imuService ? imuService.armAngle : 0
                             enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
 
@@ -403,11 +422,11 @@ Rectangle {
                 // Bucket Kontrolü
                 Column {
                     width: parent.width
-                    spacing: 8
+                    spacing: 5
 
                     Text {
                         text: "Bucket"
-                        font.pixelSize: 12
+                        font.pixelSize: 11
                         font.bold: true
                         color: "#2196F3"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -415,9 +434,9 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: 150
+                        height: 110
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
-                        radius: 8
+                        radius: 6
                         border.color: "#2196F3"
                         border.width: 2
 
@@ -427,8 +446,8 @@ Rectangle {
                             width: parent.height - 20
                             height: parent.width - 20
                             orientation: Qt.Vertical
-                            from: -60
-                            to: 40
+                            from: -75
+                            to: 50
                             value: imuService ? imuService.bucketAngle : 0
                             enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
 
@@ -520,7 +539,7 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(0, 120, 0)
+                        position: Qt.vector3d(0, 70, 0)
                         eulerRotation.x: -90
                         clipNear: 1
                         clipFar: 500
@@ -617,7 +636,7 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(100, 20, 0)
+                        position: Qt.vector3d(60, 20, 0)
                         eulerRotation.y: 90
                         clipNear: 1
                         clipFar: 500

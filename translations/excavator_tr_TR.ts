@@ -881,5 +881,13 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Stop Random</source>
         <translation>Durdur</translation>
     </message>
+    <message>
+        <source>Test</source>
+        <translation>Test Et</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Durdur</translation>
+    </message>
 </context>
 </TS>

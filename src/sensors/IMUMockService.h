@@ -76,12 +76,12 @@ private:
     double m_randomBucketTarget;
 
     // Kazı hareketi parametreleri
-    static constexpr double BOOM_MIN = -15.0;
-    static constexpr double BOOM_MAX = 35.0;
-    static constexpr double ARM_MIN = -45.0;
-    static constexpr double ARM_MAX = 25.0;
-    static constexpr double BUCKET_MIN = -60.0;
-    static constexpr double BUCKET_MAX = 40.0;
+    static constexpr double BOOM_MIN = -25.0;
+    static constexpr double BOOM_MAX = 45.0;
+    static constexpr double ARM_MIN = -60.0;
+    static constexpr double ARM_MAX = 35.0;
+    static constexpr double BUCKET_MIN = -75.0;
+    static constexpr double BUCKET_MAX = 50.0;
 
     static constexpr double PHASE_SPEED = 0.008;  // Her update'te ilerleme miktarı
 };
