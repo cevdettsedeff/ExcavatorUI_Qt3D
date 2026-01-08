@@ -636,8 +636,8 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(-50, 20, 0)
-                        eulerRotation.y: -90
+                        position: Qt.vector3d(50, 20, 0)
+                        eulerRotation.y: 90
                         clipNear: 1
                         clipFar: 500
                         fieldOfView: 50
@@ -729,7 +729,8 @@ Rectangle {
                             // Ana dikey çubuk (gri background)
                             Rectangle {
                                 id: thermometerBar
-                                anchors.centerIn: parent
+                                x: 4
+                                y: 0
                                 width: 8
                                 height: parent.height - 20
                                 radius: 4
@@ -753,45 +754,72 @@ Rectangle {
                                 }
                             }
 
-                            // Scala işaretleri ve metinler
-                            Column {
-                                anchors.fill: parent
-                                spacing: 0
+                            // Skala -1.0m (yeşil - üstte)
+                            Rectangle {
+                                x: thermometerBar.x + thermometerBar.width
+                                y: 0
+                                width: 8
+                                height: 2
+                                color: "#4CAF50"
+                            }
+                            Text {
+                                x: thermometerBar.x + thermometerBar.width + 10
+                                y: -2
+                                text: "-1.0m"
+                                font.pixelSize: 7
+                                font.bold: true
+                                color: "#4CAF50"
+                            }
 
-                                Repeater {
-                                    model: [
-                                        {depth: "-1.0", color: "#4CAF50", position: 0.0},
-                                        {depth: "-1.5", color: "#FFC107", position: 0.33},
-                                        {depth: "-2.0", color: "#FF5722", position: 0.66},
-                                        {depth: "-2.5", color: "#9C27B0", position: 1.0}
-                                    ]
+                            // Skala -1.5m (sarı)
+                            Rectangle {
+                                x: thermometerBar.x + thermometerBar.width
+                                y: parent.height * 0.25
+                                width: 8
+                                height: 2
+                                color: "#FFC107"
+                            }
+                            Text {
+                                x: thermometerBar.x + thermometerBar.width + 10
+                                y: parent.height * 0.25 - 2
+                                text: "-1.5m"
+                                font.pixelSize: 7
+                                font.bold: true
+                                color: "#FFC107"
+                            }
 
-                                    Item {
-                                        width: parent.width
-                                        height: parent.height / 4
+                            // Skala -2.0m (turuncu)
+                            Rectangle {
+                                x: thermometerBar.x + thermometerBar.width
+                                y: parent.height * 0.5
+                                width: 8
+                                height: 2
+                                color: "#FF5722"
+                            }
+                            Text {
+                                x: thermometerBar.x + thermometerBar.width + 10
+                                y: parent.height * 0.5 - 2
+                                text: "-2.0m"
+                                font.pixelSize: 7
+                                font.bold: true
+                                color: "#FF5722"
+                            }
 
-                                        // Yatay çizgi (skala)
-                                        Rectangle {
-                                            anchors.left: thermometerBar.right
-                                            anchors.leftMargin: -4
-                                            anchors.verticalCenter: parent.top
-                                            width: 8
-                                            height: 2
-                                            color: modelData.color
-                                        }
-
-                                        // Derinlik metni
-                                        Text {
-                                            anchors.left: thermometerBar.right
-                                            anchors.leftMargin: 6
-                                            anchors.verticalCenter: parent.top
-                                            text: modelData.depth + "m"
-                                            font.pixelSize: 7
-                                            font.bold: true
-                                            color: modelData.color
-                                        }
-                                    }
-                                }
+                            // Skala -2.5m (mor - altta)
+                            Rectangle {
+                                x: thermometerBar.x + thermometerBar.width
+                                y: parent.height * 0.75
+                                width: 8
+                                height: 2
+                                color: "#9C27B0"
+                            }
+                            Text {
+                                x: thermometerBar.x + thermometerBar.width + 10
+                                y: parent.height * 0.75 - 2
+                                text: "-2.5m"
+                                font.pixelSize: 7
+                                font.bold: true
+                                color: "#9C27B0"
                             }
                         }
                     }
