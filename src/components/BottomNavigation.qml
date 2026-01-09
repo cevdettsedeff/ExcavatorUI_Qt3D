@@ -2,14 +2,18 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-// Alt Navigasyon Çubuğu - Özelleştirilmiş ikonlar ile
+// Alt Navigasyon Çubuğu - Özelleştirilmiş ikonlar ile - 10.1 inç responsive
 Rectangle {
     id: bottomNav
-    height: 70
+    height: Math.max(parent.height * 0.055, 60)  // Responsive yükseklik: %5.5, min 60px
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
     property int currentIndex: 0
     signal tabChanged(int index)
+
+    // Responsive boyutlar
+    property real iconSize: Math.max(height * 0.45, 28)  // İkon: yüksekliğin %45'i, min 28px
+    property real fontSize: Math.max(height * 0.14, 9)   // Font: yüksekliğin %14'ü, min 9px
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -108,10 +112,10 @@ Rectangle {
                     anchors.centerIn: parent
                     spacing: 4
 
-                    // İkon - Image veya fallback Text
+                    // İkon - Image veya fallback Text (Responsive)
                     Item {
-                        width: 32
-                        height: 32
+                        width: bottomNav.iconSize
+                        height: bottomNav.iconSize
                         anchors.horizontalCenter: parent.horizontalCenter
 
                         Image {
@@ -123,11 +127,11 @@ Rectangle {
                             opacity: isSelected ? 1.0 : 0.6
                         }
 
-                        // Fallback emoji if image not found
+                        // Fallback emoji if image not found (Responsive)
                         Text {
                             anchors.centerIn: parent
                             text: model.fallbackIcon
-                            font.pixelSize: 28
+                            font.pixelSize: bottomNav.iconSize * 0.88
                             color: isSelected ? bottomNav.activeColor : bottomNav.inactiveColor
                             visible: iconImage.status !== Image.Ready
 
@@ -137,11 +141,11 @@ Rectangle {
                         }
                     }
 
-                    // Etiket
+                    // Etiket (Responsive)
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
                         text: tabLabel
-                        font.pixelSize: 10
+                        font.pixelSize: bottomNav.fontSize
                         color: isSelected ? bottomNav.activeColor : bottomNav.inactiveColor
 
                         Behavior on color {

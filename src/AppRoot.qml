@@ -14,11 +14,16 @@ import ExcavatorUI_Qt3D
  */
 ApplicationWindow {
     id: appRoot
-    width: 800
-    height: 1280
+    // 10.1 inç ekran için responsive boyutlandırma
+    // Varsayılan: 800x1280 (portrait tablet), ancak ekrana göre ölçeklenir
+    width: Math.min(Screen.width, 800)
+    height: Math.min(Screen.height, 1280)
     visible: true
     title: qsTr("EHK - Harita Ve Görselleştirme Yönetimi")
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
+
+    // Global font scale faktörü (10.1 inç ekranlar için)
+    property real fontScale: Math.min(width / 800, height / 1280)
 
     // Mevcut görünüm durumu
     // "login" -> "config-dashboard" -> "dashboard"
