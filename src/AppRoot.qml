@@ -14,16 +14,53 @@ import ExcavatorUI_Qt3D
  */
 ApplicationWindow {
     id: appRoot
-    // 10.1 inç ekran için responsive boyutlandırma
-    // Varsayılan: 800x1280 (portrait tablet), ancak ekrana göre ölçeklenir
-    width: Math.min(Screen.width, 800)
-    height: Math.min(Screen.height, 1280)
+    // 10.1 inç tablet ekran için sabit boyut (portrait)
+    width: 800
+    height: 1280
     visible: true
     title: qsTr("EHK - Harita Ve Görselleştirme Yönetimi")
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
-    // Global font scale faktörü (10.1 inç ekranlar için)
+    // ============================================
+    // GLOBAL RESPONSIVE DESIGN SYSTEM - 10.1 inç
+    // ============================================
+
+    // Temel ölçekler
     property real fontScale: Math.min(width / 800, height / 1280)
+
+    // Font boyutları (tüm uygulama için)
+    property real baseFontSize: 14 * fontScale      // Normal metin
+    property real smallFontSize: 11 * fontScale     // Küçük metin
+    property real mediumFontSize: 16 * fontScale    // Orta metin
+    property real largeFontSize: 20 * fontScale     // Büyük başlıklar
+    property real xlFontSize: 24 * fontScale        // Çok büyük başlıklar
+
+    // Buton boyutları
+    property real buttonHeight: 45 * fontScale      // Standart buton
+    property real smallButtonHeight: 35 * fontScale // Küçük buton
+    property real largeButtonHeight: 55 * fontScale // Büyük buton
+
+    // İkon boyutları
+    property real iconSize: 28 * fontScale          // Standart ikon
+    property real smallIconSize: 20 * fontScale     // Küçük ikon
+    property real largeIconSize: 36 * fontScale     // Büyük ikon
+
+    // Spacing/Padding değerleri
+    property real smallSpacing: 6 * fontScale       // Küçük boşluk
+    property real normalSpacing: 12 * fontScale     // Normal boşluk
+    property real largeSpacing: 20 * fontScale      // Büyük boşluk
+    property real xlSpacing: 30 * fontScale         // Çok büyük boşluk
+
+    property real smallPadding: 8 * fontScale       // Küçük padding
+    property real normalPadding: 15 * fontScale     // Normal padding
+    property real largePadding: 25 * fontScale      // Büyük padding
+
+    // Border radius
+    property real smallRadius: 4 * fontScale        // Küçük köşe
+    property real normalRadius: 8 * fontScale       // Normal köşe
+    property real largeRadius: 12 * fontScale       // Büyük köşe
+
+    // ============================================
 
     // Mevcut görünüm durumu
     // "login" -> "config-dashboard" -> "dashboard"
