@@ -219,12 +219,12 @@ Item {
                     anchors.topMargin: 0
                     spacing: app.smallSpacing
 
-                    // Uygulama İkonu (Responsive)
+                    // Uygulama İkonu (Responsive - Küçültülmüş)
                     Image {
                         Layout.alignment: Qt.AlignHCenter
                         source: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
-                        width: app.largeIconSize * 2.5
-                        height: app.largeIconSize * 2.5
+                        width: app.largeIconSize * 2
+                        height: app.largeIconSize * 2
                         fillMode: Image.PreserveAspectFit
                         smooth: true
                         antialiasing: true
