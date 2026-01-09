@@ -313,7 +313,7 @@
     </message>
     <message>
         <source>Create New Account</source>
-        <translation>Yeni Hesap Oluştur</translation>
+        <translation>Yeni Kayıt Oluştur</translation>
     </message>
     <message>
         <source>Please enter your information</source>
