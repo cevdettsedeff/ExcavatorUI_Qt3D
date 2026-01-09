@@ -5,6 +5,9 @@ import QtQuick.Layouts
 Item {
     id: loginView
 
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     signal switchToRegister()
 
     // Dil değişikliği tetikleyici - bu değiştiğinde tüm qsTr() çağrıları yenilenir
@@ -198,30 +201,30 @@ Item {
             clip: true
 
             ColumnLayout {
-                width: Math.min(loginView.width * 0.85, 500)  // 10 inç için responsive
+                width: Math.min(loginView.width * 0.85, 500)
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 20
-                anchors.topMargin: 20
-                anchors.bottomMargin: 20
+                spacing: app.largeSpacing
+                anchors.topMargin: app.largeSpacing
+                anchors.bottomMargin: app.largeSpacing
 
-            // Logo/Başlık bölümü
+            // Logo/Başlık bölümü (Responsive)
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 180
+                Layout.preferredHeight: app.largeIconSize * 4.5
                 color: "transparent"
-                Layout.topMargin: 20
+                Layout.topMargin: app.normalSpacing
 
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.topMargin: 0
-                    spacing: 12
+                    spacing: app.smallSpacing
 
-                    // Uygulama İkonu - Büyütülmüş
+                    // Uygulama İkonu (Responsive)
                     Image {
                         Layout.alignment: Qt.AlignHCenter
                         source: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
-                        width: 100
-                        height: 100
+                        width: app.largeIconSize * 2.5
+                        height: app.largeIconSize * 2.5
                         fillMode: Image.PreserveAspectFit
                         smooth: true
                         antialiasing: true
@@ -232,7 +235,7 @@ Item {
                         text: translationService && translationService.currentLanguage === "tr_TR"
                               ? "EHK - Harita Ve Görselleştirme Yönetimi"
                               : "EHK - Map And Visualization Management"
-                        font.pixelSize: 18
+                        font.pixelSize: app.mediumFontSize
                         font.bold: true
                         color: "#ffffff"
                         wrapMode: Text.WordWrap
@@ -242,65 +245,65 @@ Item {
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: qsTranslate("Main", "Please log in")
-                        font.pixelSize: 14
+                        font.pixelSize: app.smallFontSize
                         color: "#888888"
-                        Layout.topMargin: 15
+                        Layout.topMargin: app.normalSpacing
                     }
                 }
             }
 
-            // Form bölümü
+            // Form bölümü (Responsive)
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.topMargin: 15
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
-                spacing: 18
+                Layout.topMargin: app.normalSpacing
+                Layout.leftMargin: app.largeSpacing
+                Layout.rightMargin: app.largeSpacing
+                spacing: app.normalSpacing + app.smallSpacing
 
-                // Kullanıcı adı
+                // Kullanıcı adı (Responsive)
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: app.smallSpacing
 
                     Text {
                         text: qsTranslate("Main", "Username")
-                        font.pixelSize: 13
+                        font.pixelSize: app.smallFontSize
                         color: "#cccccc"
                     }
 
                     TextField {
                         id: usernameField
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 50
+                        Layout.preferredHeight: app.buttonHeight
                         placeholderText: qsTranslate("Main", "Enter your username")
-                        font.pixelSize: 15
+                        font.pixelSize: app.baseFontSize
                         color: "#ffffff"
 
                         background: Rectangle {
                             color: "#2a2a2a"
                             border.color: usernameField.activeFocus ? "#3498db" : "#404040"
                             border.width: 2
-                            radius: 5
+                            radius: app.smallRadius
                         }
 
                         Keys.onReturnPressed: passwordField.forceActiveFocus()
                     }
                 }
 
-                // Şifre
+                // Şifre (Responsive)
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: app.smallSpacing
 
                     Text {
                         text: qsTranslate("Main", "Password")
-                        font.pixelSize: 13
+                        font.pixelSize: app.smallFontSize
                         color: "#cccccc"
                     }
 
                     Item {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 50
+                        Layout.preferredHeight: app.buttonHeight
 
                         property bool showPassword: false
 
@@ -309,15 +312,15 @@ Item {
                             anchors.fill: parent
                             placeholderText: qsTranslate("Main", "Enter your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
-                            font.pixelSize: 15
+                            font.pixelSize: app.baseFontSize
                             color: "#ffffff"
-                            rightPadding: 45
+                            rightPadding: app.buttonHeight
 
                             background: Rectangle {
                                 color: "#2a2a2a"
                                 border.color: passwordField.activeFocus ? "#3498db" : "#404040"
                                 border.width: 2
-                                radius: 5
+                                radius: app.smallRadius
                             }
 
                             Keys.onReturnPressed: loginButton.clicked()
@@ -362,14 +365,14 @@ Item {
                     visible: text !== ""
                 }
 
-                // Giriş butonu
+                // Giriş butonu (Responsive)
                 Button {
                     id: loginButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 55
-                    Layout.topMargin: 12
+                    Layout.preferredHeight: app.largeButtonHeight
+                    Layout.topMargin: app.normalSpacing
                     text: qsTranslate("Main", "Login")
-                    font.pixelSize: 17
+                    font.pixelSize: app.mediumFontSize
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
                     hoverEnabled: true
@@ -430,11 +433,11 @@ Item {
                     }
                 }
 
-                // Üye Ol bölümü
+                // Üye Ol bölümü (Responsive)
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.topMargin: 15
-                    spacing: 8
+                    Layout.topMargin: app.normalSpacing
+                    spacing: app.smallSpacing
 
                     Rectangle {
                         Layout.fillWidth: true
@@ -444,7 +447,7 @@ Item {
 
                     Text {
                         text: qsTranslate("Main", "or")
-                        font.pixelSize: 12
+                        font.pixelSize: app.smallFontSize
                         color: "#888888"
                     }
 
@@ -455,13 +458,13 @@ Item {
                     }
                 }
 
-                // Yeni Kayıt Oluştur butonu
+                // Yeni Kayıt Oluştur butonu (Responsive)
                 Button {
                     id: registerButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 52
+                    Layout.preferredHeight: app.buttonHeight + app.smallSpacing
                     text: qsTranslate("Main", "Create New Account")
-                    font.pixelSize: 15
+                    font.pixelSize: app.baseFontSize
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
 
@@ -518,13 +521,13 @@ Item {
                     }
                 }
 
-                // Copyright bölümü
+                // Copyright bölümü (Responsive)
                 Text {
                     Layout.fillWidth: true
-                    Layout.topMargin: 20
-                    Layout.bottomMargin: 10
+                    Layout.topMargin: app.largeSpacing
+                    Layout.bottomMargin: app.smallSpacing
                     text: "© 2025 EHK - Excavator Visualization System"
-                    font.pixelSize: 11
+                    font.pixelSize: app.smallFontSize
                     color: "#666666"
                     horizontalAlignment: Text.AlignHCenter
                 }
