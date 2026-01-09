@@ -59,14 +59,14 @@ Item {
         anchors.fill: parent
         color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
-        // Saat ve Tarih göstergesi (sol üst köşe) - Geliştirilmiş tasarım
+        // Saat ve Tarih göstergesi (sol üst köşe) - Responsive
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
-            anchors.margins: 12
-            width: 180
-            height: 60
-            radius: 8
+            anchors.margins: 8
+            width: Math.min(parent.width * 0.35, 180)
+            height: Math.min(parent.height * 0.08, 55)
+            radius: 6
             color: "#1e2936"
             border.color: "#3a4556"
             border.width: 1
@@ -74,24 +74,25 @@ Item {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 8
-                spacing: 2
+                anchors.margins: 6
+                spacing: 1
 
                 // Saat
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 6
+                    spacing: 4
 
                     Text {
-                        text: "🕐"
-                        font.pixelSize: 16
+                        text: "Saat:"
+                        font.pixelSize: Math.min(parent.width * 0.12, 12)
                         color: "#3498db"
+                        font.bold: true
                     }
 
                     Text {
                         id: clockText
                         text: "00:00:00"
-                        font.pixelSize: 16
+                        font.pixelSize: Math.min(parent.width * 0.13, 14)
                         font.bold: true
                         font.family: "Monospace"
                         color: "#ffffff"
@@ -101,31 +102,32 @@ Item {
                 // Tarih
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 6
+                    spacing: 4
 
                     Text {
-                        text: "📅"
-                        font.pixelSize: 14
+                        text: "Tarih:"
+                        font.pixelSize: Math.min(parent.width * 0.11, 11)
                         color: "#2ecc71"
+                        font.bold: true
                     }
 
                     Text {
                         id: dateText
                         text: "1 Ocak 2025"
-                        font.pixelSize: 12
+                        font.pixelSize: Math.min(parent.width * 0.11, 11)
                         color: "#aaaaaa"
                     }
                 }
             }
         }
 
-        // Dil seçici butonu (sağ üst köşe)
+        // Dil seçici butonu (sağ üst köşe) - Responsive
         Rectangle {
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.margins: 15
-            width: 80
-            height: 35
+            anchors.margins: 8
+            width: Math.min(parent.width * 0.15, 80)
+            height: Math.min(parent.height * 0.05, 35)
             radius: 5
             color: langBtnArea.containsMouse ? "#333333" : "#34495e"
             border.color: "#505050"

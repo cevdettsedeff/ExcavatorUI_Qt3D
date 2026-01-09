@@ -25,17 +25,110 @@ Item {
         }
     }
 
+    // Türkçe tarih formatı
+    property var turkishDays: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"]
+    property var turkishMonths: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
+
+    function formatTurkishDate(date) {
+        var day = date.getDate()
+        var monthName = turkishMonths[date.getMonth()]
+        var year = date.getFullYear()
+        return day + " " + monthName + " " + year
+    }
+
+    // Saat için timer
+    Timer {
+        id: clockTimer
+        interval: 1000
+        running: registerView.visible
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            var now = new Date()
+            clockText.text = Qt.formatTime(now, "HH:mm:ss")
+
+            // Dil kontrolü
+            if (translationService && translationService.currentLanguage === "tr_TR") {
+                dateText.text = registerView.formatTurkishDate(now)
+            } else {
+                dateText.text = Qt.formatDate(now, "d MMMM yyyy")
+            }
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
-        // Dil seçici butonu (sağ üst köşe)
+        // Saat ve Tarih göstergesi (sol üst köşe) - Responsive
+        Rectangle {
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.margins: 8
+            width: Math.min(parent.width * 0.35, 180)
+            height: Math.min(parent.height * 0.08, 55)
+            radius: 6
+            color: "#1e2936"
+            border.color: "#3a4556"
+            border.width: 1
+            z: 100
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 6
+                spacing: 1
+
+                // Saat
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    Text {
+                        text: "Saat:"
+                        font.pixelSize: Math.min(parent.width * 0.12, 12)
+                        color: "#3498db"
+                        font.bold: true
+                    }
+
+                    Text {
+                        id: clockText
+                        text: "00:00:00"
+                        font.pixelSize: Math.min(parent.width * 0.13, 14)
+                        font.bold: true
+                        font.family: "Monospace"
+                        color: "#ffffff"
+                    }
+                }
+
+                // Tarih
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    Text {
+                        text: "Tarih:"
+                        font.pixelSize: Math.min(parent.width * 0.11, 11)
+                        color: "#2ecc71"
+                        font.bold: true
+                    }
+
+                    Text {
+                        id: dateText
+                        text: "1 Ocak 2025"
+                        font.pixelSize: Math.min(parent.width * 0.11, 11)
+                        color: "#aaaaaa"
+                    }
+                }
+            }
+        }
+
+        // Dil seçici butonu (sağ üst köşe) - Responsive
         Rectangle {
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.margins: 15
-            width: 80
-            height: 35
+            anchors.margins: 8
+            width: Math.min(parent.width * 0.15, 80)
+            height: Math.min(parent.height * 0.05, 35)
             radius: 5
             color: langBtnArea.containsMouse ? "#333333" : "#34495e"
             border.color: "#505050"
