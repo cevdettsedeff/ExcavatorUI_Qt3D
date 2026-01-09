@@ -9,6 +9,9 @@ Rectangle {
     id: homePage
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
@@ -57,14 +60,14 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                height: 40
+                height: app.buttonHeight * 0.9
                 color: themeManager ? themeManager.backgroundColorDark : "#1a2a3a"
                 z: 10
 
                 Text {
                     anchors.centerIn: parent
                     text: tr("3D Excavator View")
-                    font.pixelSize: 16
+                    font.pixelSize: app.mediumFontSize
                     font.bold: true
                     color: "#ffffff"
                 }
@@ -178,8 +181,8 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.margins: 8
-                width: 120
+                anchors.margins: app.smallPadding
+                width: app.largeIconSize * 3.3
 
                 maxDepth: homePage.bucketMaxDepth
                 minDepth: homePage.bucketMinDepth
@@ -494,7 +497,7 @@ Rectangle {
         // ALT: Mini Görünümler (yan yana) - Daha büyük
         Row {
             Layout.fillWidth: true
-            Layout.preferredHeight: 350
+            Layout.preferredHeight: app.largeIconSize * 9.7
             spacing: 0
 
             // Top-Down View (Kuşbakışı) - Sol
@@ -511,13 +514,13 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    height: 35
+                    height: app.buttonHeight * 0.78
                     color: "#1a2a3a"
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Top-Down View")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -590,30 +593,30 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    height: 35
+                    height: app.buttonHeight * 0.78
                     color: "#1a2a3a"
 
                     Row {
                         anchors.centerIn: parent
-                        spacing: 10
+                        spacing: app.normalSpacing * 0.8
 
                         Text {
                             text: tr("Side View")
-                            font.pixelSize: 14
+                            font.pixelSize: app.baseFontSize
                             font.bold: true
                             color: "#ffffff"
                         }
 
                         Rectangle {
-                            width: 60
-                            height: 20
-                            radius: 3
+                            width: app.largeIconSize * 1.7
+                            height: app.smallIconSize
+                            radius: app.smallRadius * 0.7
                             color: "#4CAF5040"
 
                             Text {
                                 anchors.centerIn: parent
                                 text: tr("Target")
-                                font.pixelSize: 10
+                                font.pixelSize: app.smallFontSize * 0.8
                                 color: "#4CAF50"
                             }
                         }
@@ -698,30 +701,30 @@ Rectangle {
         Rectangle {
             id: coordinateBar
             Layout.fillWidth: true
-            Layout.preferredHeight: 45
+            Layout.preferredHeight: app.buttonHeight
             color: themeManager ? themeManager.backgroundColor : "#2d3748"
             border.color: "#333333"
             border.width: 1
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 10
-                spacing: 15
+                anchors.margins: app.normalSpacing * 0.8
+                spacing: app.normalSpacing
 
                 // X koordinatı
                 Row {
-                    spacing: 5
+                    spacing: app.smallSpacing * 0.5
 
                     Text {
                         text: "X:"
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#888888"
                     }
 
                     Text {
                         text: homePage.posX.toFixed(2)
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -729,18 +732,18 @@ Rectangle {
 
                 // Y koordinatı
                 Row {
-                    spacing: 5
+                    spacing: app.smallSpacing * 0.5
 
                     Text {
                         text: "Y:"
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#888888"
                     }
 
                     Text {
                         text: homePage.posY.toFixed(2)
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -748,18 +751,18 @@ Rectangle {
 
                 // Z koordinatı
                 Row {
-                    spacing: 5
+                    spacing: app.smallSpacing * 0.5
 
                     Text {
                         text: "Z:"
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#888888"
                     }
 
                     Text {
                         text: homePage.posZ.toFixed(2) + "m"
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#00bcd4"
                     }
@@ -769,18 +772,18 @@ Rectangle {
 
                 // Pitch
                 Row {
-                    spacing: 5
+                    spacing: app.smallSpacing * 0.5
 
                     Text {
                         text: "Pitch:"
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#888888"
                     }
 
                     Text {
                         text: homePage.pitch.toFixed(1) + "°"
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -788,18 +791,18 @@ Rectangle {
 
                 // Roll
                 Row {
-                    spacing: 5
+                    spacing: app.smallSpacing * 0.5
 
                     Text {
                         text: "Roll:"
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#888888"
                     }
 
                     Text {
                         text: homePage.roll.toFixed(1) + "°"
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#ffffff"
                     }
