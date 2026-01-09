@@ -51,79 +51,10 @@ Rectangle {
         }
     }
 
-    // Yavaş hareket animasyonu için pozisyon
-    property real contentX: (width - contentColumn.width) / 2
-    property real contentY: (height - contentColumn.height) / 2
-
-    // Çok yavaş drift animasyonu (Windows screensaver gibi)
-    SequentialAnimation {
-        id: driftAnimation
-        running: screenSaver.visible
-        loops: Animation.Infinite
-
-        ParallelAnimation {
-            NumberAnimation {
-                target: screenSaver
-                property: "contentX"
-                from: screenSaver.width * 0.25
-                to: screenSaver.width * 0.45
-                duration: 45000  // 45 saniye - çok yavaş
-                easing.type: Easing.InOutSine
-            }
-            NumberAnimation {
-                target: screenSaver
-                property: "contentY"
-                from: screenSaver.height * 0.3
-                to: screenSaver.height * 0.45
-                duration: 40000  // 40 saniye
-                easing.type: Easing.InOutSine
-            }
-        }
-
-        ParallelAnimation {
-            NumberAnimation {
-                target: screenSaver
-                property: "contentX"
-                from: screenSaver.width * 0.45
-                to: screenSaver.width * 0.35
-                duration: 50000  // 50 saniye
-                easing.type: Easing.InOutSine
-            }
-            NumberAnimation {
-                target: screenSaver
-                property: "contentY"
-                from: screenSaver.height * 0.45
-                to: screenSaver.height * 0.25
-                duration: 42000  // 42 saniye
-                easing.type: Easing.InOutSine
-            }
-        }
-
-        ParallelAnimation {
-            NumberAnimation {
-                target: screenSaver
-                property: "contentX"
-                from: screenSaver.width * 0.35
-                to: screenSaver.width * 0.25
-                duration: 38000  // 38 saniye
-                easing.type: Easing.InOutSine
-            }
-            NumberAnimation {
-                target: screenSaver
-                property: "contentY"
-                from: screenSaver.height * 0.25
-                to: screenSaver.height * 0.3
-                duration: 48000  // 48 saniye
-                easing.type: Easing.InOutSine
-            }
-        }
-    }
-
-    // Ana içerik
+    // Ana içerik - Tam ortada sabit
     Column {
         id: contentColumn
-        x: screenSaver.contentX
-        y: screenSaver.contentY
+        anchors.centerIn: parent
         spacing: 25
 
         // Ekskavatör resmi (PNG) - Büyütülmüş boyut

@@ -318,12 +318,12 @@ Item {
                     }
                 }
 
-                // Kayıt Ol butonu
+                // Yeni Kayıt Oluştur butonu
                 Button {
                     id: registerButton
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
-                    text: tr("Register")
+                    text: tr("Create New Account")
                     font.pixelSize: 16
                     font.bold: true
                     enabled: usernameField.text.length > 0 &&

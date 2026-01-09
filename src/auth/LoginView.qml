@@ -24,9 +24,35 @@ Item {
         }
     }
 
+    // Saat için timer
+    Timer {
+        id: clockTimer
+        interval: 1000
+        running: loginView.visible
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            var now = new Date()
+            clockText.text = Qt.formatTime(now, "HH:mm:ss")
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         color: themeManager ? themeManager.backgroundColor : "#2d3748"
+
+        // Saat göstergesi (sol üst köşe)
+        Text {
+            id: clockText
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.margins: 15
+            text: "00:00:00"
+            font.pixelSize: 16
+            font.bold: true
+            color: "#ffffff"
+            z: 100
+        }
 
         // Dil seçici butonu (sağ üst köşe)
         Rectangle {
@@ -105,110 +131,30 @@ Item {
             clip: true
 
             ColumnLayout {
-                width: loginView.width - 100  // Sağdan ve soldan 50'şer piksel boşluk
+                width: Math.min(loginView.width * 0.85, 500)  // 10 inç için responsive
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 25
-                anchors.topMargin: 30
-                anchors.bottomMargin: 30
-
-            // Üst Logolar - NETAŞ ve TCDD Teknik
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 100
-                color: "transparent"
-                Layout.topMargin: 20
-
-                Row {
-                    anchors.centerIn: parent
-                    spacing: 40
-
-                    // NETAŞ Logosu
-                    Image {
-                        id: netasLogo
-                        source: "qrc:/ExcavatorUI_Qt3D/resources/logos/netas_logo.png"
-                        width: 140
-                        height: 70
-                        fillMode: Image.PreserveAspectFit
-                        smooth: true
-                        antialiasing: true
-
-                        // Fallback - logo yoksa placeholder
-                        Rectangle {
-                            anchors.fill: parent
-                            color: "#2a2a2a"
-                            radius: 8
-                            border.color: "#404040"
-                            border.width: 1
-                            visible: netasLogo.status !== Image.Ready
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "NETAŞ"
-                                font.pixelSize: 18
-                                font.bold: true
-                                color: "#ffffff"
-                            }
-                        }
-                    }
-
-                    // TCDD Teknik Logosu
-                    Image {
-                        id: tcddLogo
-                        source: "qrc:/ExcavatorUI_Qt3D/resources/logos/tcdd_teknik_logo.png"
-                        width: 140
-                        height: 70
-                        fillMode: Image.PreserveAspectFit
-                        smooth: true
-                        antialiasing: true
-
-                        // Fallback - logo yoksa placeholder
-                        Rectangle {
-                            anchors.fill: parent
-                            color: "#2a2a2a"
-                            radius: 8
-                            border.color: "#404040"
-                            border.width: 1
-                            visible: tcddLogo.status !== Image.Ready
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "TCDD TEKNİK"
-                                font.pixelSize: 14
-                                font.bold: true
-                                color: "#ffffff"
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Ayırıcı çizgi
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 1
-                Layout.leftMargin: 30
-                Layout.rightMargin: 30
-                color: "#333333"
-            }
+                spacing: 20
+                anchors.topMargin: 20
+                anchors.bottomMargin: 20
 
             // Logo/Başlık bölümü
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 130
+                Layout.preferredHeight: 180
                 color: "transparent"
-                Layout.topMargin: 5
+                Layout.topMargin: 20
 
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.topMargin: 0
-                    spacing: 6
+                    spacing: 12
 
-                    // Uygulama İkonu
+                    // Uygulama İkonu - Büyütülmüş
                     Image {
                         Layout.alignment: Qt.AlignHCenter
                         source: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
-                        width: 52
-                        height: 52
+                        width: 80
+                        height: 80
                         fillMode: Image.PreserveAspectFit
                         smooth: true
                         antialiasing: true
@@ -216,7 +162,9 @@ Item {
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "EHK - Harita Ve Görselleştirme Yönetimi"
+                        text: translationService && translationService.currentLanguage === "tr_TR"
+                              ? "EHK - Harita Ve Görselleştirme Yönetimi"
+                              : "EHK - Map And Visualization Management"
                         font.pixelSize: 18
                         font.bold: true
                         color: "#ffffff"
@@ -227,8 +175,9 @@ Item {
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: qsTranslate("Main", "Please log in")
-                        font.pixelSize: 13
+                        font.pixelSize: 14
                         color: "#888888"
+                        Layout.topMargin: 15
                     }
                 }
             }
@@ -236,28 +185,28 @@ Item {
             // Form bölümü
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.topMargin: 10
+                Layout.topMargin: 15
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                spacing: 12
+                spacing: 18
 
                 // Kullanıcı adı
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 5
+                    spacing: 8
 
                     Text {
                         text: qsTranslate("Main", "Username")
-                        font.pixelSize: 12
+                        font.pixelSize: 13
                         color: "#cccccc"
                     }
 
                     TextField {
                         id: usernameField
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 40
+                        Layout.preferredHeight: 50
                         placeholderText: qsTranslate("Main", "Enter your username")
-                        font.pixelSize: 14
+                        font.pixelSize: 15
                         color: "#ffffff"
 
                         background: Rectangle {
@@ -274,17 +223,17 @@ Item {
                 // Şifre
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 5
+                    spacing: 8
 
                     Text {
                         text: qsTranslate("Main", "Password")
-                        font.pixelSize: 12
+                        font.pixelSize: 13
                         color: "#cccccc"
                     }
 
                     Item {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 40
+                        Layout.preferredHeight: 50
 
                         property bool showPassword: false
 
@@ -293,7 +242,7 @@ Item {
                             anchors.fill: parent
                             placeholderText: qsTranslate("Main", "Enter your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
-                            font.pixelSize: 14
+                            font.pixelSize: 15
                             color: "#ffffff"
                             rightPadding: 45
 
@@ -350,10 +299,10 @@ Item {
                 Button {
                     id: loginButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 48
-                    Layout.topMargin: 8
+                    Layout.preferredHeight: 55
+                    Layout.topMargin: 12
                     text: qsTranslate("Main", "Login")
-                    font.pixelSize: 16
+                    font.pixelSize: 17
                     font.bold: true
                     enabled: usernameField.text.length > 0 && passwordField.text.length > 0
                     hoverEnabled: true
@@ -417,8 +366,8 @@ Item {
                 // Üye Ol bölümü
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.topMargin: 10
-                    spacing: 5
+                    Layout.topMargin: 15
+                    spacing: 8
 
                     Rectangle {
                         Layout.fillWidth: true
@@ -428,7 +377,7 @@ Item {
 
                     Text {
                         text: qsTranslate("Main", "or")
-                        font.pixelSize: 11
+                        font.pixelSize: 12
                         color: "#888888"
                     }
 
@@ -439,13 +388,13 @@ Item {
                     }
                 }
 
-                // Üye Ol butonu
+                // Yeni Kayıt Oluştur butonu
                 Button {
                     id: registerButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 44
-                    text: qsTranslate("Main", "Sign Up")
-                    font.pixelSize: 14
+                    Layout.preferredHeight: 52
+                    text: qsTranslate("Main", "Create New Account")
+                    font.pixelSize: 15
                     hoverEnabled: true
                     scale: registerButton.pressed ? 0.97 : (registerButton.hovered ? 1.02 : 1.0)
 
@@ -500,6 +449,17 @@ Item {
                     onClicked: {
                         switchToRegister()
                     }
+                }
+
+                // Copyright bölümü
+                Text {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 20
+                    Layout.bottomMargin: 10
+                    text: "© 2025 EHK - Excavator Visualization System"
+                    font.pixelSize: 11
+                    color: "#666666"
+                    horizontalAlignment: Text.AlignHCenter
                 }
             }
             }  // ColumnLayout
