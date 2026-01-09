@@ -205,7 +205,7 @@ Item {
                 width: Math.min(registerView.width * 0.92, 700)
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: app.largeSpacing
-                anchors.topMargin: app.xlSpacing * 1.5
+                anchors.topMargin: app.xlSpacing * 3
                 anchors.bottomMargin: app.largeSpacing
 
             // Logo/Başlık bölümü
@@ -213,7 +213,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: app.largeIconSize * 3
                 color: "transparent"
-                Layout.topMargin: app.xlSpacing * 2.5
+                Layout.topMargin: app.xlSpacing * 3.5
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -258,7 +258,7 @@ Item {
             // Form bölümü
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.topMargin: app.xlSpacing * 1.5
+                Layout.topMargin: app.xlSpacing * 2.5
                 spacing: app.normalSpacing
 
                 // Kullanıcı adı
