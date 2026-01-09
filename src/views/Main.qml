@@ -35,11 +35,10 @@ Rectangle {
         anchors.fill: parent
         spacing: 0
 
-        // Üst Durum Çubuğu
+        // Üst Durum Çubuğu - Responsive (height kendi içinde hesaplanıyor)
         StatusBar {
             id: statusBar
             Layout.fillWidth: true
-            Layout.preferredHeight: 100
             projectName: "AŞ-KAZI-042"
             excavatorName: "CAT 390F LME"
             rtkConnected: true
