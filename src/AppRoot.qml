@@ -28,37 +28,37 @@ ApplicationWindow {
     // Temel ölçekler
     property real fontScale: Math.min(width / 800, height / 1280)
 
-    // Font boyutları (tüm uygulama için)
-    property real baseFontSize: 14 * fontScale      // Normal metin
-    property real smallFontSize: 11 * fontScale     // Küçük metin
-    property real mediumFontSize: 16 * fontScale    // Orta metin
-    property real largeFontSize: 20 * fontScale     // Büyük başlıklar
-    property real xlFontSize: 24 * fontScale        // Çok büyük başlıklar
+    // Font boyutları (10.1 inç için optimize - BÜYÜTÜLMÜŞ)
+    property real baseFontSize: 22 * fontScale      // Normal metin (14→22)
+    property real smallFontSize: 18 * fontScale     // Küçük metin (11→18)
+    property real mediumFontSize: 26 * fontScale    // Orta metin (16→26)
+    property real largeFontSize: 32 * fontScale     // Büyük başlıklar (20→32)
+    property real xlFontSize: 38 * fontScale        // Çok büyük başlıklar (24→38)
 
-    // Buton boyutları
-    property real buttonHeight: 45 * fontScale      // Standart buton
-    property real smallButtonHeight: 35 * fontScale // Küçük buton
-    property real largeButtonHeight: 55 * fontScale // Büyük buton
+    // Buton boyutları (BÜYÜTÜLMÜŞ)
+    property real buttonHeight: 60 * fontScale      // Standart buton (45→60)
+    property real smallButtonHeight: 50 * fontScale // Küçük buton (35→50)
+    property real largeButtonHeight: 70 * fontScale // Büyük buton (55→70)
 
-    // İkon boyutları
-    property real iconSize: 28 * fontScale          // Standart ikon
-    property real smallIconSize: 20 * fontScale     // Küçük ikon
-    property real largeIconSize: 36 * fontScale     // Büyük ikon
+    // İkon boyutları (BÜYÜTÜLMÜŞ)
+    property real iconSize: 40 * fontScale          // Standart ikon (28→40)
+    property real smallIconSize: 30 * fontScale     // Küçük ikon (20→30)
+    property real largeIconSize: 50 * fontScale     // Büyük ikon (36→50)
 
-    // Spacing/Padding değerleri
-    property real smallSpacing: 6 * fontScale       // Küçük boşluk
-    property real normalSpacing: 12 * fontScale     // Normal boşluk
-    property real largeSpacing: 20 * fontScale      // Büyük boşluk
-    property real xlSpacing: 30 * fontScale         // Çok büyük boşluk
+    // Spacing/Padding değerleri (BÜYÜTÜLMÜŞ)
+    property real smallSpacing: 10 * fontScale      // Küçük boşluk (6→10)
+    property real normalSpacing: 16 * fontScale     // Normal boşluk (12→16)
+    property real largeSpacing: 26 * fontScale      // Büyük boşluk (20→26)
+    property real xlSpacing: 40 * fontScale         // Çok büyük boşluk (30→40)
 
-    property real smallPadding: 8 * fontScale       // Küçük padding
-    property real normalPadding: 15 * fontScale     // Normal padding
-    property real largePadding: 25 * fontScale      // Büyük padding
+    property real smallPadding: 12 * fontScale      // Küçük padding (8→12)
+    property real normalPadding: 20 * fontScale     // Normal padding (15→20)
+    property real largePadding: 32 * fontScale      // Büyük padding (25→32)
 
-    // Border radius
-    property real smallRadius: 4 * fontScale        // Küçük köşe
-    property real normalRadius: 8 * fontScale       // Normal köşe
-    property real largeRadius: 12 * fontScale       // Büyük köşe
+    // Border radius (BÜYÜTÜLMÜŞ)
+    property real smallRadius: 6 * fontScale        // Küçük köşe (4→6)
+    property real normalRadius: 10 * fontScale      // Normal köşe (8→10)
+    property real largeRadius: 16 * fontScale       // Büyük köşe (12→16)
 
     // ============================================
 

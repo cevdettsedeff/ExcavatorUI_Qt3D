@@ -202,7 +202,7 @@ Item {
             clip: true
 
             ColumnLayout {
-                width: registerView.width * 0.8
+                width: Math.min(registerView.width * 0.92, 700)
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: app.largeSpacing
                 anchors.topMargin: app.largeSpacing

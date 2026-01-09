@@ -201,7 +201,7 @@ Item {
             clip: true
 
             ColumnLayout {
-                width: Math.min(loginView.width * 0.85, 500)
+                width: Math.min(loginView.width * 0.92, 700)
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: app.largeSpacing
                 anchors.topMargin: app.largeSpacing
