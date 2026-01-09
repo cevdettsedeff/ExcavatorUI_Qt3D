@@ -92,14 +92,14 @@ Rectangle {
 
                             Text {
                                 text: tr("Pending Approval")
-                                font.pixelSize: 18
+                                font.pixelSize: app.mediumFontSize
                                 font.bold: true
                                 color: root.textColor
                             }
 
                             Text {
                                 text: pendingUsers.length + " " + tr("users waiting")
-                                font.pixelSize: 12
+                                font.pixelSize: app.smallFontSize
                                 color: "#ff9800"
                             }
                         }
@@ -135,7 +135,7 @@ Rectangle {
                                         Text {
                                             anchors.centerIn: parent
                                             text: modelData.username.charAt(0).toUpperCase()
-                                            font.pixelSize: 20
+                                            font.pixelSize: app.largeFontSize
                                             font.bold: true
                                             color: "white"
                                         }
@@ -147,14 +147,14 @@ Rectangle {
 
                                         Text {
                                             text: modelData.username
-                                            font.pixelSize: 16
+                                            font.pixelSize: app.mediumFontSize
                                             font.bold: true
                                             color: root.textColor
                                         }
 
                                         Text {
                                             text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
-                                            font.pixelSize: 12
+                                            font.pixelSize: app.smallFontSize
                                             color: root.textSecondaryColor
                                         }
                                     }
@@ -172,7 +172,7 @@ Rectangle {
 
                                             Text {
                                                 text: "✓"
-                                                font.pixelSize: 16
+                                                font.pixelSize: app.mediumFontSize
                                                 font.bold: true
                                                 color: "white"
                                             }
@@ -180,7 +180,7 @@ Rectangle {
                                             Text {
                                                 id: approveText
                                                 text: tr("Approve")
-                                                font.pixelSize: 14
+                                                font.pixelSize: app.baseFontSize
                                                 font.bold: true
                                                 color: "white"
                                             }
@@ -214,7 +214,7 @@ Rectangle {
 
                                             Text {
                                                 text: "✗"
-                                                font.pixelSize: 16
+                                                font.pixelSize: app.mediumFontSize
                                                 font.bold: true
                                                 color: "white"
                                             }
@@ -222,7 +222,7 @@ Rectangle {
                                             Text {
                                                 id: rejectText
                                                 text: tr("Reject")
-                                                font.pixelSize: 14
+                                                font.pixelSize: app.baseFontSize
                                                 font.bold: true
                                                 color: "white"
                                             }
@@ -260,13 +260,13 @@ Rectangle {
 
                                 Text {
                                     text: "✓"
-                                    font.pixelSize: 24
+                                    font.pixelSize: app.xlFontSize
                                     color: "#4CAF50"
                                 }
 
                                 Text {
                                     text: tr("No pending requests")
-                                    font.pixelSize: 14
+                                    font.pixelSize: app.baseFontSize
                                     color: root.textSecondaryColor
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
@@ -309,14 +309,14 @@ Rectangle {
 
                             Text {
                                 text: tr("All Users")
-                                font.pixelSize: 18
+                                font.pixelSize: app.mediumFontSize
                                 font.bold: true
                                 color: root.textColor
                             }
 
                             Text {
                                 text: allUsers.length + " " + tr("registered")
-                                font.pixelSize: 12
+                                font.pixelSize: app.smallFontSize
                                 color: root.primaryColor
                             }
                         }
@@ -334,14 +334,14 @@ Rectangle {
 
                                 Text {
                                     text: "+"
-                                    font.pixelSize: 20
+                                    font.pixelSize: app.largeFontSize
                                     font.bold: true
                                     color: "white"
                                 }
 
                                 Text {
                                     text: tr("Add User")
-                                    font.pixelSize: 14
+                                    font.pixelSize: app.baseFontSize
                                     font.bold: true
                                     color: "white"
                                     anchors.verticalCenter: parent.verticalCenter
@@ -405,7 +405,7 @@ Rectangle {
 
                                             Text {
                                                 text: modelData.username
-                                                font.pixelSize: 16
+                                                font.pixelSize: app.mediumFontSize
                                                 font.bold: true
                                                 color: root.textColor
                                             }
@@ -421,7 +421,7 @@ Rectangle {
                                                     id: adminLabel
                                                     anchors.centerIn: parent
                                                     text: "ADMIN"
-                                                    font.pixelSize: 10
+                                                    font.pixelSize: app.smallFontSize * 0.8
                                                     font.bold: true
                                                     color: "white"
                                                 }
@@ -430,7 +430,7 @@ Rectangle {
 
                                         Text {
                                             text: Qt.formatDateTime(new Date(modelData.createdAt), "dd.MM.yyyy hh:mm")
-                                            font.pixelSize: 12
+                                            font.pixelSize: app.smallFontSize
                                             color: root.textSecondaryColor
                                         }
                                     }
@@ -448,14 +448,14 @@ Rectangle {
 
                                             Text {
                                                 text: "✎"
-                                                font.pixelSize: 16
+                                                font.pixelSize: app.mediumFontSize
                                                 color: "white"
                                             }
 
                                             Text {
                                                 id: editBtnText
                                                 text: tr("Edit")
-                                                font.pixelSize: 14
+                                                font.pixelSize: app.baseFontSize
                                                 font.bold: true
                                                 color: "white"
                                             }
@@ -491,13 +491,13 @@ Rectangle {
 
                                             Text {
                                                 text: "🗑"
-                                                font.pixelSize: 14
+                                                font.pixelSize: app.baseFontSize
                                             }
 
                                             Text {
                                                 id: deleteBtnText
                                                 text: tr("Delete")
-                                                font.pixelSize: 14
+                                                font.pixelSize: app.baseFontSize
                                                 font.bold: true
                                                 color: "white"
                                             }
@@ -611,7 +611,7 @@ Rectangle {
 
                     Text {
                         text: tr("Username")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: root.textColor
                     }
@@ -642,7 +642,7 @@ Rectangle {
 
                     Text {
                         text: tr("Password")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: root.textColor
                     }
@@ -691,7 +691,7 @@ Rectangle {
                             Text {
                                 anchors.centerIn: parent
                                 text: "✓"
-                                font.pixelSize: 16
+                                font.pixelSize: app.mediumFontSize
                                 font.bold: true
                                 color: "white"
                                 visible: addAdminCheck.checked
@@ -874,7 +874,7 @@ Rectangle {
 
                     Text {
                         text: tr("Username")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: root.textColor
                     }
@@ -903,7 +903,7 @@ Rectangle {
 
                     Text {
                         text: tr("New Password")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: root.textColor
                     }
@@ -952,7 +952,7 @@ Rectangle {
                             Text {
                                 anchors.centerIn: parent
                                 text: "✓"
-                                font.pixelSize: 16
+                                font.pixelSize: app.mediumFontSize
                                 font.bold: true
                                 color: "white"
                                 visible: editAdminCheck.checked
@@ -1098,7 +1098,7 @@ Rectangle {
 
                 Text {
                     text: tr("This action cannot be undone")
-                    font.pixelSize: 14
+                    font.pixelSize: app.baseFontSize
                     color: root.textSecondaryColor
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
@@ -1120,12 +1120,12 @@ Rectangle {
 
                     Text {
                         text: "👤"
-                        font.pixelSize: 24
+                        font.pixelSize: app.xlFontSize
                     }
 
                     Text {
                         text: deleteConfirmDialog.username
-                        font.pixelSize: 18
+                        font.pixelSize: app.mediumFontSize
                         font.bold: true
                         color: root.textColor
                         anchors.verticalCenter: parent.verticalCenter

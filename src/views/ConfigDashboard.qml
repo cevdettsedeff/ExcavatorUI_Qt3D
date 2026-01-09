@@ -92,7 +92,7 @@ Rectangle {
 
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 14
+                font.pixelSize: app.baseFontSize
                 color: root.textColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -112,7 +112,7 @@ Rectangle {
 
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 14
+                font.pixelSize: app.baseFontSize
                 color: root.textColor
                 verticalAlignment: Text.AlignVCenter
             }
@@ -178,7 +178,7 @@ Rectangle {
 
                             Text {
                                 text: root.tr("Lütfen aşağıdaki ayarları tamamlayın")
-                                font.pixelSize: 14
+                                font.pixelSize: app.baseFontSize
                                 color: Qt.rgba(1, 1, 1, 0.8)
                                 Layout.alignment: Qt.AlignHCenter
                             }
@@ -332,7 +332,7 @@ Rectangle {
 
                         contentItem: Text {
                             text: parent.text
-                            font.pixelSize: 18
+                            font.pixelSize: app.mediumFontSize
                             font.bold: true
                             color: parent.enabled ? "white" : root.textSecondaryColor
                             horizontalAlignment: Text.AlignHCenter
@@ -352,7 +352,7 @@ Rectangle {
                         text: (configManager && configManager.isConfigured)
                             ? root.tr("Tüm ayarlar tamamlandı!")
                             : root.tr("Tüm adımları tamamladığınızda ana ekrana geçebilirsiniz")
-                        font.pixelSize: 12
+                        font.pixelSize: app.smallFontSize
                         color: (configManager && configManager.isConfigured) ? root.successColor : root.textSecondaryColor
                     }
                 }
@@ -488,7 +488,7 @@ Rectangle {
                 Text {
                     Layout.fillWidth: true
                     text: tile.title
-                    font.pixelSize: 14
+                    font.pixelSize: app.baseFontSize
                     font.bold: true
                     color: tile.isConfigured ? "white" : tile.tileTextColor
                     elide: Text.ElideRight
@@ -507,7 +507,7 @@ Rectangle {
                         id: statusText
                         anchors.centerIn: parent
                         text: tile.isConfigured ? "✓" : "..."
-                        font.pixelSize: 10
+                        font.pixelSize: app.smallFontSize * 0.8
                         font.bold: true
                         color: tile.isConfigured ? "white" : tile.tileWarningColor
                     }
@@ -547,7 +547,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: tile.description
-                font.pixelSize: 11
+                font.pixelSize: app.smallFontSize
                 color: tile.isConfigured ? Qt.rgba(1, 1, 1, 0.8) : tile.tileTextSecondaryColor
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
@@ -567,7 +567,7 @@ Rectangle {
                 Text {
                     anchors.centerIn: parent
                     text: tile.isConfigured ? root.tr("Düzenle") : root.tr("Yapılandır")
-                    font.pixelSize: 12
+                    font.pixelSize: app.smallFontSize
                     font.bold: true
                     color: tile.isConfigured ? "white" : tile.tilePrimaryColor
                 }
