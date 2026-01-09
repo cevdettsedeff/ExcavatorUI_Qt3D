@@ -14,7 +14,11 @@ import "../components"
  */
 Rectangle {
     id: areaPage
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
+    // Global responsive değişkenlere erişim
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -97,6 +101,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
             color: areaPage.primaryColor
+    // Global responsive değişkenlere erişim
 
             RowLayout {
                 anchors.fill: parent
@@ -105,7 +110,7 @@ Rectangle {
 
                 Text {
                     text: tr("Dig Area")
-                    font.pixelSize: 20
+                    font.pixelSize: app.largeFontSize
                     font.bold: true
                     color: "white"
                 }
@@ -122,6 +127,7 @@ Rectangle {
                         height: 32
                         radius: 16
                         color: showContours ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.1)
+    // Global responsive değişkenlere erişim
 
                         Row {
                             id: contourToggleRow
@@ -130,7 +136,7 @@ Rectangle {
 
                             Text {
                                 text: "~"
-                                font.pixelSize: 14
+                                font.pixelSize: app.baseFontSize
                                 font.bold: true
                                 color: "white"
                                 anchors.verticalCenter: parent.verticalCenter
@@ -138,7 +144,7 @@ Rectangle {
 
                             Text {
                                 text: tr("Contours")
-                                font.pixelSize: 11
+                                font.pixelSize: app.smallFontSize
                                 color: "white"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -157,6 +163,7 @@ Rectangle {
                         height: 32
                         radius: 16
                         color: showGrid ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.1)
+    // Global responsive değişkenlere erişim
 
                         Row {
                             id: gridToggleRow
@@ -165,7 +172,7 @@ Rectangle {
 
                             Text {
                                 text: "#"
-                                font.pixelSize: 14
+                                font.pixelSize: app.baseFontSize
                                 font.bold: true
                                 color: "white"
                                 anchors.verticalCenter: parent.verticalCenter
@@ -173,7 +180,7 @@ Rectangle {
 
                             Text {
                                 text: tr("Grid")
-                                font.pixelSize: 11
+                                font.pixelSize: app.smallFontSize
                                 color: "white"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -195,12 +202,13 @@ Rectangle {
                     height: 32
                     radius: 16
                     color: Qt.rgba(1, 1, 1, 0.2)
+    // Global responsive değişkenlere erişim
 
                     Text {
                         id: gridInfoText
                         anchors.centerIn: parent
                         text: gridRows + " x " + gridCols + " " + tr("Grid")
-                        font.pixelSize: 12
+                        font.pixelSize: app.smallFontSize
                         font.bold: true
                         color: "white"
                     }
@@ -223,6 +231,7 @@ Rectangle {
                 anchors.right: rightPanel.left
                 anchors.rightMargin: 16
                 color: areaPage.surfaceColor
+    // Global responsive değişkenlere erişim
                 radius: 12
                 border.width: 2
                 border.color: "#1A75A8"
@@ -235,6 +244,7 @@ Rectangle {
                     anchors.right: parent.right
                     height: 40
                     color: "#1A75A8"
+    // Global responsive değişkenlere erişim
                     radius: 10
 
                     Rectangle {
@@ -243,12 +253,13 @@ Rectangle {
                         anchors.bottom: parent.bottom
                         height: parent.radius
                         color: parent.color
+    // Global responsive değişkenlere erişim
                     }
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Bathymetric Map") + " - " + tr("Dig Area")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "white"
                     }
@@ -296,6 +307,7 @@ Rectangle {
                     height: 32
                     radius: 16
                     color: "#FF6B35"
+    // Global responsive değişkenlere erişim
 
                     Row {
                         id: excavatorPosRow
@@ -312,7 +324,7 @@ Rectangle {
 
                         Text {
                             text: "C3"
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             font.bold: true
                             color: "white"
                             anchors.verticalCenter: parent.verticalCenter
@@ -328,6 +340,7 @@ Rectangle {
                     anchors.bottom: parent.bottom
                     height: 30
                     color: Qt.lighter(areaPage.surfaceColor, 1.02)
+    // Global responsive değişkenlere erişim
                     radius: 10
 
                     Rectangle {
@@ -336,6 +349,7 @@ Rectangle {
                         anchors.top: parent.top
                         height: parent.radius
                         color: parent.color
+    // Global responsive değişkenlere erişim
                     }
 
                     RowLayout {
@@ -345,7 +359,7 @@ Rectangle {
 
                         Text {
                             text: "Datum: WGS84"
-                            font.pixelSize: 10
+                            font.pixelSize: app.smallFontSize * 0.8
                             color: areaPage.textSecondaryColor
                         }
 
@@ -356,7 +370,7 @@ Rectangle {
                                   "X: " + bathymetricMap.hoverX.toFixed(0) + " Y: " + bathymetricMap.hoverY.toFixed(0) +
                                   " | " + tr("Depth") + ": " + bathymetricMap.hoverDepth.toFixed(2) + "m" :
                                   tr("Hover for depth info")
-                            font.pixelSize: 10
+                            font.pixelSize: app.smallFontSize * 0.8
                             color: areaPage.textColor
                         }
 
@@ -364,7 +378,7 @@ Rectangle {
 
                         Text {
                             text: "© 2024 ExcavatorUI"
-                            font.pixelSize: 10
+                            font.pixelSize: app.smallFontSize * 0.8
                             color: areaPage.textSecondaryColor
                         }
                     }
@@ -379,6 +393,7 @@ Rectangle {
                 anchors.bottom: parent.bottom
                 width: 220
                 color: areaPage.surfaceColor
+    // Global responsive değişkenlere erişim
                 radius: 12
 
                 ColumnLayout {
@@ -402,6 +417,7 @@ Rectangle {
                         Layout.fillWidth: true
                         height: 1
                         color: areaPage.borderColor
+    // Global responsive değişkenlere erişim
                     }
 
                     // İstatistikler
@@ -409,6 +425,7 @@ Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: statsColumn.height + 24
                         color: Qt.lighter(areaPage.surfaceColor, 1.05)
+    // Global responsive değişkenlere erişim
                         radius: 8
                         border.width: 1
                         border.color: areaPage.borderColor
@@ -434,12 +451,12 @@ Rectangle {
                                 Text {
                                     width: parent.width * 0.6
                                     text: tr("Grid Size") + ":"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: areaPage.textSecondaryColor
                                 }
                                 Text {
                                     text: gridRows + " x " + gridCols
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     font.bold: true
                                     color: areaPage.textColor
                                 }
@@ -451,12 +468,12 @@ Rectangle {
                                 Text {
                                     width: parent.width * 0.6
                                     text: tr("Total Cells") + ":"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: areaPage.textSecondaryColor
                                 }
                                 Text {
                                     text: (gridRows * gridCols).toString()
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     font.bold: true
                                     color: areaPage.textColor
                                 }
@@ -468,7 +485,7 @@ Rectangle {
                                 Text {
                                     width: parent.width * 0.6
                                     text: tr("Defined") + ":"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: areaPage.textSecondaryColor
                                 }
                                 Text {
@@ -481,7 +498,7 @@ Rectangle {
                                         return count
                                     }
                                     text: definedCount.toString()
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     font.bold: true
                                     color: "#38A169"
                                 }
@@ -493,12 +510,12 @@ Rectangle {
                                 Text {
                                     width: parent.width * 0.6
                                     text: tr("Min Depth") + ":"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: areaPage.textSecondaryColor
                                 }
                                 Text {
                                     text: minDepth > 0 ? minDepth.toFixed(2) + " m" : "-"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     font.bold: true
                                     color: "#55B0D4"
                                 }
@@ -510,12 +527,12 @@ Rectangle {
                                 Text {
                                     width: parent.width * 0.6
                                     text: tr("Max Depth") + ":"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: areaPage.textSecondaryColor
                                 }
                                 Text {
                                     text: maxDepth > 0 ? maxDepth.toFixed(2) + " m" : "-"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     font.bold: true
                                     color: "#2B6CB0"
                                 }
@@ -527,7 +544,7 @@ Rectangle {
                                 Text {
                                     width: parent.width * 0.6
                                     text: tr("Average") + ":"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: areaPage.textSecondaryColor
                                 }
                                 Text {
@@ -544,7 +561,7 @@ Rectangle {
                                         return count > 0 ? sum / count : 0
                                     }
                                     text: avgDepth > 0 ? avgDepth.toFixed(2) + " m" : "-"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     font.bold: true
                                     color: "#1A75A8"
                                 }
@@ -557,6 +574,7 @@ Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: contourSettingsCol.height + 24
                         color: Qt.lighter(areaPage.surfaceColor, 1.05)
+    // Global responsive değişkenlere erişim
                         radius: 8
                         border.width: 1
                         border.color: areaPage.borderColor
@@ -583,7 +601,7 @@ Rectangle {
 
                                 Text {
                                     text: tr("Interval") + ":"
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: areaPage.textSecondaryColor
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
@@ -610,6 +628,7 @@ Rectangle {
 
                                     background: Rectangle {
                                         color: areaPage.surfaceColor
+    // Global responsive değişkenlere erişim
                                         radius: 4
                                         border.width: 1
                                         border.color: areaPage.borderColor
@@ -627,6 +646,7 @@ Rectangle {
                         height: 50
                         radius: 8
                         color: configManager && configManager.digAreaConfigured
+    // Global responsive değişkenlere erişim
                             ? Qt.rgba(0.22, 0.65, 0.41, 0.15)
                             : Qt.rgba(1, 0.6, 0, 0.15)
                         border.width: 1
@@ -639,7 +659,7 @@ Rectangle {
 
                             Text {
                                 text: configManager && configManager.digAreaConfigured ? "✓" : "!"
-                                font.pixelSize: 18
+                                font.pixelSize: app.mediumFontSize
                                 font.bold: true
                                 color: configManager && configManager.digAreaConfigured ? "#38A169" : "#DD6B20"
                             }
@@ -648,7 +668,7 @@ Rectangle {
                                 text: configManager && configManager.digAreaConfigured
                                     ? tr("Configured")
                                     : tr("Not Configured")
-                                font.pixelSize: 12
+                                font.pixelSize: app.smallFontSize
                                 font.bold: true
                                 color: configManager && configManager.digAreaConfigured ? "#38A169" : "#DD6B20"
                                 anchors.verticalCenter: parent.verticalCenter

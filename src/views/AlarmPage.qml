@@ -5,7 +5,11 @@ import QtQuick.Layouts
 // Alarm Sayfası - Uyarılar ve bildirimler
 Rectangle {
     id: alarmPage
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
+    // Global responsive değişkenlere erişim
 
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -46,6 +50,7 @@ Rectangle {
                 height: 40
                 radius: 20
                 color: "#f4433630"
+    // Global responsive değişkenlere erişim
 
                 Row {
                     anchors.centerIn: parent
@@ -53,12 +58,12 @@ Rectangle {
 
                     Text {
                         text: "🔔"
-                        font.pixelSize: 18
+                        font.pixelSize: app.mediumFontSize
                     }
 
                     Text {
                         text: "3 " + tr("Active")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#f44336"
                     }
@@ -84,13 +89,14 @@ Rectangle {
                     height: 35
                     radius: 17
                     color: alarmPage.activeFilter === index ? modelData.color : "#2a2a2a"
+    // Global responsive değişkenlere erişim
                     border.color: modelData.color
                     border.width: 1
 
                     Text {
                         anchors.centerIn: parent
                         text: tr(modelData.label)
-                        font.pixelSize: 12
+                        font.pixelSize: app.smallFontSize
                         font.bold: true
                         color: alarmPage.activeFilter === index ? "#ffffff" : modelData.color
                     }
@@ -173,6 +179,7 @@ Rectangle {
                 height: 90
                 radius: 10
                 color: "#2a2a2a"
+    // Global responsive değişkenlere erişim
                 border.color: {
                     if (model.type === "critical") return "#f44336"
                     if (model.type === "warning") return "#ff9800"
@@ -212,6 +219,7 @@ Rectangle {
                         height: 50
                         radius: 10
                         color: {
+    // Global responsive değişkenlere erişim
                             if (model.type === "critical") return "#f4433630"
                             if (model.type === "warning") return "#ff980030"
                             return "#2196F330"
@@ -220,7 +228,7 @@ Rectangle {
                         Text {
                             anchors.centerIn: parent
                             text: model.icon
-                            font.pixelSize: 24
+                            font.pixelSize: app.xlFontSize
                         }
                     }
 
@@ -245,11 +253,12 @@ Rectangle {
                                 height: 18
                                 radius: 9
                                 color: "#f44336"
+    // Global responsive değişkenlere erişim
 
                                 Text {
                                     anchors.centerIn: parent
                                     text: alarmPage.tr("New")
-                                    font.pixelSize: 10
+                                    font.pixelSize: app.smallFontSize * 0.8
                                     font.bold: true
                                     color: "#ffffff"
                                 }
@@ -259,14 +268,14 @@ Rectangle {
 
                             Text {
                                 text: model.time
-                                font.pixelSize: 12
+                                font.pixelSize: app.smallFontSize
                                 color: "#888888"
                             }
                         }
 
                         Text {
                             text: alarmDesc
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             color: "#888888"
                             Layout.fillWidth: true
                             elide: Text.ElideRight

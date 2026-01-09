@@ -5,7 +5,11 @@ import QtQuick.Layouts
 // Ayarlar Sayfası - StackView ile alt sayfa navigasyonu
 Rectangle {
     id: settingsPage
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
+    // Global responsive değişkenlere erişim
 
     // Theme colors
     property color primaryColor: themeManager ? themeManager.primaryColor : "#38b2ac"
@@ -41,6 +45,7 @@ Rectangle {
 
         Rectangle {
             color: settingsPage.color
+    // Global responsive değişkenlere erişim
 
             ColumnLayout {
                 anchors.fill: parent
@@ -137,6 +142,7 @@ Rectangle {
                         height: 80
                         radius: 10
                         color: itemEnabled ? settingsPage.surfaceColor : Qt.darker(settingsPage.surfaceColor, 1.2)
+    // Global responsive değişkenlere erişim
                         border.color: settingsPage.borderColor
                         border.width: 1
                         opacity: itemEnabled ? 1.0 : 0.6
@@ -173,11 +179,12 @@ Rectangle {
                                 height: 50
                                 radius: 10
                                 color: Qt.darker(settingsPage.surfaceColor, 1.1)
+    // Global responsive değişkenlere erişim
 
                                 Text {
                                     anchors.centerIn: parent
                                     text: model.icon
-                                    font.pixelSize: 24
+                                    font.pixelSize: app.xlFontSize
                                 }
                             }
 
@@ -191,7 +198,7 @@ Rectangle {
 
                                     Text {
                                         text: itemTitle
-                                        font.pixelSize: 16
+                                        font.pixelSize: app.mediumFontSize
                                         font.bold: true
                                         color: settingsPage.textColor
                                     }
@@ -203,12 +210,13 @@ Rectangle {
                                         height: 20
                                         radius: 10
                                         color: settingsPage.primaryColor
+    // Global responsive değişkenlere erişim
 
                                         Text {
                                             id: yakindaText
                                             anchors.centerIn: parent
                                             text: tr("Soon")
-                                            font.pixelSize: 10
+                                            font.pixelSize: app.smallFontSize * 0.8
                                             font.bold: true
                                             color: "white"
                                         }
@@ -221,12 +229,13 @@ Rectangle {
                                         height: 20
                                         radius: 10
                                         color: "#e74c3c"
+    // Global responsive değişkenlere erişim
 
                                         Text {
                                             id: adminText
                                             anchors.centerIn: parent
                                             text: "Admin"
-                                            font.pixelSize: 10
+                                            font.pixelSize: app.smallFontSize * 0.8
                                             font.bold: true
                                             color: "white"
                                         }
@@ -235,7 +244,7 @@ Rectangle {
 
                                 Text {
                                     text: itemDesc
-                                    font.pixelSize: 12
+                                    font.pixelSize: app.smallFontSize
                                     color: settingsPage.textSecondaryColor
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
@@ -245,7 +254,7 @@ Rectangle {
                             // Sağ ok
                             Text {
                                 text: "›"
-                                font.pixelSize: 24
+                                font.pixelSize: app.xlFontSize
                                 color: itemEnabled ? settingsPage.textSecondaryColor : Qt.darker(settingsPage.textSecondaryColor, 1.5)
                             }
                         }
@@ -284,6 +293,7 @@ Rectangle {
 
         Rectangle {
             color: settingsPage.color
+    // Global responsive değişkenlere erişim
 
             // Geri butonu ile birlikte UserManagementView
             ColumnLayout {
@@ -295,6 +305,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
                     color: settingsPage.surfaceColor
+    // Global responsive değişkenlere erişim
 
                     RowLayout {
                         anchors.fill: parent
@@ -308,13 +319,14 @@ Rectangle {
 
                             contentItem: Text {
                                 text: parent.text
-                                font.pixelSize: 16
+                                font.pixelSize: app.mediumFontSize
                                 color: settingsPage.primaryColor
                                 verticalAlignment: Text.AlignVCenter
                             }
 
                             background: Rectangle {
                                 color: parent.pressed ? Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.2) : "transparent"
+    // Global responsive değişkenlere erişim
                                 radius: 8
                             }
 
@@ -325,7 +337,7 @@ Rectangle {
 
                         Text {
                             text: tr("Users")
-                            font.pixelSize: 18
+                            font.pixelSize: app.mediumFontSize
                             font.bold: true
                             color: settingsPage.textColor
                         }
@@ -342,6 +354,7 @@ Rectangle {
                         width: parent.width
                         height: 1
                         color: settingsPage.borderColor
+    // Global responsive değişkenlere erişim
                     }
                 }
 
@@ -360,6 +373,7 @@ Rectangle {
 
         Rectangle {
             color: settingsPage.color
+    // Global responsive değişkenlere erişim
 
             ColumnLayout {
                 anchors.fill: parent
@@ -370,6 +384,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
                     color: settingsPage.surfaceColor
+    // Global responsive değişkenlere erişim
 
                     RowLayout {
                         anchors.fill: parent
@@ -383,13 +398,14 @@ Rectangle {
 
                             contentItem: Text {
                                 text: parent.text
-                                font.pixelSize: 16
+                                font.pixelSize: app.mediumFontSize
                                 color: settingsPage.primaryColor
                                 verticalAlignment: Text.AlignVCenter
                             }
 
                             background: Rectangle {
                                 color: parent.pressed ? Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.2) : "transparent"
+    // Global responsive değişkenlere erişim
                                 radius: 8
                             }
 
@@ -400,7 +416,7 @@ Rectangle {
 
                         Text {
                             text: tr("Screen Settings")
-                            font.pixelSize: 18
+                            font.pixelSize: app.mediumFontSize
                             font.bold: true
                             color: settingsPage.textColor
                         }
@@ -417,6 +433,7 @@ Rectangle {
                         width: parent.width
                         height: 1
                         color: settingsPage.borderColor
+    // Global responsive değişkenlere erişim
                     }
                 }
 
@@ -439,6 +456,7 @@ Rectangle {
                             Layout.preferredHeight: screenSaverContent.height + 40
                             radius: 12
                             color: settingsPage.surfaceColor
+    // Global responsive değişkenlere erişim
                             border.color: settingsPage.borderColor
                             border.width: 1
 
@@ -468,7 +486,7 @@ Rectangle {
                                 // Başlık
                                 Text {
                                     text: tr("Screensaver")
-                                    font.pixelSize: 18
+                                    font.pixelSize: app.mediumFontSize
                                     font.bold: true
                                     color: settingsPage.textColor
                                 }
@@ -480,7 +498,7 @@ Rectangle {
 
                                     Text {
                                         text: tr("Enable Screensaver")
-                                        font.pixelSize: 14
+                                        font.pixelSize: app.baseFontSize
                                         color: settingsPage.textColor
                                         Layout.fillWidth: true
                                     }
@@ -503,6 +521,7 @@ Rectangle {
                                             y: parent.height / 2 - height / 2
                                             radius: 14
                                             color: screenSaverSwitch.checked ? settingsPage.primaryColor : Qt.darker(settingsPage.surfaceColor, 1.3)
+    // Global responsive değişkenlere erişim
                                             border.color: screenSaverSwitch.checked ? Qt.darker(settingsPage.primaryColor, 1.1) : settingsPage.borderColor
                                             border.width: 1
 
@@ -517,6 +536,7 @@ Rectangle {
                                                 height: 22
                                                 radius: 11
                                                 color: "white"
+    // Global responsive değişkenlere erişim
 
                                                 Behavior on x {
                                                     NumberAnimation { duration: 150 }
@@ -529,7 +549,7 @@ Rectangle {
                                 // Açıklama
                                 Text {
                                     text: tr("When enabled, screensaver will appear after inactivity on login screen")
-                                    font.pixelSize: 12
+                                    font.pixelSize: app.smallFontSize
                                     color: settingsPage.textSecondaryColor
                                     wrapMode: Text.WordWrap
                                     Layout.fillWidth: true
@@ -540,6 +560,7 @@ Rectangle {
                                     Layout.fillWidth: true
                                     height: 1
                                     color: settingsPage.borderColor
+    // Global responsive değişkenlere erişim
                                 }
 
                                 // Timeout ayarı
@@ -551,7 +572,7 @@ Rectangle {
 
                                     Text {
                                         text: tr("Timeout Duration")
-                                        font.pixelSize: 14
+                                        font.pixelSize: app.baseFontSize
                                         color: settingsPage.textColor
                                     }
 
@@ -580,12 +601,14 @@ Rectangle {
                                                 height: 6
                                                 radius: 3
                                                 color: Qt.darker(settingsPage.surfaceColor, 1.3)
+    // Global responsive değişkenlere erişim
 
                                                 Rectangle {
                                                     width: timeoutSlider.visualPosition * parent.width
                                                     height: parent.height
                                                     radius: 3
                                                     color: settingsPage.primaryColor
+    // Global responsive değişkenlere erişim
                                                 }
                                             }
 
@@ -596,6 +619,7 @@ Rectangle {
                                                 height: 20
                                                 radius: 10
                                                 color: timeoutSlider.pressed ? Qt.lighter(settingsPage.primaryColor, 1.2) : settingsPage.primaryColor
+    // Global responsive değişkenlere erişim
                                                 border.color: Qt.darker(settingsPage.primaryColor, 1.2)
                                                 border.width: 2
                                             }
@@ -607,13 +631,14 @@ Rectangle {
                                             height: 35
                                             radius: 8
                                             color: Qt.darker(settingsPage.surfaceColor, 1.2)
+    // Global responsive değişkenlere erişim
                                             border.color: settingsPage.primaryColor
                                             border.width: 1
 
                                             Text {
                                                 anchors.centerIn: parent
                                                 text: screenSaverContent.formatTimeout(timeoutSlider.value)
-                                                font.pixelSize: 12
+                                                font.pixelSize: app.smallFontSize
                                                 font.bold: true
                                                 color: settingsPage.primaryColor
                                             }
@@ -649,6 +674,7 @@ Rectangle {
                                                 background: Rectangle {
                                                     radius: 8
                                                     color: timeoutSlider.value === model.seconds ?
+    // Global responsive değişkenlere erişim
                                                            settingsPage.primaryColor :
                                                            Qt.darker(settingsPage.surfaceColor, 1.2)
                                                     border.color: settingsPage.primaryColor
@@ -657,7 +683,7 @@ Rectangle {
 
                                                 contentItem: Text {
                                                     text: parent.text
-                                                    font.pixelSize: 12
+                                                    font.pixelSize: app.smallFontSize
                                                     color: timeoutSlider.value === model.seconds ? "white" : settingsPage.textColor
                                                     horizontalAlignment: Text.AlignHCenter
                                                     verticalAlignment: Text.AlignVCenter
@@ -680,6 +706,7 @@ Rectangle {
                             Layout.preferredHeight: infoContent.height + 30
                             radius: 12
                             color: Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.1)
+    // Global responsive değişkenlere erişim
                             border.color: settingsPage.primaryColor
                             border.width: 1
 
@@ -693,7 +720,7 @@ Rectangle {
 
                                 Text {
                                     text: tr("Screensaver activates only on login screen when there is no user activity. Touch or move mouse to dismiss.")
-                                    font.pixelSize: 12
+                                    font.pixelSize: app.smallFontSize
                                     color: settingsPage.textColor
                                     wrapMode: Text.WordWrap
                                     Layout.fillWidth: true
