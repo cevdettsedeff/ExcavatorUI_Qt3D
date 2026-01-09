@@ -62,14 +62,14 @@ Item {
         anchors.fill: parent
         color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
-        // Saat ve Tarih göstergesi (sol üst köşe) - Responsive
+        // Saat ve Tarih göstergesi (sol üst köşe) - Tam Responsive
         Rectangle {
             anchors.top: parent.top
             anchors.left: parent.left
-            anchors.margins: 8
-            width: Math.min(parent.width * 0.35, 180)
-            height: Math.min(parent.height * 0.08, 55)
-            radius: 6
+            anchors.margins: app.smallPadding
+            width: app.largeIconSize * 5
+            height: app.buttonHeight * 1.2
+            radius: app.smallRadius
             color: "#1e2936"
             border.color: "#3a4556"
             border.width: 1
@@ -77,17 +77,17 @@ Item {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 6
-                spacing: 1
+                anchors.margins: app.smallPadding
+                spacing: app.smallSpacing * 0.3
 
                 // Saat
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 4
+                    spacing: app.smallSpacing * 0.5
 
                     Text {
                         text: "Saat:"
-                        font.pixelSize: Math.min(parent.width * 0.12, 12)
+                        font.pixelSize: app.smallFontSize
                         color: "#3498db"
                         font.bold: true
                     }
@@ -95,7 +95,7 @@ Item {
                     Text {
                         id: clockText
                         text: "00:00:00"
-                        font.pixelSize: Math.min(parent.width * 0.13, 14)
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         font.family: "Monospace"
                         color: "#ffffff"
@@ -105,11 +105,11 @@ Item {
                 // Tarih
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 4
+                    spacing: app.smallSpacing * 0.5
 
                     Text {
                         text: "Tarih:"
-                        font.pixelSize: Math.min(parent.width * 0.11, 11)
+                        font.pixelSize: app.smallFontSize
                         color: "#2ecc71"
                         font.bold: true
                     }
@@ -117,21 +117,21 @@ Item {
                     Text {
                         id: dateText
                         text: "1 Ocak 2025"
-                        font.pixelSize: Math.min(parent.width * 0.11, 11)
+                        font.pixelSize: app.smallFontSize
                         color: "#aaaaaa"
                     }
                 }
             }
         }
 
-        // Dil seçici butonu (sağ üst köşe) - Responsive
+        // Dil seçici butonu (sağ üst köşe) - Tam Responsive
         Rectangle {
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.margins: 8
-            width: Math.min(parent.width * 0.15, 80)
-            height: Math.min(parent.height * 0.05, 35)
-            radius: 5
+            anchors.margins: app.smallPadding
+            width: app.largeIconSize * 2.2
+            height: app.buttonHeight * 0.8
+            radius: app.smallRadius
             color: langBtnArea.containsMouse ? "#333333" : "#34495e"
             border.color: "#505050"
             border.width: 1
@@ -143,17 +143,17 @@ Item {
 
             Row {
                 anchors.centerIn: parent
-                spacing: 5
+                spacing: app.smallSpacing * 0.5
 
                 Text {
                     text: "🌐"
-                    font.pixelSize: 16
+                    font.pixelSize: app.baseFontSize
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Text {
                     text: translationService ? (translationService.currentLanguage === "tr_TR" ? "TR" : "EN") : "TR"
-                    font.pixelSize: 12
+                    font.pixelSize: app.smallFontSize
                     font.bold: true
                     color: "#ffffff"
                     anchors.verticalCenter: parent.verticalCenter
@@ -204,7 +204,7 @@ Item {
                 width: Math.min(loginView.width * 0.92, 700)
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: app.largeSpacing
-                anchors.topMargin: app.largeSpacing
+                anchors.topMargin: app.xlSpacing * 1.5
                 anchors.bottomMargin: app.largeSpacing
 
             // Logo/Başlık bölümü (Responsive)
@@ -212,7 +212,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: app.largeIconSize * 4.5
                 color: "transparent"
-                Layout.topMargin: app.normalSpacing
+                Layout.topMargin: app.xlSpacing
 
                 ColumnLayout {
                     anchors.fill: parent

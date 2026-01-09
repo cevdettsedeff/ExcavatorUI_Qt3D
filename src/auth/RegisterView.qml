@@ -205,7 +205,7 @@ Item {
                 width: Math.min(registerView.width * 0.92, 700)
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: app.largeSpacing
-                anchors.topMargin: app.largeSpacing
+                anchors.topMargin: app.xlSpacing * 1.5
                 anchors.bottomMargin: app.largeSpacing
 
             // Logo/Başlık bölümü
@@ -213,7 +213,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: app.largeIconSize * 3
                 color: "transparent"
-                Layout.topMargin: app.normalSpacing
+                Layout.topMargin: app.xlSpacing
 
                 ColumnLayout {
                     anchors.fill: parent
