@@ -869,5 +869,25 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Screensaver activates only on login screen when there is no user activity. Touch or move mouse to dismiss.</source>
         <translation>Bekleme ekranı yalnızca giriş ekranında, kullanıcı aktivitesi olmadığında aktif olur. Kapatmak için dokunun veya fareyi hareket ettirin.</translation>
     </message>
+    <message>
+        <source>Manual Control</source>
+        <translation>Manuel Kontrol</translation>
+    </message>
+    <message>
+        <source>Random Test</source>
+        <translation>Rastgele Test</translation>
+    </message>
+    <message>
+        <source>Stop Random</source>
+        <translation>Durdur</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>Test Et</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Durdur</translation>
+    </message>
 </context>
 </TS>

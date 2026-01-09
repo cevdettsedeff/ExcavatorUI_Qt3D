@@ -51,10 +51,39 @@ Rectangle {
             border.color: "#2a4a6a"
             border.width: 1
 
+            // Başlık
+            Rectangle {
+                id: view3DHeader
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: 40
+                color: themeManager ? themeManager.backgroundColorDark : "#1a2a3a"
+                z: 10
+
+                Text {
+                    anchors.centerIn: parent
+                    text: tr("3D Excavator View")
+                    font.pixelSize: 16
+                    font.bold: true
+                    color: "#ffffff"
+                }
+
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: 1
+                    color: "#444444"
+                }
+            }
+
             // 3D Görünüm
             View3D {
                 id: view3D
-                anchors.fill: parent
+                anchors.top: view3DHeader.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
                 anchors.margins: 2
 
                 environment: SceneEnvironment {
@@ -184,6 +213,282 @@ Rectangle {
                     }
                 }
             }
+
+            // Sürüklenebilir Kontroller (Sağ taraf) - Responsive
+            Column {
+                id: manualControls
+                anchors.right: parent.right
+                anchors.top: view3DHeader.bottom
+                anchors.bottom: parent.bottom
+                anchors.margins: Math.max(5, parent.width * 0.01)
+                width: Math.max(100, Math.min(150, parent.width * 0.15))
+                spacing: Math.max(5, parent.height * 0.01)
+
+                // Başlık
+                Rectangle {
+                    width: parent.width
+                    height: Math.max(30, Math.min(40, parent.width * 0.3))
+                    color: themeManager ? themeManager.backgroundColorDark : "#1a2a3a"
+                    radius: 6
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Manual Control")
+                        font.pixelSize: Math.max(9, Math.min(12, parent.width * 0.09))
+                        font.bold: true
+                        color: "#ffffff"
+                    }
+                }
+
+                // Rastgele Hareket Butonu
+                Button {
+                    width: parent.width
+                    height: Math.max(35, Math.min(45, parent.width * 0.35))
+
+                    background: Rectangle {
+                        color: imuService && imuService.isRandomMode ? "#e91e63" : "#9c27b0"
+                        radius: 6
+                        border.color: imuService && imuService.isRandomMode ? "#f06292" : "#ba68c8"
+                        border.width: 2
+
+                        Behavior on color {
+                            ColorAnimation { duration: 200 }
+                        }
+                    }
+
+                    contentItem: Text {
+                        anchors.centerIn: parent
+                        text: imuService && imuService.isRandomMode ? tr("Stop") : tr("Test")
+                        font.pixelSize: Math.max(9, Math.min(12, parent.width * 0.1))
+                        font.bold: true
+                        color: "#ffffff"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    enabled: imuService && !imuService.isDigging
+
+                    onClicked: {
+                        if (imuService) {
+                            if (imuService.isRandomMode) {
+                                imuService.stopRandomMovement()
+                            } else {
+                                imuService.startRandomMovement()
+                            }
+                        }
+                    }
+                }
+
+                // Boom Kontrolü
+                Column {
+                    width: parent.width
+                    spacing: Math.max(3, parent.width * 0.03)
+
+                    Text {
+                        text: "Boom"
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        font.bold: true
+                        color: "#ffc107"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: Math.max(90, Math.min(120, parent.width * 0.9))
+                        color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+                        radius: 6
+                        border.color: "#ffc107"
+                        border.width: 2
+
+                        Slider {
+                            id: boomSlider
+                            anchors.centerIn: parent
+                            width: parent.height - 20
+                            height: parent.width - 20
+                            orientation: Qt.Vertical
+                            from: -25
+                            to: 45
+                            value: imuService ? imuService.boomAngle : 0
+                            enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
+
+                            onValueChanged: {
+                                if (imuService && !imuService.isDigging) {
+                                    imuService.setBoomAngle(value)
+                                }
+                            }
+
+                            background: Rectangle {
+                                x: boomSlider.leftPadding + (boomSlider.horizontal ? 0 : boomSlider.availableWidth / 2 - width / 2)
+                                y: boomSlider.topPadding + (boomSlider.horizontal ? boomSlider.availableHeight / 2 - height / 2 : 0)
+                                implicitWidth: boomSlider.horizontal ? 200 : 4
+                                implicitHeight: boomSlider.horizontal ? 4 : 200
+                                width: boomSlider.horizontal ? boomSlider.availableWidth : implicitWidth
+                                height: boomSlider.horizontal ? implicitHeight : boomSlider.availableHeight
+                                radius: 2
+                                color: "#444444"
+                            }
+
+                            handle: Rectangle {
+                                x: boomSlider.leftPadding + (boomSlider.horizontal ? boomSlider.visualPosition * (boomSlider.availableWidth - width) : boomSlider.availableWidth / 2 - width / 2)
+                                y: boomSlider.topPadding + (boomSlider.horizontal ? boomSlider.availableHeight / 2 - height / 2 : boomSlider.visualPosition * (boomSlider.availableHeight - height))
+                                implicitWidth: 26
+                                implicitHeight: 26
+                                radius: 13
+                                color: boomSlider.pressed ? "#f0a000" : "#ffc107"
+                                border.color: "#ffffff"
+                                border.width: 2
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: (imuService ? imuService.boomAngle.toFixed(1) : "0.0") + "°"
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        color: "#ffc107"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
+
+                // Arm Kontrolü
+                Column {
+                    width: parent.width
+                    spacing: Math.max(3, parent.width * 0.03)
+
+                    Text {
+                        text: "Arm"
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        font.bold: true
+                        color: "#4CAF50"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: Math.max(90, Math.min(120, parent.width * 0.9))
+                        color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+                        radius: 6
+                        border.color: "#4CAF50"
+                        border.width: 2
+
+                        Slider {
+                            id: armSlider
+                            anchors.centerIn: parent
+                            width: parent.height - 20
+                            height: parent.width - 20
+                            orientation: Qt.Vertical
+                            from: -60
+                            to: 35
+                            value: imuService ? imuService.armAngle : 0
+                            enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
+
+                            onValueChanged: {
+                                if (imuService && !imuService.isDigging) {
+                                    imuService.setArmAngle(value)
+                                }
+                            }
+
+                            background: Rectangle {
+                                x: armSlider.leftPadding + (armSlider.horizontal ? 0 : armSlider.availableWidth / 2 - width / 2)
+                                y: armSlider.topPadding + (armSlider.horizontal ? armSlider.availableHeight / 2 - height / 2 : 0)
+                                implicitWidth: armSlider.horizontal ? 200 : 4
+                                implicitHeight: armSlider.horizontal ? 4 : 200
+                                width: armSlider.horizontal ? armSlider.availableWidth : implicitWidth
+                                height: armSlider.horizontal ? implicitHeight : armSlider.availableHeight
+                                radius: 2
+                                color: "#444444"
+                            }
+
+                            handle: Rectangle {
+                                x: armSlider.leftPadding + (armSlider.horizontal ? armSlider.visualPosition * (armSlider.availableWidth - width) : armSlider.availableWidth / 2 - width / 2)
+                                y: armSlider.topPadding + (armSlider.horizontal ? armSlider.availableHeight / 2 - height / 2 : armSlider.visualPosition * (armSlider.availableHeight - height))
+                                implicitWidth: 26
+                                implicitHeight: 26
+                                radius: 13
+                                color: armSlider.pressed ? "#2e7d32" : "#4CAF50"
+                                border.color: "#ffffff"
+                                border.width: 2
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: (imuService ? imuService.armAngle.toFixed(1) : "0.0") + "°"
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        color: "#4CAF50"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
+
+                // Bucket Kontrolü
+                Column {
+                    width: parent.width
+                    spacing: Math.max(3, parent.width * 0.03)
+
+                    Text {
+                        text: "Bucket"
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        font.bold: true
+                        color: "#2196F3"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+                    Rectangle {
+                        width: parent.width
+                        height: Math.max(90, Math.min(120, parent.width * 0.9))
+                        color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
+                        radius: 6
+                        border.color: "#2196F3"
+                        border.width: 2
+
+                        Slider {
+                            id: bucketSlider
+                            anchors.centerIn: parent
+                            width: parent.height - 20
+                            height: parent.width - 20
+                            orientation: Qt.Vertical
+                            from: -75
+                            to: 50
+                            value: imuService ? imuService.bucketAngle : 0
+                            enabled: imuService && !imuService.isDigging && !imuService.isRandomMode
+
+                            onValueChanged: {
+                                if (imuService && !imuService.isDigging) {
+                                    imuService.setBucketAngle(value)
+                                }
+                            }
+
+                            background: Rectangle {
+                                x: bucketSlider.leftPadding + (bucketSlider.horizontal ? 0 : bucketSlider.availableWidth / 2 - width / 2)
+                                y: bucketSlider.topPadding + (bucketSlider.horizontal ? bucketSlider.availableHeight / 2 - height / 2 : 0)
+                                implicitWidth: bucketSlider.horizontal ? 200 : 4
+                                implicitHeight: bucketSlider.horizontal ? 4 : 200
+                                width: bucketSlider.horizontal ? bucketSlider.availableWidth : implicitWidth
+                                height: bucketSlider.horizontal ? implicitHeight : bucketSlider.availableHeight
+                                radius: 2
+                                color: "#444444"
+                            }
+
+                            handle: Rectangle {
+                                x: bucketSlider.leftPadding + (bucketSlider.horizontal ? bucketSlider.visualPosition * (bucketSlider.availableWidth - width) : bucketSlider.availableWidth / 2 - width / 2)
+                                y: bucketSlider.topPadding + (bucketSlider.horizontal ? bucketSlider.availableHeight / 2 - height / 2 : bucketSlider.visualPosition * (bucketSlider.availableHeight - height))
+                                implicitWidth: 26
+                                implicitHeight: 26
+                                radius: 13
+                                color: bucketSlider.pressed ? "#1565c0" : "#2196F3"
+                                border.color: "#ffffff"
+                                border.width: 2
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: (imuService ? imuService.bucketAngle.toFixed(1) : "0.0") + "°"
+                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        color: "#2196F3"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
+            }
         }
 
         // ALT: Mini Görünümler (yan yana) - Daha büyük
@@ -234,7 +539,7 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(0, 120, 0)
+                        position: Qt.vector3d(0, 70, 0)
                         eulerRotation.x: -90
                         clipNear: 1
                         clipFar: 500
@@ -319,7 +624,7 @@ Rectangle {
                 View3D {
                     anchors.top: sideViewHeader.bottom
                     anchors.left: parent.left
-                    anchors.right: depthLabels.left
+                    anchors.right: parent.right
                     anchors.bottom: parent.bottom
                     anchors.margins: 2
 
@@ -331,11 +636,11 @@ Rectangle {
                     }
 
                     PerspectiveCamera {
-                        position: Qt.vector3d(100, 20, 0)
+                        position: Qt.vector3d(45, 20, 0)
                         eulerRotation.y: 90
                         clipNear: 1
                         clipFar: 500
-                        fieldOfView: 45
+                        fieldOfView: 50
                     }
 
                     DirectionalLight {
@@ -383,41 +688,6 @@ Rectangle {
                             boomAngle: imuService ? imuService.boomAngle : 0.0
                             armAngle: imuService ? imuService.armAngle : 0.0
                             bucketAngle: imuService ? imuService.bucketAngle : 0.0
-                        }
-                    }
-                }
-
-                // Derinlik etiketleri (sağ taraf)
-                Column {
-                    id: depthLabels
-                    anchors.right: parent.right
-                    anchors.top: sideViewHeader.bottom
-                    anchors.bottom: parent.bottom
-                    anchors.rightMargin: 8
-                    anchors.topMargin: 20
-                    width: 60
-                    spacing: 35
-
-                    Repeater {
-                        model: ["-1.0m", "-1.5m", "-2.0m", "-2.5m"]
-
-                        Row {
-                            spacing: 5
-                            layoutDirection: Qt.RightToLeft
-
-                            Text {
-                                text: modelData
-                                font.pixelSize: 11
-                                color: "#888888"
-                            }
-
-                            Rectangle {
-                                width: 6
-                                height: 6
-                                radius: 3
-                                color: index === 2 ? "#f44336" : "#888888"
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
                         }
                     }
                 }
