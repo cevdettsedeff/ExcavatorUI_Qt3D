@@ -212,12 +212,12 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: app.largeIconSize * 4.5
                 color: "transparent"
-                Layout.topMargin: app.xlSpacing
+                Layout.topMargin: app.xlSpacing * 2.5
 
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.topMargin: 0
-                    spacing: app.smallSpacing
+                    spacing: app.normalSpacing
 
                     // Uygulama İkonu (Responsive - Küçültülmüş)
                     Image {
@@ -247,7 +247,7 @@ Item {
                         text: qsTranslate("Main", "Please log in")
                         font.pixelSize: app.smallFontSize
                         color: "#888888"
-                        Layout.topMargin: app.normalSpacing
+                        Layout.topMargin: app.largeSpacing
                     }
                 }
             }
@@ -255,7 +255,7 @@ Item {
             // Form bölümü (Responsive)
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.topMargin: app.normalSpacing
+                Layout.topMargin: app.xlSpacing * 1.5
                 Layout.leftMargin: app.largeSpacing
                 Layout.rightMargin: app.largeSpacing
                 spacing: app.normalSpacing + app.smallSpacing

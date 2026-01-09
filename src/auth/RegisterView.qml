@@ -213,12 +213,12 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: app.largeIconSize * 3
                 color: "transparent"
-                Layout.topMargin: app.xlSpacing
+                Layout.topMargin: app.xlSpacing * 2.5
 
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.topMargin: app.normalSpacing
-                    spacing: app.smallSpacing
+                    spacing: app.normalSpacing
 
                     // İkon
                     Rectangle {
@@ -250,7 +250,7 @@ Item {
                         text: tr("Please enter your information")
                         font.pixelSize: app.baseFontSize
                         color: "#888888"
-                        Layout.bottomMargin: app.normalSpacing
+                        Layout.topMargin: app.largeSpacing
                     }
                 }
             }
@@ -258,6 +258,7 @@ Item {
             // Form bölümü
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.topMargin: app.xlSpacing * 1.5
                 spacing: app.normalSpacing
 
                 // Kullanıcı adı
