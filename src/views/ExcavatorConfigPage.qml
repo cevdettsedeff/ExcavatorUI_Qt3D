@@ -222,7 +222,8 @@ Rectangle {
             // Excavator Name
             ConfigInputField {
                 Layout.fillWidth: true
-                Layout.margins: 20
+                Layout.leftMargin: 20
+                Layout.rightMargin: 20
                 label: root.tr("Ekskavatör Adı")
                 placeholder: root.tr("Örn: UDHB Burak")
                 inputText: configManager ? configManager.excavatorName : ""
@@ -241,94 +242,102 @@ Rectangle {
                 }
             }
 
-            // Scanning Depth
-            ConfigInputField {
+            // Row 1: Scanning Depth ve Boom Length
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                label: root.tr("Tarama Derinliği (metre)")
-                placeholder: root.tr("Örn: 15.0")
-                inputText: configManager ? configManager.scanningDepth.toFixed(1) : "15.0"
-                inputType: "number"
-                suffix: "m"
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
-                onFieldTextChanged: function(newText) {
-                    var val = parseFloat(newText)
-                    if (!isNaN(val) && val > 0 && configManager) {
-                        configManager.scanningDepth = val
+                spacing: app ? app.normalSpacing : 12
+
+                // Scanning Depth
+                ConfigInputField {
+                    Layout.fillWidth: true
+                    label: root.tr("Tarama Derinliği (m)")
+                    placeholder: root.tr("15.0")
+                    inputText: configManager ? configManager.scanningDepth.toFixed(1) : "15.0"
+                    inputType: "number"
+                    suffix: "m"
+                    fieldPrimaryColor: root.primaryColor
+                    fieldSurfaceColor: root.surfaceColor
+                    fieldTextColor: root.textColor
+                    fieldTextSecondaryColor: root.textSecondaryColor
+                    fieldBorderColor: root.borderColor
+                    onFieldTextChanged: function(newText) {
+                        var val = parseFloat(newText)
+                        if (!isNaN(val) && val > 0 && configManager) {
+                            configManager.scanningDepth = val
+                        }
+                    }
+                }
+
+                // Boom Length
+                ConfigInputField {
+                    Layout.fillWidth: true
+                    label: root.tr("Ana Bom (m)")
+                    placeholder: root.tr("12.0")
+                    inputText: configManager ? configManager.boomLength.toFixed(1) : "0.0"
+                    inputType: "number"
+                    suffix: "m"
+                    fieldPrimaryColor: root.primaryColor
+                    fieldSurfaceColor: root.surfaceColor
+                    fieldTextColor: root.textColor
+                    fieldTextSecondaryColor: root.textSecondaryColor
+                    fieldBorderColor: root.borderColor
+                    onFieldTextChanged: function(newText) {
+                        var val = parseFloat(newText)
+                        if (!isNaN(val) && val > 0 && configManager) {
+                            configManager.boomLength = val
+                        }
                     }
                 }
             }
 
-            // Boom Length
-            ConfigInputField {
+            // Row 2: Arm Length ve Bucket Width
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                label: root.tr("Boom Uzunluğu (metre)")
-                placeholder: root.tr("Örn: 12.0")
-                inputText: configManager ? configManager.boomLength.toFixed(1) : "0.0"
-                inputType: "number"
-                suffix: "m"
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
-                onFieldTextChanged: function(newText) {
-                    var val = parseFloat(newText)
-                    if (!isNaN(val) && val > 0 && configManager) {
-                        configManager.boomLength = val
+                spacing: app ? app.normalSpacing : 12
+
+                // Arm Length
+                ConfigInputField {
+                    Layout.fillWidth: true
+                    label: root.tr("Arm Bom (m)")
+                    placeholder: root.tr("10.0")
+                    inputText: configManager ? configManager.armLength.toFixed(1) : "0.0"
+                    inputType: "number"
+                    suffix: "m"
+                    fieldPrimaryColor: root.primaryColor
+                    fieldSurfaceColor: root.surfaceColor
+                    fieldTextColor: root.textColor
+                    fieldTextSecondaryColor: root.textSecondaryColor
+                    fieldBorderColor: root.borderColor
+                    onFieldTextChanged: function(newText) {
+                        var val = parseFloat(newText)
+                        if (!isNaN(val) && val > 0 && configManager) {
+                            configManager.armLength = val
+                        }
                     }
                 }
-            }
 
-            // Arm Length
-            ConfigInputField {
-                Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
-                label: root.tr("Arm Uzunluğu (metre)")
-                placeholder: root.tr("Örn: 10.0")
-                inputText: configManager ? configManager.armLength.toFixed(1) : "0.0"
-                inputType: "number"
-                suffix: "m"
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
-                onFieldTextChanged: function(newText) {
-                    var val = parseFloat(newText)
-                    if (!isNaN(val) && val > 0 && configManager) {
-                        configManager.armLength = val
-                    }
-                }
-            }
-
-            // Bucket Width
-            ConfigInputField {
-                Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
-                label: root.tr("Bucket Genişliği (metre)")
-                placeholder: root.tr("Örn: 2.0")
-                inputText: configManager ? configManager.bucketWidth.toFixed(1) : "0.0"
-                inputType: "number"
-                suffix: "m"
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
-                onFieldTextChanged: function(newText) {
-                    var val = parseFloat(newText)
-                    if (!isNaN(val) && val > 0 && configManager) {
-                        configManager.bucketWidth = val
+                // Bucket Width
+                ConfigInputField {
+                    Layout.fillWidth: true
+                    label: root.tr("Kova (m³)")
+                    placeholder: root.tr("3.0")
+                    inputText: configManager ? configManager.bucketWidth.toFixed(1) : "0.0"
+                    inputType: "number"
+                    suffix: "m³"
+                    fieldPrimaryColor: root.primaryColor
+                    fieldSurfaceColor: root.surfaceColor
+                    fieldTextColor: root.textColor
+                    fieldTextSecondaryColor: root.textSecondaryColor
+                    fieldBorderColor: root.borderColor
+                    onFieldTextChanged: function(newText) {
+                        var val = parseFloat(newText)
+                        if (!isNaN(val) && val > 0 && configManager) {
+                            configManager.bucketWidth = val
+                        }
                     }
                 }
             }
