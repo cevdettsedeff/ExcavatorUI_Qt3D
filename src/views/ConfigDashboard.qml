@@ -154,16 +154,16 @@ Rectangle {
                             flat: true
 
                             contentItem: Text {
-                                text: "◀"
-                                font.pixelSize: app.mediumFontSize
+                                text: "←"
+                                font.pixelSize: 24
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                                 color: "white"
                             }
 
                             background: Rectangle {
-                                radius: app.buttonHeight / 2
-                                color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : (parent.hovered ? Qt.rgba(1, 1, 1, 0.1) : "transparent")
+                                radius: 20
+                                color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
                             }
 
                             onClicked: root.backToLogin()
@@ -245,7 +245,7 @@ Rectangle {
                         // 1. Ekskavatör Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: app.largeIconSize * 3.2
+                            Layout.preferredHeight: app.largeIconSize * 4.2
                             title: root.tr("Ekskavatör Ayarları")
                             description: root.tr("Boom, arm uzunlukları ve ekskavatör adı")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_excavator.png"
@@ -269,7 +269,7 @@ Rectangle {
                         // 2. Kazı Alanı Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: app.largeIconSize * 3.2
+                            Layout.preferredHeight: app.largeIconSize * 4.2
                             title: root.tr("Kazı Alanı Ayarları")
                             description: root.tr("Grid sistemi ve batimetrik veri girişi")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_dig_area.png"
@@ -293,7 +293,7 @@ Rectangle {
                         // 3. Harita Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: app.largeIconSize * 3.2
+                            Layout.preferredHeight: app.largeIconSize * 4.2
                             title: root.tr("Harita Ayarları")
                             description: root.tr("Kazı yapılacak alanı haritadan seçin")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_map.png"
@@ -317,7 +317,7 @@ Rectangle {
                         // 4. Alarm Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: app.largeIconSize * 3.2
+                            Layout.preferredHeight: app.largeIconSize * 4.2
                             title: root.tr("Alarm Ayarları")
                             description: root.tr("Alarm renklerini özelleştirin")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_alarm.png"
