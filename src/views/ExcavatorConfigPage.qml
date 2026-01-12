@@ -387,42 +387,89 @@ Rectangle {
             color: root.borderColor
         }
 
-        Button {
+        RowLayout {
             anchors.centerIn: parent
             width: parent.width - (app ? app.xlSpacing * 2 : 40)
-            height: app ? app.buttonHeight : 50
-            text: root.tr("Kaydet ve Devam Et")
-            enabled: isFormValid
+            spacing: app ? app.normalSpacing : 12
 
-            property bool isFormValid: {
-                if (!configManager) return false
-                return configManager.excavatorName.length > 0 &&
-                       configManager.scanningDepth > 0 &&
-                       configManager.boomLength > 0 &&
-                       configManager.armLength > 0 &&
-                       configManager.bucketWidth > 0
+            // Preset olarak kaydet butonu
+            Button {
+                Layout.preferredWidth: parent.width * 0.35
+                Layout.preferredHeight: app ? app.buttonHeight : 50
+                text: root.tr("Kaydet")
+                enabled: isFormValid && root.selectedPresetIndex === -1
+
+                property bool isFormValid: {
+                    if (!configManager) return false
+                    return configManager.excavatorName.length > 0 &&
+                           configManager.scanningDepth > 0 &&
+                           configManager.boomLength > 0 &&
+                           configManager.armLength > 0 &&
+                           configManager.bucketWidth > 0
+                }
+
+                background: Rectangle {
+                    radius: 12
+                    color: parent.enabled
+                        ? (parent.pressed ? Qt.darker("#4CAF50", 1.2) : "#4CAF50")
+                        : root.surfaceColor
+                    border.width: parent.enabled ? 0 : 1
+                    border.color: root.borderColor
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: app ? app.baseFontSize : 14
+                    font.bold: true
+                    color: parent.enabled ? "white" : root.textSecondaryColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                onClicked: {
+                    if (configManager) {
+                        configManager.saveCurrentAsPreset();
+                    }
+                }
             }
 
-            background: Rectangle {
-                radius: 12
-                color: parent.enabled
-                    ? (parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor)
-                    : root.surfaceColor
-                border.width: parent.enabled ? 0 : 1
-                border.color: root.borderColor
-            }
+            // Kaydet ve devam et butonu
+            Button {
+                Layout.fillWidth: true
+                Layout.preferredHeight: app ? app.buttonHeight : 50
+                text: root.tr("Kaydet ve Devam Et")
+                enabled: isFormValid
 
-            contentItem: Text {
-                text: parent.text
-                font.pixelSize: app ? app.mediumFontSize : 16
-                font.bold: true
-                color: parent.enabled ? "white" : root.textSecondaryColor
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
+                property bool isFormValid: {
+                    if (!configManager) return false
+                    return configManager.excavatorName.length > 0 &&
+                           configManager.scanningDepth > 0 &&
+                           configManager.boomLength > 0 &&
+                           configManager.armLength > 0 &&
+                           configManager.bucketWidth > 0
+                }
 
-            onClicked: {
-                root.configSaved()
+                background: Rectangle {
+                    radius: 12
+                    color: parent.enabled
+                        ? (parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor)
+                        : root.surfaceColor
+                    border.width: parent.enabled ? 0 : 1
+                    border.color: root.borderColor
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: app ? app.mediumFontSize : 16
+                    font.bold: true
+                    color: parent.enabled ? "white" : root.textSecondaryColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                onClicked: {
+                    root.configSaved()
+                }
             }
         }
     }

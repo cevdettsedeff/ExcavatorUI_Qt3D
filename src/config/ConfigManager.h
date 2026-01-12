@@ -221,9 +221,31 @@ public:
 
     /**
      * Load excavator preset by index
-     * @param index Preset index (0-9 for predefined excavators)
+     * @param index Preset index
      */
     Q_INVOKABLE void loadExcavatorPreset(int index);
+
+    /**
+     * Add new excavator preset
+     * @param name Excavator name
+     * @param scanningDepth Scanning depth in meters
+     * @param boomLength Boom length in meters
+     * @param armLength Arm length in meters
+     * @param bucketWidth Bucket width in cubic meters
+     */
+    Q_INVOKABLE void addExcavatorPreset(const QString &name, double scanningDepth,
+                                        double boomLength, double armLength, double bucketWidth);
+
+    /**
+     * Remove excavator preset by index
+     * @param index Preset index to remove
+     */
+    Q_INVOKABLE void removeExcavatorPreset(int index);
+
+    /**
+     * Save current excavator configuration as new preset
+     */
+    Q_INVOKABLE void saveCurrentAsPreset();
 
     /**
      * Mark dig area configuration as complete
@@ -378,6 +400,7 @@ private:
     void parseMapSettings(const QJsonObject &mapSettings);
     void parseAlarmSettings(const QJsonObject &alarmSettings);
     void parseScreenSaverSettings(const QJsonObject &screenSaverSettings);
+    void parseExcavatorPresets(const QJsonArray &presets);
     QColor parseColor(const QString &colorString) const;
     void setDefaultValues();
     void initializeGridDepths();
