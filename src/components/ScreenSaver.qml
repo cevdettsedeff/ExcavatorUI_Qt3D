@@ -60,12 +60,12 @@ Rectangle {
         anchors.centerIn: parent
         spacing: app ? app.largeSpacing : 20
 
-        // Ekskavatör resmi (PNG) - 10.1 inç için optimize
+        // Ekskavatör resmi (PNG) - 10.1 inç için optimize (BÜYÜTÜLMÜŞ)
         Image {
             id: excavatorImage
             source: "qrc:/ExcavatorUI_Qt3D/resources/screensaver/excavator_screensaver.png"
-            width: app ? app.largeIconSize * 7 : 350
-            height: app ? app.largeIconSize * 4.2 : 210
+            width: app ? app.largeIconSize * 8.5 : 425
+            height: app ? app.largeIconSize * 5 : 250
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             smooth: true
@@ -83,11 +83,11 @@ Rectangle {
             }
         }
 
-        // Fallback: Resim yoksa Canvas ile çiz - 10.1 inç için optimize
+        // Fallback: Resim yoksa Canvas ile çiz - 10.1 inç için optimize (BÜYÜTÜLMÜŞ)
         Canvas {
             id: excavatorCanvas
-            width: app ? app.largeIconSize * 7 : 350
-            height: app ? app.largeIconSize * 4.2 : 210
+            width: app ? app.largeIconSize * 8.5 : 425
+            height: app ? app.largeIconSize * 5 : 250
             anchors.horizontalCenter: parent.horizontalCenter
             visible: excavatorImage.status !== Image.Ready
 
@@ -95,7 +95,7 @@ Rectangle {
                 var ctx = getContext("2d")
                 ctx.reset()
 
-                var scale = app ? app.fontScale * 2.5 : 2.5  // Responsive ölçek
+                var scale = app ? app.fontScale * 3 : 3  // Responsive ölçek (BÜYÜTÜLMÜŞ)
                 var offsetX = 25
                 var offsetY = 45
 
@@ -187,14 +187,14 @@ Rectangle {
             }
         }
 
-        // Saat - 10.1 inç için optimize
+        // Saat - 10.1 inç için optimize (BÜYÜTÜLMÜŞ)
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
 
             Text {
                 id: timeText
                 text: "00:00"
-                font.pixelSize: app ? app.xlFontSize * 2.2 : 84
+                font.pixelSize: app ? app.xlFontSize * 2.8 : 106
                 font.weight: Font.Light
                 font.family: "Segoe UI"
                 color: "#ffffff"
@@ -203,7 +203,7 @@ Rectangle {
             Text {
                 id: secondsText
                 text: ":00"
-                font.pixelSize: app ? app.xlFontSize * 1.1 : 42
+                font.pixelSize: app ? app.xlFontSize * 1.4 : 53
                 font.weight: Font.Light
                 font.family: "Segoe UI"
                 color: "#888888"
@@ -211,21 +211,21 @@ Rectangle {
             }
         }
 
-        // Tarih - 10.1 inç için optimize
+        // Tarih - 10.1 inç için optimize (BÜYÜTÜLMÜŞ)
         Text {
             id: dateText
             text: "Pazartesi, 1 Ocak 2024"
-            font.pixelSize: app ? app.mediumFontSize * 1.1 : 29
+            font.pixelSize: app ? app.mediumFontSize * 1.4 : 36
             font.weight: Font.Normal
             font.family: "Segoe UI"
             color: "#aaaaaa"
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        // Alt yazı - 10.1 inç için optimize
+        // Alt yazı - 10.1 inç için optimize (BÜYÜTÜLMÜŞ)
         Text {
             text: qsTr("Devam etmek için dokunun")
-            font.pixelSize: app ? app.baseFontSize : 22
+            font.pixelSize: app ? app.mediumFontSize : 26
             color: "#666666"
             anchors.horizontalCenter: parent.horizontalCenter
 

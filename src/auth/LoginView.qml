@@ -241,14 +241,6 @@ Item {
                         wrapMode: Text.WordWrap
                         horizontalAlignment: Text.AlignHCenter
                     }
-
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: qsTranslate("Main", "Please log in")
-                        font.pixelSize: app.smallFontSize
-                        color: "#888888"
-                        Layout.topMargin: app.largeSpacing
-                    }
                 }
             }
 
