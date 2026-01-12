@@ -38,10 +38,15 @@ Rectangle {
     // Theme colors with fallbacks (softer light theme defaults)
     property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
+    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f7fafc"
     property color textColor: themeManager ? themeManager.textColor : "white"
     property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#e0e0e0"
     property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
     property color infoColor: themeManager ? themeManager.infoColor : "#4299e1"
+
+    // Input field colors (for light surface backgrounds)
+    property color inputTextColor: "#2d3748"  // Dark text on white surface
+    property color inputPlaceholderColor: "#a0aec0"  // Light gray placeholder
 
     // Excavator preset selection state
     property int selectedPresetIndex: -1  // -1 means "Yeni Ekskavatör"
@@ -163,7 +168,7 @@ Rectangle {
                         rightPadding: presetComboBox.indicator.width + 12
                         text: presetComboBox.displayText
                         font.pixelSize: app ? app.baseFontSize : 16
-                        color: "#2d3748"
+                        color: root.inputTextColor
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
@@ -179,7 +184,7 @@ Rectangle {
                         width: presetComboBox.width
                         contentItem: Text {
                             text: modelData
-                            color: root.textColor
+                            color: root.inputTextColor
                             font.pixelSize: app ? app.baseFontSize : 16
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
@@ -213,7 +218,7 @@ Rectangle {
                 Text {
                     text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin")
                     font.pixelSize: app ? app.smallFontSize : 12
-                    color: "white"
+                    color: root.textColor
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                 }
@@ -227,11 +232,6 @@ Rectangle {
                 label: root.tr("Ekskavatör Adı")
                 placeholder: root.tr("Örn: UDHB Burak")
                 inputText: configManager ? configManager.excavatorName : ""
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
                 onFieldTextChanged: function(newText) {
                     if (configManager) {
                         configManager.excavatorName = newText;
@@ -257,11 +257,6 @@ Rectangle {
                     inputText: configManager ? configManager.scanningDepth.toFixed(1) : "15.0"
                     inputType: "number"
                     suffix: "m"
-                    fieldPrimaryColor: root.primaryColor
-                    fieldSurfaceColor: root.surfaceColor
-                    fieldTextColor: root.textColor
-                    fieldTextSecondaryColor: root.textSecondaryColor
-                    fieldBorderColor: root.borderColor
                     onFieldTextChanged: function(newText) {
                         var val = parseFloat(newText)
                         if (!isNaN(val) && val > 0 && configManager) {
@@ -278,11 +273,6 @@ Rectangle {
                     inputText: configManager ? configManager.boomLength.toFixed(1) : "0.0"
                     inputType: "number"
                     suffix: "m"
-                    fieldPrimaryColor: root.primaryColor
-                    fieldSurfaceColor: root.surfaceColor
-                    fieldTextColor: root.textColor
-                    fieldTextSecondaryColor: root.textSecondaryColor
-                    fieldBorderColor: root.borderColor
                     onFieldTextChanged: function(newText) {
                         var val = parseFloat(newText)
                         if (!isNaN(val) && val > 0 && configManager) {
@@ -307,11 +297,6 @@ Rectangle {
                     inputText: configManager ? configManager.armLength.toFixed(1) : "0.0"
                     inputType: "number"
                     suffix: "m"
-                    fieldPrimaryColor: root.primaryColor
-                    fieldSurfaceColor: root.surfaceColor
-                    fieldTextColor: root.textColor
-                    fieldTextSecondaryColor: root.textSecondaryColor
-                    fieldBorderColor: root.borderColor
                     onFieldTextChanged: function(newText) {
                         var val = parseFloat(newText)
                         if (!isNaN(val) && val > 0 && configManager) {
@@ -328,11 +313,6 @@ Rectangle {
                     inputText: configManager ? configManager.bucketWidth.toFixed(1) : "0.0"
                     inputType: "number"
                     suffix: "m³"
-                    fieldPrimaryColor: root.primaryColor
-                    fieldSurfaceColor: root.surfaceColor
-                    fieldTextColor: root.textColor
-                    fieldTextSecondaryColor: root.textSecondaryColor
-                    fieldBorderColor: root.borderColor
                     onFieldTextChanged: function(newText) {
                         var val = parseFloat(newText)
                         if (!isNaN(val) && val > 0 && configManager) {
@@ -369,7 +349,7 @@ Rectangle {
                         Layout.fillWidth: true
                         text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin. Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
                         font.pixelSize: app ? app.smallFontSize : 13
-                        color: "white"
+                        color: root.textColor
                         wrapMode: Text.WordWrap
                     }
                 }
@@ -492,12 +472,13 @@ Rectangle {
         property string inputType: "text" // "text" or "number"
         property string suffix: ""
 
-        // Theme colors (passed from parent - softer light theme defaults)
-        property color fieldPrimaryColor: "#319795"
-        property color fieldSurfaceColor: "#ffffff"
-        property color fieldTextColor: "#2d3748"
-        property color fieldTextSecondaryColor: "#a0aec0"
-        property color fieldBorderColor: "#e2e8f0"
+        // Theme colors (passed from parent)
+        property color fieldPrimaryColor: root.primaryColor
+        property color fieldSurfaceColor: root.surfaceColor
+        property color fieldLabelColor: root.textColor
+        property color fieldTextColor: root.inputTextColor
+        property color fieldPlaceholderColor: root.inputPlaceholderColor
+        property color fieldBorderColor: root.borderColor
 
         signal fieldTextChanged(string newText)
 
@@ -507,7 +488,7 @@ Rectangle {
             text: inputFieldRoot.label
             font.pixelSize: app ? app.baseFontSize : 14
             font.bold: true
-            color: "white"
+            color: inputFieldRoot.fieldLabelColor
         }
 
         Rectangle {
@@ -531,7 +512,13 @@ Rectangle {
                     placeholderText: inputFieldRoot.placeholder
                     font.pixelSize: app ? app.baseFontSize : 16
                     color: inputFieldRoot.fieldTextColor
-                    placeholderTextColor: inputFieldRoot.fieldTextSecondaryColor
+                    placeholderTextColor: inputFieldRoot.fieldPlaceholderColor
+
+                    // Remove internal padding to prevent text offset
+                    leftPadding: 0
+                    rightPadding: 0
+                    topPadding: 0
+                    bottomPadding: 0
 
                     validator: inputFieldRoot.inputType === "number" ? doubleValidator : null
 
@@ -554,7 +541,7 @@ Rectangle {
                     visible: inputFieldRoot.suffix.length > 0
                     text: inputFieldRoot.suffix
                     font.pixelSize: app ? app.baseFontSize : 14
-                    color: inputFieldRoot.fieldTextSecondaryColor
+                    color: inputFieldRoot.fieldPlaceholderColor
                 }
             }
         }
