@@ -124,7 +124,7 @@ Rectangle {
                     text: root.tr("Ekskavatör Seçimi")
                     font.pixelSize: app ? app.baseFontSize : 14
                     font.bold: true
-                    color: root.textColor
+                    color: "white"
                 }
 
                 ComboBox {
@@ -176,7 +176,7 @@ Rectangle {
                         rightPadding: presetComboBox.indicator.width + 12
                         text: presetComboBox.displayText
                         font.pixelSize: app ? app.baseFontSize : 16
-                        color: root.textColor
+                        color: root.inputTextColor  // Dark text on white background
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
@@ -192,7 +192,7 @@ Rectangle {
                         width: presetComboBox.width
                         contentItem: Text {
                             text: modelData
-                            color: root.textColor
+                            color: root.inputTextColor  // Dark text on white dropdown
                             font.pixelSize: app ? app.baseFontSize : 16
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
@@ -230,7 +230,7 @@ Rectangle {
                 Text {
                     text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin")
                     font.pixelSize: app ? app.smallFontSize : 12
-                    color: root.textColor
+                    color: "white"
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                 }
@@ -361,7 +361,7 @@ Rectangle {
                         Layout.fillWidth: true
                         text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin. Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
                         font.pixelSize: app ? app.smallFontSize : 13
-                        color: root.textColor
+                        color: "white"
                         wrapMode: Text.WordWrap
                     }
                 }
@@ -487,7 +487,7 @@ Rectangle {
         // Theme colors (passed from parent)
         property color fieldPrimaryColor: root.primaryColor
         property color fieldSurfaceColor: root.surfaceColor
-        property color fieldLabelColor: root.textColor
+        property color fieldLabelColor: "white"  // Always white on dark background
         property color fieldTextColor: root.inputTextColor
         property color fieldPlaceholderColor: root.inputPlaceholderColor
         property color fieldBorderColor: root.borderColor
@@ -500,7 +500,7 @@ Rectangle {
             text: inputFieldRoot.label
             font.pixelSize: app ? app.baseFontSize : 14
             font.bold: true
-            color: inputFieldRoot.fieldLabelColor
+            color: "white"  // Always white
         }
 
         Rectangle {
