@@ -245,7 +245,7 @@ Rectangle {
                         // 1. Ekskavatör Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: app.largeIconSize * 4.2
+                            Layout.preferredHeight: app.largeIconSize * 3.8
                             title: root.tr("Ekskavatör Ayarları")
                             description: root.tr("Boom, arm uzunlukları ve ekskavatör adı")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_excavator.png"
@@ -269,7 +269,7 @@ Rectangle {
                         // 2. Kazı Alanı Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: app.largeIconSize * 4.2
+                            Layout.preferredHeight: app.largeIconSize * 3.8
                             title: root.tr("Kazı Alanı Ayarları")
                             description: root.tr("Grid sistemi ve batimetrik veri girişi")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_dig_area.png"
@@ -293,7 +293,7 @@ Rectangle {
                         // 3. Harita Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: app.largeIconSize * 4.2
+                            Layout.preferredHeight: app.largeIconSize * 3.8
                             title: root.tr("Harita Ayarları")
                             description: root.tr("Kazı yapılacak alanı haritadan seçin")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_map.png"
@@ -317,7 +317,7 @@ Rectangle {
                         // 4. Alarm Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: app.largeIconSize * 4.2
+                            Layout.preferredHeight: app.largeIconSize * 3.8
                             title: root.tr("Alarm Ayarları")
                             description: root.tr("Alarm renklerini özelleştirin")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_alarm.png"
@@ -464,8 +464,8 @@ Rectangle {
         // Theme color properties (passed from parent - softer fallbacks)
         property color tilePrimaryColor: "#319795"
         property color tileSurfaceColor: "#ffffff"
-        property color tileTextColor: "#2d3748"
-        property color tileTextSecondaryColor: "#718096"
+        property color tileTextColor: "white"
+        property color tileTextSecondaryColor: "#e0e0e0"
         property color tileBorderColor: "#e2e8f0"
         property color tileWarningColor: "#ed8936"
 
@@ -505,22 +505,24 @@ Rectangle {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 12
-            spacing: 4
+            anchors.margins: app.smallPadding * 0.8
+            spacing: app.smallSpacing * 0.3
 
             // Üst kısım: Başlık ve durum badge yan yana
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: app.smallSpacing * 0.6
 
                 // Başlık - kutucuğun üstünde belirgin şekilde
                 Text {
                     Layout.fillWidth: true
                     text: tile.title
-                    font.pixelSize: app.baseFontSize
+                    font.pixelSize: app.smallFontSize * 1.1
                     font.bold: true
                     color: tile.isConfigured ? "white" : tile.tileTextColor
                     elide: Text.ElideRight
+                    wrapMode: Text.WordWrap
+                    maximumLineCount: 2
                 }
 
                 // Status indicator
@@ -576,8 +578,8 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: tile.description
-                font.pixelSize: app.smallFontSize
-                color: tile.isConfigured ? Qt.rgba(1, 1, 1, 0.8) : tile.tileTextSecondaryColor
+                font.pixelSize: app.smallFontSize * 0.85
+                color: tile.isConfigured ? Qt.rgba(1, 1, 1, 0.9) : tile.tileTextSecondaryColor
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
                 maximumLineCount: 2
@@ -587,7 +589,7 @@ Rectangle {
             // Alt kısımda düzenle/yapılandır butonu görünümü
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 28
+                Layout.preferredHeight: app.smallButtonHeight * 0.6
                 radius: 6
                 color: tile.isConfigured
                     ? Qt.rgba(1, 1, 1, 0.2)
@@ -596,7 +598,7 @@ Rectangle {
                 Text {
                     anchors.centerIn: parent
                     text: tile.isConfigured ? root.tr("Düzenle") : root.tr("Yapılandır")
-                    font.pixelSize: app.smallFontSize
+                    font.pixelSize: app.smallFontSize * 0.9
                     font.bold: true
                     color: tile.isConfigured ? "white" : tile.tilePrimaryColor
                 }

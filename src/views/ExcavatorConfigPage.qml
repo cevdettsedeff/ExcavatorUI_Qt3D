@@ -39,7 +39,7 @@ Rectangle {
     property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
     property color textColor: themeManager ? themeManager.textColor : "white"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#cbd5e0"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#e0e0e0"
     property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
     property color infoColor: themeManager ? themeManager.infoColor : "#4299e1"
 
