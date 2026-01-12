@@ -213,7 +213,7 @@ Rectangle {
                 Text {
                     text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin")
                     font.pixelSize: app ? app.smallFontSize : 12
-                    color: root.textSecondaryColor
+                    color: "white"
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                 }
@@ -369,7 +369,7 @@ Rectangle {
                         Layout.fillWidth: true
                         text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin. Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
                         font.pixelSize: app ? app.smallFontSize : 13
-                        color: root.textSecondaryColor
+                        color: "white"
                         wrapMode: Text.WordWrap
                     }
                 }
@@ -421,16 +421,16 @@ Rectangle {
                     radius: 12
                     color: parent.enabled
                         ? (parent.pressed ? Qt.darker("#4CAF50", 1.2) : "#4CAF50")
-                        : root.surfaceColor
+                        : Qt.rgba(0.5, 0.5, 0.5, 0.15)
                     border.width: parent.enabled ? 0 : 1
-                    border.color: root.borderColor
+                    border.color: Qt.rgba(1, 1, 1, 0.1)
                 }
 
                 contentItem: Text {
                     text: parent.text
                     font.pixelSize: app ? app.baseFontSize : 14
                     font.bold: true
-                    color: parent.enabled ? "white" : root.textSecondaryColor
+                    color: parent.enabled ? "white" : Qt.rgba(1, 1, 1, 0.3)
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -462,16 +462,16 @@ Rectangle {
                     radius: 12
                     color: parent.enabled
                         ? (parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor)
-                        : root.surfaceColor
+                        : Qt.rgba(0.5, 0.5, 0.5, 0.15)
                     border.width: parent.enabled ? 0 : 1
-                    border.color: root.borderColor
+                    border.color: Qt.rgba(1, 1, 1, 0.1)
                 }
 
                 contentItem: Text {
                     text: parent.text
                     font.pixelSize: app ? app.mediumFontSize : 16
                     font.bold: true
-                    color: parent.enabled ? "white" : root.textSecondaryColor
+                    color: parent.enabled ? "white" : Qt.rgba(1, 1, 1, 0.3)
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -495,8 +495,8 @@ Rectangle {
         // Theme colors (passed from parent - softer light theme defaults)
         property color fieldPrimaryColor: "#319795"
         property color fieldSurfaceColor: "#ffffff"
-        property color fieldTextColor: "white"
-        property color fieldTextSecondaryColor: "#cbd5e0"
+        property color fieldTextColor: "#2d3748"
+        property color fieldTextSecondaryColor: "#a0aec0"
         property color fieldBorderColor: "#e2e8f0"
 
         signal fieldTextChanged(string newText)
