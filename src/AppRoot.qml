@@ -228,6 +228,14 @@ ApplicationWindow {
                     console.log("Konfigürasyon tamamlandı, ana dashboard'a geçiliyor...")
                     currentView = "dashboard"
                 }
+
+                function onBackToLogin() {
+                    console.log("Login ekranına dönülüyor...")
+                    currentView = "login"
+                    if (authService) {
+                        authService.logout()
+                    }
+                }
             }
 
             // Geçiş animasyonu

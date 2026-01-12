@@ -16,6 +16,9 @@ Rectangle {
     id: root
     color: themeManager ? themeManager.backgroundColor : "#f7fafc"
 
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     // Translation support
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
@@ -36,6 +39,7 @@ Rectangle {
     signal openDigAreaConfig()
     signal openMapConfig()
     signal openAlarmConfig()
+    signal backToLogin()
 
     // Config progress hesaplama (root seviyesinde)
     property real configProgress: {
@@ -134,30 +138,55 @@ Rectangle {
                     width: parent.width
                     spacing: 20
 
-                    // Header
+                    // Header - KÜÇÜLTÜLMÜŞ
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 120
+                        Layout.preferredHeight: app.buttonHeight * 1.5
                         color: root.primaryColor
+
+                        // Back to Login Button (Top Left)
+                        Button {
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.margins: app.smallPadding
+                            width: app.buttonHeight
+                            height: app.buttonHeight
+                            flat: true
+
+                            contentItem: Text {
+                                text: "◀"
+                                font.pixelSize: app.mediumFontSize
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                color: "white"
+                            }
+
+                            background: Rectangle {
+                                radius: app.buttonHeight / 2
+                                color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : (parent.hovered ? Qt.rgba(1, 1, 1, 0.1) : "transparent")
+                            }
+
+                            onClicked: root.backToLogin()
+                        }
 
                         // Settings Button (Top Right)
                         Button {
                             anchors.right: parent.right
                             anchors.top: parent.top
-                            anchors.margins: 12
-                            width: 44
-                            height: 44
+                            anchors.margins: app.smallPadding
+                            width: app.buttonHeight
+                            height: app.buttonHeight
                             flat: true
 
                             contentItem: Text {
                                 text: "⚙️"
-                                font.pixelSize: 22
+                                font.pixelSize: app.mediumFontSize
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
 
                             background: Rectangle {
-                                radius: 22
+                                radius: app.buttonHeight / 2
                                 color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : (parent.hovered ? Qt.rgba(1, 1, 1, 0.1) : "transparent")
                             }
 
@@ -166,11 +195,11 @@ Rectangle {
 
                         ColumnLayout {
                             anchors.centerIn: parent
-                            spacing: 8
+                            spacing: app.smallSpacing
 
                             Text {
                                 text: root.tr("Konfigürasyon Merkezi")
-                                font.pixelSize: 28
+                                font.pixelSize: app.mediumFontSize
                                 font.bold: true
                                 color: "white"
                                 Layout.alignment: Qt.AlignHCenter
@@ -178,23 +207,23 @@ Rectangle {
 
                             Text {
                                 text: root.tr("Lütfen aşağıdaki ayarları tamamlayın")
-                                font.pixelSize: app.baseFontSize
+                                font.pixelSize: app.smallFontSize
                                 color: Qt.rgba(1, 1, 1, 0.8)
                                 Layout.alignment: Qt.AlignHCenter
                             }
 
                             // Progress indicator
                             Rectangle {
-                                Layout.preferredWidth: 200
-                                Layout.preferredHeight: 6
+                                Layout.preferredWidth: app.largeIconSize * 4
+                                Layout.preferredHeight: app.smallSpacing * 0.6
                                 Layout.alignment: Qt.AlignHCenter
-                                radius: 3
+                                radius: app.smallRadius * 0.5
                                 color: Qt.rgba(1, 1, 1, 0.3)
 
                                 Rectangle {
                                     width: parent.width * root.configProgress
                                     height: parent.height
-                                    radius: 3
+                                    radius: app.smallRadius * 0.5
                                     color: "white"
 
                                     Behavior on width {
@@ -216,7 +245,7 @@ Rectangle {
                         // 1. Ekskavatör Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 200
+                            Layout.preferredHeight: app.largeIconSize * 3.2
                             title: root.tr("Ekskavatör Ayarları")
                             description: root.tr("Boom, arm uzunlukları ve ekskavatör adı")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_excavator.png"
@@ -240,7 +269,7 @@ Rectangle {
                         // 2. Kazı Alanı Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 200
+                            Layout.preferredHeight: app.largeIconSize * 3.2
                             title: root.tr("Kazı Alanı Ayarları")
                             description: root.tr("Grid sistemi ve batimetrik veri girişi")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_dig_area.png"
@@ -264,7 +293,7 @@ Rectangle {
                         // 3. Harita Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 200
+                            Layout.preferredHeight: app.largeIconSize * 3.2
                             title: root.tr("Harita Ayarları")
                             description: root.tr("Kazı yapılacak alanı haritadan seçin")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_map.png"
@@ -288,7 +317,7 @@ Rectangle {
                         // 4. Alarm Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 200
+                            Layout.preferredHeight: app.largeIconSize * 3.2
                             title: root.tr("Alarm Ayarları")
                             description: root.tr("Alarm renklerini özelleştirin")
                             imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_alarm.png"
@@ -514,20 +543,20 @@ Rectangle {
                 }
             }
 
-            // Icon - Image with emoji fallback
+            // Icon - Image with emoji fallback (KÜÇÜLTÜLMÜŞ)
             Item {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.fillHeight: true
-                Layout.preferredWidth: 56
-                Layout.preferredHeight: 56
+                Layout.preferredWidth: app.largeIconSize
+                Layout.preferredHeight: app.largeIconSize
 
                 // Image icon (primary)
                 Image {
                     id: tileIconImage
                     anchors.centerIn: parent
                     source: tile.imageSource
-                    width: 52
-                    height: 52
+                    width: app.iconSize
+                    height: app.iconSize
                     fillMode: Image.PreserveAspectFit
                     smooth: true
                     antialiasing: true
@@ -538,7 +567,7 @@ Rectangle {
                 Text {
                     anchors.centerIn: parent
                     text: tile.icon
-                    font.pixelSize: 48
+                    font.pixelSize: app.iconSize
                     visible: tileIconImage.status !== Image.Ready
                 }
             }
