@@ -32,13 +32,19 @@ Rectangle {
         }
     }
 
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     // Theme colors with fallbacks (softer light theme defaults)
     property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
     property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color textColor: themeManager ? themeManager.textColor : "#2d3748"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
+    property color textColor: themeManager ? themeManager.textColor : "white"
+    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#cbd5e0"
     property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
     property color infoColor: themeManager ? themeManager.infoColor : "#4299e1"
+
+    // Excavator preset selection state
+    property int selectedPresetIndex: -1  // -1 means "Yeni Ekskavatör"
 
     // Header
     Rectangle {
@@ -46,17 +52,17 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 60
+        height: app ? app.buttonHeight * 1.5 : 60
         color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
+            anchors.leftMargin: app ? app.smallPadding : 16
+            anchors.rightMargin: app ? app.smallPadding : 16
 
             Button {
-                Layout.preferredWidth: 40
-                Layout.preferredHeight: 40
+                Layout.preferredWidth: app ? app.buttonHeight : 40
+                Layout.preferredHeight: app ? app.buttonHeight : 40
                 flat: true
 
                 contentItem: Text {
@@ -78,13 +84,13 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: root.tr("Ekskavatör Ayarları")
-                font.pixelSize: 20
+                font.pixelSize: app ? app.mediumFontSize : 20
                 font.bold: true
                 color: "white"
                 horizontalAlignment: Text.AlignHCenter
             }
 
-            Item { Layout.preferredWidth: 40 }
+            Item { Layout.preferredWidth: app ? app.buttonHeight : 40 }
         }
     }
 
@@ -102,22 +108,114 @@ Rectangle {
 
             Item { Layout.preferredHeight: 20 }
 
-            // Excavator Preview
-            Rectangle {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: 200
-                Layout.preferredHeight: 150
-                color: root.surfaceColor
-                radius: 12
+            // Excavator Preset Selection
+            ColumnLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 20
+                Layout.rightMargin: 20
+                spacing: 8
 
-                Image {
-                    anchors.centerIn: parent
-                    source: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
-                    width: 80
-                    height: 80
-                    fillMode: Image.PreserveAspectFit
-                    smooth: true
-                    antialiasing: true
+                Text {
+                    text: root.tr("Ekskavatör Seçimi")
+                    font.pixelSize: app ? app.baseFontSize : 14
+                    font.bold: true
+                    color: root.textColor
+                }
+
+                ComboBox {
+                    id: presetComboBox
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: app ? app.buttonHeight : 50
+
+                    model: {
+                        var list = [root.tr("Yeni Ekskavatör")];
+                        if (configManager && configManager.excavatorPresets) {
+                            for (var i = 0; i < configManager.excavatorPresets.length; i++) {
+                                list.push(configManager.excavatorPresets[i].name);
+                            }
+                        }
+                        return list;
+                    }
+
+                    currentIndex: root.selectedPresetIndex + 1  // +1 because "Yeni Ekskavatör" is at index 0
+
+                    onCurrentIndexChanged: {
+                        if (currentIndex === 0) {
+                            // "Yeni Ekskavatör" selected - clear fields
+                            root.selectedPresetIndex = -1;
+                            if (configManager) {
+                                configManager.excavatorName = "";
+                                configManager.scanningDepth = 15.0;
+                                configManager.boomLength = 12.0;
+                                configManager.armLength = 10.0;
+                                configManager.bucketWidth = 3.0;
+                            }
+                        } else if (currentIndex > 0 && configManager) {
+                            // Load preset
+                            var presetIndex = currentIndex - 1;
+                            root.selectedPresetIndex = presetIndex;
+                            configManager.loadExcavatorPreset(presetIndex);
+                        }
+                    }
+
+                    contentItem: Text {
+                        leftPadding: 12
+                        rightPadding: presetComboBox.indicator.width + 12
+                        text: presetComboBox.displayText
+                        font.pixelSize: app ? app.baseFontSize : 16
+                        color: root.textColor
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
+
+                    background: Rectangle {
+                        color: root.surfaceColor
+                        radius: 8
+                        border.width: presetComboBox.activeFocus ? 2 : 1
+                        border.color: presetComboBox.activeFocus ? root.primaryColor : root.borderColor
+                    }
+
+                    delegate: ItemDelegate {
+                        width: presetComboBox.width
+                        contentItem: Text {
+                            text: modelData
+                            color: root.textColor
+                            font.pixelSize: app ? app.baseFontSize : 16
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        highlighted: presetComboBox.highlightedIndex === index
+                    }
+
+                    popup: Popup {
+                        y: presetComboBox.height - 1
+                        width: presetComboBox.width
+                        implicitHeight: contentItem.implicitHeight
+                        padding: 1
+
+                        contentItem: ListView {
+                            clip: true
+                            implicitHeight: contentHeight
+                            model: presetComboBox.popup.visible ? presetComboBox.delegateModel : null
+                            currentIndex: presetComboBox.highlightedIndex
+
+                            ScrollIndicator.vertical: ScrollIndicator { }
+                        }
+
+                        background: Rectangle {
+                            color: root.surfaceColor
+                            border.color: root.borderColor
+                            radius: 8
+                        }
+                    }
+                }
+
+                Text {
+                    text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin")
+                    font.pixelSize: app ? app.smallFontSize : 12
+                    color: root.textSecondaryColor
+                    wrapMode: Text.WordWrap
+                    Layout.fillWidth: true
                 }
             }
 
@@ -126,7 +224,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: 20
                 label: root.tr("Ekskavatör Adı")
-                placeholder: root.tr("Örn: CAT 320D")
+                placeholder: root.tr("Örn: UDHB Burak")
                 inputText: configManager ? configManager.excavatorName : ""
                 fieldPrimaryColor: root.primaryColor
                 fieldSurfaceColor: root.surfaceColor
@@ -134,7 +232,35 @@ Rectangle {
                 fieldTextSecondaryColor: root.textSecondaryColor
                 fieldBorderColor: root.borderColor
                 onFieldTextChanged: function(newText) {
-                    if (configManager) configManager.excavatorName = newText
+                    if (configManager) {
+                        configManager.excavatorName = newText;
+                        // Reset preset selection when manually edited
+                        root.selectedPresetIndex = -1;
+                        presetComboBox.currentIndex = 0;
+                    }
+                }
+            }
+
+            // Scanning Depth
+            ConfigInputField {
+                Layout.fillWidth: true
+                Layout.leftMargin: 20
+                Layout.rightMargin: 20
+                label: root.tr("Tarama Derinliği (metre)")
+                placeholder: root.tr("Örn: 15.0")
+                inputText: configManager ? configManager.scanningDepth.toFixed(1) : "15.0"
+                inputType: "number"
+                suffix: "m"
+                fieldPrimaryColor: root.primaryColor
+                fieldSurfaceColor: root.surfaceColor
+                fieldTextColor: root.textColor
+                fieldTextSecondaryColor: root.textSecondaryColor
+                fieldBorderColor: root.borderColor
+                onFieldTextChanged: function(newText) {
+                    var val = parseFloat(newText)
+                    if (!isNaN(val) && val > 0 && configManager) {
+                        configManager.scanningDepth = val
+                    }
                 }
             }
 
@@ -227,13 +353,13 @@ Rectangle {
 
                     Text {
                         text: "ℹ️"
-                        font.pixelSize: 20
+                        font.pixelSize: app ? app.mediumFontSize : 20
                     }
 
                     Text {
                         Layout.fillWidth: true
-                        text: root.tr("Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
-                        font.pixelSize: 13
+                        text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin. Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
+                        font.pixelSize: app ? app.smallFontSize : 13
                         color: root.textSecondaryColor
                         wrapMode: Text.WordWrap
                     }
@@ -250,7 +376,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 80
+        height: app ? app.buttonHeight * 1.8 : 80
         color: root.surfaceColor
 
         Rectangle {
@@ -263,14 +389,15 @@ Rectangle {
 
         Button {
             anchors.centerIn: parent
-            width: parent.width - 40
-            height: 50
+            width: parent.width - (app ? app.xlSpacing * 2 : 40)
+            height: app ? app.buttonHeight : 50
             text: root.tr("Kaydet ve Devam Et")
             enabled: isFormValid
 
             property bool isFormValid: {
                 if (!configManager) return false
                 return configManager.excavatorName.length > 0 &&
+                       configManager.scanningDepth > 0 &&
                        configManager.boomLength > 0 &&
                        configManager.armLength > 0 &&
                        configManager.bucketWidth > 0
@@ -287,7 +414,7 @@ Rectangle {
 
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 16
+                font.pixelSize: app ? app.mediumFontSize : 16
                 font.bold: true
                 color: parent.enabled ? "white" : root.textSecondaryColor
                 horizontalAlignment: Text.AlignHCenter
@@ -312,24 +439,24 @@ Rectangle {
         // Theme colors (passed from parent - softer light theme defaults)
         property color fieldPrimaryColor: "#319795"
         property color fieldSurfaceColor: "#ffffff"
-        property color fieldTextColor: "#2d3748"
-        property color fieldTextSecondaryColor: "#718096"
+        property color fieldTextColor: "white"
+        property color fieldTextSecondaryColor: "#cbd5e0"
         property color fieldBorderColor: "#e2e8f0"
 
         signal fieldTextChanged(string newText)
 
-        spacing: 8
+        spacing: app ? app.smallSpacing : 8
 
         Text {
             text: inputFieldRoot.label
-            font.pixelSize: 14
+            font.pixelSize: app ? app.baseFontSize : 14
             font.bold: true
             color: inputFieldRoot.fieldTextColor
         }
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 50
+            Layout.preferredHeight: app ? app.buttonHeight : 50
             color: inputFieldRoot.fieldSurfaceColor
             radius: 8
             border.width: inputField.activeFocus ? 2 : 1
@@ -337,8 +464,8 @@ Rectangle {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 12
-                spacing: 8
+                anchors.margins: app ? app.smallPadding : 12
+                spacing: app ? app.smallSpacing : 8
 
                 TextField {
                     id: inputField
@@ -346,7 +473,7 @@ Rectangle {
                     Layout.fillHeight: true
                     text: inputFieldRoot.inputText
                     placeholderText: inputFieldRoot.placeholder
-                    font.pixelSize: 16
+                    font.pixelSize: app ? app.baseFontSize : 16
                     color: inputFieldRoot.fieldTextColor
                     placeholderTextColor: inputFieldRoot.fieldTextSecondaryColor
 
@@ -370,7 +497,7 @@ Rectangle {
                 Text {
                     visible: inputFieldRoot.suffix.length > 0
                     text: inputFieldRoot.suffix
-                    font.pixelSize: 14
+                    font.pixelSize: app ? app.baseFontSize : 14
                     color: inputFieldRoot.fieldTextSecondaryColor
                 }
             }
