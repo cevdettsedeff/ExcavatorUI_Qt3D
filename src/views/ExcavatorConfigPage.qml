@@ -163,7 +163,7 @@ Rectangle {
                         rightPadding: presetComboBox.indicator.width + 12
                         text: presetComboBox.displayText
                         font.pixelSize: app ? app.baseFontSize : 16
-                        color: root.textColor
+                        color: "#2d3748"
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
@@ -507,7 +507,7 @@ Rectangle {
             text: inputFieldRoot.label
             font.pixelSize: app ? app.baseFontSize : 14
             font.bold: true
-            color: inputFieldRoot.fieldTextColor
+            color: "white"
         }
 
         Rectangle {
