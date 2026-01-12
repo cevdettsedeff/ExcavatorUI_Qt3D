@@ -176,23 +176,23 @@ Rectangle {
                         rightPadding: presetComboBox.indicator.width + 12
                         text: presetComboBox.displayText
                         font.pixelSize: app ? app.baseFontSize : 16
-                        color: root.inputTextColor  // Dark text on white background
+                        color: "white"  // White text on dark background
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
 
                     background: Rectangle {
-                        color: root.surfaceColor
+                        color: Qt.rgba(1, 1, 1, 0.1)  // Slightly visible dark background
                         radius: 8
                         border.width: presetComboBox.activeFocus ? 2 : 1
-                        border.color: presetComboBox.activeFocus ? root.primaryColor : root.borderColor
+                        border.color: presetComboBox.activeFocus ? root.primaryColor : Qt.rgba(1, 1, 1, 0.3)
                     }
 
                     delegate: ItemDelegate {
                         width: presetComboBox.width
                         contentItem: Text {
                             text: modelData
-                            color: root.inputTextColor  // Dark text on white dropdown
+                            color: "white"  // White text in dropdown
                             font.pixelSize: app ? app.baseFontSize : 16
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
@@ -200,7 +200,7 @@ Rectangle {
                         highlighted: presetComboBox.highlightedIndex === index
 
                         background: Rectangle {
-                            color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.2) : root.surfaceColor
+                            color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) : Qt.rgba(1, 1, 1, 0.05)
                         }
                     }
 
@@ -220,8 +220,8 @@ Rectangle {
                         }
 
                         background: Rectangle {
-                            color: root.surfaceColor
-                            border.color: root.borderColor
+                            color: Qt.rgba(0.2, 0.2, 0.2, 0.95)  // Dark semi-transparent background
+                            border.color: Qt.rgba(1, 1, 1, 0.2)
                             radius: 8
                         }
                     }
