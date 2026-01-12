@@ -36,13 +36,13 @@ Rectangle {
     property var app: ApplicationWindow.window
 
     // Theme colors with fallbacks (softer light theme defaults)
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
-    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f7fafc"
-    property color textColor: themeManager ? themeManager.textColor : "white"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#e0e0e0"
-    property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
-    property color infoColor: themeManager ? themeManager.infoColor : "#4299e1"
+    property color primaryColor: (themeManager && themeManager.primaryColor) ? themeManager.primaryColor : "#319795"
+    property color surfaceColor: (themeManager && themeManager.surfaceColor) ? themeManager.surfaceColor : "#ffffff"
+    property color backgroundColor: (themeManager && themeManager.backgroundColor) ? themeManager.backgroundColor : "#f7fafc"
+    property color textColor: (themeManager && themeManager.textColor) ? themeManager.textColor : "white"
+    property color textSecondaryColor: (themeManager && themeManager.textSecondaryColor) ? themeManager.textSecondaryColor : "#e0e0e0"
+    property color borderColor: (themeManager && themeManager.borderColor) ? themeManager.borderColor : "#e2e8f0"
+    property color infoColor: (themeManager && themeManager.infoColor) ? themeManager.infoColor : "#4299e1"
 
     // Input field colors (for light surface backgrounds)
     property color inputTextColor: "#2d3748"  // Dark text on white surface
@@ -142,7 +142,15 @@ Rectangle {
                         return list;
                     }
 
-                    currentIndex: root.selectedPresetIndex + 1  // +1 because "Yeni Ekskavatör" is at index 0
+                    currentIndex: 0  // Default to "Yeni Ekskavatör"
+
+                    // Update currentIndex when selectedPresetIndex changes
+                    Connections {
+                        target: root
+                        function onSelectedPresetIndexChanged() {
+                            presetComboBox.currentIndex = root.selectedPresetIndex + 1
+                        }
+                    }
 
                     onCurrentIndexChanged: {
                         if (currentIndex === 0) {
@@ -168,7 +176,7 @@ Rectangle {
                         rightPadding: presetComboBox.indicator.width + 12
                         text: presetComboBox.displayText
                         font.pixelSize: app ? app.baseFontSize : 16
-                        color: root.inputTextColor
+                        color: root.textColor
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
@@ -184,12 +192,16 @@ Rectangle {
                         width: presetComboBox.width
                         contentItem: Text {
                             text: modelData
-                            color: root.inputTextColor
+                            color: root.textColor
                             font.pixelSize: app ? app.baseFontSize : 16
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
                         }
                         highlighted: presetComboBox.highlightedIndex === index
+
+                        background: Rectangle {
+                            color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.2) : root.surfaceColor
+                        }
                     }
 
                     popup: Popup {
@@ -508,7 +520,6 @@ Rectangle {
                     id: inputField
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    text: inputFieldRoot.inputText
                     placeholderText: inputFieldRoot.placeholder
                     font.pixelSize: app ? app.baseFontSize : 16
                     color: inputFieldRoot.fieldTextColor
@@ -526,8 +537,30 @@ Rectangle {
                         color: "transparent"
                     }
 
+                    // Avoid binding loop by using Binding with restoreMode
+                    Binding {
+                        target: inputField
+                        property: "text"
+                        value: inputFieldRoot.inputText
+                        when: !inputField.activeFocus
+                        restoreMode: Binding.RestoreBinding
+                    }
+
+                    // Update text on focus loss to sync with external changes
+                    onActiveFocusChanged: {
+                        if (!activeFocus && text !== inputFieldRoot.inputText) {
+                            text = inputFieldRoot.inputText
+                        }
+                    }
+
                     onTextChanged: {
-                        inputFieldRoot.fieldTextChanged(inputField.text)
+                        if (activeFocus) {
+                            inputFieldRoot.fieldTextChanged(inputField.text)
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        text = inputFieldRoot.inputText
                     }
 
                     DoubleValidator {
