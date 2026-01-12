@@ -506,10 +506,10 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: app ? app.buttonHeight : 50
-            color: inputFieldRoot.fieldSurfaceColor
+            color: Qt.rgba(1, 1, 1, 0.1)  // Dark semi-transparent background
             radius: 8
             border.width: inputField.activeFocus ? 2 : 1
-            border.color: inputField.activeFocus ? inputFieldRoot.fieldPrimaryColor : inputFieldRoot.fieldBorderColor
+            border.color: inputField.activeFocus ? inputFieldRoot.fieldPrimaryColor : Qt.rgba(1, 1, 1, 0.3)
 
             RowLayout {
                 anchors.fill: parent
@@ -522,8 +522,8 @@ Rectangle {
                     Layout.fillHeight: true
                     placeholderText: inputFieldRoot.placeholder
                     font.pixelSize: app ? app.baseFontSize : 16
-                    color: inputFieldRoot.fieldTextColor
-                    placeholderTextColor: inputFieldRoot.fieldPlaceholderColor
+                    color: "white"  // White text on dark background
+                    placeholderTextColor: Qt.rgba(1, 1, 1, 0.5)  // Semi-transparent white for placeholder
 
                     // Remove internal padding to prevent text offset
                     leftPadding: 0
@@ -574,7 +574,7 @@ Rectangle {
                     visible: inputFieldRoot.suffix.length > 0
                     text: inputFieldRoot.suffix
                     font.pixelSize: app ? app.baseFontSize : 14
-                    color: inputFieldRoot.fieldPlaceholderColor
+                    color: Qt.rgba(1, 1, 1, 0.7)  // Semi-transparent white for suffix
                 }
             }
         }
