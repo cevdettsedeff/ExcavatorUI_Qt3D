@@ -6,14 +6,16 @@ import "../components"
 /**
  * DigAreaConfigPage - Kazı Alanı Ayarları Sayfası
  *
- * Batimetrik veri girişi ve önizleme
- * - Grid boyutu ayarı
- * - Her hücreye derinlik girişi
- * - Canlı batimetrik harita önizlemesi
+ * Wizard-style adım adım ilerleyen tasarım:
+ * 1. Köşe sayısı seçimi
+ * 2. Köşe koordinatları girişi (ITRF)
+ * 3. Polygon önizlemesi
+ * 4. Batimetrik veri girişi
+ * 5. Harita görünümleri (çizgili ve gridli)
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#f7fafc"
+    color: themeManager ? themeManager.backgroundColor : "#1a1a2e"
 
     signal back()
     signal configSaved()
@@ -35,1266 +37,1839 @@ Rectangle {
         }
     }
 
-    // Theme colors with fallbacks (dark theme optimized)
+    // Theme colors (dark theme optimized)
     property color primaryColor: (themeManager && themeManager.primaryColor) ? themeManager.primaryColor : "#319795"
     property color surfaceColor: (themeManager && themeManager.surfaceColor) ? themeManager.surfaceColor : "#ffffff"
-    property color textColor: "white"  // Always white for dark backgrounds
-    property color textSecondaryColor: Qt.rgba(1, 1, 1, 0.7)  // Semi-transparent white
-    property color borderColor: Qt.rgba(1, 1, 1, 0.3)  // Light border for dark theme
-    property color inputTextColor: "#2d3748"  // Dark text for input fields (white backgrounds)
+    property color textColor: "white"
+    property color textSecondaryColor: Qt.rgba(1, 1, 1, 0.7)
+    property color borderColor: Qt.rgba(1, 1, 1, 0.3)
+    property color inputTextColor: "#2d3748"
     property color inputBorderColor: (themeManager && themeManager.borderColor) ? themeManager.borderColor : "#e2e8f0"
+    property color cardColor: Qt.rgba(1, 1, 1, 0.08)
 
-    // Selected cell for editing
-    property int selectedRow: -1
-    property int selectedCol: -1
+    // ==================== WIZARD STATE ====================
+    property int currentStep: 0  // 0-4 arası
+    property int totalSteps: 5
 
-    // Grid verileri
-    property int gridRows: configManager ? configManager.gridRows : 5
-    property int gridCols: configManager ? configManager.gridCols : 5
-    property var gridDepths: configManager ? configManager.gridDepths : []
+    // Step titles
+    property var stepTitles: [
+        root.tr("Köşe Sayısı"),
+        root.tr("Köşe Koordinatları"),
+        root.tr("Alan Önizleme"),
+        root.tr("Batimetrik Veri"),
+        root.tr("Harita Görünümü")
+    ]
 
-    // Hesaplanan değerler
-    property real maxDepth: {
-        if (!gridDepths || gridDepths.length === 0) return 30
-        var max = 0
-        for (var i = 0; i < gridDepths.length; i++) {
-            if (gridDepths[i] > max) max = gridDepths[i]
-        }
-        return max > 0 ? max : 30
+    // ==================== POLYGON DATA ====================
+    property int cornerCount: 4
+    property var cornerPoints: []  // [{x: 454704.32, y: 4508264.38, label: "T1"}, ...]
+
+    // ==================== BATHYMETRIC DATA ====================
+    property var bathymetricPoints: []  // [{x: 454700, y: 4508260, depth: -9.5}, ...]
+
+    // ==================== MAP VIEW MODE ====================
+    property int mapViewMode: 0  // 0: Contour lines, 1: Grid
+
+    // Initialize corner points when count changes
+    onCornerCountChanged: {
+        initializeCornerPoints()
     }
 
-    // Header
+    function initializeCornerPoints() {
+        var newPoints = []
+        for (var i = 0; i < cornerCount; i++) {
+            if (i < cornerPoints.length) {
+                newPoints.push(cornerPoints[i])
+            } else {
+                newPoints.push({
+                    x: 454700 + (i * 50),
+                    y: 4508200 + (i * 50),
+                    label: "T" + (i + 1)
+                })
+            }
+        }
+        cornerPoints = newPoints
+    }
+
+    Component.onCompleted: {
+        initializeCornerPoints()
+    }
+
+    // ==================== HEADER ====================
     Rectangle {
         id: header
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: app ? app.buttonHeight * 1.5 : 60
+        height: app ? app.buttonHeight * 1.3 : 55
         color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: app ? app.smallPadding : 16
-            anchors.rightMargin: app ? app.smallPadding : 16
+            anchors.leftMargin: app ? app.smallPadding : 12
+            anchors.rightMargin: app ? app.smallPadding : 12
 
             Button {
-                Layout.preferredWidth: app ? app.buttonHeight : 40
-                Layout.preferredHeight: app ? app.buttonHeight : 40
+                Layout.preferredWidth: app ? app.buttonHeight * 0.8 : 35
+                Layout.preferredHeight: app ? app.buttonHeight * 0.8 : 35
                 flat: true
 
                 contentItem: Text {
                     text: "←"
-                    font.pixelSize: 24
+                    font.pixelSize: 22
                     color: "white"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
 
                 background: Rectangle {
-                    radius: 20
+                    radius: 17
                     color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
                 }
 
-                onClicked: root.back()
+                onClicked: {
+                    if (currentStep > 0) {
+                        currentStep--
+                    } else {
+                        root.back()
+                    }
+                }
             }
 
             Text {
                 Layout.fillWidth: true
                 text: root.tr("Kazı Alanı Ayarları")
-                font.pixelSize: app ? app.mediumFontSize : 20
+                font.pixelSize: app ? app.mediumFontSize * 0.9 : 18
                 font.bold: true
                 color: "white"
                 horizontalAlignment: Text.AlignHCenter
             }
 
-            Item { Layout.preferredWidth: app ? app.buttonHeight : 40 }
+            Item { Layout.preferredWidth: app ? app.buttonHeight * 0.8 : 35 }
         }
     }
 
-    // Content - Split view
-    RowLayout {
+    // ==================== PROGRESS INDICATOR ====================
+    Rectangle {
+        id: progressBar
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: footer.top
-        anchors.margins: app ? app.smallPadding : 16
-        spacing: app ? app.normalSpacing : 16
+        height: 70
+        color: Qt.rgba(0, 0, 0, 0.2)
 
-        // Sol panel - Ayarlar ve veri girişi
-        Rectangle {
-            Layout.preferredWidth: parent.width * 0.35
-            Layout.fillHeight: true
-            color: Qt.rgba(1, 1, 1, 0.05)  // Dark semi-transparent background
-            radius: 12
-            border.width: 1
-            border.color: root.borderColor
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: 8
+            spacing: 4
 
-            ScrollView {
-                anchors.fill: parent
-                contentWidth: parent.width
+            Repeater {
+                model: totalSteps
 
-                ColumnLayout {
-                    width: parent.width
-                    spacing: app ? app.normalSpacing : 16
-
-                    Item { Layout.preferredHeight: app ? app.smallSpacing : 8 }
-
-                    // Grid Boyutu Kontrolleri
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.margins: app ? app.smallPadding : 16
-                        Layout.preferredHeight: gridSizeContent.height + 32
-                        color: Qt.rgba(1, 1, 1, 0.08)  // Slightly lighter for contrast
-                        radius: 8
-                        border.width: 1
-                        border.color: root.borderColor
-
-                        ColumnLayout {
-                            id: gridSizeContent
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.top: parent.top
-                            anchors.margins: app ? app.smallPadding : 16
-                            spacing: app ? app.smallSpacing : 12
-
-                            Text {
-                                text: root.tr("Izgara Boyutu")
-                                font.pixelSize: app ? app.baseFontSize : 14
-                                font.bold: true
-                                color: root.textColor
-                            }
-
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: 20
-
-                                // Rows
-                                ColumnLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 6
-
-                                    Text {
-                                        text: root.tr("Satır")
-                                        font.pixelSize: app ? app.smallFontSize : 12
-                                        color: root.textSecondaryColor
-                                    }
-
-                                    RowLayout {
-                                        spacing: 8
-
-                                        Button {
-                                            Layout.preferredWidth: 36
-                                            Layout.preferredHeight: 36
-                                            text: "-"
-                                            font.pixelSize: 18
-                                            enabled: configManager ? configManager.gridRows > 1 : false
-
-                                            background: Rectangle {
-                                                radius: 6
-                                                color: parent.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
-                                                border.width: 1
-                                                border.color: root.borderColor
-                                            }
-
-                                            onClicked: if (configManager) configManager.gridRows = configManager.gridRows - 1
-                                        }
-
-                                        Text {
-                                            Layout.preferredWidth: 32
-                                            text: configManager ? configManager.gridRows.toString() : "5"
-                                            font.pixelSize: 16
-                                            font.bold: true
-                                            color: root.textColor
-                                            horizontalAlignment: Text.AlignHCenter
-                                        }
-
-                                        Button {
-                                            Layout.preferredWidth: 36
-                                            Layout.preferredHeight: 36
-                                            text: "+"
-                                            font.pixelSize: 18
-                                            enabled: configManager ? configManager.gridRows < 15 : false
-
-                                            background: Rectangle {
-                                                radius: 6
-                                                color: parent.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
-                                                border.width: 1
-                                                border.color: root.borderColor
-                                            }
-
-                                            onClicked: if (configManager) configManager.gridRows = configManager.gridRows + 1
-                                        }
-                                    }
-                                }
-
-                                // Columns
-                                ColumnLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 6
-
-                                    Text {
-                                        text: root.tr("Sütun")
-                                        font.pixelSize: app ? app.smallFontSize : 12
-                                        color: root.textSecondaryColor
-                                    }
-
-                                    RowLayout {
-                                        spacing: 8
-
-                                        Button {
-                                            Layout.preferredWidth: 36
-                                            Layout.preferredHeight: 36
-                                            text: "-"
-                                            font.pixelSize: 18
-                                            enabled: configManager ? configManager.gridCols > 1 : false
-
-                                            background: Rectangle {
-                                                radius: 6
-                                                color: parent.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
-                                                border.width: 1
-                                                border.color: root.borderColor
-                                            }
-
-                                            onClicked: if (configManager) configManager.gridCols = configManager.gridCols - 1
-                                        }
-
-                                        Text {
-                                            Layout.preferredWidth: 32
-                                            text: configManager ? configManager.gridCols.toString() : "5"
-                                            font.pixelSize: 16
-                                            font.bold: true
-                                            color: root.textColor
-                                            horizontalAlignment: Text.AlignHCenter
-                                        }
-
-                                        Button {
-                                            Layout.preferredWidth: 36
-                                            Layout.preferredHeight: 36
-                                            text: "+"
-                                            font.pixelSize: 18
-                                            enabled: configManager ? configManager.gridCols < 15 : false
-
-                                            background: Rectangle {
-                                                radius: 6
-                                                color: parent.pressed ? Qt.darker(root.surfaceColor, 1.1) : root.surfaceColor
-                                                border.width: 1
-                                                border.color: root.borderColor
-                                            }
-
-                                            onClicked: if (configManager) configManager.gridCols = configManager.gridCols + 1
-                                        }
-                                    }
-                                }
-                            }
-
-                            Text {
-                                text: root.tr("Toplam") + ": " + (configManager ? (configManager.gridRows * configManager.gridCols) : 25) + " " + root.tr("hücre doldurulacak")
-                                font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                color: root.textSecondaryColor
-                            }
-                        }
-                    }
-
-                    // Derinlik Veri Girişi Grid'i
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.margins: app ? app.smallPadding : 16
-                        Layout.preferredHeight: depthInputContent.height + 32
-                        color: Qt.rgba(1, 1, 1, 0.08)
-                        radius: 8
-                        border.width: 1
-                        border.color: root.borderColor
-
-                        ColumnLayout {
-                            id: depthInputContent
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.top: parent.top
-                            anchors.margins: app ? app.smallPadding : 16
-                            spacing: app ? app.smallSpacing : 12
-
-                            Row {
-                                spacing: 8
-
-                                Text {
-                                    text: root.tr("Batimetrik Veri Girişi")
-                                    font.pixelSize: app ? app.baseFontSize : 14
-                                    font.bold: true
-                                    color: root.textColor
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-
-                                Rectangle {
-                                    width: infoIcon.width + 8
-                                    height: infoIcon.height + 8
-                                    radius: height / 2
-                                    color: root.primaryColor
-
-                                    Text {
-                                        id: infoIcon
-                                        anchors.centerIn: parent
-                                        text: "?"
-                                        font.pixelSize: 10
-                                        font.bold: true
-                                        color: "white"
-                                    }
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        ToolTip.visible: containsMouse
-                                        ToolTip.text: root.tr("Derinlik girmek için hücrelere tıklayın (m)")
-                                    }
-                                }
-                            }
-
-                            Text {
-                                text: root.tr("Derinlik girmek için hücrelere tıklayın (m)")
-                                font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                color: root.textSecondaryColor
-                            }
-
-                            // Veri giriş grid'i
-                            Item {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: {
-                                    var cellSize = Math.min((parent.width - 40) / gridCols, 50)
-                                    return cellSize * gridRows + 25
-                                }
-
-                                // Sütun başlıkları
-                                Row {
-                                    id: colHeaders
-                                    anchors.top: parent.top
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    anchors.horizontalCenterOffset: 15
-                                    spacing: 2
-
-                                    Repeater {
-                                        model: gridCols
-                                        Rectangle {
-                                            width: Math.min((depthInputContent.width - 40) / gridCols, 50)
-                                            height: 20
-                                            color: "transparent"
-                                            Text {
-                                                anchors.centerIn: parent
-                                                text: String.fromCharCode(65 + index)
-                                                font.pixelSize: app ? app.smallFontSize * 0.8 : 10
-                                                font.bold: true
-                                                color: root.primaryColor
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Grid
-                                Row {
-                                    anchors.top: colHeaders.bottom
-                                    anchors.topMargin: 2
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    spacing: 2
-
-                                    // Satır başlıkları
-                                    Column {
-                                        spacing: 2
-                                        Repeater {
-                                            model: gridRows
-                                            Rectangle {
-                                                width: 25
-                                                height: Math.min((depthInputContent.width - 40) / gridCols, 50)
-                                                color: "transparent"
-                                                Text {
-                                                    anchors.centerIn: parent
-                                                    text: (index + 1).toString()
-                                                    font.pixelSize: app ? app.smallFontSize * 0.8 : 10
-                                                    font.bold: true
-                                                    color: root.primaryColor
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    // Grid hücreleri
-                                    Grid {
-                                        columns: gridCols
-                                        spacing: 2
-
-                                        Repeater {
-                                            model: gridRows * gridCols
-
-                                            Rectangle {
-                                                id: inputCell
-                                                property int row: Math.floor(index / gridCols)
-                                                property int col: index % gridCols
-                                                // gridDepths değiştiğinde depth'i yeniden hesapla
-                                                property real depth: {
-                                                    // root.gridDepths'e bağımlılık ekleyerek değişiklikleri yakalıyoruz
-                                                    var _ = root.gridDepths
-                                                    return configManager ? configManager.getGridDepth(row, col) : 0
-                                                }
-                                                property bool isSelected: selectedRow === row && selectedCol === col
-
-                                                width: Math.min((depthInputContent.width - 40) / gridCols, 50)
-                                                height: width
-                                                radius: 4
-                                                color: getDepthColor(depth)
-                                                border.width: isSelected ? 2 : 1
-                                                border.color: isSelected ? root.primaryColor : Qt.darker(color, 1.1)
-
-                                                function getDepthColor(d) {
-                                                    if (d <= 0) return root.surfaceColor
-                                                    // Batimetrik renk skalası
-                                                    var intensity = Math.min(d / 30, 1)
-                                                    if (intensity < 0.1) return "#C6E7F2"
-                                                    if (intensity < 0.2) return "#A8DAEB"
-                                                    if (intensity < 0.3) return "#7AC5DE"
-                                                    if (intensity < 0.4) return "#55B0D4"
-                                                    if (intensity < 0.5) return "#3A9CC8"
-                                                    if (intensity < 0.6) return "#2589BC"
-                                                    if (intensity < 0.7) return "#1A75A8"
-                                                    if (intensity < 0.8) return "#125E8C"
-                                                    if (intensity < 0.9) return "#0B4770"
-                                                    return "#063554"
-                                                }
-
-                                                Text {
-                                                    anchors.centerIn: parent
-                                                    text: depth > 0 ? depth.toFixed(1) : "-"
-                                                    font.pixelSize: parent.width > 40 ? (app ? app.smallFontSize * 0.9 : 11) : (app ? app.smallFontSize * 0.7 : 9)
-                                                    font.bold: true
-                                                    color: {
-                                                        if (depth <= 0) return root.textSecondaryColor
-                                                        return depth > 10 ? "white" : "#2d3748"  // Dark text for light cells, white for dark cells
-                                                    }
-                                                }
-
-                                                MouseArea {
-                                                    anchors.fill: parent
-                                                    onClicked: {
-                                                        selectedRow = row
-                                                        selectedCol = col
-                                                        depthInputDialog.open()
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Koordinat Girişi
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.margins: app ? app.smallPadding : 16
-                        Layout.preferredHeight: coordInputContent.height + 32
-                        color: Qt.rgba(1, 1, 1, 0.08)
-                        radius: 8
-                        border.width: 1
-                        border.color: root.borderColor
-
-                        ColumnLayout {
-                            id: coordInputContent
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.top: parent.top
-                            anchors.margins: app ? app.smallPadding : 16
-                            spacing: app ? app.smallSpacing : 12
-
-                            Text {
-                                text: root.tr("Koordinat Sınırları")
-                                font.pixelSize: app ? app.baseFontSize : 14
-                                font.bold: true
-                                color: root.textColor
-                            }
-
-                            Text {
-                                text: root.tr("Grid için coğrafi alanı tanımlayın")
-                                font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                color: root.textSecondaryColor
-                            }
-
-                            // Başlangıç koordinatları
-                            GridLayout {
-                                Layout.fillWidth: true
-                                columns: 2
-                                rowSpacing: 8
-                                columnSpacing: 12
-
-                                Text {
-                                    text: root.tr("Başl. Enlem") + ":"
-                                    font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                    color: root.textSecondaryColor
-                                }
-
-                                TextField {
-                                    id: startLatField
-                                    Layout.fillWidth: true
-                                    height: app ? app.buttonHeight * 0.7 : 36
-                                    text: configManager ? configManager.gridStartLatitude.toFixed(6) : "40.710000"
-                                    font.pixelSize: app ? app.smallFontSize : 12
-                                    color: root.inputTextColor
-                                    horizontalAlignment: Text.AlignRight
-                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                    validator: DoubleValidator { bottom: -90; top: 90; decimals: 6 }
-
-                                    background: Rectangle {
-                                        color: root.surfaceColor
-                                        radius: 4
-                                        border.width: parent.activeFocus ? 2 : 1
-                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
-                                    }
-
-                                    onEditingFinished: {
-                                        if (configManager) configManager.gridStartLatitude = parseFloat(text)
-                                    }
-                                }
-
-                                Text {
-                                    text: root.tr("Başl. Boylam") + ":"
-                                    font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                    color: root.textSecondaryColor
-                                }
-
-                                TextField {
-                                    id: startLonField
-                                    Layout.fillWidth: true
-                                    height: app ? app.buttonHeight * 0.7 : 36
-                                    text: configManager ? configManager.gridStartLongitude.toFixed(6) : "29.000000"
-                                    font.pixelSize: app ? app.smallFontSize : 12
-                                    color: root.inputTextColor
-                                    horizontalAlignment: Text.AlignRight
-                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                    validator: DoubleValidator { bottom: -180; top: 180; decimals: 6 }
-
-                                    background: Rectangle {
-                                        color: root.surfaceColor
-                                        radius: 4
-                                        border.width: parent.activeFocus ? 2 : 1
-                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
-                                    }
-
-                                    onEditingFinished: {
-                                        if (configManager) configManager.gridStartLongitude = parseFloat(text)
-                                    }
-                                }
-
-                                Text {
-                                    text: root.tr("Bitiş Enlem") + ":"
-                                    font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                    color: root.textSecondaryColor
-                                }
-
-                                TextField {
-                                    id: endLatField
-                                    Layout.fillWidth: true
-                                    height: app ? app.buttonHeight * 0.7 : 36
-                                    text: configManager ? configManager.gridEndLatitude.toFixed(6) : "40.720000"
-                                    font.pixelSize: app ? app.smallFontSize : 12
-                                    color: root.inputTextColor
-                                    horizontalAlignment: Text.AlignRight
-                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                    validator: DoubleValidator { bottom: -90; top: 90; decimals: 6 }
-
-                                    background: Rectangle {
-                                        color: root.surfaceColor
-                                        radius: 4
-                                        border.width: parent.activeFocus ? 2 : 1
-                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
-                                    }
-
-                                    onEditingFinished: {
-                                        if (configManager) configManager.gridEndLatitude = parseFloat(text)
-                                    }
-                                }
-
-                                Text {
-                                    text: root.tr("Bitiş Boylam") + ":"
-                                    font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                    color: root.textSecondaryColor
-                                }
-
-                                TextField {
-                                    id: endLonField
-                                    Layout.fillWidth: true
-                                    height: app ? app.buttonHeight * 0.7 : 36
-                                    text: configManager ? configManager.gridEndLongitude.toFixed(6) : "29.010000"
-                                    font.pixelSize: app ? app.smallFontSize : 12
-                                    color: root.inputTextColor
-                                    horizontalAlignment: Text.AlignRight
-                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                    validator: DoubleValidator { bottom: -180; top: 180; decimals: 6 }
-
-                                    background: Rectangle {
-                                        color: root.surfaceColor
-                                        radius: 4
-                                        border.width: parent.activeFocus ? 2 : 1
-                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
-                                    }
-
-                                    onEditingFinished: {
-                                        if (configManager) configManager.gridEndLongitude = parseFloat(text)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Hızlı doldurma araçları
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.margins: app ? app.smallPadding : 16
-                        Layout.preferredHeight: quickFillContent.height + 32
-                        color: Qt.rgba(1, 1, 1, 0.08)
-                        radius: 8
-                        border.width: 1
-                        border.color: root.borderColor
-
-                        ColumnLayout {
-                            id: quickFillContent
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.top: parent.top
-                            anchors.margins: app ? app.smallPadding : 16
-                            spacing: app ? app.smallSpacing : 12
-
-                            Text {
-                                text: root.tr("Hızlı Doldurma Araçları")
-                                font.pixelSize: app ? app.baseFontSize : 14
-                                font.bold: true
-                                color: root.textColor
-                            }
-
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: 8
-
-                                Button {
-                                    Layout.fillWidth: true
-                                    height: app ? app.buttonHeight * 0.7 : 36
-                                    text: root.tr("Hepsini Doldur")
-
-                                    background: Rectangle {
-                                        radius: 6
-                                        color: parent.pressed ? Qt.darker(root.primaryColor, 1.1) : root.primaryColor
-                                    }
-
-                                    contentItem: Text {
-                                        text: parent.text
-                                        font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-
-                                    onClicked: fillAllDialog.open()
-                                }
-
-                                Button {
-                                    Layout.fillWidth: true
-                                    height: app ? app.buttonHeight * 0.7 : 36
-                                    text: root.tr("Rastgele")
-
-                                    background: Rectangle {
-                                        radius: 6
-                                        color: parent.pressed ? Qt.darker("#2589BC", 1.1) : "#2589BC"
-                                    }
-
-                                    contentItem: Text {
-                                        text: parent.text
-                                        font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-
-                                    onClicked: {
-                                        if (configManager) {
-                                            for (var r = 0; r < gridRows; r++) {
-                                                for (var c = 0; c < gridCols; c++) {
-                                                    var depth = 2 + Math.random() * 25
-                                                    configManager.setGridDepth(r, c, depth)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                Button {
-                                    Layout.fillWidth: true
-                                    height: app ? app.buttonHeight * 0.7 : 36
-                                    text: root.tr("Temizle")
-
-                                    background: Rectangle {
-                                        radius: 6
-                                        color: parent.pressed ? Qt.darker("#E53E3E", 1.1) : "#E53E3E"
-                                    }
-
-                                    contentItem: Text {
-                                        text: parent.text
-                                        font.pixelSize: app ? app.smallFontSize * 0.9 : 11
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-
-                                    onClicked: {
-                                        if (configManager) {
-                                            for (var r = 0; r < gridRows; r++) {
-                                                for (var c = 0; c < gridCols; c++) {
-                                                    configManager.setGridDepth(r, c, 0)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Item { Layout.preferredHeight: 16 }
-                }
-            }
-        }
-
-        // Sağ panel - Canlı önizleme
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            color: Qt.rgba(1, 1, 1, 0.05)
-            radius: 12
-            border.width: 1
-            border.color: root.borderColor
-
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: app ? app.smallPadding : 16
-                spacing: app ? app.smallSpacing : 12
-
-                // Önizleme başlığı
-                RowLayout {
-                    Layout.fillWidth: true
-
-                    Text {
-                        text: root.tr("Canlı Önizleme")
-                        font.pixelSize: app ? app.baseFontSize : 14
-                        font.bold: true
-                        color: root.textColor
-                    }
-
-                    Item { Layout.fillWidth: true }
-
-                    Rectangle {
-                        width: liveText.width + 16
-                        height: 24
-                        radius: 12
-                        color: "#38A169"
-
-                        Row {
-                            anchors.centerIn: parent
-                            spacing: 4
-
-                            Rectangle {
-                                width: 6
-                                height: 6
-                                radius: 3
-                                color: "white"
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                SequentialAnimation on opacity {
-                                    loops: Animation.Infinite
-                                    NumberAnimation { to: 0.3; duration: 500 }
-                                    NumberAnimation { to: 1; duration: 500 }
-                                }
-                            }
-
-                            Text {
-                                id: liveText
-                                text: "LIVE"
-                                font.pixelSize: 10
-                                font.bold: true
-                                color: "white"
-                            }
-                        }
-                    }
-                }
-
-                // Batimetrik harita önizlemesi
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: "#F7FAFC"
-                    radius: 8
-                    border.width: 2
-                    border.color: "#1A75A8"
+                    color: "transparent"
 
-                    // Harita başlığı
-                    Rectangle {
-                        id: previewTitle
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        height: 32
-                        color: "#1A75A8"
-                        radius: 6
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: 4
 
                         Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: parent.radius
-                            color: parent.color
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            width: 28
+                            height: 28
+                            radius: 14
+                            color: index < currentStep ? "#38A169" :
+                                   index === currentStep ? root.primaryColor :
+                                   Qt.rgba(1, 1, 1, 0.2)
+                            border.width: index === currentStep ? 2 : 0
+                            border.color: "white"
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: index < currentStep ? "✓" : (index + 1).toString()
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: "white"
+                            }
                         }
 
                         Text {
-                            anchors.centerIn: parent
-                            text: root.tr("Batimetrik Harita") + " - " + root.tr("Önizleme")
-                            font.pixelSize: app ? app.smallFontSize : 12
-                            font.bold: true
-                            color: "white"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: stepTitles[index]
+                            font.pixelSize: app ? app.smallFontSize * 0.7 : 10
+                            color: index === currentStep ? "white" : root.textSecondaryColor
+                            font.bold: index === currentStep
                         }
                     }
 
-                    // Batimetrik harita canvas'ı - konturlar kapalı (performans için)
-                    BathymetricMapCanvas {
-                        id: previewMap
-                        anchors.top: previewTitle.bottom
-                        anchors.left: parent.left
+                    // Connector line
+                    Rectangle {
+                        visible: index < totalSteps - 1
                         anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        anchors.margins: 8
-
-                        gridRows: root.gridRows
-                        gridCols: root.gridCols
-                        gridDepths: root.gridDepths
-                        maxDepth: root.maxDepth
-
-                        // Koordinatlar
-                        startLatitude: configManager ? configManager.gridStartLatitude : 40.71
-                        startLongitude: configManager ? configManager.gridStartLongitude : 29.00
-                        endLatitude: configManager ? configManager.gridEndLatitude : 40.72
-                        endLongitude: configManager ? configManager.gridEndLongitude : 29.01
-
-                        showContours: false
-                        showGrid: true
-                        showCoordinates: true
-                        smoothTransitions: true
-
-                        // Tema renkleri
-                        containerColor: Qt.lighter(root.surfaceColor, 1.02)
-                        labelColor: root.textSecondaryColor
+                        anchors.rightMargin: -2
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.verticalCenterOffset: -10
+                        width: 4
+                        height: 2
+                        color: index < currentStep ? "#38A169" : Qt.rgba(1, 1, 1, 0.2)
                     }
-                }
-
-                // Lejant
-                BathymetricLegend {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 180
-                    title: root.tr("Derinlik Skalası") + " (m)"
-                    maxDepth: Math.max(root.maxDepth, 10)
-                    textColor: root.textColor
-                    backgroundColor: Qt.rgba(1, 1, 1, 0.08)
                 }
             }
         }
     }
 
-    // Footer
+    // ==================== MAIN CONTENT ====================
+    Item {
+        id: contentArea
+        anchors.top: progressBar.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: footer.top
+        anchors.margins: app ? app.smallPadding : 12
+
+        // Step 0: Corner Count Selection
+        Loader {
+            anchors.fill: parent
+            active: currentStep === 0
+            sourceComponent: step0CornerCount
+        }
+
+        // Step 1: Corner Coordinates Input
+        Loader {
+            anchors.fill: parent
+            active: currentStep === 1
+            sourceComponent: step1CornerCoordinates
+        }
+
+        // Step 2: Polygon Preview
+        Loader {
+            anchors.fill: parent
+            active: currentStep === 2
+            sourceComponent: step2PolygonPreview
+        }
+
+        // Step 3: Bathymetric Data Entry
+        Loader {
+            anchors.fill: parent
+            active: currentStep === 3
+            sourceComponent: step3BathymetricData
+        }
+
+        // Step 4: Map Views
+        Loader {
+            anchors.fill: parent
+            active: currentStep === 4
+            sourceComponent: step4MapViews
+        }
+    }
+
+    // ==================== FOOTER ====================
     Rectangle {
         id: footer
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: app ? app.buttonHeight * 1.4 : 70
-        color: Qt.rgba(1, 1, 1, 0.05)
-        border.width: 1
-        border.color: root.borderColor
+        height: app ? app.buttonHeight * 1.3 : 60
+        color: Qt.rgba(0, 0, 0, 0.3)
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: app ? app.smallPadding : 12
+            spacing: 12
+
+            Button {
+                Layout.preferredWidth: 120
+                Layout.fillHeight: true
+                visible: currentStep > 0
+                text: root.tr("Geri")
+
+                background: Rectangle {
+                    radius: 8
+                    color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : Qt.rgba(1, 1, 1, 0.1)
+                    border.width: 1
+                    border.color: root.borderColor
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: app ? app.baseFontSize : 14
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                onClicked: currentStep--
+            }
+
+            Item { Layout.fillWidth: true }
+
+            Button {
+                Layout.preferredWidth: 160
+                Layout.fillHeight: true
+                text: currentStep === totalSteps - 1 ? root.tr("Kaydet ve Bitir") : root.tr("Devam Et")
+
+                background: Rectangle {
+                    radius: 8
+                    color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
+                }
+
+                contentItem: Row {
+                    spacing: 8
+                    anchors.centerIn: parent
+
+                    Text {
+                        text: parent.parent.text
+                        font.pixelSize: app ? app.baseFontSize : 14
+                        font.bold: true
+                        color: "white"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Text {
+                        text: currentStep === totalSteps - 1 ? "✓" : "→"
+                        font.pixelSize: 16
+                        color: "white"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                onClicked: {
+                    if (currentStep < totalSteps - 1) {
+                        currentStep++
+                    } else {
+                        // Save and finish
+                        saveConfiguration()
+                        root.configSaved()
+                    }
+                }
+            }
+        }
+    }
+
+    // ==================== STEP 0: CORNER COUNT ====================
+    Component {
+        id: step0CornerCount
 
         Rectangle {
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 1
-            color: root.borderColor
-        }
+            color: "transparent"
 
-        Button {
-            anchors.centerIn: parent
-            width: Math.min(parent.width - 40, 300)
-            height: app ? app.buttonHeight : 48
-            text: root.tr("Kaydet ve Devam Et")
-
-            background: Rectangle {
-                radius: 10
-                color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
-            }
-
-            contentItem: Text {
-                text: parent.text
-                font.pixelSize: app ? app.mediumFontSize : 15
-                font.bold: true
-                color: "white"
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            onClicked: {
-                root.configSaved()
-            }
-        }
-    }
-
-    // Depth Input Dialog - Popup olarak klavyenin önünde
-    Popup {
-        id: depthInputDialog
-        modal: true
-        x: (parent.width - width) / 2
-        y: 50  // Ekranın en üstünde, klavye altında kalmayacak
-        width: 300
-        height: 220
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-        z: 1000
-        padding: 0
-
-        // Mevcut değeri sakla
-        property real currentDepthValue: 0
-
-        background: Rectangle {
-            color: root.surfaceColor
-            radius: 12
-            border.width: 2
-            border.color: root.primaryColor
-
-            // Basit gölge efekti
-            Rectangle {
+            ColumnLayout {
                 anchors.fill: parent
-                anchors.topMargin: 4
-                anchors.leftMargin: 2
-                anchors.rightMargin: -2
-                anchors.bottomMargin: -4
-                z: -1
-                radius: parent.radius
-                color: "#40000000"
-            }
-        }
+                spacing: app ? app.normalSpacing : 16
 
-        contentItem: Column {
-            id: dialogContent
-            width: parent.width
-            spacing: 0
-
-            // Header
-            Rectangle {
-                width: parent.width
-                height: 50
-                color: root.primaryColor
-                radius: 10
-
+                // Title card
                 Rectangle {
-                    anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: parent.radius
-                    color: parent.color
-                }
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 80
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
 
-                Text {
-                    anchors.centerIn: parent
-                    text: root.tr("Hücre") + " [" + String.fromCharCode(65 + selectedCol) + (selectedRow + 1) + "]"
-                    font.pixelSize: app ? app.baseFontSize : 16
-                    font.bold: true
-                    color: "white"
-                }
-            }
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: 8
 
-            // Content
-            Item {
-                width: parent.width
-                height: 170
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.tr("Kazı alanınız kaç köşeli?")
+                            font.pixelSize: app ? app.mediumFontSize : 18
+                            font.bold: true
+                            color: root.textColor
+                        }
 
-                Column {
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 12
-
-                    TextField {
-                        id: depthInput
-                        width: parent.width
-                        height: app ? app.buttonHeight : 50
-                        placeholderText: root.tr("Derinlik") + " (m)"
-                        font.pixelSize: app ? app.mediumFontSize : 18
-                        horizontalAlignment: Text.AlignHCenter
-                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        color: root.inputTextColor
-                        placeholderTextColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
-
-                        background: Rectangle {
-                            color: root.surfaceColor
-                            radius: 8
-                            border.width: depthInput.activeFocus ? 2 : 1
-                            border.color: depthInput.activeFocus ? root.primaryColor : root.inputBorderColor
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.tr("L şeklinde alanlar için 6, dikdörtgen için 4 seçin")
+                            font.pixelSize: app ? app.smallFontSize : 12
+                            color: root.textSecondaryColor
                         }
                     }
+                }
 
-                    Text {
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                        text: root.tr("Mevcut değer") + ": " + depthInputDialog.currentDepthValue.toFixed(1) + " m"
-                        font.pixelSize: app ? app.smallFontSize : 12
-                        color: root.textColor
-                    }
+                // Corner count selector
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
 
-                    // Buttons
-                    Row {
-                        width: parent.width
-                        spacing: 12
-                        layoutDirection: Qt.RightToLeft
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: 24
 
-                        Button {
-                            width: 100
-                            height: app ? app.buttonHeight * 0.8 : 42
-                            text: root.tr("Kaydet")
+                        // Number display
+                        Rectangle {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            width: 120
+                            height: 120
+                            radius: 60
+                            color: root.primaryColor
+                            border.width: 3
+                            border.color: "white"
 
-                            background: Rectangle {
-                                radius: 8
-                                color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
-                            }
-
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: app ? app.baseFontSize : 14
+                            Text {
+                                anchors.centerIn: parent
+                                text: cornerCount.toString()
+                                font.pixelSize: 48
                                 font.bold: true
                                 color: "white"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
                             }
+                        }
 
-                            onClicked: {
-                                // Virgülü noktaya çevir (Türkçe klavye desteği)
-                                var inputText = depthInput.text.replace(",", ".")
-                                var val = parseFloat(inputText)
-                                if (!isNaN(val) && val >= 0 && selectedRow >= 0 && selectedCol >= 0 && configManager) {
-                                    configManager.setGridDepth(selectedRow, selectedCol, val)
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.tr("Köşe Noktası")
+                            font.pixelSize: app ? app.baseFontSize : 14
+                            color: root.textSecondaryColor
+                        }
+
+                        // +/- buttons
+                        Row {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            spacing: 20
+
+                            Button {
+                                width: 70
+                                height: 70
+                                enabled: cornerCount > 3
+
+                                background: Rectangle {
+                                    radius: 35
+                                    color: parent.enabled ?
+                                           (parent.pressed ? Qt.darker("#E53E3E", 1.2) : "#E53E3E") :
+                                           Qt.rgba(1, 1, 1, 0.1)
                                 }
-                                depthInputDialog.close()
+
+                                contentItem: Text {
+                                    text: "−"
+                                    font.pixelSize: 36
+                                    font.bold: true
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: if (cornerCount > 3) cornerCount--
+                            }
+
+                            Button {
+                                width: 70
+                                height: 70
+                                enabled: cornerCount < 20
+
+                                background: Rectangle {
+                                    radius: 35
+                                    color: parent.enabled ?
+                                           (parent.pressed ? Qt.darker("#38A169", 1.2) : "#38A169") :
+                                           Qt.rgba(1, 1, 1, 0.1)
+                                }
+
+                                contentItem: Text {
+                                    text: "+"
+                                    font.pixelSize: 36
+                                    font.bold: true
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: if (cornerCount < 20) cornerCount++
                             }
                         }
 
-                        Button {
-                            width: 80
-                            height: app ? app.buttonHeight * 0.8 : 42
-                            text: root.tr("İptal")
-                            flat: true
+                        // Quick select buttons
+                        Row {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            spacing: 12
 
-                            background: Rectangle {
-                                radius: 8
-                                color: parent.pressed ? Qt.rgba(0.5, 0.5, 0.5, 0.2) : "transparent"
-                                border.width: 1
-                                border.color: root.borderColor
+                            Repeater {
+                                model: [3, 4, 5, 6, 8]
+
+                                Button {
+                                    width: 50
+                                    height: 40
+
+                                    background: Rectangle {
+                                        radius: 8
+                                        color: cornerCount === modelData ?
+                                               root.primaryColor : Qt.rgba(1, 1, 1, 0.1)
+                                        border.width: 1
+                                        border.color: cornerCount === modelData ?
+                                                      root.primaryColor : root.borderColor
+                                    }
+
+                                    contentItem: Text {
+                                        text: modelData.toString()
+                                        font.pixelSize: 14
+                                        font.bold: cornerCount === modelData
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: cornerCount = modelData
+                                }
                             }
-
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: app ? app.baseFontSize : 14
-                                color: root.textColor
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-
-                            onClicked: depthInputDialog.close()
                         }
                     }
                 }
             }
-        }
-
-        onAboutToShow: {
-            // Dialog açılmadan önce mevcut değeri al
-            if (selectedRow >= 0 && selectedCol >= 0 && configManager) {
-                currentDepthValue = configManager.getGridDepth(selectedRow, selectedCol)
-            } else {
-                currentDepthValue = 0
-            }
-            depthInput.text = ""
-        }
-
-        onOpened: {
-            depthInput.forceActiveFocus()
         }
     }
 
-    // Fill All Dialog - Popup olarak klavyenin önünde
-    Popup {
-        id: fillAllDialog
-        modal: true
-        x: (parent.width - width) / 2
-        y: 50  // Ekranın en üstünde
-        width: 300
-        height: 220
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-        z: 1000
-        padding: 0
+    // ==================== STEP 1: CORNER COORDINATES ====================
+    Component {
+        id: step1CornerCoordinates
 
-        background: Rectangle {
-            color: root.surfaceColor
-            radius: 12
-            border.width: 2
-            border.color: "#1A75A8"
+        Rectangle {
+            color: "transparent"
 
-            // Basit gölge efekti
-            Rectangle {
+            ColumnLayout {
                 anchors.fill: parent
-                anchors.topMargin: 4
-                anchors.leftMargin: 2
-                anchors.rightMargin: -2
-                anchors.bottomMargin: -4
-                z: -1
-                radius: parent.radius
-                color: "#40000000"
-            }
-        }
+                spacing: app ? app.smallSpacing : 8
 
-        contentItem: Column {
-            id: fillAllContent
-            width: parent.width
-            spacing: 0
-
-            // Header
-            Rectangle {
-                width: parent.width
-                height: 50
-                color: "#1A75A8"
-                radius: 10
-
+                // Header info
                 Rectangle {
-                    anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: parent.radius
-                    color: parent.color
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: root.cardColor
+                    radius: 8
+                    border.width: 1
+                    border.color: root.borderColor
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 16
+
+                        Text {
+                            text: root.tr("ITRF Koordinatları")
+                            font.pixelSize: app ? app.baseFontSize : 14
+                            font.bold: true
+                            color: root.textColor
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Rectangle {
+                            width: 1
+                            height: 24
+                            color: root.borderColor
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text: "Y = " + root.tr("SAĞA") + "  |  X = " + root.tr("YUKARI")
+                            font.pixelSize: app ? app.smallFontSize : 12
+                            color: root.textSecondaryColor
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
                 }
 
-                Text {
-                    anchors.centerIn: parent
-                    text: root.tr("Tüm Hücreleri Doldur")
-                    font.pixelSize: app ? app.baseFontSize : 16
-                    font.bold: true
-                    color: "white"
-                }
-            }
+                // Coordinates list
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
 
-            // Content
-            Item {
-                width: parent.width
-                height: 170
+                    // Table header
+                    Rectangle {
+                        id: tableHeader
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.margins: 8
+                        height: 36
+                        color: Qt.rgba(1, 1, 1, 0.1)
+                        radius: 6
 
-                Column {
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 12
+                        Row {
+                            anchors.fill: parent
+                            anchors.leftMargin: 8
+                            anchors.rightMargin: 8
 
-                    TextField {
-                        id: fillAllInput
-                        width: parent.width
-                        height: app ? app.buttonHeight : 50
-                        placeholderText: root.tr("Derinlik") + " (m)"
-                        font.pixelSize: app ? app.mediumFontSize : 18
-                        horizontalAlignment: Text.AlignHCenter
-                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        color: root.inputTextColor
-                        placeholderTextColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
+                            Text {
+                                width: 50
+                                text: root.tr("No")
+                                font.pixelSize: app ? app.smallFontSize : 12
+                                font.bold: true
+                                color: root.textColor
+                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignHCenter
+                            }
 
-                        background: Rectangle {
-                            color: root.surfaceColor
-                            radius: 8
-                            border.width: fillAllInput.activeFocus ? 2 : 1
-                            border.color: fillAllInput.activeFocus ? root.primaryColor : root.inputBorderColor
+                            Text {
+                                width: (parent.width - 50) / 2
+                                text: "Y (" + root.tr("SAĞA") + ")"
+                                font.pixelSize: app ? app.smallFontSize : 12
+                                font.bold: true
+                                color: root.textColor
+                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignCenter
+                            }
+
+                            Text {
+                                width: (parent.width - 50) / 2
+                                text: "X (" + root.tr("YUKARI") + ")"
+                                font.pixelSize: app ? app.smallFontSize : 12
+                                font.bold: true
+                                color: root.textColor
+                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignCenter
+                            }
                         }
                     }
 
-                    Text {
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                        text: root.tr("Bu işlem") + " " + (gridRows * gridCols) + " " + root.tr("hücreyi dolduracak")
-                        font.pixelSize: app ? app.smallFontSize : 12
-                        color: root.textColor
-                    }
+                    // Scrollable coordinate inputs
+                    ScrollView {
+                        anchors.top: tableHeader.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.margins: 8
+                        anchors.topMargin: 4
+                        clip: true
 
-                    // Buttons
-                    Row {
-                        width: parent.width
-                        spacing: 12
-                        layoutDirection: Qt.RightToLeft
+                        Column {
+                            width: parent.width
+                            spacing: 6
 
-                        Button {
-                            width: 100
-                            height: app ? app.buttonHeight * 0.8 : 42
-                            text: root.tr("Doldur")
+                            Repeater {
+                                model: cornerCount
 
-                            background: Rectangle {
-                                radius: 8
-                                color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
-                            }
+                                Rectangle {
+                                    width: parent.width
+                                    height: 50
+                                    color: index % 2 === 0 ? Qt.rgba(1, 1, 1, 0.05) : "transparent"
+                                    radius: 6
 
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: app ? app.baseFontSize : 14
-                                font.bold: true
-                                color: "white"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
+                                    Row {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
 
-                            onClicked: {
-                                // Virgülü noktaya çevir (Türkçe klavye desteği)
-                                var inputText = fillAllInput.text.replace(",", ".")
-                                var val = parseFloat(inputText)
-                                if (!isNaN(val) && val >= 0 && configManager) {
-                                    for (var r = 0; r < gridRows; r++) {
-                                        for (var c = 0; c < gridCols; c++) {
-                                            configManager.setGridDepth(r, c, val)
+                                        // Label
+                                        Rectangle {
+                                            width: 50
+                                            height: parent.height
+                                            color: "transparent"
+
+                                            Rectangle {
+                                                anchors.centerIn: parent
+                                                width: 36
+                                                height: 28
+                                                radius: 6
+                                                color: root.primaryColor
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "T" + (index + 1)
+                                                    font.pixelSize: 12
+                                                    font.bold: true
+                                                    color: "white"
+                                                }
+                                            }
+                                        }
+
+                                        // Y coordinate input
+                                        Item {
+                                            width: (parent.width - 50) / 2
+                                            height: parent.height
+
+                                            TextField {
+                                                anchors.centerIn: parent
+                                                width: parent.width - 12
+                                                height: 38
+                                                text: cornerPoints[index] ? cornerPoints[index].x.toFixed(2) : ""
+                                                font.pixelSize: app ? app.smallFontSize : 12
+                                                color: root.inputTextColor
+                                                horizontalAlignment: Text.AlignRight
+                                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                                background: Rectangle {
+                                                    color: root.surfaceColor
+                                                    radius: 6
+                                                    border.width: parent.activeFocus ? 2 : 1
+                                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                }
+
+                                                onEditingFinished: {
+                                                    var val = parseFloat(text.replace(",", "."))
+                                                    if (!isNaN(val) && cornerPoints[index]) {
+                                                        var pts = cornerPoints
+                                                        pts[index].x = val
+                                                        cornerPoints = pts
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // X coordinate input
+                                        Item {
+                                            width: (parent.width - 50) / 2
+                                            height: parent.height
+
+                                            TextField {
+                                                anchors.centerIn: parent
+                                                width: parent.width - 12
+                                                height: 38
+                                                text: cornerPoints[index] ? cornerPoints[index].y.toFixed(2) : ""
+                                                font.pixelSize: app ? app.smallFontSize : 12
+                                                color: root.inputTextColor
+                                                horizontalAlignment: Text.AlignRight
+                                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                                background: Rectangle {
+                                                    color: root.surfaceColor
+                                                    radius: 6
+                                                    border.width: parent.activeFocus ? 2 : 1
+                                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                }
+
+                                                onEditingFinished: {
+                                                    var val = parseFloat(text.replace(",", "."))
+                                                    if (!isNaN(val) && cornerPoints[index]) {
+                                                        var pts = cornerPoints
+                                                        pts[index].y = val
+                                                        cornerPoints = pts
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
-                                fillAllDialog.close()
                             }
-                        }
-
-                        Button {
-                            width: 80
-                            height: app ? app.buttonHeight * 0.8 : 42
-                            text: root.tr("İptal")
-                            flat: true
-
-                            background: Rectangle {
-                                radius: 8
-                                color: parent.pressed ? Qt.rgba(0.5, 0.5, 0.5, 0.2) : "transparent"
-                                border.width: 1
-                                border.color: root.borderColor
-                            }
-
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: app ? app.baseFontSize : 14
-                                color: root.textColor
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-
-                            onClicked: fillAllDialog.close()
                         }
                     }
                 }
             }
         }
+    }
 
-        onAboutToShow: {
-            fillAllInput.text = ""
+    // ==================== STEP 2: POLYGON PREVIEW ====================
+    Component {
+        id: step2PolygonPreview
+
+        Rectangle {
+            color: "transparent"
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: app ? app.smallSpacing : 8
+
+                // Info header
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 45
+                    color: root.cardColor
+                    radius: 8
+                    border.width: 1
+                    border.color: root.borderColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: root.tr("Girdiğiniz köşe noktalarından oluşan alan önizlemesi")
+                        font.pixelSize: app ? app.smallFontSize : 12
+                        color: root.textSecondaryColor
+                    }
+                }
+
+                // Polygon preview canvas
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: "#F0F4F8"
+                    radius: 12
+                    border.width: 2
+                    border.color: root.primaryColor
+
+                    // Title bar
+                    Rectangle {
+                        id: previewTitleBar
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: 36
+                        color: root.primaryColor
+                        radius: 10
+
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 10
+                            color: parent.color
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: root.tr("Kazı Alanı Önizlemesi") + " - " + cornerCount + " " + root.tr("Köşe")
+                            font.pixelSize: app ? app.baseFontSize : 14
+                            font.bold: true
+                            color: "white"
+                        }
+                    }
+
+                    // Canvas for polygon
+                    Canvas {
+                        id: polygonCanvas
+                        anchors.top: previewTitleBar.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: coordinateInfo.top
+                        anchors.margins: 16
+
+                        onPaint: {
+                            var ctx = getContext("2d")
+                            ctx.reset()
+
+                            if (cornerPoints.length < 3) return
+
+                            // Calculate bounds
+                            var minX = Infinity, maxX = -Infinity
+                            var minY = Infinity, maxY = -Infinity
+
+                            for (var i = 0; i < cornerPoints.length; i++) {
+                                var pt = cornerPoints[i]
+                                if (pt.x < minX) minX = pt.x
+                                if (pt.x > maxX) maxX = pt.x
+                                if (pt.y < minY) minY = pt.y
+                                if (pt.y > maxY) maxY = pt.y
+                            }
+
+                            var dataWidth = maxX - minX
+                            var dataHeight = maxY - minY
+                            if (dataWidth === 0) dataWidth = 1
+                            if (dataHeight === 0) dataHeight = 1
+
+                            var padding = 50
+                            var scaleX = (width - 2 * padding) / dataWidth
+                            var scaleY = (height - 2 * padding) / dataHeight
+                            var scale = Math.min(scaleX, scaleY)
+
+                            var offsetX = padding + (width - 2 * padding - dataWidth * scale) / 2
+                            var offsetY = padding + (height - 2 * padding - dataHeight * scale) / 2
+
+                            // Transform function
+                            function transformX(x) {
+                                return offsetX + (x - minX) * scale
+                            }
+                            function transformY(y) {
+                                // Invert Y for proper display
+                                return height - (offsetY + (y - minY) * scale)
+                            }
+
+                            // Draw grid
+                            ctx.strokeStyle = "#E2E8F0"
+                            ctx.lineWidth = 1
+                            for (var gx = 0; gx <= width; gx += 40) {
+                                ctx.beginPath()
+                                ctx.moveTo(gx, 0)
+                                ctx.lineTo(gx, height)
+                                ctx.stroke()
+                            }
+                            for (var gy = 0; gy <= height; gy += 40) {
+                                ctx.beginPath()
+                                ctx.moveTo(0, gy)
+                                ctx.lineTo(width, gy)
+                                ctx.stroke()
+                            }
+
+                            // Draw polygon fill
+                            ctx.fillStyle = "rgba(49, 151, 149, 0.2)"
+                            ctx.beginPath()
+                            ctx.moveTo(transformX(cornerPoints[0].x), transformY(cornerPoints[0].y))
+                            for (var j = 1; j < cornerPoints.length; j++) {
+                                ctx.lineTo(transformX(cornerPoints[j].x), transformY(cornerPoints[j].y))
+                            }
+                            ctx.closePath()
+                            ctx.fill()
+
+                            // Draw polygon outline with hatching
+                            ctx.strokeStyle = "#319795"
+                            ctx.lineWidth = 3
+                            ctx.setLineDash([])
+                            ctx.beginPath()
+                            ctx.moveTo(transformX(cornerPoints[0].x), transformY(cornerPoints[0].y))
+                            for (var k = 1; k < cornerPoints.length; k++) {
+                                ctx.lineTo(transformX(cornerPoints[k].x), transformY(cornerPoints[k].y))
+                            }
+                            ctx.closePath()
+                            ctx.stroke()
+
+                            // Draw corner points and labels
+                            for (var m = 0; m < cornerPoints.length; m++) {
+                                var px = transformX(cornerPoints[m].x)
+                                var py = transformY(cornerPoints[m].y)
+
+                                // Point circle
+                                ctx.fillStyle = "#319795"
+                                ctx.beginPath()
+                                ctx.arc(px, py, 10, 0, 2 * Math.PI)
+                                ctx.fill()
+
+                                ctx.fillStyle = "white"
+                                ctx.beginPath()
+                                ctx.arc(px, py, 6, 0, 2 * Math.PI)
+                                ctx.fill()
+
+                                // Label
+                                ctx.fillStyle = "#2D3748"
+                                ctx.font = "bold 12px sans-serif"
+                                ctx.textAlign = "center"
+                                ctx.fillText(cornerPoints[m].label, px, py - 16)
+                            }
+                        }
+
+                        Connections {
+                            target: root
+                            function onCornerPointsChanged() {
+                                polygonCanvas.requestPaint()
+                            }
+                        }
+
+                        Component.onCompleted: requestPaint()
+                    }
+
+                    // Coordinate info
+                    Rectangle {
+                        id: coordinateInfo
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: 60
+                        color: Qt.rgba(0, 0, 0, 0.05)
+                        radius: 10
+
+                        Rectangle {
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 10
+                            color: parent.color
+                        }
+
+                        Row {
+                            anchors.centerIn: parent
+                            spacing: 30
+
+                            Column {
+                                spacing: 2
+                                Text {
+                                    text: root.tr("Alan")
+                                    font.pixelSize: 10
+                                    color: "#718096"
+                                }
+                                Text {
+                                    text: calculateArea().toFixed(0) + " m²"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "#2D3748"
+                                }
+                            }
+
+                            Rectangle { width: 1; height: 36; color: "#E2E8F0" }
+
+                            Column {
+                                spacing: 2
+                                Text {
+                                    text: root.tr("Çevre")
+                                    font.pixelSize: 10
+                                    color: "#718096"
+                                }
+                                Text {
+                                    text: calculatePerimeter().toFixed(1) + " m"
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "#2D3748"
+                                }
+                            }
+
+                            Rectangle { width: 1; height: 36; color: "#E2E8F0" }
+
+                            Column {
+                                spacing: 2
+                                Text {
+                                    text: root.tr("Köşe Sayısı")
+                                    font.pixelSize: 10
+                                    color: "#718096"
+                                }
+                                Text {
+                                    text: cornerCount.toString()
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    color: "#2D3748"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ==================== STEP 3: BATHYMETRIC DATA ====================
+    Component {
+        id: step3BathymetricData
+
+        Rectangle {
+            color: "transparent"
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: app ? app.smallSpacing : 8
+
+                // Header with add button
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: root.cardColor
+                    radius: 8
+                    border.width: 1
+                    border.color: root.borderColor
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+
+                        Text {
+                            text: root.tr("Batimetrik Derinlik Noktaları")
+                            font.pixelSize: app ? app.baseFontSize : 14
+                            font.bold: true
+                            color: root.textColor
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Button {
+                            Layout.preferredWidth: 100
+                            Layout.preferredHeight: 32
+                            text: "+ " + root.tr("Ekle")
+
+                            background: Rectangle {
+                                radius: 6
+                                color: parent.pressed ? Qt.darker("#38A169", 1.2) : "#38A169"
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                var pts = bathymetricPoints
+                                pts.push({
+                                    x: 454750 + Math.random() * 100,
+                                    y: 4508300 + Math.random() * 100,
+                                    depth: -(5 + Math.random() * 20)
+                                })
+                                bathymetricPoints = pts
+                            }
+                        }
+                    }
+                }
+
+                // Data table
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
+
+                    // Table header
+                    Rectangle {
+                        id: bathTableHeader
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.margins: 8
+                        height: 36
+                        color: Qt.rgba(1, 1, 1, 0.1)
+                        radius: 6
+
+                        Row {
+                            anchors.fill: parent
+                            anchors.leftMargin: 8
+                            anchors.rightMargin: 8
+
+                            Text {
+                                width: 40
+                                text: "#"
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: root.textColor
+                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignCenter
+                            }
+
+                            Text {
+                                width: (parent.width - 90) / 3
+                                text: "Y (" + root.tr("SAĞA") + ")"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: root.textColor
+                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignCenter
+                            }
+
+                            Text {
+                                width: (parent.width - 90) / 3
+                                text: "X (" + root.tr("YUKARI") + ")"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: root.textColor
+                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignCenter
+                            }
+
+                            Text {
+                                width: (parent.width - 90) / 3
+                                text: root.tr("Derinlik") + " (m)"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: root.textColor
+                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignCenter
+                            }
+
+                            Item {
+                                width: 50
+                                height: parent.height
+                            }
+                        }
+                    }
+
+                    // Empty state or data list
+                    Item {
+                        anchors.top: bathTableHeader.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.margins: 8
+                        anchors.topMargin: 4
+
+                        // Empty state
+                        Column {
+                            visible: bathymetricPoints.length === 0
+                            anchors.centerIn: parent
+                            spacing: 12
+
+                            Text {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: "📍"
+                                font.pixelSize: 40
+                            }
+
+                            Text {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: root.tr("Henüz veri noktası eklenmedi")
+                                font.pixelSize: app ? app.baseFontSize : 14
+                                color: root.textSecondaryColor
+                            }
+
+                            Text {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: root.tr("Derinlik verisi eklemek için + Ekle butonuna tıklayın")
+                                font.pixelSize: app ? app.smallFontSize : 12
+                                color: root.textSecondaryColor
+                            }
+                        }
+
+                        // Data list
+                        ScrollView {
+                            visible: bathymetricPoints.length > 0
+                            anchors.fill: parent
+                            clip: true
+
+                            Column {
+                                width: parent.width
+                                spacing: 4
+
+                                Repeater {
+                                    model: bathymetricPoints.length
+
+                                    Rectangle {
+                                        width: parent.width
+                                        height: 46
+                                        color: index % 2 === 0 ? Qt.rgba(1, 1, 1, 0.03) : "transparent"
+                                        radius: 4
+
+                                        Row {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 8
+                                            anchors.rightMargin: 8
+
+                                            // Index
+                                            Item {
+                                                width: 40
+                                                height: parent.height
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: (index + 1).toString()
+                                                    font.pixelSize: 12
+                                                    color: root.textSecondaryColor
+                                                }
+                                            }
+
+                                            // Y input
+                                            Item {
+                                                width: (parent.width - 90) / 3
+                                                height: parent.height
+
+                                                TextField {
+                                                    anchors.centerIn: parent
+                                                    width: parent.width - 8
+                                                    height: 34
+                                                    text: bathymetricPoints[index] ? bathymetricPoints[index].x.toFixed(2) : ""
+                                                    font.pixelSize: 11
+                                                    color: root.inputTextColor
+                                                    horizontalAlignment: Text.AlignRight
+                                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                                    background: Rectangle {
+                                                        color: root.surfaceColor
+                                                        radius: 4
+                                                        border.width: parent.activeFocus ? 2 : 1
+                                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                    }
+
+                                                    onEditingFinished: {
+                                                        var val = parseFloat(text.replace(",", "."))
+                                                        if (!isNaN(val)) {
+                                                            var pts = bathymetricPoints
+                                                            pts[index].x = val
+                                                            bathymetricPoints = pts
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // X input
+                                            Item {
+                                                width: (parent.width - 90) / 3
+                                                height: parent.height
+
+                                                TextField {
+                                                    anchors.centerIn: parent
+                                                    width: parent.width - 8
+                                                    height: 34
+                                                    text: bathymetricPoints[index] ? bathymetricPoints[index].y.toFixed(2) : ""
+                                                    font.pixelSize: 11
+                                                    color: root.inputTextColor
+                                                    horizontalAlignment: Text.AlignRight
+                                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                                    background: Rectangle {
+                                                        color: root.surfaceColor
+                                                        radius: 4
+                                                        border.width: parent.activeFocus ? 2 : 1
+                                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                    }
+
+                                                    onEditingFinished: {
+                                                        var val = parseFloat(text.replace(",", "."))
+                                                        if (!isNaN(val)) {
+                                                            var pts = bathymetricPoints
+                                                            pts[index].y = val
+                                                            bathymetricPoints = pts
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // Depth input
+                                            Item {
+                                                width: (parent.width - 90) / 3
+                                                height: parent.height
+
+                                                TextField {
+                                                    anchors.centerIn: parent
+                                                    width: parent.width - 8
+                                                    height: 34
+                                                    text: bathymetricPoints[index] ? bathymetricPoints[index].depth.toFixed(2) : ""
+                                                    font.pixelSize: 11
+                                                    color: root.inputTextColor
+                                                    horizontalAlignment: Text.AlignRight
+                                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                                    background: Rectangle {
+                                                        color: root.surfaceColor
+                                                        radius: 4
+                                                        border.width: parent.activeFocus ? 2 : 1
+                                                        border.color: parent.activeFocus ? "#2589BC" : root.inputBorderColor
+                                                    }
+
+                                                    onEditingFinished: {
+                                                        var val = parseFloat(text.replace(",", "."))
+                                                        if (!isNaN(val)) {
+                                                            var pts = bathymetricPoints
+                                                            pts[index].depth = val
+                                                            bathymetricPoints = pts
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // Delete button
+                                            Item {
+                                                width: 50
+                                                height: parent.height
+
+                                                Button {
+                                                    anchors.centerIn: parent
+                                                    width: 32
+                                                    height: 32
+
+                                                    background: Rectangle {
+                                                        radius: 6
+                                                        color: parent.pressed ? Qt.darker("#E53E3E", 1.2) :
+                                                               parent.hovered ? "#E53E3E" : Qt.rgba(1, 1, 1, 0.1)
+                                                    }
+
+                                                    contentItem: Text {
+                                                        text: "×"
+                                                        font.pixelSize: 18
+                                                        color: parent.hovered ? "white" : root.textSecondaryColor
+                                                        horizontalAlignment: Text.AlignHCenter
+                                                        verticalAlignment: Text.AlignVCenter
+                                                    }
+
+                                                    onClicked: {
+                                                        var pts = bathymetricPoints
+                                                        pts.splice(index, 1)
+                                                        bathymetricPoints = pts
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Quick add samples button
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 45
+                    color: root.cardColor
+                    radius: 8
+                    border.width: 1
+                    border.color: root.borderColor
+
+                    Button {
+                        anchors.centerIn: parent
+                        width: parent.width - 24
+                        height: 32
+                        text: root.tr("Örnek veri ekle") + " (5 " + root.tr("nokta") + ")"
+
+                        background: Rectangle {
+                            radius: 6
+                            color: parent.pressed ? Qt.darker("#2589BC", 1.2) : "#2589BC"
+                        }
+
+                        contentItem: Text {
+                            text: parent.text
+                            font.pixelSize: 12
+                            color: "white"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        onClicked: {
+                            var samples = [
+                                {x: 454704.32, y: 4508264.38, depth: -9.00},
+                                {x: 454752.25, y: 4508402.99, depth: -14.20},
+                                {x: 454770.28, y: 4508455.12, depth: -12.00},
+                                {x: 454808.22, y: 4508557.97, depth: -14.20},
+                                {x: 454987.71, y: 4508162.21, depth: -9.50}
+                            ]
+                            bathymetricPoints = samples
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ==================== STEP 4: MAP VIEWS ====================
+    Component {
+        id: step4MapViews
+
+        Rectangle {
+            color: "transparent"
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: app ? app.smallSpacing : 8
+
+                // View mode tabs
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: root.cardColor
+                    radius: 8
+                    border.width: 1
+                    border.color: root.borderColor
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 8
+
+                        Button {
+                            width: 150
+                            height: 36
+                            text: root.tr("Kontur Çizgili")
+
+                            background: Rectangle {
+                                radius: 6
+                                color: mapViewMode === 0 ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1)
+                                border.width: mapViewMode === 0 ? 0 : 1
+                                border.color: root.borderColor
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                font.bold: mapViewMode === 0
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: mapViewMode = 0
+                        }
+
+                        Button {
+                            width: 150
+                            height: 36
+                            text: root.tr("Grid Görünümü")
+
+                            background: Rectangle {
+                                radius: 6
+                                color: mapViewMode === 1 ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1)
+                                border.width: mapViewMode === 1 ? 0 : 1
+                                border.color: root.borderColor
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                font.bold: mapViewMode === 1
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: mapViewMode = 1
+                        }
+                    }
+                }
+
+                // Map display
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: "#F0F4F8"
+                    radius: 12
+                    border.width: 2
+                    border.color: "#1A75A8"
+
+                    // Map title
+                    Rectangle {
+                        id: mapTitle
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: 36
+                        color: "#1A75A8"
+                        radius: 10
+
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 10
+                            color: parent.color
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: root.tr("Batimetrik Harita") + " - " +
+                                  (mapViewMode === 0 ? root.tr("Kontur Çizgili") : root.tr("Grid")) +
+                                  " (" + bathymetricPoints.length + " " + root.tr("nokta") + ")"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: "white"
+                        }
+                    }
+
+                    // Map canvas
+                    Canvas {
+                        id: bathymetricMapCanvas
+                        anchors.top: mapTitle.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: legendBar.top
+                        anchors.margins: 12
+
+                        property int viewMode: mapViewMode
+
+                        onViewModeChanged: requestPaint()
+
+                        onPaint: {
+                            var ctx = getContext("2d")
+                            ctx.reset()
+
+                            // Background
+                            ctx.fillStyle = "#F7FAFC"
+                            ctx.fillRect(0, 0, width, height)
+
+                            if (cornerPoints.length < 3) {
+                                ctx.fillStyle = "#718096"
+                                ctx.font = "14px sans-serif"
+                                ctx.textAlign = "center"
+                                ctx.fillText(root.tr("Köşe noktaları tanımlanmadı"), width/2, height/2)
+                                return
+                            }
+
+                            // Calculate bounds from corner points
+                            var minX = Infinity, maxX = -Infinity
+                            var minY = Infinity, maxY = -Infinity
+
+                            for (var i = 0; i < cornerPoints.length; i++) {
+                                if (cornerPoints[i].x < minX) minX = cornerPoints[i].x
+                                if (cornerPoints[i].x > maxX) maxX = cornerPoints[i].x
+                                if (cornerPoints[i].y < minY) minY = cornerPoints[i].y
+                                if (cornerPoints[i].y > maxY) maxY = cornerPoints[i].y
+                            }
+
+                            var dataWidth = maxX - minX
+                            var dataHeight = maxY - minY
+                            if (dataWidth === 0) dataWidth = 100
+                            if (dataHeight === 0) dataHeight = 100
+
+                            var padding = 40
+                            var scaleX = (width - 2 * padding) / dataWidth
+                            var scaleY = (height - 2 * padding) / dataHeight
+                            var scale = Math.min(scaleX, scaleY)
+
+                            var offsetX = padding + (width - 2 * padding - dataWidth * scale) / 2
+                            var offsetY = padding + (height - 2 * padding - dataHeight * scale) / 2
+
+                            function tx(x) { return offsetX + (x - minX) * scale }
+                            function ty(y) { return height - (offsetY + (y - minY) * scale) }
+
+                            // Draw grid if grid mode
+                            if (viewMode === 1) {
+                                ctx.strokeStyle = "#CBD5E0"
+                                ctx.lineWidth = 1
+                                var gridSize = 30
+                                for (var gx = 0; gx < width; gx += gridSize) {
+                                    ctx.beginPath()
+                                    ctx.moveTo(gx, 0)
+                                    ctx.lineTo(gx, height)
+                                    ctx.stroke()
+                                }
+                                for (var gy = 0; gy < height; gy += gridSize) {
+                                    ctx.beginPath()
+                                    ctx.moveTo(0, gy)
+                                    ctx.lineTo(width, gy)
+                                    ctx.stroke()
+                                }
+                            }
+
+                            // Draw polygon boundary
+                            ctx.strokeStyle = "#319795"
+                            ctx.lineWidth = 3
+                            ctx.setLineDash([])
+                            ctx.beginPath()
+                            ctx.moveTo(tx(cornerPoints[0].x), ty(cornerPoints[0].y))
+                            for (var j = 1; j < cornerPoints.length; j++) {
+                                ctx.lineTo(tx(cornerPoints[j].x), ty(cornerPoints[j].y))
+                            }
+                            ctx.closePath()
+                            ctx.stroke()
+
+                            // Fill polygon with light color
+                            ctx.fillStyle = "rgba(49, 151, 149, 0.1)"
+                            ctx.fill()
+
+                            // Draw bathymetric points
+                            if (bathymetricPoints.length > 0) {
+                                // Find depth range
+                                var minDepth = 0, maxDepth = -30
+                                for (var d = 0; d < bathymetricPoints.length; d++) {
+                                    if (bathymetricPoints[d].depth < maxDepth) maxDepth = bathymetricPoints[d].depth
+                                }
+
+                                // Draw contour lines if contour mode
+                                if (viewMode === 0 && bathymetricPoints.length >= 2) {
+                                    // Connect points with lines (simplified contour)
+                                    ctx.strokeStyle = "#2589BC"
+                                    ctx.lineWidth = 2
+                                    ctx.setLineDash([5, 5])
+
+                                    for (var c = 0; c < bathymetricPoints.length - 1; c++) {
+                                        var pt1 = bathymetricPoints[c]
+                                        var pt2 = bathymetricPoints[c + 1]
+
+                                        ctx.beginPath()
+                                        ctx.moveTo(tx(pt1.x), ty(pt1.y))
+                                        ctx.lineTo(tx(pt2.x), ty(pt2.y))
+                                        ctx.stroke()
+                                    }
+                                    ctx.setLineDash([])
+                                }
+
+                                // Draw depth points
+                                for (var p = 0; p < bathymetricPoints.length; p++) {
+                                    var pt = bathymetricPoints[p]
+                                    var px = tx(pt.x)
+                                    var py = ty(pt.y)
+
+                                    // Depth-based color
+                                    var depthRatio = Math.abs(pt.depth) / 30
+                                    var r = Math.floor(10 + depthRatio * 20)
+                                    var g = Math.floor(100 + (1-depthRatio) * 50)
+                                    var b = Math.floor(150 + depthRatio * 80)
+                                    ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")"
+
+                                    // Draw point
+                                    ctx.beginPath()
+                                    ctx.arc(px, py, 12, 0, 2 * Math.PI)
+                                    ctx.fill()
+
+                                    ctx.fillStyle = "white"
+                                    ctx.beginPath()
+                                    ctx.arc(px, py, 8, 0, 2 * Math.PI)
+                                    ctx.fill()
+
+                                    // Depth label
+                                    ctx.fillStyle = "#1A75A8"
+                                    ctx.font = "bold 10px sans-serif"
+                                    ctx.textAlign = "center"
+                                    ctx.fillText(pt.depth.toFixed(1), px, py + 4)
+
+                                    // Coordinate label above
+                                    ctx.fillStyle = "#4A5568"
+                                    ctx.font = "9px sans-serif"
+                                    ctx.fillText("(" + pt.x.toFixed(0) + ")", px, py - 18)
+                                }
+                            }
+
+                            // Draw corner labels
+                            ctx.fillStyle = "#319795"
+                            ctx.font = "bold 11px sans-serif"
+                            ctx.textAlign = "center"
+                            for (var m = 0; m < cornerPoints.length; m++) {
+                                var cpx = tx(cornerPoints[m].x)
+                                var cpy = ty(cornerPoints[m].y)
+
+                                ctx.beginPath()
+                                ctx.arc(cpx, cpy, 6, 0, 2 * Math.PI)
+                                ctx.fill()
+
+                                ctx.fillStyle = "#2D3748"
+                                ctx.fillText(cornerPoints[m].label, cpx, cpy - 12)
+                                ctx.fillStyle = "#319795"
+                            }
+                        }
+
+                        Connections {
+                            target: root
+                            function onCornerPointsChanged() {
+                                bathymetricMapCanvas.requestPaint()
+                            }
+                            function onBathymetricPointsChanged() {
+                                bathymetricMapCanvas.requestPaint()
+                            }
+                            function onMapViewModeChanged() {
+                                bathymetricMapCanvas.requestPaint()
+                            }
+                        }
+
+                        Component.onCompleted: requestPaint()
+                    }
+
+                    // Legend bar
+                    Rectangle {
+                        id: legendBar
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: 50
+                        color: Qt.rgba(0, 0, 0, 0.05)
+                        radius: 10
+
+                        Rectangle {
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 10
+                            color: parent.color
+                        }
+
+                        Row {
+                            anchors.centerIn: parent
+                            spacing: 20
+
+                            // Depth legend
+                            Row {
+                                spacing: 8
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                Text {
+                                    text: root.tr("Derinlik") + ":"
+                                    font.pixelSize: 11
+                                    color: "#4A5568"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                // Gradient bar
+                                Rectangle {
+                                    width: 100
+                                    height: 16
+                                    radius: 3
+                                    anchors.verticalCenter: parent.verticalCenter
+
+                                    gradient: Gradient {
+                                        orientation: Gradient.Horizontal
+                                        GradientStop { position: 0.0; color: "#C6E7F2" }
+                                        GradientStop { position: 0.3; color: "#55B0D4" }
+                                        GradientStop { position: 0.6; color: "#1A75A8" }
+                                        GradientStop { position: 1.0; color: "#063554" }
+                                    }
+                                }
+
+                                Text {
+                                    text: "0m → -30m"
+                                    font.pixelSize: 10
+                                    color: "#718096"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            Rectangle { width: 1; height: 30; color: "#CBD5E0" }
+
+                            // Point count
+                            Text {
+                                text: bathymetricPoints.length + " " + root.tr("veri noktası")
+                                font.pixelSize: 11
+                                color: "#4A5568"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                    }
+                }
+
+                // Summary info
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: "#38A169"
+                    radius: 8
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 12
+
+                        Text {
+                            text: "✓"
+                            font.pixelSize: 20
+                            color: "white"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text: root.tr("Kazı alanı yapılandırması tamamlandı!")
+                            font.pixelSize: app ? app.baseFontSize : 14
+                            font.bold: true
+                            color: "white"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ==================== HELPER FUNCTIONS ====================
+
+    function calculateArea() {
+        if (cornerPoints.length < 3) return 0
+
+        // Shoelace formula for polygon area
+        var area = 0
+        var n = cornerPoints.length
+
+        for (var i = 0; i < n; i++) {
+            var j = (i + 1) % n
+            area += cornerPoints[i].x * cornerPoints[j].y
+            area -= cornerPoints[j].x * cornerPoints[i].y
         }
 
-        onOpened: {
-            fillAllInput.forceActiveFocus()
+        return Math.abs(area) / 2
+    }
+
+    function calculatePerimeter() {
+        if (cornerPoints.length < 2) return 0
+
+        var perimeter = 0
+        var n = cornerPoints.length
+
+        for (var i = 0; i < n; i++) {
+            var j = (i + 1) % n
+            var dx = cornerPoints[j].x - cornerPoints[i].x
+            var dy = cornerPoints[j].y - cornerPoints[i].y
+            perimeter += Math.sqrt(dx * dx + dy * dy)
         }
+
+        return perimeter
+    }
+
+    function saveConfiguration() {
+        // Save corner points to ConfigManager if available
+        if (configManager) {
+            // For now, save polygon bounds as grid coordinates
+            if (cornerPoints.length >= 2) {
+                var minX = Infinity, maxX = -Infinity
+                var minY = Infinity, maxY = -Infinity
+
+                for (var i = 0; i < cornerPoints.length; i++) {
+                    if (cornerPoints[i].x < minX) minX = cornerPoints[i].x
+                    if (cornerPoints[i].x > maxX) maxX = cornerPoints[i].x
+                    if (cornerPoints[i].y < minY) minY = cornerPoints[i].y
+                    if (cornerPoints[i].y > maxY) maxY = cornerPoints[i].y
+                }
+
+                // Convert ITRF to approximate lat/lon for storage
+                // This is a simplified conversion - real implementation would use proper projection
+                configManager.gridStartLatitude = minY / 111000 // rough conversion
+                configManager.gridStartLongitude = minX / (111000 * Math.cos(minY / 111000 * Math.PI / 180))
+                configManager.gridEndLatitude = maxY / 111000
+                configManager.gridEndLongitude = maxX / (111000 * Math.cos(maxY / 111000 * Math.PI / 180))
+            }
+        }
+
+        console.log("Configuration saved:")
+        console.log("- Corner count:", cornerCount)
+        console.log("- Corner points:", JSON.stringify(cornerPoints))
+        console.log("- Bathymetric points:", JSON.stringify(bathymetricPoints))
     }
 }
