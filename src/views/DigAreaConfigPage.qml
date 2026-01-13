@@ -69,6 +69,7 @@ Rectangle {
 
     // ==================== BATHYMETRIC DATA ====================
     property var bathymetricPoints: []  // [{x: 454700, y: 4508260, depth: -9.5}, ...]
+    property int bathymetricUpdateTrigger: 0  // Force UI update when this changes
 
     // ==================== MAP VIEW MODE ====================
     property int mapViewMode: 0  // 0: Contour lines, 1: Grid
@@ -1138,13 +1139,14 @@ Rectangle {
                             }
 
                             onClicked: {
-                                var pts = bathymetricPoints
+                                var pts = bathymetricPoints.slice()  // Create new array copy
                                 pts.push({
-                                    x: 454750 + Math.random() * 100,
-                                    y: 4508300 + Math.random() * 100,
-                                    depth: -(5 + Math.random() * 20)
+                                    x: NaN,
+                                    y: NaN,
+                                    depth: NaN
                                 })
                                 bathymetricPoints = pts
+                                bathymetricUpdateTrigger++  // Force UI update
                             }
                         }
                     }
@@ -1231,7 +1233,9 @@ Rectangle {
                         anchors.margins: 8
                         anchors.topMargin: 4
 
-                        // Empty state
+                        // Empty state - use trigger to force updates
+                        property int updateTrigger: bathymetricUpdateTrigger
+
                         Column {
                             visible: bathymetricPoints.length === 0
                             anchors.centerIn: parent
@@ -1305,28 +1309,31 @@ Rectangle {
                                                     anchors.centerIn: parent
                                                     width: parent.width - 8
                                                     height: 34
-                                                    text: bathymetricPoints[index] ? bathymetricPoints[index].x.toFixed(2) : ""
+                                                    text: (bathymetricPoints[index] && !isNaN(bathymetricPoints[index].x)) ? bathymetricPoints[index].x.toFixed(2) : ""
                                                     font.pixelSize: 11
                                                     color: root.inputTextColor
                                                     horizontalAlignment: Text.AlignRight
                                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                                    placeholderText: "Y"
+                                                    placeholderTextColor: Qt.rgba(1, 1, 1, 0.3)
 
-                                                    property bool hasValue: text.length > 0
+                                                    property bool hasValue: text.length > 0 && !isNaN(parseFloat(text))
 
                                                     background: Rectangle {
                                                         color: root.inputBgColor
                                                         radius: 4
-                                                        border.width: bathYInput.activeFocus ? 2 : (bathYInput.hasValue ? 1.5 : 1)
+                                                        border.width: bathYInput.activeFocus ? 2 : (bathYInput.hasValue ? 1.5 : 0)
                                                         border.color: bathYInput.activeFocus ? root.primaryColor :
-                                                                      (bathYInput.hasValue ? root.filledBorderColor : root.inputBorderColor)
+                                                                      (bathYInput.hasValue ? root.filledBorderColor : "transparent")
                                                     }
 
                                                     onEditingFinished: {
                                                         var val = parseFloat(text.replace(",", "."))
                                                         if (!isNaN(val)) {
-                                                            var pts = bathymetricPoints
+                                                            var pts = bathymetricPoints.slice()
                                                             pts[index].x = val
                                                             bathymetricPoints = pts
+                                                            bathymetricUpdateTrigger++
                                                         }
                                                     }
                                                 }
@@ -1342,28 +1349,31 @@ Rectangle {
                                                     anchors.centerIn: parent
                                                     width: parent.width - 8
                                                     height: 34
-                                                    text: bathymetricPoints[index] ? bathymetricPoints[index].y.toFixed(2) : ""
+                                                    text: (bathymetricPoints[index] && !isNaN(bathymetricPoints[index].y)) ? bathymetricPoints[index].y.toFixed(2) : ""
                                                     font.pixelSize: 11
                                                     color: root.inputTextColor
                                                     horizontalAlignment: Text.AlignRight
                                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                                    placeholderText: "X"
+                                                    placeholderTextColor: Qt.rgba(1, 1, 1, 0.3)
 
-                                                    property bool hasValue: text.length > 0
+                                                    property bool hasValue: text.length > 0 && !isNaN(parseFloat(text))
 
                                                     background: Rectangle {
                                                         color: root.inputBgColor
                                                         radius: 4
-                                                        border.width: bathXInput.activeFocus ? 2 : (bathXInput.hasValue ? 1.5 : 1)
+                                                        border.width: bathXInput.activeFocus ? 2 : (bathXInput.hasValue ? 1.5 : 0)
                                                         border.color: bathXInput.activeFocus ? root.primaryColor :
-                                                                      (bathXInput.hasValue ? root.filledBorderColor : root.inputBorderColor)
+                                                                      (bathXInput.hasValue ? root.filledBorderColor : "transparent")
                                                     }
 
                                                     onEditingFinished: {
                                                         var val = parseFloat(text.replace(",", "."))
                                                         if (!isNaN(val)) {
-                                                            var pts = bathymetricPoints
+                                                            var pts = bathymetricPoints.slice()
                                                             pts[index].y = val
                                                             bathymetricPoints = pts
+                                                            bathymetricUpdateTrigger++
                                                         }
                                                     }
                                                 }
@@ -1379,28 +1389,31 @@ Rectangle {
                                                     anchors.centerIn: parent
                                                     width: parent.width - 8
                                                     height: 34
-                                                    text: bathymetricPoints[index] ? bathymetricPoints[index].depth.toFixed(2) : ""
+                                                    text: (bathymetricPoints[index] && !isNaN(bathymetricPoints[index].depth)) ? bathymetricPoints[index].depth.toFixed(2) : ""
                                                     font.pixelSize: 11
                                                     color: root.inputTextColor
                                                     horizontalAlignment: Text.AlignRight
                                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                                    placeholderText: "-0.00"
+                                                    placeholderTextColor: Qt.rgba(1, 1, 1, 0.3)
 
-                                                    property bool hasValue: text.length > 0
+                                                    property bool hasValue: text.length > 0 && !isNaN(parseFloat(text))
 
                                                     background: Rectangle {
                                                         color: root.inputBgColor
                                                         radius: 4
-                                                        border.width: bathDepthInput.activeFocus ? 2 : (bathDepthInput.hasValue ? 1.5 : 1)
+                                                        border.width: bathDepthInput.activeFocus ? 2 : (bathDepthInput.hasValue ? 1.5 : 0)
                                                         border.color: bathDepthInput.activeFocus ? "#2589BC" :
-                                                                      (bathDepthInput.hasValue ? "#2589BC" : root.inputBorderColor)
+                                                                      (bathDepthInput.hasValue ? "#2589BC" : "transparent")
                                                     }
 
                                                     onEditingFinished: {
                                                         var val = parseFloat(text.replace(",", "."))
                                                         if (!isNaN(val)) {
-                                                            var pts = bathymetricPoints
+                                                            var pts = bathymetricPoints.slice()
                                                             pts[index].depth = val
                                                             bathymetricPoints = pts
+                                                            bathymetricUpdateTrigger++
                                                         }
                                                     }
                                                 }
@@ -1433,9 +1446,10 @@ Rectangle {
                                                     }
 
                                                     onClicked: {
-                                                        var pts = bathymetricPoints
+                                                        var pts = bathymetricPoints.slice()  // Create new array copy
                                                         pts.splice(index, 1)
                                                         bathymetricPoints = pts
+                                                        bathymetricUpdateTrigger++  // Force UI update
                                                     }
                                                 }
                                             }
@@ -1484,6 +1498,7 @@ Rectangle {
                                 {x: 454987.71, y: 4508162.21, depth: -9.50}
                             ]
                             bathymetricPoints = samples
+                            bathymetricUpdateTrigger++
                         }
                     }
                 }
@@ -1732,11 +1747,16 @@ Rectangle {
                                                      (height - 2 * padding) / dataHeight)
                             var scale = baseScale * zoom
 
-                            var offsetX = width / 2 - ((minX + maxX) / 2 - minX) * scale
-                            var offsetY = height / 2 + ((minY + maxY) / 2 - minY) * scale
+                            // Center the polygon in the canvas
+                            var centerDataX = (minX + maxX) / 2
+                            var centerDataY = (minY + maxY) / 2
 
-                            function tx(x) { return offsetX + (x - minX) * scale }
-                            function ty(y) { return height - (offsetY + (y - minY) * scale) }
+                            function tx(x) {
+                                return width / 2 + (x - centerDataX) * scale
+                            }
+                            function ty(y) {
+                                return height / 2 - (y - centerDataY) * scale
+                            }
 
                             // Draw grid if grid mode
                             if (viewMode === 1) {
