@@ -8,7 +8,7 @@ import "../components"
  *
  * Wizard-style adım adım ilerleyen tasarım:
  * 1. Köşe sayısı seçimi
- * 2. Köşe koordinatları girişi (ITRF)
+ * 2. Köşe koordinatları girişi
  * 3. Polygon önizlemesi
  * 4. Batimetrik veri girişi
  * 5. Harita görünümleri (çizgili ve gridli)
@@ -43,9 +43,12 @@ Rectangle {
     property color textColor: "white"
     property color textSecondaryColor: Qt.rgba(1, 1, 1, 0.7)
     property color borderColor: Qt.rgba(1, 1, 1, 0.3)
-    property color inputTextColor: "#2d3748"
-    property color inputBorderColor: (themeManager && themeManager.borderColor) ? themeManager.borderColor : "#e2e8f0"
+    property color inputTextColor: "white"  // Changed to white for dark theme
+    property color inputBgColor: Qt.rgba(1, 1, 1, 0.1)  // Dark input background
+    property color inputBorderColor: Qt.rgba(1, 1, 1, 0.3)
+    property color filledBorderColor: "#319795"  // Teal border when filled
     property color cardColor: Qt.rgba(1, 1, 1, 0.08)
+    property color canvasBgColor: Qt.rgba(0, 0, 0, 0.3)  // Dark canvas background
 
     // ==================== WIZARD STATE ====================
     property int currentStep: 0  // 0-4 arası
@@ -54,10 +57,10 @@ Rectangle {
     // Step titles
     property var stepTitles: [
         root.tr("Köşe Sayısı"),
-        root.tr("Köşe Koordinatları"),
-        root.tr("Alan Önizleme"),
-        root.tr("Batimetrik Veri"),
-        root.tr("Harita Görünümü")
+        root.tr("Koordinatlar"),
+        root.tr("Önizleme"),
+        root.tr("Batimetri"),
+        root.tr("Harita")
     ]
 
     // ==================== POLYGON DATA ====================
@@ -69,6 +72,7 @@ Rectangle {
 
     // ==================== MAP VIEW MODE ====================
     property int mapViewMode: 0  // 0: Contour lines, 1: Grid
+    property real mapZoom: 1.0  // Zoom level for map
 
     // Initialize corner points when count changes
     onCornerCountChanged: {
@@ -87,6 +91,25 @@ Rectangle {
                     label: "T" + (i + 1)
                 })
             }
+        }
+        cornerPoints = newPoints
+    }
+
+    // Generate random polygon coordinates based on corner count
+    function generateRandomPolygon() {
+        var centerX = 454750
+        var centerY = 4508350
+        var radius = 150
+        var newPoints = []
+
+        for (var i = 0; i < cornerCount; i++) {
+            var angle = (2 * Math.PI * i / cornerCount) - Math.PI / 2
+            var randomRadius = radius + (Math.random() - 0.5) * 60
+            newPoints.push({
+                x: centerX + Math.cos(angle) * randomRadius,
+                y: centerY + Math.sin(angle) * randomRadius,
+                label: "T" + (i + 1)
+            })
         }
         cornerPoints = newPoints
     }
@@ -400,24 +423,96 @@ Rectangle {
 
                     Column {
                         anchors.centerIn: parent
-                        spacing: 24
+                        spacing: 20
 
-                        // Number display
-                        Rectangle {
+                        // Number display with input
+                        Row {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            width: 120
-                            height: 120
-                            radius: 60
-                            color: root.primaryColor
-                            border.width: 3
-                            border.color: "white"
+                            spacing: 20
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: cornerCount.toString()
-                                font.pixelSize: 48
-                                font.bold: true
-                                color: "white"
+                            Button {
+                                width: 60
+                                height: 60
+                                enabled: cornerCount > 3
+
+                                background: Rectangle {
+                                    radius: 30
+                                    color: parent.enabled ?
+                                           (parent.pressed ? Qt.darker("#E53E3E", 1.2) : "#E53E3E") :
+                                           Qt.rgba(1, 1, 1, 0.1)
+                                }
+
+                                contentItem: Text {
+                                    text: "−"
+                                    font.pixelSize: 32
+                                    font.bold: true
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: if (cornerCount > 3) cornerCount--
+                            }
+
+                            // Input field for corner count
+                            Rectangle {
+                                width: 100
+                                height: 100
+                                radius: 50
+                                color: root.primaryColor
+                                border.width: 3
+                                border.color: "white"
+
+                                TextField {
+                                    anchors.centerIn: parent
+                                    width: 70
+                                    height: 50
+                                    text: cornerCount.toString()
+                                    font.pixelSize: 36
+                                    font.bold: true
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    inputMethodHints: Qt.ImhDigitsOnly
+                                    validator: IntValidator { bottom: 3; top: 99 }
+
+                                    background: Rectangle {
+                                        color: "transparent"
+                                    }
+
+                                    onEditingFinished: {
+                                        var val = parseInt(text)
+                                        if (!isNaN(val) && val >= 3 && val <= 99) {
+                                            cornerCount = val
+                                        } else {
+                                            text = cornerCount.toString()
+                                        }
+                                    }
+                                }
+                            }
+
+                            Button {
+                                width: 60
+                                height: 60
+                                enabled: cornerCount < 99
+
+                                background: Rectangle {
+                                    radius: 30
+                                    color: parent.enabled ?
+                                           (parent.pressed ? Qt.darker("#38A169", 1.2) : "#38A169") :
+                                           Qt.rgba(1, 1, 1, 0.1)
+                                }
+
+                                contentItem: Text {
+                                    text: "+"
+                                    font.pixelSize: 32
+                                    font.bold: true
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: if (cornerCount < 99) cornerCount++
                             }
                         }
 
@@ -428,71 +523,17 @@ Rectangle {
                             color: root.textSecondaryColor
                         }
 
-                        // +/- buttons
-                        Row {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            spacing: 20
-
-                            Button {
-                                width: 70
-                                height: 70
-                                enabled: cornerCount > 3
-
-                                background: Rectangle {
-                                    radius: 35
-                                    color: parent.enabled ?
-                                           (parent.pressed ? Qt.darker("#E53E3E", 1.2) : "#E53E3E") :
-                                           Qt.rgba(1, 1, 1, 0.1)
-                                }
-
-                                contentItem: Text {
-                                    text: "−"
-                                    font.pixelSize: 36
-                                    font.bold: true
-                                    color: "white"
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-
-                                onClicked: if (cornerCount > 3) cornerCount--
-                            }
-
-                            Button {
-                                width: 70
-                                height: 70
-                                enabled: cornerCount < 20
-
-                                background: Rectangle {
-                                    radius: 35
-                                    color: parent.enabled ?
-                                           (parent.pressed ? Qt.darker("#38A169", 1.2) : "#38A169") :
-                                           Qt.rgba(1, 1, 1, 0.1)
-                                }
-
-                                contentItem: Text {
-                                    text: "+"
-                                    font.pixelSize: 36
-                                    font.bold: true
-                                    color: "white"
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-
-                                onClicked: if (cornerCount < 20) cornerCount++
-                            }
-                        }
-
                         // Quick select buttons
                         Row {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            spacing: 12
+                            spacing: 10
 
                             Repeater {
-                                model: [3, 4, 5, 6, 8]
+                                model: [3, 4, 5, 6, 8, 10, 12]
 
                                 Button {
-                                    width: 50
-                                    height: 40
+                                    width: 45
+                                    height: 38
 
                                     background: Rectangle {
                                         radius: 8
@@ -505,7 +546,7 @@ Rectangle {
 
                                     contentItem: Text {
                                         text: modelData.toString()
-                                        font.pixelSize: 14
+                                        font.pixelSize: 13
                                         font.bold: cornerCount === modelData
                                         color: "white"
                                         horizontalAlignment: Text.AlignHCenter
@@ -515,6 +556,13 @@ Rectangle {
                                     onClicked: cornerCount = modelData
                                 }
                             }
+                        }
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.tr("veya doğrudan sayı girin")
+                            font.pixelSize: app ? app.smallFontSize * 0.9 : 11
+                            color: root.textSecondaryColor
                         }
                     }
                 }
@@ -533,7 +581,7 @@ Rectangle {
                 anchors.fill: parent
                 spacing: app ? app.smallSpacing : 8
 
-                // Header info
+                // Header info with test button
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
@@ -542,30 +590,40 @@ Rectangle {
                     border.width: 1
                     border.color: root.borderColor
 
-                    Row {
-                        anchors.centerIn: parent
-                        spacing: 16
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 12
+                        anchors.rightMargin: 12
 
                         Text {
-                            text: root.tr("ITRF Koordinatları")
+                            text: root.tr("Kazı Alanı Koordinatları")
                             font.pixelSize: app ? app.baseFontSize : 14
                             font.bold: true
                             color: root.textColor
-                            anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        Rectangle {
-                            width: 1
-                            height: 24
-                            color: root.borderColor
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
+                        Item { Layout.fillWidth: true }
 
-                        Text {
-                            text: "Y = " + root.tr("SAĞA") + "  |  X = " + root.tr("YUKARI")
-                            font.pixelSize: app ? app.smallFontSize : 12
-                            color: root.textSecondaryColor
-                            anchors.verticalCenter: parent.verticalCenter
+                        Button {
+                            Layout.preferredWidth: 110
+                            Layout.preferredHeight: 34
+                            text: root.tr("Test Verisi")
+
+                            background: Rectangle {
+                                radius: 6
+                                color: parent.pressed ? Qt.darker("#2589BC", 1.2) : "#2589BC"
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: generateRandomPolygon()
                         }
                     }
                 }
@@ -607,7 +665,7 @@ Rectangle {
 
                             Text {
                                 width: (parent.width - 50) / 2
-                                text: "Y (" + root.tr("SAĞA") + ")"
+                                text: root.tr("Y Koordinatı")
                                 font.pixelSize: app ? app.smallFontSize : 12
                                 font.bold: true
                                 color: root.textColor
@@ -617,7 +675,7 @@ Rectangle {
 
                             Text {
                                 width: (parent.width - 50) / 2
-                                text: "X (" + root.tr("YUKARI") + ")"
+                                text: root.tr("X Koordinatı")
                                 font.pixelSize: app ? app.smallFontSize : 12
                                 font.bold: true
                                 color: root.textColor
@@ -684,6 +742,7 @@ Rectangle {
                                             height: parent.height
 
                                             TextField {
+                                                id: yInput
                                                 anchors.centerIn: parent
                                                 width: parent.width - 12
                                                 height: 38
@@ -693,11 +752,14 @@ Rectangle {
                                                 horizontalAlignment: Text.AlignRight
                                                 inputMethodHints: Qt.ImhFormattedNumbersOnly
 
+                                                property bool hasValue: text.length > 0 && parseFloat(text) !== 0
+
                                                 background: Rectangle {
-                                                    color: root.surfaceColor
+                                                    color: root.inputBgColor
                                                     radius: 6
-                                                    border.width: parent.activeFocus ? 2 : 1
-                                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                    border.width: yInput.activeFocus ? 2 : (yInput.hasValue ? 1.5 : 1)
+                                                    border.color: yInput.activeFocus ? root.primaryColor :
+                                                                  (yInput.hasValue ? root.filledBorderColor : root.inputBorderColor)
                                                 }
 
                                                 onEditingFinished: {
@@ -717,6 +779,7 @@ Rectangle {
                                             height: parent.height
 
                                             TextField {
+                                                id: xInput
                                                 anchors.centerIn: parent
                                                 width: parent.width - 12
                                                 height: 38
@@ -726,11 +789,14 @@ Rectangle {
                                                 horizontalAlignment: Text.AlignRight
                                                 inputMethodHints: Qt.ImhFormattedNumbersOnly
 
+                                                property bool hasValue: text.length > 0 && parseFloat(text) !== 0
+
                                                 background: Rectangle {
-                                                    color: root.surfaceColor
+                                                    color: root.inputBgColor
                                                     radius: 6
-                                                    border.width: parent.activeFocus ? 2 : 1
-                                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                    border.width: xInput.activeFocus ? 2 : (xInput.hasValue ? 1.5 : 1)
+                                                    border.color: xInput.activeFocus ? root.primaryColor :
+                                                                  (xInput.hasValue ? root.filledBorderColor : root.inputBorderColor)
                                                 }
 
                                                 onEditingFinished: {
@@ -781,11 +847,11 @@ Rectangle {
                     }
                 }
 
-                // Polygon preview canvas
+                // Polygon preview canvas - Dark theme
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: "#F0F4F8"
+                    color: root.canvasBgColor
                     radius: 12
                     border.width: 2
                     border.color: root.primaryColor
@@ -830,6 +896,10 @@ Rectangle {
                             var ctx = getContext("2d")
                             ctx.reset()
 
+                            // Dark background
+                            ctx.fillStyle = "#1a1a2e"
+                            ctx.fillRect(0, 0, width, height)
+
                             if (cornerPoints.length < 3) return
 
                             // Calculate bounds
@@ -866,8 +936,8 @@ Rectangle {
                                 return height - (offsetY + (y - minY) * scale)
                             }
 
-                            // Draw grid
-                            ctx.strokeStyle = "#E2E8F0"
+                            // Draw grid - dark theme
+                            ctx.strokeStyle = "rgba(255, 255, 255, 0.1)"
                             ctx.lineWidth = 1
                             for (var gx = 0; gx <= width; gx += 40) {
                                 ctx.beginPath()
@@ -883,7 +953,7 @@ Rectangle {
                             }
 
                             // Draw polygon fill
-                            ctx.fillStyle = "rgba(49, 151, 149, 0.2)"
+                            ctx.fillStyle = "rgba(49, 151, 149, 0.3)"
                             ctx.beginPath()
                             ctx.moveTo(transformX(cornerPoints[0].x), transformY(cornerPoints[0].y))
                             for (var j = 1; j < cornerPoints.length; j++) {
@@ -892,7 +962,7 @@ Rectangle {
                             ctx.closePath()
                             ctx.fill()
 
-                            // Draw polygon outline with hatching
+                            // Draw polygon outline
                             ctx.strokeStyle = "#319795"
                             ctx.lineWidth = 3
                             ctx.setLineDash([])
@@ -920,8 +990,8 @@ Rectangle {
                                 ctx.arc(px, py, 6, 0, 2 * Math.PI)
                                 ctx.fill()
 
-                                // Label
-                                ctx.fillStyle = "#2D3748"
+                                // Label - white for dark theme
+                                ctx.fillStyle = "white"
                                 ctx.font = "bold 12px sans-serif"
                                 ctx.textAlign = "center"
                                 ctx.fillText(cornerPoints[m].label, px, py - 16)
@@ -938,14 +1008,14 @@ Rectangle {
                         Component.onCompleted: requestPaint()
                     }
 
-                    // Coordinate info
+                    // Coordinate info - dark theme
                     Rectangle {
                         id: coordinateInfo
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
                         height: 60
-                        color: Qt.rgba(0, 0, 0, 0.05)
+                        color: Qt.rgba(0, 0, 0, 0.4)
                         radius: 10
 
                         Rectangle {
@@ -965,47 +1035,47 @@ Rectangle {
                                 Text {
                                     text: root.tr("Alan")
                                     font.pixelSize: 10
-                                    color: "#718096"
+                                    color: root.textSecondaryColor
                                 }
                                 Text {
                                     text: calculateArea().toFixed(0) + " m²"
                                     font.pixelSize: 14
                                     font.bold: true
-                                    color: "#2D3748"
+                                    color: "white"
                                 }
                             }
 
-                            Rectangle { width: 1; height: 36; color: "#E2E8F0" }
+                            Rectangle { width: 1; height: 36; color: root.borderColor }
 
                             Column {
                                 spacing: 2
                                 Text {
                                     text: root.tr("Çevre")
                                     font.pixelSize: 10
-                                    color: "#718096"
+                                    color: root.textSecondaryColor
                                 }
                                 Text {
                                     text: calculatePerimeter().toFixed(1) + " m"
                                     font.pixelSize: 14
                                     font.bold: true
-                                    color: "#2D3748"
+                                    color: "white"
                                 }
                             }
 
-                            Rectangle { width: 1; height: 36; color: "#E2E8F0" }
+                            Rectangle { width: 1; height: 36; color: root.borderColor }
 
                             Column {
                                 spacing: 2
                                 Text {
                                     text: root.tr("Köşe Sayısı")
                                     font.pixelSize: 10
-                                    color: "#718096"
+                                    color: root.textSecondaryColor
                                 }
                                 Text {
                                     text: cornerCount.toString()
                                     font.pixelSize: 14
                                     font.bold: true
-                                    color: "#2D3748"
+                                    color: "white"
                                 }
                             }
                         }
@@ -1117,7 +1187,7 @@ Rectangle {
 
                             Text {
                                 width: (parent.width - 90) / 3
-                                text: "Y (" + root.tr("SAĞA") + ")"
+                                text: root.tr("Y Koordinatı")
                                 font.pixelSize: 11
                                 font.bold: true
                                 color: root.textColor
@@ -1127,7 +1197,7 @@ Rectangle {
 
                             Text {
                                 width: (parent.width - 90) / 3
-                                text: "X (" + root.tr("YUKARI") + ")"
+                                text: root.tr("X Koordinatı")
                                 font.pixelSize: 11
                                 font.bold: true
                                 color: root.textColor
@@ -1231,6 +1301,7 @@ Rectangle {
                                                 height: parent.height
 
                                                 TextField {
+                                                    id: bathYInput
                                                     anchors.centerIn: parent
                                                     width: parent.width - 8
                                                     height: 34
@@ -1240,11 +1311,14 @@ Rectangle {
                                                     horizontalAlignment: Text.AlignRight
                                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
 
+                                                    property bool hasValue: text.length > 0
+
                                                     background: Rectangle {
-                                                        color: root.surfaceColor
+                                                        color: root.inputBgColor
                                                         radius: 4
-                                                        border.width: parent.activeFocus ? 2 : 1
-                                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                        border.width: bathYInput.activeFocus ? 2 : (bathYInput.hasValue ? 1.5 : 1)
+                                                        border.color: bathYInput.activeFocus ? root.primaryColor :
+                                                                      (bathYInput.hasValue ? root.filledBorderColor : root.inputBorderColor)
                                                     }
 
                                                     onEditingFinished: {
@@ -1264,6 +1338,7 @@ Rectangle {
                                                 height: parent.height
 
                                                 TextField {
+                                                    id: bathXInput
                                                     anchors.centerIn: parent
                                                     width: parent.width - 8
                                                     height: 34
@@ -1273,11 +1348,14 @@ Rectangle {
                                                     horizontalAlignment: Text.AlignRight
                                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
 
+                                                    property bool hasValue: text.length > 0
+
                                                     background: Rectangle {
-                                                        color: root.surfaceColor
+                                                        color: root.inputBgColor
                                                         radius: 4
-                                                        border.width: parent.activeFocus ? 2 : 1
-                                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                        border.width: bathXInput.activeFocus ? 2 : (bathXInput.hasValue ? 1.5 : 1)
+                                                        border.color: bathXInput.activeFocus ? root.primaryColor :
+                                                                      (bathXInput.hasValue ? root.filledBorderColor : root.inputBorderColor)
                                                     }
 
                                                     onEditingFinished: {
@@ -1297,6 +1375,7 @@ Rectangle {
                                                 height: parent.height
 
                                                 TextField {
+                                                    id: bathDepthInput
                                                     anchors.centerIn: parent
                                                     width: parent.width - 8
                                                     height: 34
@@ -1306,11 +1385,14 @@ Rectangle {
                                                     horizontalAlignment: Text.AlignRight
                                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
 
+                                                    property bool hasValue: text.length > 0
+
                                                     background: Rectangle {
-                                                        color: root.surfaceColor
+                                                        color: root.inputBgColor
                                                         radius: 4
-                                                        border.width: parent.activeFocus ? 2 : 1
-                                                        border.color: parent.activeFocus ? "#2589BC" : root.inputBorderColor
+                                                        border.width: bathDepthInput.activeFocus ? 2 : (bathDepthInput.hasValue ? 1.5 : 1)
+                                                        border.color: bathDepthInput.activeFocus ? "#2589BC" :
+                                                                      (bathDepthInput.hasValue ? "#2589BC" : root.inputBorderColor)
                                                     }
 
                                                     onEditingFinished: {
@@ -1324,7 +1406,7 @@ Rectangle {
                                                 }
                                             }
 
-                                            // Delete button
+                                            // Delete button with red border
                                             Item {
                                                 width: 50
                                                 height: parent.height
@@ -1338,12 +1420,14 @@ Rectangle {
                                                         radius: 6
                                                         color: parent.pressed ? Qt.darker("#E53E3E", 1.2) :
                                                                parent.hovered ? "#E53E3E" : Qt.rgba(1, 1, 1, 0.1)
+                                                        border.width: 1.5
+                                                        border.color: "#E53E3E"
                                                     }
 
                                                     contentItem: Text {
                                                         text: "×"
                                                         font.pixelSize: 18
-                                                        color: parent.hovered ? "white" : root.textSecondaryColor
+                                                        color: parent.hovered ? "white" : "#E53E3E"
                                                         horizontalAlignment: Text.AlignHCenter
                                                         verticalAlignment: Text.AlignVCenter
                                                     }
@@ -1418,7 +1502,7 @@ Rectangle {
                 anchors.fill: parent
                 spacing: app ? app.smallSpacing : 8
 
-                // View mode tabs
+                // View mode tabs + zoom controls
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 50
@@ -1427,68 +1511,144 @@ Rectangle {
                     border.width: 1
                     border.color: root.borderColor
 
-                    Row {
-                        anchors.centerIn: parent
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 8
                         spacing: 8
 
-                        Button {
-                            width: 150
-                            height: 36
-                            text: root.tr("Kontur Çizgili")
+                        // View mode buttons
+                        Row {
+                            spacing: 8
 
-                            background: Rectangle {
-                                radius: 6
-                                color: mapViewMode === 0 ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1)
-                                border.width: mapViewMode === 0 ? 0 : 1
-                                border.color: root.borderColor
+                            Button {
+                                width: 130
+                                height: 36
+                                text: root.tr("Kontur Çizgili")
+
+                                background: Rectangle {
+                                    radius: 6
+                                    color: mapViewMode === 0 ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1)
+                                    border.width: mapViewMode === 0 ? 0 : 1
+                                    border.color: root.borderColor
+                                }
+
+                                contentItem: Text {
+                                    text: parent.text
+                                    font.pixelSize: 11
+                                    font.bold: mapViewMode === 0
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: mapViewMode = 0
                             }
 
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 12
-                                font.bold: mapViewMode === 0
-                                color: "white"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
+                            Button {
+                                width: 130
+                                height: 36
+                                text: root.tr("Grid Görünümü")
 
-                            onClicked: mapViewMode = 0
+                                background: Rectangle {
+                                    radius: 6
+                                    color: mapViewMode === 1 ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1)
+                                    border.width: mapViewMode === 1 ? 0 : 1
+                                    border.color: root.borderColor
+                                }
+
+                                contentItem: Text {
+                                    text: parent.text
+                                    font.pixelSize: 11
+                                    font.bold: mapViewMode === 1
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: mapViewMode = 1
+                            }
                         }
 
-                        Button {
-                            width: 150
-                            height: 36
-                            text: root.tr("Grid Görünümü")
+                        Item { Layout.fillWidth: true }
 
-                            background: Rectangle {
+                        // Zoom controls
+                        Row {
+                            spacing: 6
+
+                            Button {
+                                width: 36
+                                height: 36
+                                enabled: mapZoom > 0.5
+
+                                background: Rectangle {
+                                    radius: 6
+                                    color: parent.enabled ?
+                                           (parent.pressed ? Qt.darker("#2589BC", 1.2) : "#2589BC") :
+                                           Qt.rgba(1, 1, 1, 0.1)
+                                }
+
+                                contentItem: Text {
+                                    text: "−"
+                                    font.pixelSize: 20
+                                    font.bold: true
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: if (mapZoom > 0.5) mapZoom -= 0.25
+                            }
+
+                            Rectangle {
+                                width: 50
+                                height: 36
+                                color: Qt.rgba(1, 1, 1, 0.1)
                                 radius: 6
-                                color: mapViewMode === 1 ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1)
-                                border.width: mapViewMode === 1 ? 0 : 1
-                                border.color: root.borderColor
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: Math.round(mapZoom * 100) + "%"
+                                    font.pixelSize: 11
+                                    color: "white"
+                                }
                             }
 
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 12
-                                font.bold: mapViewMode === 1
-                                color: "white"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
+                            Button {
+                                width: 36
+                                height: 36
+                                enabled: mapZoom < 2.0
 
-                            onClicked: mapViewMode = 1
+                                background: Rectangle {
+                                    radius: 6
+                                    color: parent.enabled ?
+                                           (parent.pressed ? Qt.darker("#2589BC", 1.2) : "#2589BC") :
+                                           Qt.rgba(1, 1, 1, 0.1)
+                                }
+
+                                contentItem: Text {
+                                    text: "+"
+                                    font.pixelSize: 20
+                                    font.bold: true
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                onClicked: if (mapZoom < 2.0) mapZoom += 0.25
+                            }
                         }
                     }
                 }
 
-                // Map display
+                // Map display - Dark theme
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: "#F0F4F8"
+                    color: root.canvasBgColor
                     radius: 12
                     border.width: 2
                     border.color: "#1A75A8"
+                    clip: true
 
                     // Map title
                     Rectangle {
@@ -1499,6 +1659,7 @@ Rectangle {
                         height: 36
                         color: "#1A75A8"
                         radius: 10
+                        z: 10
 
                         Rectangle {
                             anchors.bottom: parent.bottom
@@ -1519,7 +1680,7 @@ Rectangle {
                         }
                     }
 
-                    // Map canvas
+                    // Map canvas with zoom
                     Canvas {
                         id: bathymetricMapCanvas
                         anchors.top: mapTitle.bottom
@@ -1529,19 +1690,21 @@ Rectangle {
                         anchors.margins: 12
 
                         property int viewMode: mapViewMode
+                        property real zoom: mapZoom
 
                         onViewModeChanged: requestPaint()
+                        onZoomChanged: requestPaint()
 
                         onPaint: {
                             var ctx = getContext("2d")
                             ctx.reset()
 
-                            // Background
-                            ctx.fillStyle = "#F7FAFC"
+                            // Dark background
+                            ctx.fillStyle = "#1a1a2e"
                             ctx.fillRect(0, 0, width, height)
 
                             if (cornerPoints.length < 3) {
-                                ctx.fillStyle = "#718096"
+                                ctx.fillStyle = "rgba(255, 255, 255, 0.5)"
                                 ctx.font = "14px sans-serif"
                                 ctx.textAlign = "center"
                                 ctx.fillText(root.tr("Köşe noktaları tanımlanmadı"), width/2, height/2)
@@ -1565,19 +1728,19 @@ Rectangle {
                             if (dataHeight === 0) dataHeight = 100
 
                             var padding = 40
-                            var scaleX = (width - 2 * padding) / dataWidth
-                            var scaleY = (height - 2 * padding) / dataHeight
-                            var scale = Math.min(scaleX, scaleY)
+                            var baseScale = Math.min((width - 2 * padding) / dataWidth,
+                                                     (height - 2 * padding) / dataHeight)
+                            var scale = baseScale * zoom
 
-                            var offsetX = padding + (width - 2 * padding - dataWidth * scale) / 2
-                            var offsetY = padding + (height - 2 * padding - dataHeight * scale) / 2
+                            var offsetX = width / 2 - ((minX + maxX) / 2 - minX) * scale
+                            var offsetY = height / 2 + ((minY + maxY) / 2 - minY) * scale
 
                             function tx(x) { return offsetX + (x - minX) * scale }
                             function ty(y) { return height - (offsetY + (y - minY) * scale) }
 
                             // Draw grid if grid mode
                             if (viewMode === 1) {
-                                ctx.strokeStyle = "#CBD5E0"
+                                ctx.strokeStyle = "rgba(255, 255, 255, 0.15)"
                                 ctx.lineWidth = 1
                                 var gridSize = 30
                                 for (var gx = 0; gx < width; gx += gridSize) {
@@ -1607,20 +1770,13 @@ Rectangle {
                             ctx.stroke()
 
                             // Fill polygon with light color
-                            ctx.fillStyle = "rgba(49, 151, 149, 0.1)"
+                            ctx.fillStyle = "rgba(49, 151, 149, 0.2)"
                             ctx.fill()
 
                             // Draw bathymetric points
                             if (bathymetricPoints.length > 0) {
-                                // Find depth range
-                                var minDepth = 0, maxDepth = -30
-                                for (var d = 0; d < bathymetricPoints.length; d++) {
-                                    if (bathymetricPoints[d].depth < maxDepth) maxDepth = bathymetricPoints[d].depth
-                                }
-
                                 // Draw contour lines if contour mode
                                 if (viewMode === 0 && bathymetricPoints.length >= 2) {
-                                    // Connect points with lines (simplified contour)
                                     ctx.strokeStyle = "#2589BC"
                                     ctx.lineWidth = 2
                                     ctx.setLineDash([5, 5])
@@ -1652,41 +1808,36 @@ Rectangle {
 
                                     // Draw point
                                     ctx.beginPath()
-                                    ctx.arc(px, py, 12, 0, 2 * Math.PI)
+                                    ctx.arc(px, py, 12 * zoom, 0, 2 * Math.PI)
                                     ctx.fill()
 
                                     ctx.fillStyle = "white"
                                     ctx.beginPath()
-                                    ctx.arc(px, py, 8, 0, 2 * Math.PI)
+                                    ctx.arc(px, py, 8 * zoom, 0, 2 * Math.PI)
                                     ctx.fill()
 
                                     // Depth label
                                     ctx.fillStyle = "#1A75A8"
-                                    ctx.font = "bold 10px sans-serif"
+                                    ctx.font = "bold " + Math.round(10 * zoom) + "px sans-serif"
                                     ctx.textAlign = "center"
                                     ctx.fillText(pt.depth.toFixed(1), px, py + 4)
-
-                                    // Coordinate label above
-                                    ctx.fillStyle = "#4A5568"
-                                    ctx.font = "9px sans-serif"
-                                    ctx.fillText("(" + pt.x.toFixed(0) + ")", px, py - 18)
                                 }
                             }
 
                             // Draw corner labels
                             ctx.fillStyle = "#319795"
-                            ctx.font = "bold 11px sans-serif"
+                            ctx.font = "bold " + Math.round(11 * zoom) + "px sans-serif"
                             ctx.textAlign = "center"
                             for (var m = 0; m < cornerPoints.length; m++) {
                                 var cpx = tx(cornerPoints[m].x)
                                 var cpy = ty(cornerPoints[m].y)
 
                                 ctx.beginPath()
-                                ctx.arc(cpx, cpy, 6, 0, 2 * Math.PI)
+                                ctx.arc(cpx, cpy, 6 * zoom, 0, 2 * Math.PI)
                                 ctx.fill()
 
-                                ctx.fillStyle = "#2D3748"
-                                ctx.fillText(cornerPoints[m].label, cpx, cpy - 12)
+                                ctx.fillStyle = "white"
+                                ctx.fillText(cornerPoints[m].label, cpx, cpy - 12 * zoom)
                                 ctx.fillStyle = "#319795"
                             }
                         }
@@ -1702,19 +1853,22 @@ Rectangle {
                             function onMapViewModeChanged() {
                                 bathymetricMapCanvas.requestPaint()
                             }
+                            function onMapZoomChanged() {
+                                bathymetricMapCanvas.requestPaint()
+                            }
                         }
 
                         Component.onCompleted: requestPaint()
                     }
 
-                    // Legend bar
+                    // Legend bar - dark theme
                     Rectangle {
                         id: legendBar
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
                         height: 50
-                        color: Qt.rgba(0, 0, 0, 0.05)
+                        color: Qt.rgba(0, 0, 0, 0.4)
                         radius: 10
 
                         Rectangle {
@@ -1737,7 +1891,7 @@ Rectangle {
                                 Text {
                                     text: root.tr("Derinlik") + ":"
                                     font.pixelSize: 11
-                                    color: "#4A5568"
+                                    color: root.textSecondaryColor
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
 
@@ -1760,18 +1914,18 @@ Rectangle {
                                 Text {
                                     text: "0m → -30m"
                                     font.pixelSize: 10
-                                    color: "#718096"
+                                    color: root.textSecondaryColor
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
 
-                            Rectangle { width: 1; height: 30; color: "#CBD5E0" }
+                            Rectangle { width: 1; height: 30; color: root.borderColor }
 
                             // Point count
                             Text {
                                 text: bathymetricPoints.length + " " + root.tr("veri noktası")
                                 font.pixelSize: 11
-                                color: "#4A5568"
+                                color: root.textSecondaryColor
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
@@ -1859,8 +2013,7 @@ Rectangle {
                 }
 
                 // Convert ITRF to approximate lat/lon for storage
-                // This is a simplified conversion - real implementation would use proper projection
-                configManager.gridStartLatitude = minY / 111000 // rough conversion
+                configManager.gridStartLatitude = minY / 111000
                 configManager.gridStartLongitude = minX / (111000 * Math.cos(minY / 111000 * Math.PI / 180))
                 configManager.gridEndLatitude = maxY / 111000
                 configManager.gridEndLongitude = maxX / (111000 * Math.cos(maxY / 111000 * Math.PI / 180))

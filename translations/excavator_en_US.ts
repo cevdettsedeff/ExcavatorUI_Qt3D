@@ -613,5 +613,253 @@ Redirecting to login screen...</translation>
         <source>Save and Continue</source>
         <translation>Save and Continue</translation>
     </message>
+    <message>
+        <source>Corner Count</source>
+        <translation>Corner Count</translation>
+    </message>
+    <message>
+        <source>Köşe Sayısı</source>
+        <translation>Corner Count</translation>
+    </message>
+    <message>
+        <source>Koordinatlar</source>
+        <translation>Coordinates</translation>
+    </message>
+    <message>
+        <source>Coordinates</source>
+        <translation>Coordinates</translation>
+    </message>
+    <message>
+        <source>Önizleme</source>
+        <translation>Preview</translation>
+    </message>
+    <message>
+        <source>Batimetri</source>
+        <translation>Bathymetry</translation>
+    </message>
+    <message>
+        <source>Bathymetry</source>
+        <translation>Bathymetry</translation>
+    </message>
+    <message>
+        <source>Harita</source>
+        <translation>Map</translation>
+    </message>
+    <message>
+        <source>Geri</source>
+        <translation>Back</translation>
+    </message>
+    <message>
+        <source>Kaydet ve Bitir</source>
+        <translation>Save and Finish</translation>
+    </message>
+    <message>
+        <source>Save and Finish</source>
+        <translation>Save and Finish</translation>
+    </message>
+    <message>
+        <source>Devam Et</source>
+        <translation>Continue</translation>
+    </message>
+    <message>
+        <source>Continue</source>
+        <translation>Continue</translation>
+    </message>
+    <message>
+        <source>Kazı alanınız kaç köşeli?</source>
+        <translation>How many corners does your excavation area have?</translation>
+    </message>
+    <message>
+        <source>How many corners does your excavation area have?</source>
+        <translation>How many corners does your excavation area have?</translation>
+    </message>
+    <message>
+        <source>L şeklinde alanlar için 6, dikdörtgen için 4 seçin</source>
+        <translation>Select 6 for L-shaped areas, 4 for rectangle</translation>
+    </message>
+    <message>
+        <source>Select 6 for L-shaped areas, 4 for rectangle</source>
+        <translation>Select 6 for L-shaped areas, 4 for rectangle</translation>
+    </message>
+    <message>
+        <source>Köşe Noktası</source>
+        <translation>Corner Point</translation>
+    </message>
+    <message>
+        <source>Corner Point</source>
+        <translation>Corner Point</translation>
+    </message>
+    <message>
+        <source>veya doğrudan sayı girin</source>
+        <translation>or enter number directly</translation>
+    </message>
+    <message>
+        <source>or enter number directly</source>
+        <translation>or enter number directly</translation>
+    </message>
+    <message>
+        <source>Kazı Alanı Koordinatları</source>
+        <translation>Excavation Area Coordinates</translation>
+    </message>
+    <message>
+        <source>Excavation Area Coordinates</source>
+        <translation>Excavation Area Coordinates</translation>
+    </message>
+    <message>
+        <source>Test Verisi</source>
+        <translation>Test Data</translation>
+    </message>
+    <message>
+        <source>Test Data</source>
+        <translation>Test Data</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>No</translation>
+    </message>
+    <message>
+        <source>Y Koordinatı</source>
+        <translation>Y Coordinate</translation>
+    </message>
+    <message>
+        <source>Y Coordinate</source>
+        <translation>Y Coordinate</translation>
+    </message>
+    <message>
+        <source>X Koordinatı</source>
+        <translation>X Coordinate</translation>
+    </message>
+    <message>
+        <source>X Coordinate</source>
+        <translation>X Coordinate</translation>
+    </message>
+    <message>
+        <source>Girdiğiniz köşe noktalarından oluşan alan önizlemesi</source>
+        <translation>Preview of area formed by entered corner points</translation>
+    </message>
+    <message>
+        <source>Preview of area formed by entered corner points</source>
+        <translation>Preview of area formed by entered corner points</translation>
+    </message>
+    <message>
+        <source>Kazı Alanı Önizlemesi</source>
+        <translation>Excavation Area Preview</translation>
+    </message>
+    <message>
+        <source>Excavation Area Preview</source>
+        <translation>Excavation Area Preview</translation>
+    </message>
+    <message>
+        <source>Köşe</source>
+        <translation>Corner</translation>
+    </message>
+    <message>
+        <source>Corner</source>
+        <translation>Corner</translation>
+    </message>
+    <message>
+        <source>Çevre</source>
+        <translation>Perimeter</translation>
+    </message>
+    <message>
+        <source>Perimeter</source>
+        <translation>Perimeter</translation>
+    </message>
+    <message>
+        <source>Batimetrik Derinlik Noktaları</source>
+        <translation>Bathymetric Depth Points</translation>
+    </message>
+    <message>
+        <source>Bathymetric Depth Points</source>
+        <translation>Bathymetric Depth Points</translation>
+    </message>
+    <message>
+        <source>Ekle</source>
+        <translation>Add</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Add</translation>
+    </message>
+    <message>
+        <source>Derinlik</source>
+        <translation>Depth</translation>
+    </message>
+    <message>
+        <source>Henüz veri noktası eklenmedi</source>
+        <translation>No data points added yet</translation>
+    </message>
+    <message>
+        <source>No data points added yet</source>
+        <translation>No data points added yet</translation>
+    </message>
+    <message>
+        <source>Derinlik verisi eklemek için + Ekle butonuna tıklayın</source>
+        <translation>Click + Add button to add depth data</translation>
+    </message>
+    <message>
+        <source>Click + Add button to add depth data</source>
+        <translation>Click + Add button to add depth data</translation>
+    </message>
+    <message>
+        <source>Örnek veri ekle</source>
+        <translation>Add sample data</translation>
+    </message>
+    <message>
+        <source>Add sample data</source>
+        <translation>Add sample data</translation>
+    </message>
+    <message>
+        <source>nokta</source>
+        <translation>point</translation>
+    </message>
+    <message>
+        <source>point</source>
+        <translation>point</translation>
+    </message>
+    <message>
+        <source>Kontur Çizgili</source>
+        <translation>Contour Lines</translation>
+    </message>
+    <message>
+        <source>Contour Lines</source>
+        <translation>Contour Lines</translation>
+    </message>
+    <message>
+        <source>Grid Görünümü</source>
+        <translation>Grid View</translation>
+    </message>
+    <message>
+        <source>Grid View</source>
+        <translation>Grid View</translation>
+    </message>
+    <message>
+        <source>Köşe noktaları tanımlanmadı</source>
+        <translation>Corner points not defined</translation>
+    </message>
+    <message>
+        <source>Corner points not defined</source>
+        <translation>Corner points not defined</translation>
+    </message>
+    <message>
+        <source>veri noktası</source>
+        <translation>data point</translation>
+    </message>
+    <message>
+        <source>data point</source>
+        <translation>data point</translation>
+    </message>
+    <message>
+        <source>Kazı alanı yapılandırması tamamlandı!</source>
+        <translation>Dig area configuration completed!</translation>
+    </message>
+    <message>
+        <source>Dig area configuration completed!</source>
+        <translation>Dig area configuration completed!</translation>
+    </message>
+    <message>
+        <source>Kazı Alanı Ayarları</source>
+        <translation>Dig Area Settings</translation>
+    </message>
 </context>
 </TS>
