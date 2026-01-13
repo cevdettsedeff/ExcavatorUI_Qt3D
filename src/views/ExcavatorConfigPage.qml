@@ -509,10 +509,13 @@ Rectangle {
         spacing: app ? app.smallSpacing : 8
 
         Text {
+            Layout.fillWidth: true
             text: inputFieldRoot.label
             font.pixelSize: app ? app.baseFontSize : 14
             font.bold: true
             color: "white"  // Always white
+            wrapMode: Text.NoWrap
+            elide: Text.ElideNone
         }
 
         Rectangle {
