@@ -1133,5 +1133,21 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Dig area configuration completed!</source>
         <translation>Kazı alanı yapılandırması tamamlandı!</translation>
     </message>
+    <message>
+        <source>Temizle</source>
+        <translation>Temizle</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Temizle</translation>
+    </message>
+    <message>
+        <source>Tümünü Sil</source>
+        <translation>Tümünü Sil</translation>
+    </message>
+    <message>
+        <source>Delete All</source>
+        <translation>Tümünü Sil</translation>
+    </message>
 </context>
 </TS>

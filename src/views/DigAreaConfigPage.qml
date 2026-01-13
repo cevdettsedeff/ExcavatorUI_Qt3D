@@ -626,6 +626,42 @@ Rectangle {
 
                             onClicked: generateRandomPolygon()
                         }
+
+                        Button {
+                            Layout.preferredWidth: 90
+                            Layout.preferredHeight: 34
+                            text: root.tr("Temizle")
+
+                            background: Rectangle {
+                                radius: 6
+                                color: parent.pressed ? Qt.darker("#E53E3E", 1.2) :
+                                       parent.hovered ? "#E53E3E" : Qt.rgba(1, 1, 1, 0.1)
+                                border.width: 1
+                                border.color: "#E53E3E"
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: parent.hovered ? "white" : "#E53E3E"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                // Reset all coordinates to 0
+                                var newPoints = []
+                                for (var i = 0; i < cornerCount; i++) {
+                                    newPoints.push({
+                                        x: 0,
+                                        y: 0,
+                                        label: "T" + (i + 1)
+                                    })
+                                }
+                                cornerPoints = newPoints
+                            }
+                        }
                     }
                 }
 
@@ -1139,14 +1175,14 @@ Rectangle {
                             }
 
                             onClicked: {
-                                var pts = bathymetricPoints.slice()  // Create new array copy
+                                var pts = root.bathymetricPoints.slice()  // Create new array copy
                                 pts.push({
                                     x: NaN,
                                     y: NaN,
                                     depth: NaN
                                 })
-                                bathymetricPoints = pts
-                                bathymetricUpdateTrigger++  // Force UI update
+                                root.bathymetricPoints = pts
+                                root.bathymetricUpdateTrigger++  // Force UI update
                             }
                         }
                     }
@@ -1217,9 +1253,42 @@ Rectangle {
                                 horizontalAlignment: Text.AlignCenter
                             }
 
+                            // Clear all button in header
                             Item {
                                 width: 50
                                 height: parent.height
+
+                                Button {
+                                    anchors.centerIn: parent
+                                    width: 32
+                                    height: 24
+                                    visible: root.bathymetricPoints.length > 0
+
+                                    background: Rectangle {
+                                        radius: 4
+                                        color: parent.pressed ? Qt.darker("#E53E3E", 1.2) :
+                                               parent.hovered ? "#E53E3E" : Qt.rgba(1, 1, 1, 0.1)
+                                        border.width: 1
+                                        border.color: "#E53E3E"
+                                    }
+
+                                    contentItem: Text {
+                                        text: "🗑"
+                                        font.pixelSize: 12
+                                        color: parent.hovered ? "white" : "#E53E3E"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        root.bathymetricPoints = []
+                                        root.bathymetricUpdateTrigger++
+                                    }
+
+                                    ToolTip.visible: hovered
+                                    ToolTip.text: root.tr("Tümünü Sil")
+                                    ToolTip.delay: 500
+                                }
                             }
                         }
                     }
@@ -1234,7 +1303,7 @@ Rectangle {
                         anchors.topMargin: 4
 
                         // Empty state - use trigger to force updates
-                        property int updateTrigger: bathymetricUpdateTrigger
+                        property int updateTrigger: root.bathymetricUpdateTrigger
 
                         Column {
                             visible: bathymetricPoints.length === 0
@@ -1330,10 +1399,10 @@ Rectangle {
                                                     onEditingFinished: {
                                                         var val = parseFloat(text.replace(",", "."))
                                                         if (!isNaN(val)) {
-                                                            var pts = bathymetricPoints.slice()
+                                                            var pts = root.bathymetricPoints.slice()
                                                             pts[index].x = val
-                                                            bathymetricPoints = pts
-                                                            bathymetricUpdateTrigger++
+                                                            root.bathymetricPoints = pts
+                                                            root.bathymetricUpdateTrigger++
                                                         }
                                                     }
                                                 }
@@ -1370,10 +1439,10 @@ Rectangle {
                                                     onEditingFinished: {
                                                         var val = parseFloat(text.replace(",", "."))
                                                         if (!isNaN(val)) {
-                                                            var pts = bathymetricPoints.slice()
+                                                            var pts = root.bathymetricPoints.slice()
                                                             pts[index].y = val
-                                                            bathymetricPoints = pts
-                                                            bathymetricUpdateTrigger++
+                                                            root.bathymetricPoints = pts
+                                                            root.bathymetricUpdateTrigger++
                                                         }
                                                     }
                                                 }
@@ -1410,10 +1479,10 @@ Rectangle {
                                                     onEditingFinished: {
                                                         var val = parseFloat(text.replace(",", "."))
                                                         if (!isNaN(val)) {
-                                                            var pts = bathymetricPoints.slice()
+                                                            var pts = root.bathymetricPoints.slice()
                                                             pts[index].depth = val
-                                                            bathymetricPoints = pts
-                                                            bathymetricUpdateTrigger++
+                                                            root.bathymetricPoints = pts
+                                                            root.bathymetricUpdateTrigger++
                                                         }
                                                     }
                                                 }
@@ -1446,10 +1515,10 @@ Rectangle {
                                                     }
 
                                                     onClicked: {
-                                                        var pts = bathymetricPoints.slice()  // Create new array copy
+                                                        var pts = root.bathymetricPoints.slice()  // Create new array copy
                                                         pts.splice(index, 1)
-                                                        bathymetricPoints = pts
-                                                        bathymetricUpdateTrigger++  // Force UI update
+                                                        root.bathymetricPoints = pts
+                                                        root.bathymetricUpdateTrigger++  // Force UI update
                                                     }
                                                 }
                                             }
@@ -1497,8 +1566,8 @@ Rectangle {
                                 {x: 454808.22, y: 4508557.97, depth: -14.20},
                                 {x: 454987.71, y: 4508162.21, depth: -9.50}
                             ]
-                            bathymetricPoints = samples
-                            bathymetricUpdateTrigger++
+                            root.bathymetricPoints = samples
+                            root.bathymetricUpdateTrigger++
                         }
                     }
                 }

@@ -861,5 +861,21 @@ Redirecting to login screen...</translation>
         <source>Kazı Alanı Ayarları</source>
         <translation>Dig Area Settings</translation>
     </message>
+    <message>
+        <source>Temizle</source>
+        <translation>Clear</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Clear</translation>
+    </message>
+    <message>
+        <source>Tümünü Sil</source>
+        <translation>Delete All</translation>
+    </message>
+    <message>
+        <source>Delete All</source>
+        <translation>Delete All</translation>
+    </message>
 </context>
 </TS>
