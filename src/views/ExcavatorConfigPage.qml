@@ -154,14 +154,14 @@ Rectangle {
 
                     onCurrentIndexChanged: {
                         if (currentIndex === 0) {
-                            // "Yeni Ekskavatör" selected - clear fields
+                            // "Yeni Ekskavatör" selected - clear all fields
                             root.selectedPresetIndex = -1;
                             if (configManager) {
                                 configManager.excavatorName = "";
-                                configManager.scanningDepth = 15.0;
-                                configManager.boomLength = 12.0;
-                                configManager.armLength = 10.0;
-                                configManager.bucketWidth = 3.0;
+                                configManager.scanningDepth = 0.0;
+                                configManager.boomLength = 0.0;
+                                configManager.armLength = 0.0;
+                                configManager.bucketWidth = 0.0;
                             }
                         } else if (currentIndex > 0 && configManager) {
                             // Load preset
@@ -266,13 +266,16 @@ Rectangle {
                     Layout.fillWidth: true
                     label: root.tr("Tarama Derinliği (m)")
                     placeholder: root.tr("15.0")
-                    inputText: configManager ? configManager.scanningDepth.toFixed(1) : "15.0"
+                    inputText: {
+                        if (!configManager) return "";
+                        return configManager.scanningDepth > 0 ? configManager.scanningDepth.toFixed(1) : "";
+                    }
                     inputType: "number"
                     suffix: "m"
                     onFieldTextChanged: function(newText) {
-                        var val = parseFloat(newText)
-                        if (!isNaN(val) && val > 0 && configManager) {
-                            configManager.scanningDepth = val
+                        if (configManager) {
+                            var val = parseFloat(newText)
+                            configManager.scanningDepth = (!isNaN(val) && val > 0) ? val : 0.0
                         }
                     }
                 }
@@ -282,13 +285,16 @@ Rectangle {
                     Layout.fillWidth: true
                     label: root.tr("Ana Bom (m)")
                     placeholder: root.tr("12.0")
-                    inputText: configManager ? configManager.boomLength.toFixed(1) : "0.0"
+                    inputText: {
+                        if (!configManager) return "";
+                        return configManager.boomLength > 0 ? configManager.boomLength.toFixed(1) : "";
+                    }
                     inputType: "number"
                     suffix: "m"
                     onFieldTextChanged: function(newText) {
-                        var val = parseFloat(newText)
-                        if (!isNaN(val) && val > 0 && configManager) {
-                            configManager.boomLength = val
+                        if (configManager) {
+                            var val = parseFloat(newText)
+                            configManager.boomLength = (!isNaN(val) && val > 0) ? val : 0.0
                         }
                     }
                 }
@@ -306,13 +312,16 @@ Rectangle {
                     Layout.fillWidth: true
                     label: root.tr("Arm Bom (m)")
                     placeholder: root.tr("10.0")
-                    inputText: configManager ? configManager.armLength.toFixed(1) : "0.0"
+                    inputText: {
+                        if (!configManager) return "";
+                        return configManager.armLength > 0 ? configManager.armLength.toFixed(1) : "";
+                    }
                     inputType: "number"
                     suffix: "m"
                     onFieldTextChanged: function(newText) {
-                        var val = parseFloat(newText)
-                        if (!isNaN(val) && val > 0 && configManager) {
-                            configManager.armLength = val
+                        if (configManager) {
+                            var val = parseFloat(newText)
+                            configManager.armLength = (!isNaN(val) && val > 0) ? val : 0.0
                         }
                     }
                 }
@@ -322,13 +331,16 @@ Rectangle {
                     Layout.fillWidth: true
                     label: root.tr("Kova (m³)")
                     placeholder: root.tr("3.0")
-                    inputText: configManager ? configManager.bucketWidth.toFixed(1) : "0.0"
+                    inputText: {
+                        if (!configManager) return "";
+                        return configManager.bucketWidth > 0 ? configManager.bucketWidth.toFixed(1) : "";
+                    }
                     inputType: "number"
                     suffix: "m³"
                     onFieldTextChanged: function(newText) {
-                        var val = parseFloat(newText)
-                        if (!isNaN(val) && val > 0 && configManager) {
-                            configManager.bucketWidth = val
+                        if (configManager) {
+                            var val = parseFloat(newText)
+                            configManager.bucketWidth = (!isNaN(val) && val > 0) ? val : 0.0
                         }
                     }
                 }
@@ -531,6 +543,8 @@ Rectangle {
                     topPadding: 0
                     bottomPadding: 0
 
+                    // Show number keyboard for number inputs
+                    inputMethodHints: inputFieldRoot.inputType === "number" ? Qt.ImhFormattedNumbersOnly : Qt.ImhNone
                     validator: inputFieldRoot.inputType === "number" ? doubleValidator : null
 
                     background: Rectangle {
