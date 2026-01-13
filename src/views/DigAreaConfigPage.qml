@@ -18,6 +18,9 @@ Rectangle {
     signal back()
     signal configSaved()
 
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     // Translation support
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
@@ -32,12 +35,14 @@ Rectangle {
         }
     }
 
-    // Theme colors with fallbacks
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
-    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color textColor: themeManager ? themeManager.textColor : "#2d3748"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
-    property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
+    // Theme colors with fallbacks (dark theme optimized)
+    property color primaryColor: (themeManager && themeManager.primaryColor) ? themeManager.primaryColor : "#319795"
+    property color surfaceColor: (themeManager && themeManager.surfaceColor) ? themeManager.surfaceColor : "#ffffff"
+    property color textColor: "white"  // Always white for dark backgrounds
+    property color textSecondaryColor: Qt.rgba(1, 1, 1, 0.7)  // Semi-transparent white
+    property color borderColor: Qt.rgba(1, 1, 1, 0.3)  // Light border for dark theme
+    property color inputTextColor: "#2d3748"  // Dark text for input fields (white backgrounds)
+    property color inputBorderColor: (themeManager && themeManager.borderColor) ? themeManager.borderColor : "#e2e8f0"
 
     // Selected cell for editing
     property int selectedRow: -1
@@ -64,17 +69,17 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 60
+        height: app ? app.buttonHeight * 1.5 : 60
         color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
+            anchors.leftMargin: app ? app.smallPadding : 16
+            anchors.rightMargin: app ? app.smallPadding : 16
 
             Button {
-                Layout.preferredWidth: 40
-                Layout.preferredHeight: 40
+                Layout.preferredWidth: app ? app.buttonHeight : 40
+                Layout.preferredHeight: app ? app.buttonHeight : 40
                 flat: true
 
                 contentItem: Text {
@@ -95,14 +100,14 @@ Rectangle {
 
             Text {
                 Layout.fillWidth: true
-                text: tr("Dig Area Settings")
-                font.pixelSize: 20
+                text: root.tr("Kazı Alanı Ayarları")
+                font.pixelSize: app ? app.mediumFontSize : 20
                 font.bold: true
                 color: "white"
                 horizontalAlignment: Text.AlignHCenter
             }
 
-            Item { Layout.preferredWidth: 40 }
+            Item { Layout.preferredWidth: app ? app.buttonHeight : 40 }
         }
     }
 
@@ -112,15 +117,17 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: footer.top
-        anchors.margins: 16
-        spacing: 16
+        anchors.margins: app ? app.smallPadding : 16
+        spacing: app ? app.normalSpacing : 16
 
         // Sol panel - Ayarlar ve veri girişi
         Rectangle {
-            Layout.preferredWidth: parent.width * 0.45
+            Layout.preferredWidth: parent.width * 0.35
             Layout.fillHeight: true
-            color: root.surfaceColor
+            color: Qt.rgba(1, 1, 1, 0.05)  // Dark semi-transparent background
             radius: 12
+            border.width: 1
+            border.color: root.borderColor
 
             ScrollView {
                 anchors.fill: parent
@@ -128,16 +135,16 @@ Rectangle {
 
                 ColumnLayout {
                     width: parent.width
-                    spacing: 16
+                    spacing: app ? app.normalSpacing : 16
 
-                    Item { Layout.preferredHeight: 8 }
+                    Item { Layout.preferredHeight: app ? app.smallSpacing : 8 }
 
                     // Grid Boyutu Kontrolleri
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.margins: 16
+                        Layout.margins: app ? app.smallPadding : 16
                         Layout.preferredHeight: gridSizeContent.height + 32
-                        color: Qt.lighter(root.surfaceColor, 0.97)
+                        color: Qt.rgba(1, 1, 1, 0.08)  // Slightly lighter for contrast
                         radius: 8
                         border.width: 1
                         border.color: root.borderColor
@@ -147,12 +154,12 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             anchors.top: parent.top
-                            anchors.margins: 16
-                            spacing: 12
+                            anchors.margins: app ? app.smallPadding : 16
+                            spacing: app ? app.smallSpacing : 12
 
                             Text {
-                                text: tr("Grid Size")
-                                font.pixelSize: 14
+                                text: root.tr("Izgara Boyutu")
+                                font.pixelSize: app ? app.baseFontSize : 14
                                 font.bold: true
                                 color: root.textColor
                             }
@@ -167,8 +174,8 @@ Rectangle {
                                     spacing: 6
 
                                     Text {
-                                        text: tr("Rows")
-                                        font.pixelSize: 12
+                                        text: root.tr("Satır")
+                                        font.pixelSize: app ? app.smallFontSize : 12
                                         color: root.textSecondaryColor
                                     }
 
@@ -226,8 +233,8 @@ Rectangle {
                                     spacing: 6
 
                                     Text {
-                                        text: tr("Columns")
-                                        font.pixelSize: 12
+                                        text: root.tr("Sütun")
+                                        font.pixelSize: app ? app.smallFontSize : 12
                                         color: root.textSecondaryColor
                                     }
 
@@ -281,8 +288,8 @@ Rectangle {
                             }
 
                             Text {
-                                text: tr("Total") + ": " + (configManager ? (configManager.gridRows * configManager.gridCols) : 25) + " " + tr("cells")
-                                font.pixelSize: 11
+                                text: root.tr("Toplam") + ": " + (configManager ? (configManager.gridRows * configManager.gridCols) : 25) + " " + root.tr("hücre doldurulacak")
+                                font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                 color: root.textSecondaryColor
                             }
                         }
@@ -291,9 +298,9 @@ Rectangle {
                     // Derinlik Veri Girişi Grid'i
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.margins: 16
+                        Layout.margins: app ? app.smallPadding : 16
                         Layout.preferredHeight: depthInputContent.height + 32
-                        color: Qt.lighter(root.surfaceColor, 0.97)
+                        color: Qt.rgba(1, 1, 1, 0.08)
                         radius: 8
                         border.width: 1
                         border.color: root.borderColor
@@ -303,15 +310,15 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             anchors.top: parent.top
-                            anchors.margins: 16
-                            spacing: 12
+                            anchors.margins: app ? app.smallPadding : 16
+                            spacing: app ? app.smallSpacing : 12
 
                             Row {
                                 spacing: 8
 
                                 Text {
-                                    text: tr("Bathymetric Data Input")
-                                    font.pixelSize: 14
+                                    text: root.tr("Batimetrik Veri Girişi")
+                                    font.pixelSize: app ? app.baseFontSize : 14
                                     font.bold: true
                                     color: root.textColor
                                     anchors.verticalCenter: parent.verticalCenter
@@ -321,7 +328,7 @@ Rectangle {
                                     width: infoIcon.width + 8
                                     height: infoIcon.height + 8
                                     radius: height / 2
-                                    color: "#1A75A8"
+                                    color: root.primaryColor
 
                                     Text {
                                         id: infoIcon
@@ -336,14 +343,14 @@ Rectangle {
                                         anchors.fill: parent
                                         hoverEnabled: true
                                         ToolTip.visible: containsMouse
-                                        ToolTip.text: tr("Click on cells to enter depth values. The bathymetric map will update in real-time.")
+                                        ToolTip.text: root.tr("Derinlik girmek için hücrelere tıklayın (m)")
                                     }
                                 }
                             }
 
                             Text {
-                                text: tr("Click cells to enter depth (m)")
-                                font.pixelSize: 11
+                                text: root.tr("Derinlik girmek için hücrelere tıklayın (m)")
+                                font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                 color: root.textSecondaryColor
                             }
 
@@ -372,9 +379,9 @@ Rectangle {
                                             Text {
                                                 anchors.centerIn: parent
                                                 text: String.fromCharCode(65 + index)
-                                                font.pixelSize: 10
+                                                font.pixelSize: app ? app.smallFontSize * 0.8 : 10
                                                 font.bold: true
-                                                color: "#1A75A8"
+                                                color: root.primaryColor
                                             }
                                         }
                                     }
@@ -399,9 +406,9 @@ Rectangle {
                                                 Text {
                                                     anchors.centerIn: parent
                                                     text: (index + 1).toString()
-                                                    font.pixelSize: 10
+                                                    font.pixelSize: app ? app.smallFontSize * 0.8 : 10
                                                     font.bold: true
-                                                    color: "#1A75A8"
+                                                    color: root.primaryColor
                                                 }
                                             }
                                         }
@@ -453,9 +460,12 @@ Rectangle {
                                                 Text {
                                                     anchors.centerIn: parent
                                                     text: depth > 0 ? depth.toFixed(1) : "-"
-                                                    font.pixelSize: parent.width > 40 ? 11 : 9
+                                                    font.pixelSize: parent.width > 40 ? (app ? app.smallFontSize * 0.9 : 11) : (app ? app.smallFontSize * 0.7 : 9)
                                                     font.bold: true
-                                                    color: depth > 10 ? "white" : root.textColor
+                                                    color: {
+                                                        if (depth <= 0) return root.textSecondaryColor
+                                                        return depth > 10 ? "white" : "#2d3748"  // Dark text for light cells, white for dark cells
+                                                    }
                                                 }
 
                                                 MouseArea {
@@ -477,9 +487,9 @@ Rectangle {
                     // Koordinat Girişi
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.margins: 16
+                        Layout.margins: app ? app.smallPadding : 16
                         Layout.preferredHeight: coordInputContent.height + 32
-                        color: Qt.lighter(root.surfaceColor, 0.97)
+                        color: Qt.rgba(1, 1, 1, 0.08)
                         radius: 8
                         border.width: 1
                         border.color: root.borderColor
@@ -489,19 +499,19 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             anchors.top: parent.top
-                            anchors.margins: 16
-                            spacing: 12
+                            anchors.margins: app ? app.smallPadding : 16
+                            spacing: app ? app.smallSpacing : 12
 
                             Text {
-                                text: tr("Coordinate Bounds")
-                                font.pixelSize: 14
+                                text: root.tr("Koordinat Sınırları")
+                                font.pixelSize: app ? app.baseFontSize : 14
                                 font.bold: true
                                 color: root.textColor
                             }
 
                             Text {
-                                text: tr("Define the geographic area for the grid")
-                                font.pixelSize: 11
+                                text: root.tr("Grid için coğrafi alanı tanımlayın")
+                                font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                 color: root.textSecondaryColor
                             }
 
@@ -513,17 +523,18 @@ Rectangle {
                                 columnSpacing: 12
 
                                 Text {
-                                    text: tr("Start Lat") + ":"
-                                    font.pixelSize: 11
+                                    text: root.tr("Başl. Enlem") + ":"
+                                    font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                     color: root.textSecondaryColor
                                 }
 
                                 TextField {
                                     id: startLatField
                                     Layout.fillWidth: true
-                                    height: 36
+                                    height: app ? app.buttonHeight * 0.7 : 36
                                     text: configManager ? configManager.gridStartLatitude.toFixed(6) : "40.710000"
-                                    font.pixelSize: 12
+                                    font.pixelSize: app ? app.smallFontSize : 12
+                                    color: root.inputTextColor
                                     horizontalAlignment: Text.AlignRight
                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                                     validator: DoubleValidator { bottom: -90; top: 90; decimals: 6 }
@@ -532,7 +543,7 @@ Rectangle {
                                         color: root.surfaceColor
                                         radius: 4
                                         border.width: parent.activeFocus ? 2 : 1
-                                        border.color: parent.activeFocus ? "#1A75A8" : root.borderColor
+                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
                                     }
 
                                     onEditingFinished: {
@@ -541,17 +552,18 @@ Rectangle {
                                 }
 
                                 Text {
-                                    text: tr("Start Lon") + ":"
-                                    font.pixelSize: 11
+                                    text: root.tr("Başl. Boylam") + ":"
+                                    font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                     color: root.textSecondaryColor
                                 }
 
                                 TextField {
                                     id: startLonField
                                     Layout.fillWidth: true
-                                    height: 36
+                                    height: app ? app.buttonHeight * 0.7 : 36
                                     text: configManager ? configManager.gridStartLongitude.toFixed(6) : "29.000000"
-                                    font.pixelSize: 12
+                                    font.pixelSize: app ? app.smallFontSize : 12
+                                    color: root.inputTextColor
                                     horizontalAlignment: Text.AlignRight
                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                                     validator: DoubleValidator { bottom: -180; top: 180; decimals: 6 }
@@ -560,7 +572,7 @@ Rectangle {
                                         color: root.surfaceColor
                                         radius: 4
                                         border.width: parent.activeFocus ? 2 : 1
-                                        border.color: parent.activeFocus ? "#1A75A8" : root.borderColor
+                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
                                     }
 
                                     onEditingFinished: {
@@ -569,17 +581,18 @@ Rectangle {
                                 }
 
                                 Text {
-                                    text: tr("End Lat") + ":"
-                                    font.pixelSize: 11
+                                    text: root.tr("Bitiş Enlem") + ":"
+                                    font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                     color: root.textSecondaryColor
                                 }
 
                                 TextField {
                                     id: endLatField
                                     Layout.fillWidth: true
-                                    height: 36
+                                    height: app ? app.buttonHeight * 0.7 : 36
                                     text: configManager ? configManager.gridEndLatitude.toFixed(6) : "40.720000"
-                                    font.pixelSize: 12
+                                    font.pixelSize: app ? app.smallFontSize : 12
+                                    color: root.inputTextColor
                                     horizontalAlignment: Text.AlignRight
                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                                     validator: DoubleValidator { bottom: -90; top: 90; decimals: 6 }
@@ -588,7 +601,7 @@ Rectangle {
                                         color: root.surfaceColor
                                         radius: 4
                                         border.width: parent.activeFocus ? 2 : 1
-                                        border.color: parent.activeFocus ? "#1A75A8" : root.borderColor
+                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
                                     }
 
                                     onEditingFinished: {
@@ -597,17 +610,18 @@ Rectangle {
                                 }
 
                                 Text {
-                                    text: tr("End Lon") + ":"
-                                    font.pixelSize: 11
+                                    text: root.tr("Bitiş Boylam") + ":"
+                                    font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                     color: root.textSecondaryColor
                                 }
 
                                 TextField {
                                     id: endLonField
                                     Layout.fillWidth: true
-                                    height: 36
+                                    height: app ? app.buttonHeight * 0.7 : 36
                                     text: configManager ? configManager.gridEndLongitude.toFixed(6) : "29.010000"
-                                    font.pixelSize: 12
+                                    font.pixelSize: app ? app.smallFontSize : 12
+                                    color: root.inputTextColor
                                     horizontalAlignment: Text.AlignRight
                                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                                     validator: DoubleValidator { bottom: -180; top: 180; decimals: 6 }
@@ -616,7 +630,7 @@ Rectangle {
                                         color: root.surfaceColor
                                         radius: 4
                                         border.width: parent.activeFocus ? 2 : 1
-                                        border.color: parent.activeFocus ? "#1A75A8" : root.borderColor
+                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
                                     }
 
                                     onEditingFinished: {
@@ -630,9 +644,9 @@ Rectangle {
                     // Hızlı doldurma araçları
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.margins: 16
+                        Layout.margins: app ? app.smallPadding : 16
                         Layout.preferredHeight: quickFillContent.height + 32
-                        color: Qt.lighter(root.surfaceColor, 0.97)
+                        color: Qt.rgba(1, 1, 1, 0.08)
                         radius: 8
                         border.width: 1
                         border.color: root.borderColor
@@ -642,12 +656,12 @@ Rectangle {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             anchors.top: parent.top
-                            anchors.margins: 16
-                            spacing: 12
+                            anchors.margins: app ? app.smallPadding : 16
+                            spacing: app ? app.smallSpacing : 12
 
                             Text {
-                                text: tr("Quick Fill Tools")
-                                font.pixelSize: 14
+                                text: root.tr("Hızlı Doldurma Araçları")
+                                font.pixelSize: app ? app.baseFontSize : 14
                                 font.bold: true
                                 color: root.textColor
                             }
@@ -658,17 +672,17 @@ Rectangle {
 
                                 Button {
                                     Layout.fillWidth: true
-                                    height: 36
-                                    text: tr("Fill All")
+                                    height: app ? app.buttonHeight * 0.7 : 36
+                                    text: root.tr("Hepsini Doldur")
 
                                     background: Rectangle {
                                         radius: 6
-                                        color: parent.pressed ? Qt.darker("#1A75A8", 1.1) : "#1A75A8"
+                                        color: parent.pressed ? Qt.darker(root.primaryColor, 1.1) : root.primaryColor
                                     }
 
                                     contentItem: Text {
                                         text: parent.text
-                                        font.pixelSize: 11
+                                        font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                         color: "white"
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
@@ -679,8 +693,8 @@ Rectangle {
 
                                 Button {
                                     Layout.fillWidth: true
-                                    height: 36
-                                    text: tr("Random")
+                                    height: app ? app.buttonHeight * 0.7 : 36
+                                    text: root.tr("Rastgele")
 
                                     background: Rectangle {
                                         radius: 6
@@ -689,7 +703,7 @@ Rectangle {
 
                                     contentItem: Text {
                                         text: parent.text
-                                        font.pixelSize: 11
+                                        font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                         color: "white"
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
@@ -709,8 +723,8 @@ Rectangle {
 
                                 Button {
                                     Layout.fillWidth: true
-                                    height: 36
-                                    text: tr("Clear")
+                                    height: app ? app.buttonHeight * 0.7 : 36
+                                    text: root.tr("Temizle")
 
                                     background: Rectangle {
                                         radius: 6
@@ -719,7 +733,7 @@ Rectangle {
 
                                     contentItem: Text {
                                         text: parent.text
-                                        font.pixelSize: 11
+                                        font.pixelSize: app ? app.smallFontSize * 0.9 : 11
                                         color: "white"
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
@@ -748,21 +762,23 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: root.surfaceColor
+            color: Qt.rgba(1, 1, 1, 0.05)
             radius: 12
+            border.width: 1
+            border.color: root.borderColor
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 16
-                spacing: 12
+                anchors.margins: app ? app.smallPadding : 16
+                spacing: app ? app.smallSpacing : 12
 
                 // Önizleme başlığı
                 RowLayout {
                     Layout.fillWidth: true
 
                     Text {
-                        text: tr("Live Preview")
-                        font.pixelSize: 14
+                        text: root.tr("Canlı Önizleme")
+                        font.pixelSize: app ? app.baseFontSize : 14
                         font.bold: true
                         color: root.textColor
                     }
@@ -833,8 +849,8 @@ Rectangle {
 
                         Text {
                             anchors.centerIn: parent
-                            text: tr("Bathymetric Map") + " - " + tr("Preview")
-                            font.pixelSize: 12
+                            text: root.tr("Batimetrik Harita") + " - " + root.tr("Önizleme")
+                            font.pixelSize: app ? app.smallFontSize : 12
                             font.bold: true
                             color: "white"
                         }
@@ -875,10 +891,10 @@ Rectangle {
                 BathymetricLegend {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 180
-                    title: tr("Depth Scale") + " (m)"
+                    title: root.tr("Derinlik Skalası") + " (m)"
                     maxDepth: Math.max(root.maxDepth, 10)
                     textColor: root.textColor
-                    backgroundColor: Qt.lighter(root.surfaceColor, 0.97)
+                    backgroundColor: Qt.rgba(1, 1, 1, 0.08)
                 }
             }
         }
@@ -890,8 +906,10 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 70
-        color: root.surfaceColor
+        height: app ? app.buttonHeight * 1.4 : 70
+        color: Qt.rgba(1, 1, 1, 0.05)
+        border.width: 1
+        border.color: root.borderColor
 
         Rectangle {
             anchors.top: parent.top
@@ -904,8 +922,8 @@ Rectangle {
         Button {
             anchors.centerIn: parent
             width: Math.min(parent.width - 40, 300)
-            height: 48
-            text: tr("Save and Continue")
+            height: app ? app.buttonHeight : 48
+            text: root.tr("Kaydet ve Devam Et")
 
             background: Rectangle {
                 radius: 10
@@ -914,7 +932,7 @@ Rectangle {
 
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 15
+                font.pixelSize: app ? app.mediumFontSize : 15
                 font.bold: true
                 color: "white"
                 horizontalAlignment: Text.AlignHCenter
@@ -983,8 +1001,8 @@ Rectangle {
 
                 Text {
                     anchors.centerIn: parent
-                    text: tr("Cell") + " [" + String.fromCharCode(65 + selectedCol) + (selectedRow + 1) + "]"
-                    font.pixelSize: 16
+                    text: root.tr("Hücre") + " [" + String.fromCharCode(65 + selectedCol) + (selectedRow + 1) + "]"
+                    font.pixelSize: app ? app.baseFontSize : 16
                     font.bold: true
                     color: "white"
                 }
@@ -1003,27 +1021,27 @@ Rectangle {
                     TextField {
                         id: depthInput
                         width: parent.width
-                        height: 50
-                        placeholderText: tr("Depth") + " (m)"
-                        font.pixelSize: 18
+                        height: app ? app.buttonHeight : 50
+                        placeholderText: root.tr("Derinlik") + " (m)"
+                        font.pixelSize: app ? app.mediumFontSize : 18
                         horizontalAlignment: Text.AlignHCenter
                         inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        color: root.textColor
-                        placeholderTextColor: root.textSecondaryColor
+                        color: root.inputTextColor
+                        placeholderTextColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
 
                         background: Rectangle {
-                            color: Qt.lighter(root.surfaceColor, 1.1)
+                            color: root.surfaceColor
                             radius: 8
                             border.width: depthInput.activeFocus ? 2 : 1
-                            border.color: depthInput.activeFocus ? root.primaryColor : root.borderColor
+                            border.color: depthInput.activeFocus ? root.primaryColor : root.inputBorderColor
                         }
                     }
 
                     Text {
                         width: parent.width
                         horizontalAlignment: Text.AlignHCenter
-                        text: tr("Current value") + ": " + depthInputDialog.currentDepthValue.toFixed(1) + " m"
-                        font.pixelSize: 12
+                        text: root.tr("Mevcut değer") + ": " + depthInputDialog.currentDepthValue.toFixed(1) + " m"
+                        font.pixelSize: app ? app.smallFontSize : 12
                         color: root.textColor
                     }
 
@@ -1035,8 +1053,8 @@ Rectangle {
 
                         Button {
                             width: 100
-                            height: 42
-                            text: tr("Save")
+                            height: app ? app.buttonHeight * 0.8 : 42
+                            text: root.tr("Kaydet")
 
                             background: Rectangle {
                                 radius: 8
@@ -1045,7 +1063,7 @@ Rectangle {
 
                             contentItem: Text {
                                 text: parent.text
-                                font.pixelSize: 14
+                                font.pixelSize: app ? app.baseFontSize : 14
                                 font.bold: true
                                 color: "white"
                                 horizontalAlignment: Text.AlignHCenter
@@ -1065,8 +1083,8 @@ Rectangle {
 
                         Button {
                             width: 80
-                            height: 42
-                            text: tr("Cancel")
+                            height: app ? app.buttonHeight * 0.8 : 42
+                            text: root.tr("İptal")
                             flat: true
 
                             background: Rectangle {
@@ -1078,7 +1096,7 @@ Rectangle {
 
                             contentItem: Text {
                                 text: parent.text
-                                font.pixelSize: 14
+                                font.pixelSize: app ? app.baseFontSize : 14
                                 color: root.textColor
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
@@ -1159,8 +1177,8 @@ Rectangle {
 
                 Text {
                     anchors.centerIn: parent
-                    text: tr("Fill All Cells")
-                    font.pixelSize: 16
+                    text: root.tr("Tüm Hücreleri Doldur")
+                    font.pixelSize: app ? app.baseFontSize : 16
                     font.bold: true
                     color: "white"
                 }
@@ -1179,27 +1197,27 @@ Rectangle {
                     TextField {
                         id: fillAllInput
                         width: parent.width
-                        height: 50
-                        placeholderText: tr("Depth") + " (m)"
-                        font.pixelSize: 18
+                        height: app ? app.buttonHeight : 50
+                        placeholderText: root.tr("Derinlik") + " (m)"
+                        font.pixelSize: app ? app.mediumFontSize : 18
                         horizontalAlignment: Text.AlignHCenter
                         inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        color: root.textColor
-                        placeholderTextColor: root.textSecondaryColor
+                        color: root.inputTextColor
+                        placeholderTextColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
 
                         background: Rectangle {
-                            color: Qt.lighter(root.surfaceColor, 1.1)
+                            color: root.surfaceColor
                             radius: 8
                             border.width: fillAllInput.activeFocus ? 2 : 1
-                            border.color: fillAllInput.activeFocus ? "#1A75A8" : root.borderColor
+                            border.color: fillAllInput.activeFocus ? root.primaryColor : root.inputBorderColor
                         }
                     }
 
                     Text {
                         width: parent.width
                         horizontalAlignment: Text.AlignHCenter
-                        text: tr("This will fill all") + " " + (gridRows * gridCols) + " " + tr("cells")
-                        font.pixelSize: 12
+                        text: root.tr("Bu işlem") + " " + (gridRows * gridCols) + " " + root.tr("hücreyi dolduracak")
+                        font.pixelSize: app ? app.smallFontSize : 12
                         color: root.textColor
                     }
 
@@ -1211,17 +1229,17 @@ Rectangle {
 
                         Button {
                             width: 100
-                            height: 42
-                            text: tr("Fill")
+                            height: app ? app.buttonHeight * 0.8 : 42
+                            text: root.tr("Doldur")
 
                             background: Rectangle {
                                 radius: 8
-                                color: parent.pressed ? Qt.darker("#1A75A8", 1.2) : "#1A75A8"
+                                color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
                             }
 
                             contentItem: Text {
                                 text: parent.text
-                                font.pixelSize: 14
+                                font.pixelSize: app ? app.baseFontSize : 14
                                 font.bold: true
                                 color: "white"
                                 horizontalAlignment: Text.AlignHCenter
@@ -1245,8 +1263,8 @@ Rectangle {
 
                         Button {
                             width: 80
-                            height: 42
-                            text: tr("Cancel")
+                            height: app ? app.buttonHeight * 0.8 : 42
+                            text: root.tr("İptal")
                             flat: true
 
                             background: Rectangle {
@@ -1258,7 +1276,7 @@ Rectangle {
 
                             contentItem: Text {
                                 text: parent.text
-                                font.pixelSize: 14
+                                font.pixelSize: app ? app.baseFontSize : 14
                                 color: root.textColor
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
