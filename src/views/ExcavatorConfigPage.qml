@@ -32,13 +32,24 @@ Rectangle {
         }
     }
 
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     // Theme colors with fallbacks (softer light theme defaults)
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
-    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color textColor: themeManager ? themeManager.textColor : "#2d3748"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
-    property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
-    property color infoColor: themeManager ? themeManager.infoColor : "#4299e1"
+    property color primaryColor: (themeManager && themeManager.primaryColor) ? themeManager.primaryColor : "#319795"
+    property color surfaceColor: (themeManager && themeManager.surfaceColor) ? themeManager.surfaceColor : "#ffffff"
+    property color backgroundColor: (themeManager && themeManager.backgroundColor) ? themeManager.backgroundColor : "#f7fafc"
+    property color textColor: (themeManager && themeManager.textColor) ? themeManager.textColor : "white"
+    property color textSecondaryColor: (themeManager && themeManager.textSecondaryColor) ? themeManager.textSecondaryColor : "#e0e0e0"
+    property color borderColor: (themeManager && themeManager.borderColor) ? themeManager.borderColor : "#e2e8f0"
+    property color infoColor: (themeManager && themeManager.infoColor) ? themeManager.infoColor : "#4299e1"
+
+    // Input field colors (for light surface backgrounds)
+    property color inputTextColor: "#2d3748"  // Dark text on white surface
+    property color inputPlaceholderColor: "#a0aec0"  // Light gray placeholder
+
+    // Excavator preset selection state
+    property int selectedPresetIndex: -1  // -1 means "Yeni Ekskavatör"
 
     // Header
     Rectangle {
@@ -46,17 +57,17 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 60
+        height: app ? app.buttonHeight * 1.5 : 60
         color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
+            anchors.leftMargin: app ? app.smallPadding : 16
+            anchors.rightMargin: app ? app.smallPadding : 16
 
             Button {
-                Layout.preferredWidth: 40
-                Layout.preferredHeight: 40
+                Layout.preferredWidth: app ? app.buttonHeight : 40
+                Layout.preferredHeight: app ? app.buttonHeight : 40
                 flat: true
 
                 contentItem: Text {
@@ -78,13 +89,13 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: root.tr("Ekskavatör Ayarları")
-                font.pixelSize: 20
+                font.pixelSize: app ? app.mediumFontSize : 20
                 font.bold: true
                 color: "white"
                 horizontalAlignment: Text.AlignHCenter
             }
 
-            Item { Layout.preferredWidth: 40 }
+            Item { Layout.preferredWidth: app ? app.buttonHeight : 40 }
         }
     }
 
@@ -102,107 +113,235 @@ Rectangle {
 
             Item { Layout.preferredHeight: 20 }
 
-            // Excavator Preview
-            Rectangle {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: 200
-                Layout.preferredHeight: 150
-                color: root.surfaceColor
-                radius: 12
+            // Excavator Preset Selection
+            ColumnLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 20
+                Layout.rightMargin: 20
+                spacing: 8
 
-                Image {
-                    anchors.centerIn: parent
-                    source: "qrc:/ExcavatorUI_Qt3D/resources/icons/app_icon.ico"
-                    width: 80
-                    height: 80
-                    fillMode: Image.PreserveAspectFit
-                    smooth: true
-                    antialiasing: true
+                Text {
+                    text: root.tr("Ekskavatör Seçimi")
+                    font.pixelSize: app ? app.baseFontSize : 14
+                    font.bold: true
+                    color: "white"
+                }
+
+                ComboBox {
+                    id: presetComboBox
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: app ? app.buttonHeight : 50
+
+                    model: {
+                        var list = [root.tr("Yeni Ekskavatör")];
+                        if (configManager && configManager.excavatorPresets) {
+                            for (var i = 0; i < configManager.excavatorPresets.length; i++) {
+                                list.push(configManager.excavatorPresets[i].name);
+                            }
+                        }
+                        return list;
+                    }
+
+                    currentIndex: 0  // Default to "Yeni Ekskavatör"
+
+                    // Update currentIndex when selectedPresetIndex changes
+                    Connections {
+                        target: root
+                        function onSelectedPresetIndexChanged() {
+                            presetComboBox.currentIndex = root.selectedPresetIndex + 1
+                        }
+                    }
+
+                    onCurrentIndexChanged: {
+                        if (currentIndex === 0) {
+                            // "Yeni Ekskavatör" selected - clear all fields
+                            root.selectedPresetIndex = -1;
+                            if (configManager) {
+                                configManager.excavatorName = "";
+                                configManager.scanningDepth = 0.0;
+                                configManager.boomLength = 0.0;
+                                configManager.armLength = 0.0;
+                                configManager.bucketWidth = 0.0;
+                            }
+                        } else if (currentIndex > 0 && configManager) {
+                            // Load preset
+                            var presetIndex = currentIndex - 1;
+                            root.selectedPresetIndex = presetIndex;
+                            configManager.loadExcavatorPreset(presetIndex);
+                        }
+                    }
+
+                    contentItem: Text {
+                        leftPadding: 12
+                        rightPadding: presetComboBox.indicator.width + 12
+                        text: presetComboBox.displayText
+                        font.pixelSize: app ? app.baseFontSize : 16
+                        color: "white"  // White text on dark background
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
+
+                    background: Rectangle {
+                        color: Qt.rgba(1, 1, 1, 0.1)  // Slightly visible dark background
+                        radius: 8
+                        border.width: presetComboBox.activeFocus ? 2 : 1
+                        border.color: presetComboBox.activeFocus ? root.primaryColor : Qt.rgba(1, 1, 1, 0.3)
+                    }
+
+                    delegate: ItemDelegate {
+                        width: presetComboBox.width
+                        contentItem: Text {
+                            text: modelData
+                            color: "white"  // White text in dropdown
+                            font.pixelSize: app ? app.baseFontSize : 16
+                            elide: Text.ElideRight
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        highlighted: presetComboBox.highlightedIndex === index
+
+                        background: Rectangle {
+                            color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) : Qt.rgba(1, 1, 1, 0.05)
+                        }
+                    }
+
+                    popup: Popup {
+                        y: presetComboBox.height - 1
+                        width: presetComboBox.width
+                        implicitHeight: contentItem.implicitHeight
+                        padding: 1
+
+                        contentItem: ListView {
+                            clip: true
+                            implicitHeight: contentHeight
+                            model: presetComboBox.popup.visible ? presetComboBox.delegateModel : null
+                            currentIndex: presetComboBox.highlightedIndex
+
+                            ScrollIndicator.vertical: ScrollIndicator { }
+                        }
+
+                        background: Rectangle {
+                            color: Qt.rgba(0.2, 0.2, 0.2, 0.95)  // Dark semi-transparent background
+                            border.color: Qt.rgba(1, 1, 1, 0.2)
+                            radius: 8
+                        }
+                    }
+                }
+
+                Text {
+                    text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin")
+                    font.pixelSize: app ? app.smallFontSize : 12
+                    color: "white"
+                    wrapMode: Text.WordWrap
+                    Layout.fillWidth: true
                 }
             }
 
             // Excavator Name
             ConfigInputField {
                 Layout.fillWidth: true
-                Layout.margins: 20
+                Layout.leftMargin: 20
+                Layout.rightMargin: 20
                 label: root.tr("Ekskavatör Adı")
-                placeholder: root.tr("Örn: CAT 320D")
+                placeholder: root.tr("Örn: UDHB Burak")
                 inputText: configManager ? configManager.excavatorName : ""
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
                 onFieldTextChanged: function(newText) {
-                    if (configManager) configManager.excavatorName = newText
-                }
-            }
-
-            // Boom Length
-            ConfigInputField {
-                Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
-                label: root.tr("Boom Uzunluğu (metre)")
-                placeholder: root.tr("Örn: 12.0")
-                inputText: configManager ? configManager.boomLength.toFixed(1) : "0.0"
-                inputType: "number"
-                suffix: "m"
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
-                onFieldTextChanged: function(newText) {
-                    var val = parseFloat(newText)
-                    if (!isNaN(val) && val > 0 && configManager) {
-                        configManager.boomLength = val
+                    if (configManager) {
+                        configManager.excavatorName = newText;
+                        // Reset preset selection when manually edited
+                        root.selectedPresetIndex = -1;
+                        presetComboBox.currentIndex = 0;
                     }
                 }
             }
 
-            // Arm Length
-            ConfigInputField {
+            // Row 1: Scanning Depth ve Boom Length
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                label: root.tr("Arm Uzunluğu (metre)")
-                placeholder: root.tr("Örn: 10.0")
-                inputText: configManager ? configManager.armLength.toFixed(1) : "0.0"
-                inputType: "number"
-                suffix: "m"
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
-                onFieldTextChanged: function(newText) {
-                    var val = parseFloat(newText)
-                    if (!isNaN(val) && val > 0 && configManager) {
-                        configManager.armLength = val
+                spacing: app ? app.normalSpacing : 12
+
+                // Scanning Depth
+                ConfigInputField {
+                    Layout.fillWidth: true
+                    label: root.tr("Tarama Derinliği (m)")
+                    placeholder: root.tr("15.0")
+                    inputText: {
+                        if (!configManager) return "";
+                        return configManager.scanningDepth > 0 ? configManager.scanningDepth.toFixed(1) : "";
+                    }
+                    inputType: "number"
+                    suffix: "m"
+                    onFieldTextChanged: function(newText) {
+                        if (configManager) {
+                            var val = parseFloat(newText)
+                            configManager.scanningDepth = (!isNaN(val) && val > 0) ? val : 0.0
+                        }
+                    }
+                }
+
+                // Boom Length
+                ConfigInputField {
+                    Layout.fillWidth: true
+                    label: root.tr("Ana Bom (m)")
+                    placeholder: root.tr("12.0")
+                    inputText: {
+                        if (!configManager) return "";
+                        return configManager.boomLength > 0 ? configManager.boomLength.toFixed(1) : "";
+                    }
+                    inputType: "number"
+                    suffix: "m"
+                    onFieldTextChanged: function(newText) {
+                        if (configManager) {
+                            var val = parseFloat(newText)
+                            configManager.boomLength = (!isNaN(val) && val > 0) ? val : 0.0
+                        }
                     }
                 }
             }
 
-            // Bucket Width
-            ConfigInputField {
+            // Row 2: Arm Length ve Bucket Width
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 20
                 Layout.rightMargin: 20
-                label: root.tr("Bucket Genişliği (metre)")
-                placeholder: root.tr("Örn: 2.0")
-                inputText: configManager ? configManager.bucketWidth.toFixed(1) : "0.0"
-                inputType: "number"
-                suffix: "m"
-                fieldPrimaryColor: root.primaryColor
-                fieldSurfaceColor: root.surfaceColor
-                fieldTextColor: root.textColor
-                fieldTextSecondaryColor: root.textSecondaryColor
-                fieldBorderColor: root.borderColor
-                onFieldTextChanged: function(newText) {
-                    var val = parseFloat(newText)
-                    if (!isNaN(val) && val > 0 && configManager) {
-                        configManager.bucketWidth = val
+                spacing: app ? app.normalSpacing : 12
+
+                // Arm Length
+                ConfigInputField {
+                    Layout.fillWidth: true
+                    label: root.tr("Arm Bom (m)")
+                    placeholder: root.tr("10.0")
+                    inputText: {
+                        if (!configManager) return "";
+                        return configManager.armLength > 0 ? configManager.armLength.toFixed(1) : "";
+                    }
+                    inputType: "number"
+                    suffix: "m"
+                    onFieldTextChanged: function(newText) {
+                        if (configManager) {
+                            var val = parseFloat(newText)
+                            configManager.armLength = (!isNaN(val) && val > 0) ? val : 0.0
+                        }
+                    }
+                }
+
+                // Bucket Width
+                ConfigInputField {
+                    Layout.fillWidth: true
+                    label: root.tr("Kova (m³)")
+                    placeholder: root.tr("3.0")
+                    inputText: {
+                        if (!configManager) return "";
+                        return configManager.bucketWidth > 0 ? configManager.bucketWidth.toFixed(1) : "";
+                    }
+                    inputType: "number"
+                    suffix: "m³"
+                    onFieldTextChanged: function(newText) {
+                        if (configManager) {
+                            var val = parseFloat(newText)
+                            configManager.bucketWidth = (!isNaN(val) && val > 0) ? val : 0.0
+                        }
                     }
                 }
             }
@@ -227,14 +366,14 @@ Rectangle {
 
                     Text {
                         text: "ℹ️"
-                        font.pixelSize: 20
+                        font.pixelSize: app ? app.mediumFontSize : 20
                     }
 
                     Text {
                         Layout.fillWidth: true
-                        text: root.tr("Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
-                        font.pixelSize: 13
-                        color: root.textSecondaryColor
+                        text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin. Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
+                        font.pixelSize: app ? app.smallFontSize : 13
+                        color: "white"
                         wrapMode: Text.WordWrap
                     }
                 }
@@ -250,7 +389,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 80
+        height: app ? app.buttonHeight * 1.8 : 80
         color: root.surfaceColor
 
         Rectangle {
@@ -261,41 +400,89 @@ Rectangle {
             color: root.borderColor
         }
 
-        Button {
+        RowLayout {
             anchors.centerIn: parent
-            width: parent.width - 40
-            height: 50
-            text: root.tr("Kaydet ve Devam Et")
-            enabled: isFormValid
+            width: parent.width - (app ? app.xlSpacing * 2 : 40)
+            spacing: app ? app.normalSpacing : 12
 
-            property bool isFormValid: {
-                if (!configManager) return false
-                return configManager.excavatorName.length > 0 &&
-                       configManager.boomLength > 0 &&
-                       configManager.armLength > 0 &&
-                       configManager.bucketWidth > 0
+            // Preset olarak kaydet butonu
+            Button {
+                Layout.preferredWidth: parent.width * 0.35
+                Layout.preferredHeight: app ? app.buttonHeight : 50
+                text: root.tr("Kaydet")
+                enabled: isFormValid && root.selectedPresetIndex === -1
+
+                property bool isFormValid: {
+                    if (!configManager) return false
+                    return configManager.excavatorName.length > 0 &&
+                           configManager.scanningDepth > 0 &&
+                           configManager.boomLength > 0 &&
+                           configManager.armLength > 0 &&
+                           configManager.bucketWidth > 0
+                }
+
+                background: Rectangle {
+                    radius: 12
+                    color: parent.enabled
+                        ? (parent.pressed ? Qt.darker("#4CAF50", 1.2) : "#4CAF50")
+                        : Qt.rgba(0.5, 0.5, 0.5, 0.15)
+                    border.width: parent.enabled ? 0 : 1
+                    border.color: Qt.rgba(1, 1, 1, 0.1)
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: app ? app.baseFontSize : 14
+                    font.bold: true
+                    color: parent.enabled ? "white" : Qt.rgba(1, 1, 1, 0.3)
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                onClicked: {
+                    if (configManager) {
+                        configManager.saveCurrentAsPreset();
+                    }
+                }
             }
 
-            background: Rectangle {
-                radius: 12
-                color: parent.enabled
-                    ? (parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor)
-                    : root.surfaceColor
-                border.width: parent.enabled ? 0 : 1
-                border.color: root.borderColor
-            }
+            // Kaydet ve devam et butonu
+            Button {
+                Layout.fillWidth: true
+                Layout.preferredHeight: app ? app.buttonHeight : 50
+                text: root.tr("Kaydet ve Devam Et")
+                enabled: isFormValid
 
-            contentItem: Text {
-                text: parent.text
-                font.pixelSize: 16
-                font.bold: true
-                color: parent.enabled ? "white" : root.textSecondaryColor
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
+                property bool isFormValid: {
+                    if (!configManager) return false
+                    return configManager.excavatorName.length > 0 &&
+                           configManager.scanningDepth > 0 &&
+                           configManager.boomLength > 0 &&
+                           configManager.armLength > 0 &&
+                           configManager.bucketWidth > 0
+                }
 
-            onClicked: {
-                root.configSaved()
+                background: Rectangle {
+                    radius: 12
+                    color: parent.enabled
+                        ? (parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor)
+                        : Qt.rgba(0.5, 0.5, 0.5, 0.15)
+                    border.width: parent.enabled ? 0 : 1
+                    border.color: Qt.rgba(1, 1, 1, 0.1)
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: app ? app.mediumFontSize : 16
+                    font.bold: true
+                    color: parent.enabled ? "white" : Qt.rgba(1, 1, 1, 0.3)
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                onClicked: {
+                    root.configSaved()
+                }
             }
         }
     }
@@ -309,55 +496,88 @@ Rectangle {
         property string inputType: "text" // "text" or "number"
         property string suffix: ""
 
-        // Theme colors (passed from parent - softer light theme defaults)
-        property color fieldPrimaryColor: "#319795"
-        property color fieldSurfaceColor: "#ffffff"
-        property color fieldTextColor: "#2d3748"
-        property color fieldTextSecondaryColor: "#718096"
-        property color fieldBorderColor: "#e2e8f0"
+        // Theme colors (passed from parent)
+        property color fieldPrimaryColor: root.primaryColor
+        property color fieldSurfaceColor: root.surfaceColor
+        property color fieldLabelColor: "white"  // Always white on dark background
+        property color fieldTextColor: root.inputTextColor
+        property color fieldPlaceholderColor: root.inputPlaceholderColor
+        property color fieldBorderColor: root.borderColor
 
         signal fieldTextChanged(string newText)
 
-        spacing: 8
+        spacing: app ? app.smallSpacing : 8
 
         Text {
+            Layout.fillWidth: true
             text: inputFieldRoot.label
-            font.pixelSize: 14
+            font.pixelSize: app ? app.baseFontSize : 14
             font.bold: true
-            color: inputFieldRoot.fieldTextColor
+            color: "white"  // Always white
+            wrapMode: Text.NoWrap
+            elide: Text.ElideNone
         }
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 50
-            color: inputFieldRoot.fieldSurfaceColor
+            Layout.preferredHeight: app ? app.buttonHeight : 50
+            color: Qt.rgba(1, 1, 1, 0.1)  // Dark semi-transparent background
             radius: 8
             border.width: inputField.activeFocus ? 2 : 1
-            border.color: inputField.activeFocus ? inputFieldRoot.fieldPrimaryColor : inputFieldRoot.fieldBorderColor
+            border.color: inputField.activeFocus ? inputFieldRoot.fieldPrimaryColor : Qt.rgba(1, 1, 1, 0.3)
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 12
-                spacing: 8
+                anchors.margins: app ? app.smallPadding : 12
+                spacing: app ? app.smallSpacing : 8
 
                 TextField {
                     id: inputField
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    text: inputFieldRoot.inputText
                     placeholderText: inputFieldRoot.placeholder
-                    font.pixelSize: 16
-                    color: inputFieldRoot.fieldTextColor
-                    placeholderTextColor: inputFieldRoot.fieldTextSecondaryColor
+                    font.pixelSize: app ? app.baseFontSize : 16
+                    color: "white"  // White text on dark background
+                    placeholderTextColor: Qt.rgba(1, 1, 1, 0.5)  // Semi-transparent white for placeholder
 
+                    // Remove internal padding to prevent text offset
+                    leftPadding: 0
+                    rightPadding: 0
+                    topPadding: 0
+                    bottomPadding: 0
+
+                    // Show number keyboard for number inputs
+                    inputMethodHints: inputFieldRoot.inputType === "number" ? Qt.ImhFormattedNumbersOnly : Qt.ImhNone
                     validator: inputFieldRoot.inputType === "number" ? doubleValidator : null
 
                     background: Rectangle {
                         color: "transparent"
                     }
 
+                    // Avoid binding loop by using Binding with restoreMode
+                    Binding {
+                        target: inputField
+                        property: "text"
+                        value: inputFieldRoot.inputText
+                        when: !inputField.activeFocus
+                        restoreMode: Binding.RestoreBinding
+                    }
+
+                    // Update text on focus loss to sync with external changes
+                    onActiveFocusChanged: {
+                        if (!activeFocus && text !== inputFieldRoot.inputText) {
+                            text = inputFieldRoot.inputText
+                        }
+                    }
+
                     onTextChanged: {
-                        inputFieldRoot.fieldTextChanged(inputField.text)
+                        if (activeFocus) {
+                            inputFieldRoot.fieldTextChanged(inputField.text)
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        text = inputFieldRoot.inputText
                     }
 
                     DoubleValidator {
@@ -370,8 +590,8 @@ Rectangle {
                 Text {
                     visible: inputFieldRoot.suffix.length > 0
                     text: inputFieldRoot.suffix
-                    font.pixelSize: 14
-                    color: inputFieldRoot.fieldTextSecondaryColor
+                    font.pixelSize: app ? app.baseFontSize : 14
+                    color: Qt.rgba(1, 1, 1, 0.7)  // Semi-transparent white for suffix
                 }
             }
         }

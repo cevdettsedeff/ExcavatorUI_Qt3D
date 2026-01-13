@@ -18,6 +18,7 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_boomLength(12.0)
     , m_armLength(10.0)
     , m_bucketWidth(2.0)
+    , m_scanningDepth(15.0)
     , m_excavatorConfigured(false)
     , m_gridRows(4)
     , m_gridCols(4)
@@ -43,6 +44,7 @@ ConfigManager::ConfigManager(QObject *parent)
 {
     setDefaultValues();
     initializeGridDepths();
+    initializeExcavatorPresets();
 
     // Default config path
     m_configPath = QDir::currentPath() + "/config/bathymetry_config.json";
@@ -162,6 +164,11 @@ void ConfigManager::parseConfig(const QJsonObject &json)
     // Parse screen saver settings
     if (json.contains("screen_saver") && json["screen_saver"].isObject()) {
         parseScreenSaverSettings(json["screen_saver"].toObject());
+    }
+
+    // Parse excavator presets
+    if (json.contains("excavator_presets") && json["excavator_presets"].isArray()) {
+        parseExcavatorPresets(json["excavator_presets"].toArray());
     }
 }
 
@@ -362,6 +369,14 @@ void ConfigManager::setBucketWidth(double width)
     }
 }
 
+void ConfigManager::setScanningDepth(double depth)
+{
+    if (m_scanningDepth != depth) {
+        m_scanningDepth = depth;
+        emit scanningDepthChanged();
+    }
+}
+
 // Dig Area setters
 void ConfigManager::setGridRows(int rows)
 {
@@ -447,6 +462,187 @@ void ConfigManager::initializeGridDepths()
         m_gridDepths.append(0.0);
     }
     emit gridDepthsChanged();
+}
+
+void ConfigManager::initializeExcavatorPresets()
+{
+    // Only initialize with default presets if JSON doesn't have any
+    // This will be overridden by parseExcavatorPresets() if JSON has presets
+    if (m_excavatorPresets.isEmpty()) {
+        m_excavatorPresets.clear();
+
+        // Default preset 0: UDHB Burak
+        QVariantMap preset0;
+        preset0["name"] = "UDHB Burak";
+        preset0["scanningDepth"] = 15.0;
+        preset0["boomLength"] = 13.5;
+        preset0["armLength"] = 9.0;
+        preset0["bucketWidth"] = 3.1;
+        m_excavatorPresets.append(preset0);
+
+        // Default preset 1: Mimar Sinan
+        QVariantMap preset1;
+        preset1["name"] = "Mimar Sinan";
+        preset1["scanningDepth"] = 14.0;
+        preset1["boomLength"] = 12.0;
+        preset1["armLength"] = 8.5;
+        preset1["bucketWidth"] = 3.1;
+        m_excavatorPresets.append(preset1);
+
+        // Default preset 2: Kazar II
+        QVariantMap preset2;
+        preset2["name"] = "Kazar II";
+        preset2["scanningDepth"] = 9.5;
+        preset2["boomLength"] = 10.5;
+        preset2["armLength"] = 4.7;
+        preset2["bucketWidth"] = 3.1;
+        m_excavatorPresets.append(preset2);
+
+        // Default preset 3: Kazar III
+        QVariantMap preset3;
+        preset3["name"] = "Kazar III";
+        preset3["scanningDepth"] = 9.5;
+        preset3["boomLength"] = 10.5;
+        preset3["armLength"] = 4.7;
+        preset3["bucketWidth"] = 3.1;
+        m_excavatorPresets.append(preset3);
+
+        // Default preset 4: Kazar IV
+        QVariantMap preset4;
+        preset4["name"] = "Kazar IV";
+        preset4["scanningDepth"] = 8.0;
+        preset4["boomLength"] = 6.0;
+        preset4["armLength"] = 4.0;
+        preset4["bucketWidth"] = 3.0;
+        m_excavatorPresets.append(preset4);
+
+        // Default preset 5: Kazar V
+        QVariantMap preset5;
+        preset5["name"] = "Kazar V";
+        preset5["scanningDepth"] = 9.0;
+        preset5["boomLength"] = 6.0;
+        preset5["armLength"] = 4.0;
+        preset5["bucketWidth"] = 3.0;
+        m_excavatorPresets.append(preset5);
+
+        // Default preset 6: Kazar VI
+        QVariantMap preset6;
+        preset6["name"] = "Kazar VI";
+        preset6["scanningDepth"] = 14.0;
+        preset6["boomLength"] = 8.5;
+        preset6["armLength"] = 6.0;
+        preset6["bucketWidth"] = 3.0;
+        m_excavatorPresets.append(preset6);
+
+        // Default preset 7: Kazar VII
+        QVariantMap preset7;
+        preset7["name"] = "Kazar VII";
+        preset7["scanningDepth"] = 13.5;
+        preset7["boomLength"] = 8.0;
+        preset7["armLength"] = 5.0;
+        preset7["bucketWidth"] = 3.0;
+        m_excavatorPresets.append(preset7);
+
+        // Default preset 8: Kazar VIII
+        QVariantMap preset8;
+        preset8["name"] = "Kazar VIII";
+        preset8["scanningDepth"] = 14.0;
+        preset8["boomLength"] = 8.5;
+        preset8["armLength"] = 6.0;
+        preset8["bucketWidth"] = 3.0;
+        m_excavatorPresets.append(preset8);
+
+        // Default preset 9: Kazar X
+        QVariantMap preset9;
+        preset9["name"] = "Kazar X";
+        preset9["scanningDepth"] = 6.0;
+        preset9["boomLength"] = 7.9;
+        preset9["armLength"] = 5.1;
+        preset9["bucketWidth"] = 3.0;
+        m_excavatorPresets.append(preset9);
+
+        qDebug() << "Initialized" << m_excavatorPresets.size() << "default excavator presets";
+        emit excavatorPresetsChanged();
+    }
+}
+
+void ConfigManager::loadExcavatorPreset(int index)
+{
+    if (index < 0 || index >= m_excavatorPresets.size()) {
+        qWarning() << "Invalid excavator preset index:" << index;
+        return;
+    }
+
+    QVariantMap preset = m_excavatorPresets[index].toMap();
+
+    setExcavatorName(preset["name"].toString());
+    setScanningDepth(preset["scanningDepth"].toDouble());
+    setBoomLength(preset["boomLength"].toDouble());
+    setArmLength(preset["armLength"].toDouble());
+    setBucketWidth(preset["bucketWidth"].toDouble());
+
+    qDebug() << "Loaded excavator preset:" << preset["name"].toString();
+}
+
+void ConfigManager::addExcavatorPreset(const QString &name, double scanningDepth,
+                                       double boomLength, double armLength, double bucketWidth)
+{
+    QVariantMap preset;
+    preset["name"] = name;
+    preset["scanningDepth"] = scanningDepth;
+    preset["boomLength"] = boomLength;
+    preset["armLength"] = armLength;
+    preset["bucketWidth"] = bucketWidth;
+
+    m_excavatorPresets.append(preset);
+    emit excavatorPresetsChanged();
+
+    // Auto-save to JSON
+    saveConfig();
+
+    qDebug() << "Added new excavator preset:" << name;
+}
+
+void ConfigManager::removeExcavatorPreset(int index)
+{
+    if (index < 0 || index >= m_excavatorPresets.size()) {
+        qWarning() << "Invalid excavator preset index:" << index;
+        return;
+    }
+
+    QVariantMap preset = m_excavatorPresets[index].toMap();
+    QString name = preset["name"].toString();
+
+    m_excavatorPresets.removeAt(index);
+    emit excavatorPresetsChanged();
+
+    // Auto-save to JSON
+    saveConfig();
+
+    qDebug() << "Removed excavator preset:" << name;
+}
+
+void ConfigManager::saveCurrentAsPreset()
+{
+    // Check if current configuration is valid
+    if (m_excavatorName.isEmpty() || m_boomLength <= 0 || m_armLength <= 0 || m_bucketWidth <= 0 || m_scanningDepth <= 0) {
+        qWarning() << "Cannot save preset: Invalid excavator configuration";
+        emit errorOccurred("Geçersiz ekskavatör ayarları. Tüm alanları doldurun.");
+        return;
+    }
+
+    // Check if preset with same name already exists
+    for (const auto &preset : m_excavatorPresets) {
+        QVariantMap presetMap = preset.toMap();
+        if (presetMap["name"].toString() == m_excavatorName) {
+            qWarning() << "Preset with name already exists:" << m_excavatorName;
+            emit errorOccurred("Bu isimde bir ekskavatör zaten kayıtlı.");
+            return;
+        }
+    }
+
+    addExcavatorPreset(m_excavatorName, m_scanningDepth, m_boomLength, m_armLength, m_bucketWidth);
+    qDebug() << "Saved current excavator as preset:" << m_excavatorName;
 }
 
 double ConfigManager::getGridDepth(int row, int col) const
@@ -607,6 +803,9 @@ void ConfigManager::parseExcavatorSettings(const QJsonObject &excavator)
     if (excavator.contains("bucket_width")) {
         setBucketWidth(excavator["bucket_width"].toDouble(2.0));
     }
+    if (excavator.contains("scanning_depth")) {
+        setScanningDepth(excavator["scanning_depth"].toDouble(15.0));
+    }
     if (excavator.contains("configured")) {
         m_excavatorConfigured = excavator["configured"].toBool(false);
         emit excavatorConfiguredChanged();
@@ -709,6 +908,32 @@ void ConfigManager::parseScreenSaverSettings(const QJsonObject &screenSaverSetti
     }
 }
 
+void ConfigManager::parseExcavatorPresets(const QJsonArray &presets)
+{
+    m_excavatorPresets.clear();
+
+    for (const auto &presetValue : presets) {
+        if (!presetValue.isObject()) continue;
+
+        QJsonObject presetObj = presetValue.toObject();
+        QVariantMap preset;
+
+        preset["name"] = presetObj["name"].toString("");
+        preset["scanningDepth"] = presetObj["scanning_depth"].toDouble(15.0);
+        preset["boomLength"] = presetObj["boom_length"].toDouble(12.0);
+        preset["armLength"] = presetObj["arm_length"].toDouble(10.0);
+        preset["bucketWidth"] = presetObj["bucket_width"].toDouble(3.0);
+
+        // Only add if name is not empty
+        if (!preset["name"].toString().isEmpty()) {
+            m_excavatorPresets.append(preset);
+        }
+    }
+
+    qDebug() << "Loaded" << m_excavatorPresets.size() << "excavator presets from JSON";
+    emit excavatorPresetsChanged();
+}
+
 // Screen Saver setters
 void ConfigManager::setScreenSaverEnabled(bool enabled)
 {
@@ -774,6 +999,7 @@ bool ConfigManager::saveConfig()
     excavator["boom_length"] = m_boomLength;
     excavator["arm_length"] = m_armLength;
     excavator["bucket_width"] = m_bucketWidth;
+    excavator["scanning_depth"] = m_scanningDepth;
     excavator["configured"] = m_excavatorConfigured;
     root["excavator"] = excavator;
 
@@ -818,6 +1044,20 @@ bool ConfigManager::saveConfig()
     screenSaver["enabled"] = m_screenSaverEnabled;
     screenSaver["timeout_seconds"] = m_screenSaverTimeoutSeconds;
     root["screen_saver"] = screenSaver;
+
+    // Excavator presets
+    QJsonArray presetsArray;
+    for (const auto &preset : m_excavatorPresets) {
+        QVariantMap presetMap = preset.toMap();
+        QJsonObject presetObj;
+        presetObj["name"] = presetMap["name"].toString();
+        presetObj["scanning_depth"] = presetMap["scanningDepth"].toDouble();
+        presetObj["boom_length"] = presetMap["boomLength"].toDouble();
+        presetObj["arm_length"] = presetMap["armLength"].toDouble();
+        presetObj["bucket_width"] = presetMap["bucketWidth"].toDouble();
+        presetsArray.append(presetObj);
+    }
+    root["excavator_presets"] = presetsArray;
 
     // Write to file
     QJsonDocument doc(root);

@@ -8,6 +8,9 @@ Item {
     signal switchToLogin()
     signal registrationSuccessful()
 
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     // Dil değişikliği tetikleyici - bu değiştiğinde tüm qsTr() çağrıları yenilenir
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
@@ -25,18 +28,111 @@ Item {
         }
     }
 
+    // Türkçe tarih formatı
+    property var turkishDays: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"]
+    property var turkishMonths: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
+
+    function formatTurkishDate(date) {
+        var day = date.getDate()
+        var monthName = turkishMonths[date.getMonth()]
+        var year = date.getFullYear()
+        return day + " " + monthName + " " + year
+    }
+
+    // Saat için timer
+    Timer {
+        id: clockTimer
+        interval: 1000
+        running: registerView.visible
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            var now = new Date()
+            clockText.text = Qt.formatTime(now, "HH:mm:ss")
+
+            // Dil kontrolü
+            if (translationService && translationService.currentLanguage === "tr_TR") {
+                dateText.text = registerView.formatTurkishDate(now)
+            } else {
+                dateText.text = Qt.formatDate(now, "d MMMM yyyy")
+            }
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
-        // Dil seçici butonu (sağ üst köşe)
+        // Saat ve Tarih göstergesi (sol üst köşe) - Tam Responsive
+        Rectangle {
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.margins: app.smallPadding
+            width: app.largeIconSize * 5
+            height: app.buttonHeight * 1.2
+            radius: app.smallRadius
+            color: "#1e2936"
+            border.color: "#3a4556"
+            border.width: 1
+            z: 100
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: app.smallPadding
+                spacing: app.smallSpacing * 0.3
+
+                // Saat
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: app.smallSpacing * 0.5
+
+                    Text {
+                        text: "Saat:"
+                        font.pixelSize: app.smallFontSize
+                        color: "#3498db"
+                        font.bold: true
+                    }
+
+                    Text {
+                        id: clockText
+                        text: "00:00:00"
+                        font.pixelSize: app.baseFontSize
+                        font.bold: true
+                        font.family: "Monospace"
+                        color: "#ffffff"
+                    }
+                }
+
+                // Tarih
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: app.smallSpacing * 0.5
+
+                    Text {
+                        text: "Tarih:"
+                        font.pixelSize: app.smallFontSize
+                        color: "#2ecc71"
+                        font.bold: true
+                    }
+
+                    Text {
+                        id: dateText
+                        text: "1 Ocak 2025"
+                        font.pixelSize: app.smallFontSize
+                        color: "#aaaaaa"
+                    }
+                }
+            }
+        }
+
+        // Dil seçici butonu (sağ üst köşe) - Tam Responsive
         Rectangle {
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.margins: 15
-            width: 80
-            height: 35
-            radius: 5
+            anchors.margins: app.smallPadding
+            width: app.largeIconSize * 2.2
+            height: app.buttonHeight * 0.8
+            radius: app.smallRadius
             color: langBtnArea.containsMouse ? "#333333" : "#34495e"
             border.color: "#505050"
             border.width: 1
@@ -48,17 +144,17 @@ Item {
 
             Row {
                 anchors.centerIn: parent
-                spacing: 5
+                spacing: app.smallSpacing * 0.5
 
                 Text {
                     text: "🌐"
-                    font.pixelSize: 16
+                    font.pixelSize: app.baseFontSize
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Text {
                     text: translationService ? (translationService.currentLanguage === "tr_TR" ? "TR" : "EN") : "TR"
-                    font.pixelSize: 12
+                    font.pixelSize: app.smallFontSize
                     font.bold: true
                     color: "#ffffff"
                     anchors.verticalCenter: parent.verticalCenter
@@ -106,36 +202,36 @@ Item {
             clip: true
 
             ColumnLayout {
-                width: registerView.width * 0.8
+                width: Math.min(registerView.width * 0.92, 700)
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 20
-                anchors.topMargin: 20
-                anchors.bottomMargin: 20
+                spacing: app.largeSpacing
+                anchors.topMargin: app.xlSpacing * 3
+                anchors.bottomMargin: app.largeSpacing
 
             // Logo/Başlık bölümü
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 100
+                Layout.preferredHeight: app.largeIconSize * 3
                 color: "transparent"
-                Layout.topMargin: 10
+                Layout.topMargin: app.xlSpacing * 3.5
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.topMargin: 10
-                    spacing: 8
+                    anchors.topMargin: app.normalSpacing
+                    spacing: app.normalSpacing
 
                     // İkon
                     Rectangle {
                         Layout.alignment: Qt.AlignHCenter
-                        width: 60
-                        height: 60
-                        radius: 30
+                        width: app.largeIconSize * 1.7
+                        height: app.largeIconSize * 1.7
+                        radius: app.largeIconSize * 0.85
                         color: "#2ecc71"
 
                         Text {
                             anchors.centerIn: parent
                             text: "✓"
-                            font.pixelSize: 32
+                            font.pixelSize: app.xlFontSize * 1.2
                             font.bold: true
                             color: "#ffffff"
                         }
@@ -144,7 +240,7 @@ Item {
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: tr("Create New Account")
-                        font.pixelSize: 24
+                        font.pixelSize: app.xlFontSize
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -152,9 +248,9 @@ Item {
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: tr("Please enter your information")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         color: "#888888"
-                        Layout.bottomMargin: 15
+                        Layout.topMargin: app.largeSpacing
                     }
                 }
             }
@@ -162,32 +258,33 @@ Item {
             // Form bölümü
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 15
+                Layout.topMargin: app.xlSpacing * 2.5
+                spacing: app.normalSpacing
 
                 // Kullanıcı adı
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 5
+                    spacing: app.smallSpacing * 0.8
 
                     Text {
                         text: tr("Username")
-                        font.pixelSize: 12
+                        font.pixelSize: app.smallFontSize
                         color: "#cccccc"
                     }
 
                     TextField {
                         id: usernameField
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 45
+                        Layout.preferredHeight: app.buttonHeight
                         placeholderText: tr("Choose your username (min. 3 characters)")
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         color: "#ffffff"
 
                         background: Rectangle {
                             color: "#2a2a2a"
                             border.color: usernameField.activeFocus ? "#2ecc71" : "#404040"
                             border.width: 2
-                            radius: 5
+                            radius: app.smallRadius
                         }
 
                         Keys.onReturnPressed: passwordField.forceActiveFocus()
@@ -197,17 +294,17 @@ Item {
                 // Şifre
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 5
+                    spacing: app.smallSpacing * 0.8
 
                     Text {
                         text: tr("Password")
-                        font.pixelSize: 12
+                        font.pixelSize: app.smallFontSize
                         color: "#cccccc"
                     }
 
                     Item {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 45
+                        Layout.preferredHeight: app.buttonHeight
 
                         property bool showPassword: false
 
@@ -216,15 +313,15 @@ Item {
                             anchors.fill: parent
                             placeholderText: tr("Choose your password")
                             echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
-                            font.pixelSize: 14
+                            font.pixelSize: app.baseFontSize
                             color: "#ffffff"
-                            rightPadding: 45
+                            rightPadding: app.buttonHeight
 
                             background: Rectangle {
                                 color: "#2a2a2a"
                                 border.color: passwordField.activeFocus ? "#2ecc71" : "#404040"
                                 border.width: 2
-                                radius: 5
+                                radius: app.smallRadius
                             }
 
                             Keys.onReturnPressed: confirmPasswordField.forceActiveFocus()
@@ -232,10 +329,10 @@ Item {
 
                         Button {
                             anchors.right: parent.right
-                            anchors.rightMargin: 5
+                            anchors.rightMargin: app.smallSpacing * 0.5
                             anchors.verticalCenter: parent.verticalCenter
-                            width: 50
-                            height: 30
+                            width: app.buttonHeight * 1.1
+                            height: app.smallButtonHeight * 0.9
 
                             background: Rectangle {
                                 color: "transparent"
@@ -243,7 +340,7 @@ Item {
 
                             contentItem: Text {
                                 text: parent.parent.showPassword ? registerView.tr("Hide") : registerView.tr("Show")
-                                font.pixelSize: 11
+                                font.pixelSize: app.smallFontSize * 0.9
                                 color: "#2ecc71"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
@@ -259,17 +356,17 @@ Item {
                 // Şifre tekrar
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 5
+                    spacing: app.smallSpacing * 0.8
 
                     Text {
                         text: tr("Confirm Password")
-                        font.pixelSize: 12
+                        font.pixelSize: app.smallFontSize
                         color: "#cccccc"
                     }
 
                     Item {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 45
+                        Layout.preferredHeight: app.buttonHeight
 
                         property bool showConfirmPassword: false
 
@@ -278,15 +375,15 @@ Item {
                             anchors.fill: parent
                             placeholderText: tr("Re-enter your password")
                             echoMode: parent.showConfirmPassword ? TextInput.Normal : TextInput.Password
-                            font.pixelSize: 14
+                            font.pixelSize: app.baseFontSize
                             color: "#ffffff"
-                            rightPadding: 45
+                            rightPadding: app.buttonHeight
 
                             background: Rectangle {
                                 color: "#2a2a2a"
                                 border.color: confirmPasswordField.activeFocus ? "#2ecc71" : "#404040"
                                 border.width: 2
-                                radius: 5
+                                radius: app.smallRadius
                             }
 
                             Keys.onReturnPressed: registerButton.clicked()
@@ -294,10 +391,10 @@ Item {
 
                         Button {
                             anchors.right: parent.right
-                            anchors.rightMargin: 5
+                            anchors.rightMargin: app.smallSpacing * 0.5
                             anchors.verticalCenter: parent.verticalCenter
-                            width: 50
-                            height: 30
+                            width: app.buttonHeight * 1.1
+                            height: app.smallButtonHeight * 0.9
 
                             background: Rectangle {
                                 color: "transparent"
@@ -305,7 +402,7 @@ Item {
 
                             contentItem: Text {
                                 text: parent.parent.showConfirmPassword ? registerView.tr("Hide") : registerView.tr("Show")
-                                font.pixelSize: 11
+                                font.pixelSize: app.smallFontSize * 0.9
                                 color: "#2ecc71"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
@@ -318,13 +415,13 @@ Item {
                     }
                 }
 
-                // Kayıt Ol butonu
+                // Yeni Kayıt Oluştur butonu
                 Button {
                     id: registerButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 50
-                    text: tr("Register")
-                    font.pixelSize: 16
+                    Layout.preferredHeight: app.largeButtonHeight
+                    text: tr("Create New Account")
+                    font.pixelSize: app.mediumFontSize
                     font.bold: true
                     enabled: usernameField.text.length > 0 &&
                              passwordField.text.length > 0 &&
@@ -343,7 +440,7 @@ Item {
                             if (registerButton.hovered) return "#29d170"
                             return "#2ecc71"
                         }
-                        radius: 8
+                        radius: app.normalRadius
                         opacity: registerButton.enabled ? 1.0 : 0.6
 
                         // Glow effect with border
@@ -404,9 +501,9 @@ Item {
                 Button {
                     id: backButton
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 45
+                    Layout.preferredHeight: app.buttonHeight
                     text: tr("Go Back")
-                    font.pixelSize: 14
+                    font.pixelSize: app.baseFontSize
                     hoverEnabled: true
                     scale: backButton.pressed ? 0.97 : (backButton.hovered ? 1.02 : 1.0)
 
@@ -422,7 +519,7 @@ Item {
                         }
                         border.color: backButton.hovered ? "#b4bec4" : "#95a5a6"
                         border.width: 2
-                        radius: 8
+                        radius: app.normalRadius
 
                         Behavior on color {
                             ColorAnimation { duration: 150 }
@@ -466,21 +563,21 @@ Item {
                 // Bilgi mesajı
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 140
+                    Layout.preferredHeight: app.largeIconSize * 4
                     color: "#2c3e50"
-                    radius: 8
+                    radius: app.normalRadius
                     border.color: "#34495e"
                     border.width: 1
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 18
-                        spacing: 12
+                        anchors.margins: app.normalPadding
+                        spacing: app.normalSpacing
 
                         Text {
                             Layout.fillWidth: true
                             text: "ℹ️ " + registerView.tr("Password Requirements")
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             font.bold: true
                             color: "#ecf0f1"
                         }
@@ -488,7 +585,7 @@ Item {
                         Text {
                             Layout.fillWidth: true
                             text: tr("• Username: At least 3 characters\n• Password: At least 6 characters\n• At least 1 uppercase, 1 lowercase letter\n• Must contain at least 1 digit")
-                            font.pixelSize: 11
+                            font.pixelSize: app.smallFontSize * 0.9
                             color: "#bdc3c7"
                             lineHeight: 1.6
                         }
@@ -576,8 +673,8 @@ Item {
     Dialog {
         id: successDialog
         anchors.centerIn: parent
-        width: Math.min(parent.width * 0.8, 350)
-        height: Math.min(parent.height * 0.5, 280)
+        width: Math.min(parent.width * 0.8, app.largeIconSize * 10)
+        height: Math.min(parent.height * 0.5, app.largeIconSize * 8)
         modal: true
         standardButtons: Dialog.Ok
 
@@ -585,19 +682,19 @@ Item {
             color: "#2a2a2a"
             border.color: "#2ecc71"
             border.width: 2
-            radius: 10
+            radius: app.normalRadius
         }
 
         header: Rectangle {
             width: parent.width
-            height: 60
+            height: app.largeButtonHeight * 1.1
             color: "#ff9800"
-            radius: 10
+            radius: app.normalRadius
 
             Text {
                 anchors.centerIn: parent
                 text: "✓ " + registerView.tr("Registration Request Received!")
-                font.pixelSize: 18
+                font.pixelSize: app.mediumFontSize
                 font.bold: true
                 color: "#ffffff"
             }
@@ -605,14 +702,14 @@ Item {
 
         ColumnLayout {
             width: parent.width
-            spacing: 10
+            spacing: app.normalSpacing
 
             Text {
                 Layout.fillWidth: true
-                Layout.margins: 20
+                Layout.margins: app.largeSpacing
                 Layout.preferredHeight: implicitHeight
                 text: tr("Your registration request has been sent to the administrator.\n\nRedirecting to login page while waiting for approval...")
-                font.pixelSize: 14
+                font.pixelSize: app.baseFontSize
                 color: "#ffffff"
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignHCenter
@@ -630,8 +727,8 @@ Item {
     Dialog {
         id: errorDialog
         anchors.centerIn: parent
-        width: Math.min(parent.width * 0.8, 350)
-        height: Math.min(parent.height * 0.5, 280)
+        width: Math.min(parent.width * 0.8, app.largeIconSize * 10)
+        height: Math.min(parent.height * 0.5, app.largeIconSize * 8)
         modal: true
         standardButtons: Dialog.Ok
 
@@ -641,19 +738,19 @@ Item {
             color: "#2a2a2a"
             border.color: "#e74c3c"
             border.width: 2
-            radius: 10
+            radius: app.normalRadius
         }
 
         header: Rectangle {
             width: parent.width
-            height: 60
+            height: app.largeButtonHeight * 1.1
             color: "#e74c3c"
-            radius: 10
+            radius: app.normalRadius
 
             Text {
                 anchors.centerIn: parent
                 text: "⚠ " + registerView.tr("Error")
-                font.pixelSize: 18
+                font.pixelSize: app.mediumFontSize
                 font.bold: true
                 color: "#ffffff"
             }
@@ -661,14 +758,14 @@ Item {
 
         ColumnLayout {
             width: parent.width
-            spacing: 10
+            spacing: app.normalSpacing
 
             Text {
                 Layout.fillWidth: true
-                Layout.margins: 20
+                Layout.margins: app.largeSpacing
                 Layout.preferredHeight: implicitHeight
                 text: errorDialog.errorText
-                font.pixelSize: 14
+                font.pixelSize: app.baseFontSize
                 color: "#ffffff"
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignLeft

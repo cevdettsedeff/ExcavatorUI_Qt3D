@@ -313,7 +313,7 @@
     </message>
     <message>
         <source>Create New Account</source>
-        <translation>Create New Account</translation>
+        <translation>Create New Registration</translation>
     </message>
     <message>
         <source>Please enter your information</source>

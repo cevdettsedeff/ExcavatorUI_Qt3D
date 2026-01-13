@@ -7,6 +7,9 @@ Rectangle {
     id: mapPage
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
+    // Global responsive değişkenlere erişim
+    property var app: ApplicationWindow.window
+
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
@@ -223,7 +226,7 @@ Rectangle {
                     Text {
                         anchors.centerIn: parent
                         text: mapZoom.toString()
-                        font.pixelSize: 14
+                        font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: mapPage.primaryColor
                     }
@@ -340,7 +343,7 @@ Rectangle {
                                 Text {
                                     anchors.centerIn: parent
                                     text: "⏳"
-                                    font.pixelSize: 20
+                                    font.pixelSize: app.largeFontSize
                                     opacity: 0.5
                                 }
                             }
@@ -391,7 +394,7 @@ Rectangle {
                         id: areaInfoText
                         anchors.centerIn: parent
                         text: tr("Work Area") + ": " + areaWidth.toFixed(0) + "m x " + areaHeight.toFixed(0) + "m"
-                        font.pixelSize: 12
+                        font.pixelSize: app.smallFontSize
                         font.bold: true
                         color: "white"
                     }
@@ -473,7 +476,7 @@ Rectangle {
                         id: excavatorLabel
                         anchors.centerIn: parent
                         text: tr("Excavator")
-                        font.pixelSize: 10
+                        font.pixelSize: app.smallFontSize * 0.8
                         font.bold: true
                         color: "white"
                     }
@@ -560,7 +563,7 @@ Rectangle {
 
                     Text {
                         text: tr("Depth")
-                        font.pixelSize: 11
+                        font.pixelSize: app.smallFontSize
                         font.bold: true
                         color: "white"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -595,7 +598,7 @@ Rectangle {
 
                             Text {
                                 text: modelData.depth
-                                font.pixelSize: 11
+                                font.pixelSize: app.smallFontSize
                                 color: "#ffffff"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -631,13 +634,13 @@ Rectangle {
 
                         Text {
                             text: tr("LAT") + ":"
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             color: mapPage.textSecondaryColor
                         }
 
                         Text {
                             text: mapCenterLat.toFixed(6) + "°"
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             font.bold: true
                             color: mapPage.textColor
                         }
@@ -648,13 +651,13 @@ Rectangle {
 
                         Text {
                             text: tr("LON") + ":"
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             color: mapPage.textSecondaryColor
                         }
 
                         Text {
                             text: mapCenterLon.toFixed(6) + "°"
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             font.bold: true
                             color: mapPage.textColor
                         }
@@ -667,13 +670,13 @@ Rectangle {
 
                         Text {
                             text: "ZOOM:"
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             color: mapPage.textSecondaryColor
                         }
 
                         Text {
                             text: mapZoom.toString()
-                            font.pixelSize: 12
+                            font.pixelSize: app.smallFontSize
                             font.bold: true
                             color: mapPage.primaryColor
                         }
@@ -682,7 +685,7 @@ Rectangle {
                     // Attribution
                     Text {
                         text: "© CARTO © OSM"
-                        font.pixelSize: 9
+                        font.pixelSize: app.smallFontSize * 0.7
                         color: mapPage.textSecondaryColor
                     }
                 }
@@ -732,7 +735,7 @@ Rectangle {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: label
-                font.pixelSize: 9
+                font.pixelSize: app.smallFontSize * 0.7
                 color: mapPage.textSecondaryColor
                 visible: label !== ""
             }

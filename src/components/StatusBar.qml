@@ -2,11 +2,18 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-// Üst Durum Çubuğu - İki satırlı: Üst başlık + Sensör durumları
+// Üst Durum Çubuğu - İki satırlı: Üst başlık + Sensör durumları - 10.1 inç responsive
 Rectangle {
     id: statusBar
-    height: 100
+    height: Math.max(parent.height * 0.065, 70)  // Ekranın %6.5'i, min 70px
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
+
+    // Responsive boyutlar
+    property real rowHeight: height * 0.48  // Her satır yüksekliğin %48'i
+    property real baseFontSize: height * 0.12  // Ana font: yüksekliğin %12'si
+    property real iconSize: height * 0.28  // İkon boyutu: yüksekliğin %28'i
+    property real smallFontSize: height * 0.09  // Küçük font: yüksekliğin %9'u
+    property real miniIconSize: height * 0.15  // Mini ikon: yüksekliğin %15'i
 
     // Proje adı property'si
     property string projectName: "AŞ-KAZI-042"
@@ -37,33 +44,33 @@ Rectangle {
         anchors.fill: parent
         spacing: 0
 
-        // ÜST SATIR - Ekskavatör adı, kullanıcı, saat/tarih
+        // ÜST SATIR - Ekskavatör adı, kullanıcı, saat/tarih (Responsive)
         Rectangle {
             width: parent.width
-            height: 50
+            height: statusBar.rowHeight
             color: themeManager ? themeManager.backgroundColorDark : "#1e1e1e"
 
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 15
-                anchors.rightMargin: 15
-                spacing: 20
+                anchors.leftMargin: statusBar.height * 0.12
+                anchors.rightMargin: statusBar.height * 0.12
+                spacing: statusBar.height * 0.15
 
-                // SOL: Ekskavatör Adı
+                // SOL: Ekskavatör Adı (Responsive)
                 Row {
-                    spacing: 8
+                    spacing: statusBar.height * 0.06
 
                     Rectangle {
-                        width: 8
-                        height: 8
-                        radius: 4
+                        width: statusBar.miniIconSize * 0.6
+                        height: statusBar.miniIconSize * 0.6
+                        radius: width / 2
                         color: "#4CAF50"
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
                     Text {
                         text: statusBar.excavatorName
-                        font.pixelSize: 16
+                        font.pixelSize: statusBar.baseFontSize
                         font.bold: true
                         color: "#ffffff"
                         anchors.verticalCenter: parent.verticalCenter
@@ -72,40 +79,40 @@ Rectangle {
 
                 Item { Layout.fillWidth: true }
 
-                // ORTA: Kullanıcı Adı ve Rolü
+                // ORTA: Kullanıcı Adı ve Rolü (Responsive)
                 Row {
-                    spacing: 8
+                    spacing: statusBar.height * 0.08
 
                     Rectangle {
-                        width: 32
-                        height: 32
-                        radius: 16
+                        width: statusBar.iconSize
+                        height: statusBar.iconSize
+                        radius: width / 2
                         color: "#3f51b5"
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
                             anchors.centerIn: parent
                             text: authService && authService.currentUser ? authService.currentUser.charAt(0).toUpperCase() : "U"
-                            font.pixelSize: 16
+                            font.pixelSize: statusBar.iconSize * 0.5
                             font.bold: true
                             color: "#ffffff"
                         }
                     }
 
                     Column {
-                        spacing: 2
+                        spacing: statusBar.height * 0.02
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
                             text: authService && authService.currentUser ? authService.currentUser : "Kullanıcı"
-                            font.pixelSize: 13
+                            font.pixelSize: statusBar.baseFontSize * 0.85
                             font.bold: true
                             color: "#ffffff"
                         }
 
                         Text {
                             text: authService && authService.currentRole ? authService.currentRole : "Operatör"
-                            font.pixelSize: 10
+                            font.pixelSize: statusBar.smallFontSize
                             color: "#888888"
                         }
                     }
@@ -113,17 +120,17 @@ Rectangle {
 
                 Item { Layout.fillWidth: true }
 
-                // SAĞ: Saat ve Tarih
+                // SAĞ: Saat ve Tarih (Responsive)
                 Row {
-                    spacing: 15
+                    spacing: statusBar.height * 0.12
 
                     Column {
-                        spacing: 2
+                        spacing: statusBar.height * 0.02
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
                             text: statusBar.currentTime
-                            font.pixelSize: 16
+                            font.pixelSize: statusBar.baseFontSize
                             font.bold: true
                             color: "#00bcd4"
                             anchors.right: parent.right
@@ -131,17 +138,17 @@ Rectangle {
 
                         Text {
                             text: statusBar.currentDate
-                            font.pixelSize: 11
+                            font.pixelSize: statusBar.smallFontSize
                             color: "#888888"
                             anchors.right: parent.right
                         }
                     }
 
-                    // Kullanıcı Menü İkonu
+                    // Kullanıcı Menü İkonu (Responsive)
                     Rectangle {
-                        width: 36
-                        height: 36
-                        radius: 18
+                        width: statusBar.iconSize * 1.1
+                        height: statusBar.iconSize * 1.1
+                        radius: width / 2
                         color: "#2a2a2a"
                         border.color: "#505050"
                         border.width: 1
@@ -150,7 +157,7 @@ Rectangle {
                         Text {
                             anchors.centerIn: parent
                             text: "☰"
-                            font.pixelSize: 18
+                            font.pixelSize: statusBar.iconSize * 0.55
                             color: "#ffffff"
                         }
 
@@ -171,23 +178,23 @@ Rectangle {
             }
         }
 
-        // ALT SATIR - RTK, IMU ve Alarm durumları
+        // ALT SATIR - RTK, IMU ve Alarm durumları (Responsive)
         Rectangle {
             width: parent.width
-            height: 50
+            height: statusBar.rowHeight
             color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
-                spacing: 8
+                anchors.leftMargin: statusBar.height * 0.08
+                anchors.rightMargin: statusBar.height * 0.08
+                spacing: statusBar.height * 0.06
 
-                // Proje Adı - SOLDA
+                // Proje Adı - SOLDA (Responsive)
                 Rectangle {
-                    Layout.preferredHeight: 36
-                    Layout.preferredWidth: projeText.width + 20
-                    radius: 5
+                    Layout.preferredHeight: statusBar.rowHeight * 0.75
+                    Layout.preferredWidth: projeText.width + statusBar.height * 0.16
+                    radius: statusBar.height * 0.04
                     color: "#2a2a2a"
                     border.color: "#444444"
                     border.width: 1
@@ -196,7 +203,7 @@ Rectangle {
                         id: projeText
                         anchors.centerIn: parent
                         text: "Proje: " + statusBar.projectName
-                        font.pixelSize: 12
+                        font.pixelSize: statusBar.baseFontSize * 0.85
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -207,32 +214,32 @@ Rectangle {
                     Layout.fillWidth: true
                 }
 
-                // RTK Durumu - Detaylı
+                // RTK Durumu - Detaylı (Responsive)
                 Rectangle {
-                    Layout.preferredWidth: 110
-                    Layout.preferredHeight: 36
-                    radius: 5
+                    Layout.preferredWidth: statusBar.height * 0.85
+                    Layout.preferredHeight: statusBar.rowHeight * 0.75
+                    radius: statusBar.height * 0.04
                     color: "#2a2a2a"
                     border.color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
                     border.width: 1
 
                     Row {
                         anchors.centerIn: parent
-                        spacing: 5
+                        spacing: statusBar.height * 0.04
 
-                        // Sinyal ikonu - Row ile yatay dizilim
+                        // Sinyal ikonu - Row ile yatay dizilim (Responsive)
                         Row {
-                            spacing: 1
+                            spacing: statusBar.height * 0.01
                             anchors.verticalCenter: parent.verticalCenter
-                            height: 16
+                            height: statusBar.rowHeight * 0.35
 
                             Repeater {
                                 model: 4
 
                                 Rectangle {
-                                    width: 3
-                                    height: 4 + index * 3
-                                    radius: 1
+                                    width: statusBar.height * 0.025
+                                    height: statusBar.rowHeight * 0.08 + index * (statusBar.rowHeight * 0.06)
+                                    radius: statusBar.height * 0.01
                                     anchors.bottom: parent.bottom
                                     color: {
                                         var strength = statusBar.rtkConnected ? (statusBar.rtkStatus === "FIX" ? 4 : (statusBar.rtkStatus === "FLOAT" ? 3 : 2)) : 0
@@ -248,45 +255,45 @@ Rectangle {
 
                             Text {
                                 text: "RTK"
-                                font.pixelSize: 11
+                                font.pixelSize: statusBar.baseFontSize * 0.75
                                 font.bold: true
                                 color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
                             }
 
                             Text {
                                 text: statusBar.rtkStatus
-                                font.pixelSize: 9
+                                font.pixelSize: statusBar.smallFontSize * 0.85
                                 color: "#888888"
                             }
                         }
                     }
                 }
 
-                // IMU Durumu - Detaylı
+                // IMU Durumu - Detaylı (Responsive)
                 Rectangle {
-                    Layout.preferredWidth: 105
-                    Layout.preferredHeight: 36
-                    radius: 5
+                    Layout.preferredWidth: statusBar.height * 0.8
+                    Layout.preferredHeight: statusBar.rowHeight * 0.75
+                    radius: statusBar.height * 0.04
                     color: "#2a2a2a"
                     border.color: statusBar.imuOk ? "#4CAF50" : "#f44336"
                     border.width: 1
 
                     Row {
                         anchors.centerIn: parent
-                        spacing: 5
+                        spacing: statusBar.height * 0.04
 
-                        // Durum ikonu
+                        // Durum ikonu (Responsive)
                         Rectangle {
-                            width: 18
-                            height: 18
-                            radius: 9
+                            width: statusBar.miniIconSize * 1.1
+                            height: statusBar.miniIconSize * 1.1
+                            radius: width / 2
                             color: statusBar.imuOk ? "#4CAF50" : "#f44336"
                             anchors.verticalCenter: parent.verticalCenter
 
                             Text {
                                 anchors.centerIn: parent
                                 text: statusBar.imuOk ? "✓" : "!"
-                                font.pixelSize: 11
+                                font.pixelSize: statusBar.baseFontSize * 0.75
                                 font.bold: true
                                 color: "#ffffff"
                             }
@@ -298,25 +305,25 @@ Rectangle {
 
                             Text {
                                 text: "IMU"
-                                font.pixelSize: 11
+                                font.pixelSize: statusBar.baseFontSize * 0.75
                                 font.bold: true
                                 color: "#ffffff"
                             }
 
                             Text {
                                 text: statusBar.imuOk ? "OK" : "ERR"
-                                font.pixelSize: 9
+                                font.pixelSize: statusBar.smallFontSize * 0.85
                                 color: statusBar.imuOk ? "#4CAF50" : "#f44336"
                             }
                         }
                     }
                 }
 
-                // Alarm Badge
+                // Alarm Badge (Responsive)
                 Rectangle {
-                    Layout.preferredWidth: 32
-                    Layout.preferredHeight: 32
-                    radius: 5
+                    Layout.preferredWidth: statusBar.iconSize * 0.95
+                    Layout.preferredHeight: statusBar.iconSize * 0.95
+                    radius: statusBar.height * 0.04
                     color: statusBar.alarmCount > 0 ? "#f44336" : "#2a2a2a"
                     visible: true
                     border.color: statusBar.alarmCount > 0 ? "#ff6b6b" : "#444444"
@@ -329,14 +336,14 @@ Rectangle {
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "▲"
-                            font.pixelSize: 10
+                            font.pixelSize: statusBar.smallFontSize * 0.9
                             color: statusBar.alarmCount > 0 ? "#ffffff" : "#666666"
                         }
 
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: statusBar.alarmCount.toString()
-                            font.pixelSize: 12
+                            font.pixelSize: statusBar.baseFontSize * 0.85
                             font.bold: true
                             color: statusBar.alarmCount > 0 ? "#ffffff" : "#666666"
                         }

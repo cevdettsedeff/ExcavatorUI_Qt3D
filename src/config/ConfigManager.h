@@ -36,7 +36,9 @@ class ConfigManager : public QObject
     Q_PROPERTY(double boomLength READ boomLength WRITE setBoomLength NOTIFY boomLengthChanged)
     Q_PROPERTY(double armLength READ armLength WRITE setArmLength NOTIFY armLengthChanged)
     Q_PROPERTY(double bucketWidth READ bucketWidth WRITE setBucketWidth NOTIFY bucketWidthChanged)
+    Q_PROPERTY(double scanningDepth READ scanningDepth WRITE setScanningDepth NOTIFY scanningDepthChanged)
     Q_PROPERTY(bool excavatorConfigured READ excavatorConfigured NOTIFY excavatorConfiguredChanged)
+    Q_PROPERTY(QVariantList excavatorPresets READ excavatorPresets NOTIFY excavatorPresetsChanged)
 
     // Dig Area / Grid settings
     Q_PROPERTY(int gridRows READ gridRows WRITE setGridRows NOTIFY gridRowsChanged)
@@ -93,7 +95,9 @@ public:
     double boomLength() const { return m_boomLength; }
     double armLength() const { return m_armLength; }
     double bucketWidth() const { return m_bucketWidth; }
+    double scanningDepth() const { return m_scanningDepth; }
     bool excavatorConfigured() const { return m_excavatorConfigured; }
+    QVariantList excavatorPresets() const { return m_excavatorPresets; }
 
     // Dig Area getters
     int gridRows() const { return m_gridRows; }
@@ -134,6 +138,7 @@ public:
     void setBoomLength(double length);
     void setArmLength(double length);
     void setBucketWidth(double width);
+    void setScanningDepth(double depth);
 
     // Dig Area setters
     void setGridRows(int rows);
@@ -215,6 +220,34 @@ public:
     Q_INVOKABLE void markExcavatorConfigured();
 
     /**
+     * Load excavator preset by index
+     * @param index Preset index
+     */
+    Q_INVOKABLE void loadExcavatorPreset(int index);
+
+    /**
+     * Add new excavator preset
+     * @param name Excavator name
+     * @param scanningDepth Scanning depth in meters
+     * @param boomLength Boom length in meters
+     * @param armLength Arm length in meters
+     * @param bucketWidth Bucket width in cubic meters
+     */
+    Q_INVOKABLE void addExcavatorPreset(const QString &name, double scanningDepth,
+                                        double boomLength, double armLength, double bucketWidth);
+
+    /**
+     * Remove excavator preset by index
+     * @param index Preset index to remove
+     */
+    Q_INVOKABLE void removeExcavatorPreset(int index);
+
+    /**
+     * Save current excavator configuration as new preset
+     */
+    Q_INVOKABLE void saveCurrentAsPreset();
+
+    /**
      * Mark dig area configuration as complete
      */
     Q_INVOKABLE void markDigAreaConfigured();
@@ -253,7 +286,9 @@ signals:
     void boomLengthChanged();
     void armLengthChanged();
     void bucketWidthChanged();
+    void scanningDepthChanged();
     void excavatorConfiguredChanged();
+    void excavatorPresetsChanged();
 
     // Dig Area signals
     void gridRowsChanged();
@@ -320,7 +355,9 @@ private:
     double m_boomLength;
     double m_armLength;
     double m_bucketWidth;
+    double m_scanningDepth;
     bool m_excavatorConfigured;
+    QVariantList m_excavatorPresets;
 
     // Dig Area / Grid settings
     int m_gridRows;
@@ -363,9 +400,11 @@ private:
     void parseMapSettings(const QJsonObject &mapSettings);
     void parseAlarmSettings(const QJsonObject &alarmSettings);
     void parseScreenSaverSettings(const QJsonObject &screenSaverSettings);
+    void parseExcavatorPresets(const QJsonArray &presets);
     QColor parseColor(const QString &colorString) const;
     void setDefaultValues();
     void initializeGridDepths();
+    void initializeExcavatorPresets();
 };
 
 #endif // CONFIGMANAGER_H

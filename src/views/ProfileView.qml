@@ -119,7 +119,7 @@ Rectangle {
 
                             Text {
                                 text: qsTr("Change your username and password")
-                                font.pixelSize: 14
+                                font.pixelSize: app.baseFontSize
                                 color: "#3498db"
                             }
                         }
@@ -145,7 +145,7 @@ Rectangle {
 
                         Text {
                             text: qsTr("Current Username")
-                            font.pixelSize: 14
+                            font.pixelSize: app.baseFontSize
                             font.bold: true
                             color: "#cccccc"
                         }
@@ -164,12 +164,12 @@ Rectangle {
 
                                 Text {
                                     text: "👤"
-                                    font.pixelSize: 18
+                                    font.pixelSize: app.mediumFontSize
                                 }
 
                                 Text {
                                     text: authService ? authService.currentUser : ""
-                                    font.pixelSize: 16
+                                    font.pixelSize: app.mediumFontSize
                                     font.bold: true
                                     color: "#3498db"
                                 }
@@ -184,7 +184,7 @@ Rectangle {
 
                         Text {
                             text: qsTr("New Username")
-                            font.pixelSize: 14
+                            font.pixelSize: app.baseFontSize
                             font.bold: true
                             color: "#cccccc"
                         }
@@ -194,7 +194,7 @@ Rectangle {
                             width: parent.width
                             height: 50
                             placeholderText: qsTr("Enter your new username")
-                            font.pixelSize: 14
+                            font.pixelSize: app.baseFontSize
 
                             background: Rectangle {
                                 color: "#2d3748"
@@ -218,7 +218,7 @@ Rectangle {
 
                         Text {
                             text: qsTr("New Password")
-                            font.pixelSize: 14
+                            font.pixelSize: app.baseFontSize
                             font.bold: true
                             color: "#cccccc"
                         }
@@ -234,7 +234,7 @@ Rectangle {
                                 anchors.fill: parent
                                 placeholderText: qsTr("Enter your new password (at least 6 characters)")
                                 echoMode: parent.showPassword ? TextInput.Normal : TextInput.Password
-                                font.pixelSize: 14
+                                font.pixelSize: app.baseFontSize
                                 color: "#ffffff"
                                 rightPadding: 45
 
@@ -263,7 +263,7 @@ Rectangle {
 
                                 contentItem: Text {
                                     text: parent.parent.showPassword ? qsTr("Hide") : qsTr("Show")
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: "#3498db"
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
@@ -283,7 +283,7 @@ Rectangle {
 
                         Text {
                             text: qsTr("New Password (Confirm)")
-                            font.pixelSize: 14
+                            font.pixelSize: app.baseFontSize
                             font.bold: true
                             color: "#cccccc"
                         }
@@ -299,7 +299,7 @@ Rectangle {
                                 anchors.fill: parent
                                 placeholderText: qsTr("Re-enter your password")
                                 echoMode: parent.showConfirmPassword ? TextInput.Normal : TextInput.Password
-                                font.pixelSize: 14
+                                font.pixelSize: app.baseFontSize
                                 color: "#ffffff"
                                 rightPadding: 45
 
@@ -328,7 +328,7 @@ Rectangle {
 
                                 contentItem: Text {
                                     text: parent.parent.showConfirmPassword ? qsTr("Hide") : qsTr("Show")
-                                    font.pixelSize: 11
+                                    font.pixelSize: app.smallFontSize
                                     color: "#3498db"
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
@@ -356,13 +356,13 @@ Rectangle {
 
                             Text {
                                 text: "⚠️"
-                                font.pixelSize: 24
+                                font.pixelSize: app.xlFontSize
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             Text {
                                 text: qsTr("You will be automatically logged out and redirected to the login screen when your profile is updated.")
-                                font.pixelSize: 12
+                                font.pixelSize: app.smallFontSize
                                 color: "#ffffff"
                                 wrapMode: Text.WordWrap
                                 width: parent.width - 50
@@ -400,13 +400,13 @@ Rectangle {
 
                             Text {
                                 text: "💾"
-                                font.pixelSize: 20
+                                font.pixelSize: app.largeFontSize
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
                             Text {
                                 text: qsTr("Save Changes")
-                                font.pixelSize: 16
+                                font.pixelSize: app.mediumFontSize
                                 font.bold: true
                                 color: parent.parent.enabled ? "#ffffff" : "#666666"
                                 anchors.verticalCenter: parent.verticalCenter
@@ -490,7 +490,7 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 text: "✓ " + qsTr("Profile Updated")
-                font.pixelSize: 18
+                font.pixelSize: app.mediumFontSize
                 font.bold: true
                 color: "#ffffff"
             }
@@ -502,7 +502,7 @@ Rectangle {
 
             Text {
                 text: qsTr("Your profile has been successfully updated.\n\nRedirecting to login screen...")
-                font.pixelSize: 14
+                font.pixelSize: app.baseFontSize
                 color: "#cccccc"
                 wrapMode: Text.WordWrap
                 width: parent.width
@@ -552,7 +552,7 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 text: "⚠️ " + qsTr("Error")
-                font.pixelSize: 18
+                font.pixelSize: app.mediumFontSize
                 font.bold: true
                 color: "#ffffff"
             }
@@ -564,7 +564,7 @@ Rectangle {
 
             Text {
                 text: errorDialog.errorText
-                font.pixelSize: 14
+                font.pixelSize: app.baseFontSize
                 color: "#cccccc"
                 wrapMode: Text.WordWrap
                 width: parent.width

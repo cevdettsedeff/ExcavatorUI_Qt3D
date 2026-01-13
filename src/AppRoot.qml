@@ -14,11 +14,53 @@ import ExcavatorUI_Qt3D
  */
 ApplicationWindow {
     id: appRoot
+    // 10.1 inç tablet ekran için sabit boyut (portrait)
     width: 800
     height: 1280
     visible: true
     title: qsTr("EHK - Harita Ve Görselleştirme Yönetimi")
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
+
+    // ============================================
+    // GLOBAL RESPONSIVE DESIGN SYSTEM - 10.1 inç
+    // ============================================
+
+    // Temel ölçekler
+    property real fontScale: Math.min(width / 800, height / 1280)
+
+    // Font boyutları (10.1 inç için optimize - BÜYÜTÜLMÜŞ)
+    property real baseFontSize: 22 * fontScale      // Normal metin (14→22)
+    property real smallFontSize: 18 * fontScale     // Küçük metin (11→18)
+    property real mediumFontSize: 26 * fontScale    // Orta metin (16→26)
+    property real largeFontSize: 32 * fontScale     // Büyük başlıklar (20→32)
+    property real xlFontSize: 38 * fontScale        // Çok büyük başlıklar (24→38)
+
+    // Buton boyutları (BÜYÜTÜLMÜŞ)
+    property real buttonHeight: 60 * fontScale      // Standart buton (45→60)
+    property real smallButtonHeight: 50 * fontScale // Küçük buton (35→50)
+    property real largeButtonHeight: 70 * fontScale // Büyük buton (55→70)
+
+    // İkon boyutları (BÜYÜTÜLMÜŞ)
+    property real iconSize: 40 * fontScale          // Standart ikon (28→40)
+    property real smallIconSize: 30 * fontScale     // Küçük ikon (20→30)
+    property real largeIconSize: 50 * fontScale     // Büyük ikon (36→50)
+
+    // Spacing/Padding değerleri (BÜYÜTÜLMÜŞ)
+    property real smallSpacing: 10 * fontScale      // Küçük boşluk (6→10)
+    property real normalSpacing: 16 * fontScale     // Normal boşluk (12→16)
+    property real largeSpacing: 26 * fontScale      // Büyük boşluk (20→26)
+    property real xlSpacing: 40 * fontScale         // Çok büyük boşluk (30→40)
+
+    property real smallPadding: 12 * fontScale      // Küçük padding (8→12)
+    property real normalPadding: 20 * fontScale     // Normal padding (15→20)
+    property real largePadding: 32 * fontScale      // Büyük padding (25→32)
+
+    // Border radius (BÜYÜTÜLMÜŞ)
+    property real smallRadius: 6 * fontScale        // Küçük köşe (4→6)
+    property real normalRadius: 10 * fontScale      // Normal köşe (8→10)
+    property real largeRadius: 16 * fontScale       // Büyük köşe (12→16)
+
+    // ============================================
 
     // Mevcut görünüm durumu
     // "login" -> "config-dashboard" -> "dashboard"
@@ -185,6 +227,14 @@ ApplicationWindow {
                 function onConfigurationComplete() {
                     console.log("Konfigürasyon tamamlandı, ana dashboard'a geçiliyor...")
                     currentView = "dashboard"
+                }
+
+                function onBackToLogin() {
+                    console.log("Login ekranına dönülüyor...")
+                    currentView = "login"
+                    if (authService) {
+                        authService.logout()
+                    }
                 }
             }
 
