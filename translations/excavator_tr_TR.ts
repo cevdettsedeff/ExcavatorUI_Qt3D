@@ -1245,5 +1245,33 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Ex: Bucket 1</source>
         <translation>Örn: Kova 1</translation>
     </message>
+    <message>
+        <source>Kova Ölçüleri</source>
+        <translation>Kova Ölçüleri</translation>
+    </message>
+    <message>
+        <source>Bucket Measurements</source>
+        <translation>Kova Ölçüleri</translation>
+    </message>
+    <message>
+        <source>En (Width)</source>
+        <translation>En (Width)</translation>
+    </message>
+    <message>
+        <source>Boy (Height)</source>
+        <translation>Boy (Height)</translation>
+    </message>
+    <message>
+        <source>Derinlik (Depth)</source>
+        <translation>Derinlik (Depth)</translation>
+    </message>
+    <message>
+        <source>UYGULA</source>
+        <translation>UYGULA</translation>
+    </message>
+    <message>
+        <source>APPLY</source>
+        <translation>UYGULA</translation>
+    </message>
 </context>
 </TS>

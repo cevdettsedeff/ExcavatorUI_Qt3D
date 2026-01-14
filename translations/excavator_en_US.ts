@@ -973,5 +973,37 @@ Redirecting to login screen...</translation>
         <source>Ex: Bucket 1</source>
         <translation>Ex: Bucket 1</translation>
     </message>
+    <message>
+        <source>Yeni Kullanıcı Oluştur</source>
+        <translation>Create New User</translation>
+    </message>
+    <message>
+        <source>Create New User</source>
+        <translation>Create New User</translation>
+    </message>
+    <message>
+        <source>Kova Ölçüleri</source>
+        <translation>Bucket Dimensions</translation>
+    </message>
+    <message>
+        <source>En (Width)</source>
+        <translation>Width</translation>
+    </message>
+    <message>
+        <source>Boy (Height)</source>
+        <translation>Height</translation>
+    </message>
+    <message>
+        <source>Derinlik (Depth)</source>
+        <translation>Depth</translation>
+    </message>
+    <message>
+        <source>UYGULA</source>
+        <translation>APPLY</translation>
+    </message>
+    <message>
+        <source>En</source>
+        <translation>Width</translation>
+    </message>
 </context>
 </TS>
