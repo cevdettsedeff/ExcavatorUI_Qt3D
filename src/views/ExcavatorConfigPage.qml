@@ -682,547 +682,293 @@ Rectangle {
                 anchors.fill: parent
                 spacing: 16
 
-                // Left side - Input Panel
+                // Left side - Input Panel (like reference image)
                 Rectangle {
-                    Layout.preferredWidth: parent.width * 0.35
+                    Layout.preferredWidth: 280
                     Layout.fillHeight: true
-                    color: root.cardColor
+                    color: "#1a4a5a"  // Teal color like reference
                     radius: 12
-                    border.width: 1
-                    border.color: root.borderColor
 
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 16
-                        spacing: 16
+                        spacing: 12
 
                         // Title
                         Text {
                             text: root.tr("Kova Ölçüleri")
-                            font.pixelSize: 18
+                            font.pixelSize: 20
                             font.bold: true
-                            color: root.textColor
+                            color: "white"
                         }
 
-                        // Bucket Selection
-                        ColumnLayout {
+                        // Input fields card
+                        Rectangle {
                             Layout.fillWidth: true
-                            spacing: 6
+                            Layout.fillHeight: true
+                            color: "#0d2830"
+                            radius: 8
 
-                            Text {
-                                text: root.tr("Kova Seçimi")
-                                font.pixelSize: 12
-                                color: root.textSecondaryColor
-                            }
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.margins: 12
+                                spacing: 10
 
-                            ComboBox {
-                                id: bucketComboBox
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 44
+                                // En (Width)
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 4
 
-                                model: {
-                                    var list = [root.tr("Yeni Kova")];
-                                    for (var i = 0; i < root.savedBuckets.length; i++) {
-                                        list.push(root.savedBuckets[i].name);
+                                    Text {
+                                        text: root.tr("En (Width)") + " [mm]"
+                                        font.pixelSize: 12
+                                        color: "#a0c0c0"
                                     }
-                                    return list;
-                                }
 
-                                currentIndex: root.selectedBucketIndex + 1
-
-                                onCurrentIndexChanged: {
-                                    if (currentIndex === 0) {
-                                        root.selectedBucketIndex = -1;
-                                        root.bucketName = "";
-                                        root.bucketLength = 0;
-                                        root.bucketWidth = 0;
-                                        root.bucketDepth = 0;
-                                    } else if (currentIndex > 0) {
-                                        var idx = currentIndex - 1;
-                                        root.selectedBucketIndex = idx;
-                                        var bucket = root.savedBuckets[idx];
-                                        root.bucketName = bucket.name;
-                                        root.bucketLength = bucket.length;
-                                        root.bucketWidth = bucket.width;
-                                        root.bucketDepth = bucket.depth;
-                                    }
-                                }
-
-                                contentItem: Text {
-                                    leftPadding: 12
-                                    text: bucketComboBox.displayText
-                                    font.pixelSize: 14
-                                    color: "white"
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-
-                                background: Rectangle {
-                                    color: "white"
-                                    radius: 6
-                                    border.width: 1
-                                    border.color: "#e0e0e0"
-                                }
-
-                                delegate: ItemDelegate {
-                                    width: bucketComboBox.width
-                                    contentItem: Text {
-                                        text: modelData
+                                    TextField {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 40
+                                        placeholderText: "1200"
+                                        font.pixelSize: 16
                                         color: "#333"
-                                        font.pixelSize: 14
-                                    }
-                                    highlighted: bucketComboBox.highlightedIndex === index
-                                    background: Rectangle {
-                                        color: parent.highlighted ? "#e3f2fd" : "white"
+                                        placeholderTextColor: "#999"
+                                        inputMethodHints: Qt.ImhDigitsOnly
+                                        horizontalAlignment: Text.AlignHCenter
+
+                                        text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) : ""
+
+                                        background: Rectangle {
+                                            color: "white"
+                                            radius: 6
+                                        }
+
+                                        onTextChanged: {
+                                            if (activeFocus) {
+                                                var val = parseInt(text)
+                                                root.bucketWidth = !isNaN(val) ? val : 0
+                                            }
+                                        }
                                     }
                                 }
 
-                                popup: Popup {
-                                    y: bucketComboBox.height
-                                    width: bucketComboBox.width
-                                    implicitHeight: contentItem.implicitHeight
-                                    padding: 1
+                                // Boy (Height)
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 4
 
-                                    contentItem: ListView {
-                                        clip: true
-                                        implicitHeight: contentHeight
-                                        model: bucketComboBox.popup.visible ? bucketComboBox.delegateModel : null
+                                    Text {
+                                        text: root.tr("Boy (Height)") + " [mm]"
+                                        font.pixelSize: 12
+                                        color: "#a0c0c0"
                                     }
 
+                                    TextField {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 40
+                                        placeholderText: "900"
+                                        font.pixelSize: 16
+                                        color: "#333"
+                                        placeholderTextColor: "#999"
+                                        inputMethodHints: Qt.ImhDigitsOnly
+                                        horizontalAlignment: Text.AlignHCenter
+
+                                        text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) : ""
+
+                                        background: Rectangle {
+                                            color: "white"
+                                            radius: 6
+                                        }
+
+                                        onTextChanged: {
+                                            if (activeFocus) {
+                                                var val = parseInt(text)
+                                                root.bucketLength = !isNaN(val) ? val : 0
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Derinlik (Depth)
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 4
+
+                                    Text {
+                                        text: root.tr("Derinlik (Depth)") + " [mm]"
+                                        font.pixelSize: 12
+                                        color: "#a0c0c0"
+                                    }
+
+                                    TextField {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 40
+                                        placeholderText: "1100"
+                                        font.pixelSize: 16
+                                        color: "#333"
+                                        placeholderTextColor: "#999"
+                                        inputMethodHints: Qt.ImhDigitsOnly
+                                        horizontalAlignment: Text.AlignHCenter
+
+                                        text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) : ""
+
+                                        background: Rectangle {
+                                            color: "white"
+                                            radius: 6
+                                        }
+
+                                        onTextChanged: {
+                                            if (activeFocus) {
+                                                var val = parseInt(text)
+                                                root.bucketDepth = !isNaN(val) ? val : 0
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Item { Layout.fillHeight: true }
+
+                                // UYGULA button
+                                Button {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 44
+
                                     background: Rectangle {
-                                        color: "white"
-                                        border.color: "#e0e0e0"
                                         radius: 6
+                                        color: parent.pressed ? "#1a6a7a" : "#2a8a9a"
+                                    }
+
+                                    contentItem: Text {
+                                        text: root.tr("UYGULA")
+                                        font.pixelSize: 14
+                                        font.bold: true
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        if (root.bucketWidth > 0 && root.bucketLength > 0 && root.bucketDepth > 0) {
+                                            saveBucket()
+                                        }
                                     }
                                 }
                             }
                         }
 
-                        // Kova Adı
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 6
-
-                            Text {
-                                text: root.tr("Kova Adı")
-                                font.pixelSize: 12
-                                color: root.textSecondaryColor
-                            }
-
-                            TextField {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 44
-                                placeholderText: root.tr("Örn: Kova 1")
-                                font.pixelSize: 14
-                                color: "#333"
-                                placeholderTextColor: "#999"
-
-                                text: root.bucketName
-
-                                background: Rectangle {
-                                    color: "white"
-                                    radius: 6
-                                    border.width: 1
-                                    border.color: parent.activeFocus ? root.primaryColor : "#e0e0e0"
-                                }
-
-                                onTextChanged: {
-                                    if (activeFocus) root.bucketName = text
-                                }
-                            }
-                        }
-
-                        // En (Width)
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 6
-
-                            Text {
-                                text: root.tr("En (Width)") + " [mm]"
-                                font.pixelSize: 12
-                                font.bold: true
-                                color: root.textColor
-                            }
-
-                            TextField {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 44
-                                placeholderText: "1200"
-                                font.pixelSize: 16
-                                color: "#333"
-                                placeholderTextColor: "#999"
-                                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                horizontalAlignment: Text.AlignLeft
-
-                                text: root.bucketWidth > 0 ? Math.round(root.bucketWidth).toString() : ""
-
-                                background: Rectangle {
-                                    color: "white"
-                                    radius: 6
-                                    border.width: 1
-                                    border.color: parent.activeFocus ? root.primaryColor : "#e0e0e0"
-                                }
-
-                                onTextChanged: {
-                                    if (activeFocus) {
-                                        var val = parseInt(text)
-                                        root.bucketWidth = !isNaN(val) ? val : 0
-                                    }
-                                }
-                            }
-                        }
-
-                        // Boy (Height)
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 6
-
-                            Text {
-                                text: root.tr("Boy (Height)") + " [mm]"
-                                font.pixelSize: 12
-                                font.bold: true
-                                color: root.textColor
-                            }
-
-                            TextField {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 44
-                                placeholderText: "900"
-                                font.pixelSize: 16
-                                color: "#333"
-                                placeholderTextColor: "#999"
-                                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                horizontalAlignment: Text.AlignLeft
-
-                                text: root.bucketLength > 0 ? Math.round(root.bucketLength).toString() : ""
-
-                                background: Rectangle {
-                                    color: "white"
-                                    radius: 6
-                                    border.width: 1
-                                    border.color: parent.activeFocus ? root.primaryColor : "#e0e0e0"
-                                }
-
-                                onTextChanged: {
-                                    if (activeFocus) {
-                                        var val = parseInt(text)
-                                        root.bucketLength = !isNaN(val) ? val : 0
-                                    }
-                                }
-                            }
-                        }
-
-                        // Derinlik (Depth)
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 6
-
-                            Text {
-                                text: root.tr("Derinlik (Depth)") + " [mm]"
-                                font.pixelSize: 12
-                                font.bold: true
-                                color: root.textColor
-                            }
-
-                            TextField {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 44
-                                placeholderText: "1100"
-                                font.pixelSize: 16
-                                color: "#333"
-                                placeholderTextColor: "#999"
-                                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                horizontalAlignment: Text.AlignLeft
-
-                                text: root.bucketDepth > 0 ? Math.round(root.bucketDepth).toString() : ""
-
-                                background: Rectangle {
-                                    color: "white"
-                                    radius: 6
-                                    border.width: 1
-                                    border.color: parent.activeFocus ? root.primaryColor : "#e0e0e0"
-                                }
-
-                                onTextChanged: {
-                                    if (activeFocus) {
-                                        var val = parseInt(text)
-                                        root.bucketDepth = !isNaN(val) ? val : 0
-                                    }
-                                }
-                            }
-                        }
-
-                        Item { Layout.fillHeight: true }
-
-                        // UYGULA button
-                        Button {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 48
-                            text: root.tr("UYGULA")
-                            enabled: root.bucketName.length > 0 &&
-                                     root.bucketLength > 0 &&
-                                     root.bucketWidth > 0 &&
-                                     root.bucketDepth > 0
-
-                            background: Rectangle {
-                                radius: 6
-                                color: parent.enabled ?
-                                       (parent.pressed ? Qt.darker("#1976D2", 1.2) : "#1976D2") :
-                                       "#ccc"
-                            }
-
-                            contentItem: Text {
-                                text: parent.text
-                                font.pixelSize: 14
-                                font.bold: true
-                                color: "white"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-
-                            onClicked: {
-                                saveBucket()
-                            }
+                        // Status text
+                        Text {
+                            Layout.alignment: Qt.AlignHCenter
+                            text: (root.bucketWidth > 0 && root.bucketLength > 0 && root.bucketDepth > 0) ?
+                                  "Tüm ayarlar tamamlandı!" : ""
+                            font.pixelSize: 11
+                            color: "#4CAF50"
                         }
                     }
                 }
 
-                // Right side - Bucket Image with dimensions
+                // Right side - Bucket Image with dimension labels
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: "#e8e8e8"  // Light gray background like reference
+                    color: "#1a3a4a"  // Dark teal background like reference
                     radius: 12
 
-                    Canvas {
-                        id: bucketCanvas
+                    // Bucket Image
+                    Image {
+                        id: bucketImage
+                        anchors.centerIn: parent
+                        width: parent.width * 0.85
+                        height: parent.height * 0.85
+                        fillMode: Image.PreserveAspectFit
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/images/bucket.png"
+                        visible: status === Image.Ready
+                    }
+
+                    // Fallback placeholder if image not found
+                    Item {
                         anchors.fill: parent
-                        anchors.margins: 20
+                        visible: bucketImage.status !== Image.Ready
 
-                        onPaint: {
-                            var ctx = getContext("2d")
-                            ctx.reset()
-
-                            // Light background
-                            ctx.fillStyle = "#e8e8e8"
-                            ctx.fillRect(0, 0, width, height)
-
-                            // Bucket dimensions for drawing
-                            var bucketW = width * 0.55
-                            var bucketH = height * 0.6
-                            var bucketX = width * 0.35
-                            var bucketY = height * 0.2
-
-                            // 3D perspective offset
-                            var depth3D = bucketW * 0.3
-
-                            // Draw bucket - Blue color like Lehnhoff
-                            var bucketColor = "#1565C0"
-                            var bucketDark = "#0D47A1"
-                            var bucketLight = "#1E88E5"
-
-                            // Back panel (3D depth)
-                            ctx.fillStyle = bucketDark
-                            ctx.beginPath()
-                            ctx.moveTo(bucketX + depth3D, bucketY - depth3D * 0.5)
-                            ctx.lineTo(bucketX + bucketW + depth3D, bucketY - depth3D * 0.5)
-                            ctx.lineTo(bucketX + bucketW, bucketY)
-                            ctx.lineTo(bucketX, bucketY)
-                            ctx.closePath()
-                            ctx.fill()
-
-                            // Right side panel (3D depth)
-                            ctx.fillStyle = bucketDark
-                            ctx.beginPath()
-                            ctx.moveTo(bucketX + bucketW, bucketY)
-                            ctx.lineTo(bucketX + bucketW + depth3D, bucketY - depth3D * 0.5)
-                            ctx.lineTo(bucketX + bucketW + depth3D, bucketY + bucketH - depth3D * 0.3)
-                            ctx.lineTo(bucketX + bucketW, bucketY + bucketH)
-                            ctx.closePath()
-                            ctx.fill()
-
-                            // Main front panel
-                            ctx.fillStyle = bucketColor
-                            ctx.strokeStyle = bucketDark
-                            ctx.lineWidth = 2
-                            ctx.beginPath()
-                            ctx.moveTo(bucketX, bucketY)
-                            ctx.lineTo(bucketX + bucketW, bucketY)
-                            ctx.lineTo(bucketX + bucketW, bucketY + bucketH)
-                            ctx.lineTo(bucketX, bucketY + bucketH)
-                            ctx.closePath()
-                            ctx.fill()
-                            ctx.stroke()
-
-                            // Inner cavity (darker)
-                            ctx.fillStyle = "#0D47A1"
-                            var innerMargin = bucketW * 0.08
-                            ctx.beginPath()
-                            ctx.moveTo(bucketX + innerMargin, bucketY + innerMargin)
-                            ctx.lineTo(bucketX + bucketW - innerMargin, bucketY + innerMargin)
-                            ctx.lineTo(bucketX + bucketW - innerMargin * 1.5, bucketY + bucketH - innerMargin)
-                            ctx.lineTo(bucketX + innerMargin * 1.5, bucketY + bucketH - innerMargin)
-                            ctx.closePath()
-                            ctx.fill()
-
-                            // Teeth at bottom
-                            var teethCount = 5
-                            var teethW = bucketW * 0.1
-                            var teethH = bucketH * 0.15
-                            var teethSpacing = (bucketW - teethW * teethCount) / (teethCount + 1)
-
-                            ctx.fillStyle = "#90A4AE"  // Gray metallic teeth
-                            ctx.strokeStyle = "#607D8B"
-                            ctx.lineWidth = 1
-
-                            for (var i = 0; i < teethCount; i++) {
-                                var tx = bucketX + teethSpacing * (i + 1) + teethW * i
-                                var ty = bucketY + bucketH
-
-                                ctx.beginPath()
-                                ctx.moveTo(tx, ty)
-                                ctx.lineTo(tx + teethW * 0.3, ty + teethH)
-                                ctx.lineTo(tx + teethW * 0.7, ty + teethH)
-                                ctx.lineTo(tx + teethW, ty)
-                                ctx.closePath()
-                                ctx.fill()
-                                ctx.stroke()
-                            }
-
-                            // Mounting bracket on top
-                            ctx.fillStyle = "#1565C0"
-                            ctx.strokeStyle = bucketDark
-                            var bracketW = bucketW * 0.25
-                            var bracketH = bucketH * 0.2
-                            var bracketX = bucketX + bucketW * 0.4
-                            var bracketY = bucketY - bracketH
-
-                            ctx.fillRect(bracketX, bracketY, bracketW, bracketH)
-                            ctx.strokeRect(bracketX, bracketY, bracketW, bracketH)
-
-                            // Pin hole
-                            ctx.fillStyle = "#90A4AE"
-                            ctx.beginPath()
-                            ctx.arc(bracketX + bracketW / 2, bracketY + bracketH * 0.4, bracketW * 0.15, 0, Math.PI * 2)
-                            ctx.fill()
-                            ctx.stroke()
-
-                            // ==================== DIMENSION LINES ====================
-                            ctx.strokeStyle = "#2E7D32"  // Green color for dimension lines
-                            ctx.fillStyle = "#2E7D32"
-                            ctx.lineWidth = 2
-                            ctx.font = "bold 14px sans-serif"
-
-                            // Boy (Height) - vertical line on left
-                            var boyLineX = bucketX - 40
-                            var boyLineY1 = bucketY - depth3D * 0.5
-                            var boyLineY2 = bucketY + bucketH
-
-                            ctx.beginPath()
-                            ctx.moveTo(boyLineX, boyLineY1)
-                            ctx.lineTo(boyLineX, boyLineY2)
-                            ctx.stroke()
-
-                            // Arrow heads for Boy
-                            ctx.beginPath()
-                            ctx.moveTo(boyLineX - 6, boyLineY1 + 10)
-                            ctx.lineTo(boyLineX, boyLineY1)
-                            ctx.lineTo(boyLineX + 6, boyLineY1 + 10)
-                            ctx.stroke()
-                            ctx.beginPath()
-                            ctx.moveTo(boyLineX - 6, boyLineY2 - 10)
-                            ctx.lineTo(boyLineX, boyLineY2)
-                            ctx.lineTo(boyLineX + 6, boyLineY2 - 10)
-                            ctx.stroke()
-
-                            // Boy label
-                            ctx.save()
-                            ctx.translate(boyLineX - 15, (boyLineY1 + boyLineY2) / 2)
-                            ctx.rotate(-Math.PI / 2)
-                            ctx.textAlign = "center"
-                            var boyText = root.bucketLength > 0 ? Math.round(root.bucketLength) + " mm" : "--- mm"
-                            ctx.fillText(boyText, 0, 0)
-                            ctx.fillStyle = "#666"
-                            ctx.font = "12px sans-serif"
-                            ctx.fillText("(Boy)", 0, 16)
-                            ctx.restore()
-
-                            // En (Width) - horizontal line at bottom
-                            ctx.strokeStyle = "#1565C0"  // Blue color
-                            ctx.fillStyle = "#1565C0"
-                            var enLineY = bucketY + bucketH + teethH + 30
-                            var enLineX1 = bucketX
-                            var enLineX2 = bucketX + bucketW
-
-                            ctx.beginPath()
-                            ctx.moveTo(enLineX1, enLineY)
-                            ctx.lineTo(enLineX2, enLineY)
-                            ctx.stroke()
-
-                            // Arrow heads for En
-                            ctx.beginPath()
-                            ctx.moveTo(enLineX1 + 10, enLineY - 6)
-                            ctx.lineTo(enLineX1, enLineY)
-                            ctx.lineTo(enLineX1 + 10, enLineY + 6)
-                            ctx.stroke()
-                            ctx.beginPath()
-                            ctx.moveTo(enLineX2 - 10, enLineY - 6)
-                            ctx.lineTo(enLineX2, enLineY)
-                            ctx.lineTo(enLineX2 - 10, enLineY + 6)
-                            ctx.stroke()
-
-                            // En label
-                            ctx.textAlign = "center"
-                            ctx.font = "bold 14px sans-serif"
-                            var enText = root.bucketWidth > 0 ? Math.round(root.bucketWidth) + " mm" : "--- mm"
-                            ctx.fillText(enText, (enLineX1 + enLineX2) / 2, enLineY + 20)
-                            ctx.fillStyle = "#666"
-                            ctx.font = "12px sans-serif"
-                            ctx.fillText("(En)", (enLineX1 + enLineX2) / 2, enLineY + 35)
-
-                            // Derinlik (Depth) - diagonal line on right
-                            ctx.strokeStyle = "#E65100"  // Orange color
-                            ctx.fillStyle = "#E65100"
-                            ctx.setLineDash([5, 5])
-
-                            var depthLineX1 = bucketX + bucketW + 20
-                            var depthLineY1 = bucketY + bucketH
-                            var depthLineX2 = bucketX + bucketW + depth3D + 20
-                            var depthLineY2 = bucketY - depth3D * 0.5
-
-                            ctx.beginPath()
-                            ctx.moveTo(depthLineX1, depthLineY1)
-                            ctx.lineTo(depthLineX2, depthLineY2)
-                            ctx.stroke()
-                            ctx.setLineDash([])
-
-                            // Arrow heads for Derinlik
-                            ctx.beginPath()
-                            ctx.moveTo(depthLineX1 + 8, depthLineY1 - 8)
-                            ctx.lineTo(depthLineX1, depthLineY1)
-                            ctx.lineTo(depthLineX1 + 10, depthLineY1 + 4)
-                            ctx.stroke()
-
-                            // Derinlik label
-                            ctx.save()
-                            ctx.translate(depthLineX2 + 15, (depthLineY1 + depthLineY2) / 2)
-                            ctx.font = "bold 14px sans-serif"
-                            ctx.textAlign = "left"
-                            var depthText = root.bucketDepth > 0 ? Math.round(root.bucketDepth) + " mm" : "--- mm"
-                            ctx.fillText(depthText, 0, 0)
-                            ctx.fillStyle = "#666"
-                            ctx.font = "12px sans-serif"
-                            ctx.fillText("(Derinlik)", 0, 16)
-                            ctx.restore()
+                        Text {
+                            anchors.centerIn: parent
+                            text: "🪣"
+                            font.pixelSize: Math.min(parent.width, parent.height) * 0.4
+                            opacity: 0.3
                         }
 
-                        Connections {
-                            target: root
-                            function onBucketLengthChanged() { bucketCanvas.requestPaint() }
-                            function onBucketWidthChanged() { bucketCanvas.requestPaint() }
-                            function onBucketDepthChanged() { bucketCanvas.requestPaint() }
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 20
+                            text: "bucket.png dosyasını resources/images/ klasörüne ekleyin"
+                            font.pixelSize: 12
+                            color: "#888"
                         }
+                    }
 
-                        Component.onCompleted: requestPaint()
+                    // Boy (Height) label - Green, left side
+                    Column {
+                        anchors.left: parent.left
+                        anchors.leftMargin: parent.width * 0.12
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.verticalCenterOffset: -20
+                        spacing: 2
+
+                        Text {
+                            text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) + " mm" : "--- mm"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#4CAF50"
+                        }
+                        Text {
+                            text: "(Boy)"
+                            font.pixelSize: 12
+                            color: "#4CAF50"
+                        }
+                    }
+
+                    // En (Width) label - Blue, bottom center
+                    Column {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.horizontalCenterOffset: 30
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: parent.height * 0.12
+                        spacing: 2
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) + " mm" : "--- mm"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#2196F3"
+                        }
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "(En)"
+                            font.pixelSize: 12
+                            color: "#2196F3"
+                        }
+                    }
+
+                    // Derinlik (Depth) label - Blue, right side
+                    Column {
+                        anchors.right: parent.right
+                        anchors.rightMargin: parent.width * 0.08
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: parent.height * 0.30
+                        spacing: 2
+
+                        Text {
+                            text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) + " mm" : "--- mm"
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "#2196F3"
+                        }
+                        Text {
+                            text: "(Derinlik)"
+                            font.pixelSize: 12
+                            color: "#2196F3"
+                        }
                     }
                 }
             }
