@@ -678,15 +678,137 @@ Rectangle {
         Rectangle {
             color: "transparent"
 
-            RowLayout {
+            ColumnLayout {
                 anchors.fill: parent
-                spacing: 16
+                spacing: 12
 
-                // Left side - Input Panel (like reference image)
+                // Top section - Bucket Image with dimension labels
                 Rectangle {
-                    Layout.preferredWidth: 280
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: parent.height * 0.45
+                    color: "#1a3a4a"
+                    radius: 12
+
+                    // Bucket Image
+                    Image {
+                        id: bucketImage
+                        anchors.centerIn: parent
+                        width: parent.width * 0.7
+                        height: parent.height * 0.9
+                        fillMode: Image.PreserveAspectFit
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/images/bucket.png"
+                        visible: status === Image.Ready
+                    }
+
+                    // Fallback placeholder
+                    Text {
+                        anchors.centerIn: parent
+                        text: "🪣"
+                        font.pixelSize: Math.min(parent.width, parent.height) * 0.35
+                        opacity: 0.3
+                        visible: bucketImage.status !== Image.Ready
+                    }
+
+                    // Boy (Height) label - Green, left side
+                    Row {
+                        anchors.left: parent.left
+                        anchors.leftMargin: 15
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: 4
+
+                        Rectangle {
+                            width: 3
+                            height: 60
+                            color: "#4CAF50"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 2
+
+                            Text {
+                                text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) + " mm" : "— mm"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "#4CAF50"
+                            }
+                            Text {
+                                text: "(Boy)"
+                                font.pixelSize: 11
+                                color: "#4CAF50"
+                            }
+                        }
+                    }
+
+                    // Derinlik (Depth) label - Blue, right side
+                    Column {
+                        anchors.right: parent.right
+                        anchors.rightMargin: 15
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.verticalCenterOffset: 20
+                        spacing: 2
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) + " mm" : "— mm"
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: "#2196F3"
+                        }
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "(Derinlik)"
+                            font.pixelSize: 11
+                            color: "#2196F3"
+                        }
+                    }
+
+                    // En (Width) label - Blue, bottom center
+                    Row {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 10
+                        spacing: 8
+
+                        Rectangle {
+                            width: 40
+                            height: 3
+                            color: "#2196F3"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Column {
+                            spacing: 0
+                            Text {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) + " mm" : "— mm"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "#2196F3"
+                            }
+                            Text {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: "(En)"
+                                font.pixelSize: 11
+                                color: "#2196F3"
+                            }
+                        }
+
+                        Rectangle {
+                            width: 40
+                            height: 3
+                            color: "#2196F3"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
+
+                // Bottom section - Input Panel
+                Rectangle {
+                    Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: "#1a4a5a"  // Teal color like reference
+                    color: "#1a4a5a"
                     radius: 12
 
                     ColumnLayout {
@@ -697,277 +819,299 @@ Rectangle {
                         // Title
                         Text {
                             text: root.tr("Kova Ölçüleri")
-                            font.pixelSize: 20
+                            font.pixelSize: 18
                             font.bold: true
                             color: "white"
                         }
 
-                        // Input fields card
-                        Rectangle {
+                        // Kova Seçimi Dropdown
+                        ColumnLayout {
                             Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            color: "#0d2830"
-                            radius: 8
+                            spacing: 4
 
-                            ColumnLayout {
-                                anchors.fill: parent
-                                anchors.margins: 12
-                                spacing: 10
+                            Text {
+                                text: root.tr("Kova Seçimi")
+                                font.pixelSize: 12
+                                color: "#a0c0c0"
+                            }
 
-                                // En (Width)
-                                ColumnLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 4
+                            ComboBox {
+                                id: bucketComboBox
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 40
 
-                                    Text {
-                                        text: root.tr("En (Width)") + " [mm]"
-                                        font.pixelSize: 12
-                                        color: "#a0c0c0"
+                                model: {
+                                    var list = [root.tr("Yeni Kova")];
+                                    for (var i = 0; i < root.savedBuckets.length; i++) {
+                                        list.push(root.savedBuckets[i].name);
                                     }
+                                    return list;
+                                }
 
-                                    TextField {
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 40
-                                        placeholderText: "1200"
-                                        font.pixelSize: 16
-                                        color: "#333"
-                                        placeholderTextColor: "#999"
-                                        inputMethodHints: Qt.ImhDigitsOnly
-                                        horizontalAlignment: Text.AlignHCenter
+                                currentIndex: root.selectedBucketIndex + 1
 
-                                        text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) : ""
-
-                                        background: Rectangle {
-                                            color: "white"
-                                            radius: 6
-                                        }
-
-                                        onTextChanged: {
-                                            if (activeFocus) {
-                                                var val = parseInt(text)
-                                                root.bucketWidth = !isNaN(val) ? val : 0
-                                            }
-                                        }
+                                onCurrentIndexChanged: {
+                                    if (currentIndex === 0) {
+                                        root.selectedBucketIndex = -1;
+                                        root.bucketName = "";
+                                        root.bucketLength = 0;
+                                        root.bucketWidth = 0;
+                                        root.bucketDepth = 0;
+                                    } else if (currentIndex > 0) {
+                                        var idx = currentIndex - 1;
+                                        root.selectedBucketIndex = idx;
+                                        var bucket = root.savedBuckets[idx];
+                                        root.bucketName = bucket.name;
+                                        root.bucketLength = bucket.length;
+                                        root.bucketWidth = bucket.width;
+                                        root.bucketDepth = bucket.depth;
                                     }
                                 }
 
-                                // Boy (Height)
-                                ColumnLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 4
-
-                                    Text {
-                                        text: root.tr("Boy (Height)") + " [mm]"
-                                        font.pixelSize: 12
-                                        color: "#a0c0c0"
-                                    }
-
-                                    TextField {
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 40
-                                        placeholderText: "900"
-                                        font.pixelSize: 16
-                                        color: "#333"
-                                        placeholderTextColor: "#999"
-                                        inputMethodHints: Qt.ImhDigitsOnly
-                                        horizontalAlignment: Text.AlignHCenter
-
-                                        text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) : ""
-
-                                        background: Rectangle {
-                                            color: "white"
-                                            radius: 6
-                                        }
-
-                                        onTextChanged: {
-                                            if (activeFocus) {
-                                                var val = parseInt(text)
-                                                root.bucketLength = !isNaN(val) ? val : 0
-                                            }
-                                        }
-                                    }
+                                contentItem: Text {
+                                    leftPadding: 12
+                                    text: bucketComboBox.displayText
+                                    font.pixelSize: 14
+                                    color: "#333"
+                                    verticalAlignment: Text.AlignVCenter
                                 }
 
-                                // Derinlik (Depth)
-                                ColumnLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 4
-
-                                    Text {
-                                        text: root.tr("Derinlik (Depth)") + " [mm]"
-                                        font.pixelSize: 12
-                                        color: "#a0c0c0"
-                                    }
-
-                                    TextField {
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 40
-                                        placeholderText: "1100"
-                                        font.pixelSize: 16
-                                        color: "#333"
-                                        placeholderTextColor: "#999"
-                                        inputMethodHints: Qt.ImhDigitsOnly
-                                        horizontalAlignment: Text.AlignHCenter
-
-                                        text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) : ""
-
-                                        background: Rectangle {
-                                            color: "white"
-                                            radius: 6
-                                        }
-
-                                        onTextChanged: {
-                                            if (activeFocus) {
-                                                var val = parseInt(text)
-                                                root.bucketDepth = !isNaN(val) ? val : 0
-                                            }
-                                        }
-                                    }
+                                background: Rectangle {
+                                    color: "white"
+                                    radius: 6
                                 }
 
-                                Item { Layout.fillHeight: true }
-
-                                // UYGULA button
-                                Button {
-                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: 44
-
-                                    background: Rectangle {
-                                        radius: 6
-                                        color: parent.pressed ? "#1a6a7a" : "#2a8a9a"
-                                    }
-
+                                delegate: ItemDelegate {
+                                    width: bucketComboBox.width
+                                    height: 36
                                     contentItem: Text {
-                                        text: root.tr("UYGULA")
+                                        text: modelData
+                                        color: "#333"
                                         font.pixelSize: 14
-                                        font.bold: true
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
                                     }
+                                    highlighted: bucketComboBox.highlightedIndex === index
+                                    background: Rectangle {
+                                        color: parent.highlighted ? "#e3f2fd" : "white"
+                                    }
+                                }
 
-                                    onClicked: {
-                                        if (root.bucketWidth > 0 && root.bucketLength > 0 && root.bucketDepth > 0) {
-                                            saveBucket()
+                                popup: Popup {
+                                    y: bucketComboBox.height
+                                    width: bucketComboBox.width
+                                    implicitHeight: Math.min(contentItem.implicitHeight + 2, 200)
+                                    padding: 1
+
+                                    contentItem: ListView {
+                                        clip: true
+                                        implicitHeight: contentHeight
+                                        model: bucketComboBox.popup.visible ? bucketComboBox.delegateModel : null
+                                        ScrollIndicator.vertical: ScrollIndicator {}
+                                    }
+
+                                    background: Rectangle {
+                                        color: "white"
+                                        border.color: "#e0e0e0"
+                                        radius: 6
+                                    }
+                                }
+                            }
+                        }
+
+                        // Kova Adı (only for new bucket)
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 4
+                            visible: root.selectedBucketIndex === -1
+
+                            Text {
+                                text: root.tr("Kova Adı")
+                                font.pixelSize: 12
+                                color: "#a0c0c0"
+                            }
+
+                            TextField {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 40
+                                placeholderText: root.tr("Örn: Kova 1")
+                                font.pixelSize: 14
+                                color: "#333"
+                                placeholderTextColor: "#999"
+
+                                text: root.bucketName
+
+                                background: Rectangle {
+                                    color: "white"
+                                    radius: 6
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus) root.bucketName = text
+                                }
+                            }
+                        }
+
+                        // Dimension inputs in a row
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 8
+
+                            // En (Width)
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 4
+
+                                Text {
+                                    text: root.tr("En") + " [mm]"
+                                    font.pixelSize: 12
+                                    color: "#a0c0c0"
+                                }
+
+                                TextField {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 40
+                                    placeholderText: "1200"
+                                    font.pixelSize: 16
+                                    color: "#333"
+                                    placeholderTextColor: "#999"
+                                    inputMethodHints: Qt.ImhDigitsOnly
+                                    horizontalAlignment: Text.AlignHCenter
+                                    readOnly: root.selectedBucketIndex >= 0
+
+                                    text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) : ""
+
+                                    background: Rectangle {
+                                        color: root.selectedBucketIndex >= 0 ? "#e0e0e0" : "white"
+                                        radius: 6
+                                    }
+
+                                    onTextChanged: {
+                                        if (activeFocus && root.selectedBucketIndex === -1) {
+                                            var val = parseInt(text)
+                                            root.bucketWidth = !isNaN(val) ? val : 0
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Boy (Height)
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 4
+
+                                Text {
+                                    text: root.tr("Boy") + " [mm]"
+                                    font.pixelSize: 12
+                                    color: "#a0c0c0"
+                                }
+
+                                TextField {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 40
+                                    placeholderText: "900"
+                                    font.pixelSize: 16
+                                    color: "#333"
+                                    placeholderTextColor: "#999"
+                                    inputMethodHints: Qt.ImhDigitsOnly
+                                    horizontalAlignment: Text.AlignHCenter
+                                    readOnly: root.selectedBucketIndex >= 0
+
+                                    text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) : ""
+
+                                    background: Rectangle {
+                                        color: root.selectedBucketIndex >= 0 ? "#e0e0e0" : "white"
+                                        radius: 6
+                                    }
+
+                                    onTextChanged: {
+                                        if (activeFocus && root.selectedBucketIndex === -1) {
+                                            var val = parseInt(text)
+                                            root.bucketLength = !isNaN(val) ? val : 0
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Derinlik (Depth)
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 4
+
+                                Text {
+                                    text: root.tr("Derinlik") + " [mm]"
+                                    font.pixelSize: 12
+                                    color: "#a0c0c0"
+                                }
+
+                                TextField {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 40
+                                    placeholderText: "1100"
+                                    font.pixelSize: 16
+                                    color: "#333"
+                                    placeholderTextColor: "#999"
+                                    inputMethodHints: Qt.ImhDigitsOnly
+                                    horizontalAlignment: Text.AlignHCenter
+                                    readOnly: root.selectedBucketIndex >= 0
+
+                                    text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) : ""
+
+                                    background: Rectangle {
+                                        color: root.selectedBucketIndex >= 0 ? "#e0e0e0" : "white"
+                                        radius: 6
+                                    }
+
+                                    onTextChanged: {
+                                        if (activeFocus && root.selectedBucketIndex === -1) {
+                                            var val = parseInt(text)
+                                            root.bucketDepth = !isNaN(val) ? val : 0
                                         }
                                     }
                                 }
                             }
                         }
 
+                        Item { Layout.fillHeight: true }
+
+                        // Save button (only for new bucket)
+                        Button {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 44
+                            visible: root.selectedBucketIndex === -1
+                            enabled: root.bucketName.length > 0 &&
+                                     root.bucketWidth > 0 &&
+                                     root.bucketLength > 0 &&
+                                     root.bucketDepth > 0
+
+                            background: Rectangle {
+                                radius: 6
+                                color: parent.enabled ?
+                                       (parent.pressed ? "#1a6a7a" : "#2a8a9a") : "#555"
+                            }
+
+                            contentItem: Text {
+                                text: root.tr("Kovayı Kaydet")
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                saveBucket()
+                            }
+                        }
+
                         // Status text
                         Text {
                             Layout.alignment: Qt.AlignHCenter
-                            text: (root.bucketWidth > 0 && root.bucketLength > 0 && root.bucketDepth > 0) ?
-                                  "Tüm ayarlar tamamlandı!" : ""
+                            text: root.selectedBucketIndex >= 0 ?
+                                  "✓ Kayıtlı kova seçildi" :
+                                  (root.bucketWidth > 0 && root.bucketLength > 0 && root.bucketDepth > 0 ?
+                                   "Tüm ölçüler girildi" : "")
                             font.pixelSize: 11
                             color: "#4CAF50"
-                        }
-                    }
-                }
-
-                // Right side - Bucket Image with dimension labels
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: "#1a3a4a"  // Dark teal background like reference
-                    radius: 12
-
-                    // Bucket Image
-                    Image {
-                        id: bucketImage
-                        anchors.centerIn: parent
-                        width: parent.width * 0.85
-                        height: parent.height * 0.85
-                        fillMode: Image.PreserveAspectFit
-                        source: "qrc:/ExcavatorUI_Qt3D/resources/images/bucket.png"
-                        visible: status === Image.Ready
-                    }
-
-                    // Fallback placeholder if image not found
-                    Item {
-                        anchors.fill: parent
-                        visible: bucketImage.status !== Image.Ready
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "🪣"
-                            font.pixelSize: Math.min(parent.width, parent.height) * 0.4
-                            opacity: 0.3
-                        }
-
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 20
-                            text: "bucket.png dosyasını resources/images/ klasörüne ekleyin"
-                            font.pixelSize: 12
-                            color: "#888"
-                        }
-                    }
-
-                    // Boy (Height) label - Green, left side
-                    Column {
-                        anchors.left: parent.left
-                        anchors.leftMargin: parent.width * 0.12
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.verticalCenterOffset: -20
-                        spacing: 2
-
-                        Text {
-                            text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) + " mm" : "--- mm"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#4CAF50"
-                        }
-                        Text {
-                            text: "(Boy)"
-                            font.pixelSize: 12
-                            color: "#4CAF50"
-                        }
-                    }
-
-                    // En (Width) label - Blue, bottom center
-                    Column {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.horizontalCenterOffset: 30
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: parent.height * 0.12
-                        spacing: 2
-
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) + " mm" : "--- mm"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#2196F3"
-                        }
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: "(En)"
-                            font.pixelSize: 12
-                            color: "#2196F3"
-                        }
-                    }
-
-                    // Derinlik (Depth) label - Blue, right side
-                    Column {
-                        anchors.right: parent.right
-                        anchors.rightMargin: parent.width * 0.08
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: parent.height * 0.30
-                        spacing: 2
-
-                        Text {
-                            text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) + " mm" : "--- mm"
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: "#2196F3"
-                        }
-                        Text {
-                            text: "(Derinlik)"
-                            font.pixelSize: 12
-                            color: "#2196F3"
                         }
                     }
                 }
