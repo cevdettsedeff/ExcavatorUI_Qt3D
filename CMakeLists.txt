@@ -201,6 +201,16 @@ else()
     message(STATUS "ℹ Screensaver resmi bulunamadı - Canvas fallback kullanılacak")
 endif()
 
+# Image dosyalarını bul (bucket vb.)
+file(GLOB IMAGE_FILES
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    "resources/images/*.png"
+)
+list(LENGTH IMAGE_FILES IMAGE_COUNT)
+if(IMAGE_COUNT GREATER 0)
+    message(STATUS "✓ Bulunan image dosyası sayısı: ${IMAGE_COUNT}")
+endif()
+
 # Add translations to the executable
 qt_add_translations(ExcavatorUI_Qt3DApp
     TS_FILES ${TS_FILES}
@@ -256,6 +266,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         ${MESH_FILES}
         ${LOGO_FILES}
         ${SCREENSAVER_FILES}
+        ${IMAGE_FILES}
         resources/textures/deniz.png
         resources/textures/toprak.png
         resources/icons/app_icon.ico
