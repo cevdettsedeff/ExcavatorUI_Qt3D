@@ -685,16 +685,18 @@ Rectangle {
                 // Top section - Bucket Image with dimension labels
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: parent.height * 0.45
-                    color: "#1a3a4a"
+                    Layout.preferredHeight: parent.height * 0.40
+                    color: root.cardColor
                     radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
 
                     // Bucket Image
                     Image {
                         id: bucketImage
                         anchors.centerIn: parent
-                        width: parent.width * 0.7
-                        height: parent.height * 0.9
+                        width: parent.width * 0.65
+                        height: parent.height * 0.85
                         fillMode: Image.PreserveAspectFit
                         source: "qrc:/ExcavatorUI_Qt3D/resources/images/bucket.png"
                         visible: status === Image.Ready
@@ -704,7 +706,7 @@ Rectangle {
                     Text {
                         anchors.centerIn: parent
                         text: "🪣"
-                        font.pixelSize: Math.min(parent.width, parent.height) * 0.35
+                        font.pixelSize: Math.min(parent.width, parent.height) * 0.30
                         opacity: 0.3
                         visible: bucketImage.status !== Image.Ready
                     }
@@ -712,13 +714,13 @@ Rectangle {
                     // Boy (Height) label - Green, left side
                     Row {
                         anchors.left: parent.left
-                        anchors.leftMargin: 15
+                        anchors.leftMargin: 12
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 4
 
                         Rectangle {
                             width: 3
-                            height: 60
+                            height: 50
                             color: "#4CAF50"
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -729,13 +731,13 @@ Rectangle {
 
                             Text {
                                 text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) + " mm" : "— mm"
-                                font.pixelSize: 14
+                                font.pixelSize: 13
                                 font.bold: true
                                 color: "#4CAF50"
                             }
                             Text {
                                 text: "(Boy)"
-                                font.pixelSize: 11
+                                font.pixelSize: 10
                                 color: "#4CAF50"
                             }
                         }
@@ -744,22 +746,22 @@ Rectangle {
                     // Derinlik (Depth) label - Blue, right side
                     Column {
                         anchors.right: parent.right
-                        anchors.rightMargin: 15
+                        anchors.rightMargin: 12
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.verticalCenterOffset: 20
+                        anchors.verticalCenterOffset: 15
                         spacing: 2
 
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) + " mm" : "— mm"
-                            font.pixelSize: 14
+                            font.pixelSize: 13
                             font.bold: true
                             color: "#2196F3"
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "(Derinlik)"
-                            font.pixelSize: 11
+                            font.pixelSize: 10
                             color: "#2196F3"
                         }
                     }
@@ -768,12 +770,12 @@ Rectangle {
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 10
-                        spacing: 8
+                        anchors.bottomMargin: 8
+                        spacing: 6
 
                         Rectangle {
-                            width: 40
-                            height: 3
+                            width: 30
+                            height: 2
                             color: "#2196F3"
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -783,337 +785,391 @@ Rectangle {
                             Text {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) + " mm" : "— mm"
-                                font.pixelSize: 14
+                                font.pixelSize: 13
                                 font.bold: true
                                 color: "#2196F3"
                             }
                             Text {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: "(En)"
-                                font.pixelSize: 11
+                                font.pixelSize: 10
                                 color: "#2196F3"
                             }
                         }
 
                         Rectangle {
-                            width: 40
-                            height: 3
+                            width: 30
+                            height: 2
                             color: "#2196F3"
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
                 }
 
-                // Bottom section - Input Panel
+                // Kova Seçimi Card
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: "#1a4a5a"
+                    Layout.preferredHeight: 90
+                    color: root.cardColor
                     radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
 
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 16
-                        spacing: 12
+                        anchors.margins: 12
+                        spacing: 8
 
-                        // Title
                         Text {
-                            text: root.tr("Kova Ölçüleri")
-                            font.pixelSize: 18
+                            text: root.tr("Kova Seçimi")
+                            font.pixelSize: 14
                             font.bold: true
-                            color: "white"
+                            color: root.textColor
                         }
 
-                        // Kova Seçimi Dropdown
-                        ColumnLayout {
+                        ComboBox {
+                            id: bucketComboBox
                             Layout.fillWidth: true
-                            spacing: 4
+                            Layout.preferredHeight: 40
 
-                            Text {
-                                text: root.tr("Kova Seçimi")
-                                font.pixelSize: 12
-                                color: "#a0c0c0"
+                            model: {
+                                var list = [root.tr("Yeni Kova")];
+                                for (var i = 0; i < root.savedBuckets.length; i++) {
+                                    list.push(root.savedBuckets[i].name);
+                                }
+                                return list;
                             }
 
-                            ComboBox {
-                                id: bucketComboBox
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 40
+                            currentIndex: root.selectedBucketIndex + 1
 
-                                model: {
-                                    var list = [root.tr("Yeni Kova")];
-                                    for (var i = 0; i < root.savedBuckets.length; i++) {
-                                        list.push(root.savedBuckets[i].name);
-                                    }
-                                    return list;
+                            onCurrentIndexChanged: {
+                                if (currentIndex === 0) {
+                                    root.selectedBucketIndex = -1;
+                                    root.bucketName = "";
+                                    root.bucketLength = 0;
+                                    root.bucketWidth = 0;
+                                    root.bucketDepth = 0;
+                                } else if (currentIndex > 0) {
+                                    var idx = currentIndex - 1;
+                                    root.selectedBucketIndex = idx;
+                                    var bucket = root.savedBuckets[idx];
+                                    root.bucketName = bucket.name;
+                                    root.bucketLength = bucket.length;
+                                    root.bucketWidth = bucket.width;
+                                    root.bucketDepth = bucket.depth;
                                 }
-
-                                currentIndex: root.selectedBucketIndex + 1
-
-                                onCurrentIndexChanged: {
-                                    if (currentIndex === 0) {
-                                        root.selectedBucketIndex = -1;
-                                        root.bucketName = "";
-                                        root.bucketLength = 0;
-                                        root.bucketWidth = 0;
-                                        root.bucketDepth = 0;
-                                    } else if (currentIndex > 0) {
-                                        var idx = currentIndex - 1;
-                                        root.selectedBucketIndex = idx;
-                                        var bucket = root.savedBuckets[idx];
-                                        root.bucketName = bucket.name;
-                                        root.bucketLength = bucket.length;
-                                        root.bucketWidth = bucket.width;
-                                        root.bucketDepth = bucket.depth;
-                                    }
-                                }
-
-                                contentItem: Text {
-                                    leftPadding: 12
-                                    text: bucketComboBox.displayText
-                                    font.pixelSize: 14
-                                    color: "#333"
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-
-                                background: Rectangle {
-                                    color: "white"
-                                    radius: 6
-                                }
-
-                                delegate: ItemDelegate {
-                                    width: bucketComboBox.width
-                                    height: 36
-                                    contentItem: Text {
-                                        text: modelData
-                                        color: "#333"
-                                        font.pixelSize: 14
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                    highlighted: bucketComboBox.highlightedIndex === index
-                                    background: Rectangle {
-                                        color: parent.highlighted ? "#e3f2fd" : "white"
-                                    }
-                                }
-
-                                popup: Popup {
-                                    y: bucketComboBox.height
-                                    width: bucketComboBox.width
-                                    implicitHeight: Math.min(contentItem.implicitHeight + 2, 200)
-                                    padding: 1
-
-                                    contentItem: ListView {
-                                        clip: true
-                                        implicitHeight: contentHeight
-                                        model: bucketComboBox.popup.visible ? bucketComboBox.delegateModel : null
-                                        ScrollIndicator.vertical: ScrollIndicator {}
-                                    }
-
-                                    background: Rectangle {
-                                        color: "white"
-                                        border.color: "#e0e0e0"
-                                        radius: 6
-                                    }
-                                }
-                            }
-                        }
-
-                        // Kova Adı (only for new bucket)
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 4
-                            visible: root.selectedBucketIndex === -1
-
-                            Text {
-                                text: root.tr("Kova Adı")
-                                font.pixelSize: 12
-                                color: "#a0c0c0"
-                            }
-
-                            TextField {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 40
-                                placeholderText: root.tr("Örn: Kova 1")
-                                font.pixelSize: 14
-                                color: "#333"
-                                placeholderTextColor: "#999"
-
-                                text: root.bucketName
-
-                                background: Rectangle {
-                                    color: "white"
-                                    radius: 6
-                                }
-
-                                onTextChanged: {
-                                    if (activeFocus) root.bucketName = text
-                                }
-                            }
-                        }
-
-                        // Dimension inputs in a row
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 8
-
-                            // En (Width)
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                spacing: 4
-
-                                Text {
-                                    text: root.tr("En") + " [mm]"
-                                    font.pixelSize: 12
-                                    color: "#a0c0c0"
-                                }
-
-                                TextField {
-                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: 40
-                                    placeholderText: "1200"
-                                    font.pixelSize: 16
-                                    color: "#333"
-                                    placeholderTextColor: "#999"
-                                    inputMethodHints: Qt.ImhDigitsOnly
-                                    horizontalAlignment: Text.AlignHCenter
-                                    readOnly: root.selectedBucketIndex >= 0
-
-                                    text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) : ""
-
-                                    background: Rectangle {
-                                        color: root.selectedBucketIndex >= 0 ? "#e0e0e0" : "white"
-                                        radius: 6
-                                    }
-
-                                    onTextChanged: {
-                                        if (activeFocus && root.selectedBucketIndex === -1) {
-                                            var val = parseInt(text)
-                                            root.bucketWidth = !isNaN(val) ? val : 0
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Boy (Height)
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                spacing: 4
-
-                                Text {
-                                    text: root.tr("Boy") + " [mm]"
-                                    font.pixelSize: 12
-                                    color: "#a0c0c0"
-                                }
-
-                                TextField {
-                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: 40
-                                    placeholderText: "900"
-                                    font.pixelSize: 16
-                                    color: "#333"
-                                    placeholderTextColor: "#999"
-                                    inputMethodHints: Qt.ImhDigitsOnly
-                                    horizontalAlignment: Text.AlignHCenter
-                                    readOnly: root.selectedBucketIndex >= 0
-
-                                    text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) : ""
-
-                                    background: Rectangle {
-                                        color: root.selectedBucketIndex >= 0 ? "#e0e0e0" : "white"
-                                        radius: 6
-                                    }
-
-                                    onTextChanged: {
-                                        if (activeFocus && root.selectedBucketIndex === -1) {
-                                            var val = parseInt(text)
-                                            root.bucketLength = !isNaN(val) ? val : 0
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Derinlik (Depth)
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                spacing: 4
-
-                                Text {
-                                    text: root.tr("Derinlik") + " [mm]"
-                                    font.pixelSize: 12
-                                    color: "#a0c0c0"
-                                }
-
-                                TextField {
-                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: 40
-                                    placeholderText: "1100"
-                                    font.pixelSize: 16
-                                    color: "#333"
-                                    placeholderTextColor: "#999"
-                                    inputMethodHints: Qt.ImhDigitsOnly
-                                    horizontalAlignment: Text.AlignHCenter
-                                    readOnly: root.selectedBucketIndex >= 0
-
-                                    text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) : ""
-
-                                    background: Rectangle {
-                                        color: root.selectedBucketIndex >= 0 ? "#e0e0e0" : "white"
-                                        radius: 6
-                                    }
-
-                                    onTextChanged: {
-                                        if (activeFocus && root.selectedBucketIndex === -1) {
-                                            var val = parseInt(text)
-                                            root.bucketDepth = !isNaN(val) ? val : 0
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        Item { Layout.fillHeight: true }
-
-                        // Save button (only for new bucket)
-                        Button {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 44
-                            visible: root.selectedBucketIndex === -1
-                            enabled: root.bucketName.length > 0 &&
-                                     root.bucketWidth > 0 &&
-                                     root.bucketLength > 0 &&
-                                     root.bucketDepth > 0
-
-                            background: Rectangle {
-                                radius: 6
-                                color: parent.enabled ?
-                                       (parent.pressed ? "#1a6a7a" : "#2a8a9a") : "#555"
                             }
 
                             contentItem: Text {
-                                text: root.tr("Kovayı Kaydet")
+                                leftPadding: 12
+                                text: bucketComboBox.displayText
                                 font.pixelSize: 14
-                                font.bold: true
                                 color: "white"
-                                horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                             }
 
-                            onClicked: {
-                                saveBucket()
+                            background: Rectangle {
+                                color: root.inputBgColor
+                                radius: 6
+                                border.width: bucketComboBox.activeFocus ? 2 : 1
+                                border.color: bucketComboBox.activeFocus ? root.primaryColor : root.inputBorderColor
+                            }
+
+                            delegate: ItemDelegate {
+                                width: bucketComboBox.width
+                                height: 36
+                                contentItem: Text {
+                                    text: modelData
+                                    color: "white"
+                                    font.pixelSize: 14
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                                highlighted: bucketComboBox.highlightedIndex === index
+                                background: Rectangle {
+                                    color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) : root.inputBgColor
+                                }
+                            }
+
+                            popup: Popup {
+                                y: bucketComboBox.height
+                                width: bucketComboBox.width
+                                implicitHeight: Math.min(contentItem.implicitHeight + 2, 200)
+                                padding: 1
+
+                                contentItem: ListView {
+                                    clip: true
+                                    implicitHeight: contentHeight
+                                    model: bucketComboBox.popup.visible ? bucketComboBox.delegateModel : null
+                                    ScrollIndicator.vertical: ScrollIndicator {}
+                                }
+
+                                background: Rectangle {
+                                    color: "#2d3748"
+                                    border.color: root.borderColor
+                                    radius: 6
+                                }
                             }
                         }
+                    }
+                }
 
-                        // Status text
+                // Kova Adı Card (only for new bucket)
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 90
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
+                    visible: root.selectedBucketIndex === -1
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 8
+
                         Text {
-                            Layout.alignment: Qt.AlignHCenter
-                            text: root.selectedBucketIndex >= 0 ?
-                                  "✓ Kayıtlı kova seçildi" :
-                                  (root.bucketWidth > 0 && root.bucketLength > 0 && root.bucketDepth > 0 ?
-                                   "Tüm ölçüler girildi" : "")
-                            font.pixelSize: 11
-                            color: "#4CAF50"
+                            text: root.tr("Kova Adı")
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: root.textColor
+                        }
+
+                        TextField {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 40
+                            placeholderText: root.tr("Örn: Kova 1")
+                            font.pixelSize: 14
+                            color: "white"
+                            placeholderTextColor: root.textSecondaryColor
+
+                            text: root.bucketName
+
+                            background: Rectangle {
+                                color: root.inputBgColor
+                                radius: 6
+                                border.width: parent.activeFocus ? 2 : 1
+                                border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                            }
+
+                            onTextChanged: {
+                                if (activeFocus) root.bucketName = text
+                            }
                         }
                     }
+                }
+
+                // Dimension inputs row
+                Row {
+                    Layout.fillWidth: true
+                    spacing: 8
+
+                    // En (Width)
+                    Rectangle {
+                        width: (parent.width - 16) / 3
+                        height: 90
+                        color: root.cardColor
+                        radius: 12
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            spacing: 6
+
+                            Text {
+                                text: root.tr("En") + " (mm)"
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            TextField {
+                                id: widthField
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 40
+                                placeholderText: "1200"
+                                font.pixelSize: 14
+                                color: "white"
+                                placeholderTextColor: root.textSecondaryColor
+                                inputMethodHints: Qt.ImhDigitsOnly
+                                horizontalAlignment: Text.AlignHCenter
+                                enabled: root.selectedBucketIndex === -1
+
+                                text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) : ""
+
+                                background: Rectangle {
+                                    color: widthField.enabled ? root.inputBgColor : Qt.rgba(0.5, 0.5, 0.5, 0.2)
+                                    radius: 6
+                                    border.width: parent.activeFocus ? 2 : 1
+                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus && root.selectedBucketIndex === -1) {
+                                        var val = parseInt(text)
+                                        root.bucketWidth = !isNaN(val) ? val : 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Boy (Height)
+                    Rectangle {
+                        width: (parent.width - 16) / 3
+                        height: 90
+                        color: root.cardColor
+                        radius: 12
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            spacing: 6
+
+                            Text {
+                                text: root.tr("Boy") + " (mm)"
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            TextField {
+                                id: lengthField
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 40
+                                placeholderText: "900"
+                                font.pixelSize: 14
+                                color: "white"
+                                placeholderTextColor: root.textSecondaryColor
+                                inputMethodHints: Qt.ImhDigitsOnly
+                                horizontalAlignment: Text.AlignHCenter
+                                enabled: root.selectedBucketIndex === -1
+
+                                text: root.bucketLength > 0 ? root.bucketLength.toFixed(0) : ""
+
+                                background: Rectangle {
+                                    color: lengthField.enabled ? root.inputBgColor : Qt.rgba(0.5, 0.5, 0.5, 0.2)
+                                    radius: 6
+                                    border.width: parent.activeFocus ? 2 : 1
+                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus && root.selectedBucketIndex === -1) {
+                                        var val = parseInt(text)
+                                        root.bucketLength = !isNaN(val) ? val : 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Derinlik (Depth)
+                    Rectangle {
+                        width: (parent.width - 16) / 3
+                        height: 90
+                        color: root.cardColor
+                        radius: 12
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            spacing: 6
+
+                            Text {
+                                text: root.tr("Derinlik") + " (mm)"
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            TextField {
+                                id: depthBucketField
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 40
+                                placeholderText: "1100"
+                                font.pixelSize: 14
+                                color: "white"
+                                placeholderTextColor: root.textSecondaryColor
+                                inputMethodHints: Qt.ImhDigitsOnly
+                                horizontalAlignment: Text.AlignHCenter
+                                enabled: root.selectedBucketIndex === -1
+
+                                text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) : ""
+
+                                background: Rectangle {
+                                    color: depthBucketField.enabled ? root.inputBgColor : Qt.rgba(0.5, 0.5, 0.5, 0.2)
+                                    radius: 6
+                                    border.width: parent.activeFocus ? 2 : 1
+                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus && root.selectedBucketIndex === -1) {
+                                        var val = parseInt(text)
+                                        root.bucketDepth = !isNaN(val) ? val : 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Item { Layout.fillHeight: true }
+
+                // Save button (only for new bucket)
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
+                    visible: root.selectedBucketIndex === -1
+
+                    Button {
+                        anchors.fill: parent
+                        anchors.margins: 4
+                        enabled: root.bucketName.length > 0 &&
+                                 root.bucketWidth > 0 &&
+                                 root.bucketLength > 0 &&
+                                 root.bucketDepth > 0
+
+                        background: Rectangle {
+                            radius: 8
+                            color: parent.enabled ?
+                                   (parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor) :
+                                   Qt.rgba(0.5, 0.5, 0.5, 0.3)
+                        }
+
+                        contentItem: Text {
+                            text: root.tr("Kovayı Kaydet")
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: "white"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        onClicked: {
+                            saveBucket()
+                        }
+                    }
+                }
+
+                // Status text for saved bucket
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    visible: root.selectedBucketIndex >= 0
+                    text: "✓ " + root.bucketName + " kovası seçildi"
+                    font.pixelSize: 12
+                    color: "#4CAF50"
                 }
             }
         }
