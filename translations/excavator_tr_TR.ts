@@ -313,7 +313,7 @@
     </message>
     <message>
         <source>Create New Account</source>
-        <translation>Yeni Kayıt Oluştur</translation>
+        <translation>Yeni Kullanıcı Oluştur</translation>
     </message>
     <message>
         <source>Please enter your information</source>
@@ -1148,6 +1148,102 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
     <message>
         <source>Delete All</source>
         <translation>Tümünü Sil</translation>
+    </message>
+    <message>
+        <source>Kova</source>
+        <translation>Kova</translation>
+    </message>
+    <message>
+        <source>Bucket</source>
+        <translation>Kova</translation>
+    </message>
+    <message>
+        <source>Kova Seçimi</source>
+        <translation>Kova Seçimi</translation>
+    </message>
+    <message>
+        <source>Bucket Selection</source>
+        <translation>Kova Seçimi</translation>
+    </message>
+    <message>
+        <source>Yeni Kova</source>
+        <translation>Yeni Kova</translation>
+    </message>
+    <message>
+        <source>New Bucket</source>
+        <translation>Yeni Kova</translation>
+    </message>
+    <message>
+        <source>Kova Boyutları</source>
+        <translation>Kova Boyutları</translation>
+    </message>
+    <message>
+        <source>Bucket Dimensions</source>
+        <translation>Kova Boyutları</translation>
+    </message>
+    <message>
+        <source>Kova Adı</source>
+        <translation>Kova Adı</translation>
+    </message>
+    <message>
+        <source>Bucket Name</source>
+        <translation>Kova Adı</translation>
+    </message>
+    <message>
+        <source>Boy</source>
+        <translation>Boy</translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation>Boy</translation>
+    </message>
+    <message>
+        <source>Genişlik</source>
+        <translation>Genişlik</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation>Genişlik</translation>
+    </message>
+    <message>
+        <source>Kovayı Kaydet</source>
+        <translation>Kovayı Kaydet</translation>
+    </message>
+    <message>
+        <source>Save Bucket</source>
+        <translation>Kovayı Kaydet</translation>
+    </message>
+    <message>
+        <source>Kayıtlı bir ekskavatör seçin veya yeni bilgileri girin</source>
+        <translation>Kayıtlı bir ekskavatör seçin veya yeni bilgileri girin</translation>
+    </message>
+    <message>
+        <source>Select a saved excavator or enter new information</source>
+        <translation>Kayıtlı bir ekskavatör seçin veya yeni bilgileri girin</translation>
+    </message>
+    <message>
+        <source>Kova boyutlarını girin veya kayıtlı bir kova seçin</source>
+        <translation>Kova boyutlarını girin veya kayıtlı bir kova seçin</translation>
+    </message>
+    <message>
+        <source>Enter bucket dimensions or select a saved bucket</source>
+        <translation>Kova boyutlarını girin veya kayıtlı bir kova seçin</translation>
+    </message>
+    <message>
+        <source>Ekskavatörü Kaydet</source>
+        <translation>Ekskavatörü Kaydet</translation>
+    </message>
+    <message>
+        <source>Save Excavator</source>
+        <translation>Ekskavatörü Kaydet</translation>
+    </message>
+    <message>
+        <source>Örn: Kova 1</source>
+        <translation>Örn: Kova 1</translation>
+    </message>
+    <message>
+        <source>Ex: Bucket 1</source>
+        <translation>Örn: Kova 1</translation>
     </message>
 </context>
 </TS>

@@ -3,17 +3,19 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 /**
- * ExcavatorConfigPage - Ekskavatör Ayarları Sayfası
+ * ExcavatorConfigPage - Ekskavatör Ayarları Sayfası (2 Sekmeli Wizard)
  *
- * Kullanıcı ekskavatör ölçülerini girer:
- * - Ekskavatör Adı
- * - Boom Uzunluğu (metre)
- * - Arm Uzunluğu (metre)
- * - Bucket Genişliği (metre)
+ * Sekme 1: Ekskavatör Seçimi ve Ayarları
+ * - Kayıtlı ekskavatörlerden seçim
+ * - Yeni ekskavatör bilgileri girişi
+ *
+ * Sekme 2: Kova Ayarları
+ * - Kova boyutları (boy, genişlik, derinlik)
+ * - Kayıtlı kovalardan seçim
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#f7fafc"
+    color: themeManager ? themeManager.backgroundColor : "#1a1a2e"
 
     signal back()
     signal configSaved()
@@ -35,21 +37,38 @@ Rectangle {
     // Global responsive değişkenlere erişim
     property var app: ApplicationWindow.window
 
-    // Theme colors with fallbacks (softer light theme defaults)
+    // Theme colors
     property color primaryColor: (themeManager && themeManager.primaryColor) ? themeManager.primaryColor : "#319795"
     property color surfaceColor: (themeManager && themeManager.surfaceColor) ? themeManager.surfaceColor : "#ffffff"
-    property color backgroundColor: (themeManager && themeManager.backgroundColor) ? themeManager.backgroundColor : "#f7fafc"
-    property color textColor: (themeManager && themeManager.textColor) ? themeManager.textColor : "white"
-    property color textSecondaryColor: (themeManager && themeManager.textSecondaryColor) ? themeManager.textSecondaryColor : "#e0e0e0"
-    property color borderColor: (themeManager && themeManager.borderColor) ? themeManager.borderColor : "#e2e8f0"
-    property color infoColor: (themeManager && themeManager.infoColor) ? themeManager.infoColor : "#4299e1"
+    property color backgroundColor: (themeManager && themeManager.backgroundColor) ? themeManager.backgroundColor : "#1a1a2e"
+    property color textColor: "white"
+    property color textSecondaryColor: "#a0aec0"
+    property color borderColor: Qt.rgba(1, 1, 1, 0.2)
+    property color cardColor: Qt.rgba(1, 1, 1, 0.05)
+    property color inputBgColor: Qt.rgba(1, 1, 1, 0.1)
+    property color inputBorderColor: Qt.rgba(1, 1, 1, 0.3)
+    property color filledBorderColor: "#319795"
+    property color infoColor: "#4299e1"
 
-    // Input field colors (for light surface backgrounds)
-    property color inputTextColor: "#2d3748"  // Dark text on white surface
-    property color inputPlaceholderColor: "#a0aec0"  // Light gray placeholder
+    // ==================== WIZARD STATE ====================
+    property int currentStep: 0  // 0: Ekskavatör, 1: Kova
 
-    // Excavator preset selection state
+    // ==================== EXCAVATOR DATA ====================
     property int selectedPresetIndex: -1  // -1 means "Yeni Ekskavatör"
+
+    // ==================== BUCKET DATA ====================
+    property var savedBuckets: []  // [{name: "Kova 1", length: 1.2, width: 1.8, depth: 0.9}, ...]
+    property int selectedBucketIndex: -1  // -1 means "Yeni Kova"
+    property real bucketLength: 0  // Boy (metre)
+    property real bucketWidth: 0   // Genişlik (metre)
+    property real bucketDepth: 0   // Derinlik (metre)
+    property string bucketName: ""
+
+    // Step titles for progress bar
+    property var stepTitles: [
+        tr("Ekskavatör"),
+        tr("Kova")
+    ]
 
     // Header
     Rectangle {
@@ -99,501 +118,1132 @@ Rectangle {
         }
     }
 
-    // Content
-    ScrollView {
+    // Progress Indicator
+    Rectangle {
+        id: progressBar
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: footer.top
-        contentWidth: parent.width
+        height: 70
+        color: root.cardColor
 
-        ColumnLayout {
-            width: parent.width
-            spacing: 24
+        RowLayout {
+            anchors.centerIn: parent
+            spacing: 0
 
-            Item { Layout.preferredHeight: 20 }
-
-            // Excavator Preset Selection
-            ColumnLayout {
-                Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
-                spacing: 8
-
-                Text {
-                    text: root.tr("Ekskavatör Seçimi")
-                    font.pixelSize: app ? app.baseFontSize : 14
-                    font.bold: true
-                    color: "white"
-                }
-
-                ComboBox {
-                    id: presetComboBox
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: app ? app.buttonHeight : 50
-
-                    model: {
-                        var list = [root.tr("Yeni Ekskavatör")];
-                        if (configManager && configManager.excavatorPresets) {
-                            for (var i = 0; i < configManager.excavatorPresets.length; i++) {
-                                list.push(configManager.excavatorPresets[i].name);
-                            }
-                        }
-                        return list;
-                    }
-
-                    currentIndex: 0  // Default to "Yeni Ekskavatör"
-
-                    // Update currentIndex when selectedPresetIndex changes
-                    Connections {
-                        target: root
-                        function onSelectedPresetIndexChanged() {
-                            presetComboBox.currentIndex = root.selectedPresetIndex + 1
-                        }
-                    }
-
-                    onCurrentIndexChanged: {
-                        if (currentIndex === 0) {
-                            // "Yeni Ekskavatör" selected - clear all fields
-                            root.selectedPresetIndex = -1;
-                            if (configManager) {
-                                configManager.excavatorName = "";
-                                configManager.scanningDepth = 0.0;
-                                configManager.boomLength = 0.0;
-                                configManager.armLength = 0.0;
-                                configManager.bucketWidth = 0.0;
-                            }
-                        } else if (currentIndex > 0 && configManager) {
-                            // Load preset
-                            var presetIndex = currentIndex - 1;
-                            root.selectedPresetIndex = presetIndex;
-                            configManager.loadExcavatorPreset(presetIndex);
-                        }
-                    }
-
-                    contentItem: Text {
-                        leftPadding: 12
-                        rightPadding: presetComboBox.indicator.width + 12
-                        text: presetComboBox.displayText
-                        font.pixelSize: app ? app.baseFontSize : 16
-                        color: "white"  // White text on dark background
-                        verticalAlignment: Text.AlignVCenter
-                        elide: Text.ElideRight
-                    }
-
-                    background: Rectangle {
-                        color: Qt.rgba(1, 1, 1, 0.1)  // Slightly visible dark background
-                        radius: 8
-                        border.width: presetComboBox.activeFocus ? 2 : 1
-                        border.color: presetComboBox.activeFocus ? root.primaryColor : Qt.rgba(1, 1, 1, 0.3)
-                    }
-
-                    delegate: ItemDelegate {
-                        width: presetComboBox.width
-                        contentItem: Text {
-                            text: modelData
-                            color: "white"  // White text in dropdown
-                            font.pixelSize: app ? app.baseFontSize : 16
-                            elide: Text.ElideRight
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        highlighted: presetComboBox.highlightedIndex === index
-
-                        background: Rectangle {
-                            color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) : Qt.rgba(1, 1, 1, 0.05)
-                        }
-                    }
-
-                    popup: Popup {
-                        y: presetComboBox.height - 1
-                        width: presetComboBox.width
-                        implicitHeight: contentItem.implicitHeight
-                        padding: 1
-
-                        contentItem: ListView {
-                            clip: true
-                            implicitHeight: contentHeight
-                            model: presetComboBox.popup.visible ? presetComboBox.delegateModel : null
-                            currentIndex: presetComboBox.highlightedIndex
-
-                            ScrollIndicator.vertical: ScrollIndicator { }
-                        }
-
-                        background: Rectangle {
-                            color: Qt.rgba(0.2, 0.2, 0.2, 0.95)  // Dark semi-transparent background
-                            border.color: Qt.rgba(1, 1, 1, 0.2)
-                            radius: 8
-                        }
-                    }
-                }
-
-                Text {
-                    text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin")
-                    font.pixelSize: app ? app.smallFontSize : 12
-                    color: "white"
-                    wrapMode: Text.WordWrap
-                    Layout.fillWidth: true
-                }
-            }
-
-            // Excavator Name
-            ConfigInputField {
-                Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
-                label: root.tr("Ekskavatör Adı")
-                placeholder: root.tr("Örn: UDHB Burak")
-                inputText: configManager ? configManager.excavatorName : ""
-                onFieldTextChanged: function(newText) {
-                    if (configManager) {
-                        configManager.excavatorName = newText;
-                        // Reset preset selection when manually edited
-                        root.selectedPresetIndex = -1;
-                        presetComboBox.currentIndex = 0;
-                    }
-                }
-            }
-
-            // Row 1: Scanning Depth ve Boom Length
-            RowLayout {
-                Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
-                spacing: app ? app.normalSpacing : 12
-
-                // Scanning Depth
-                ConfigInputField {
-                    Layout.fillWidth: true
-                    label: root.tr("Tarama Derinliği (m)")
-                    placeholder: root.tr("15.0")
-                    inputText: {
-                        if (!configManager) return "";
-                        return configManager.scanningDepth > 0 ? configManager.scanningDepth.toFixed(1) : "";
-                    }
-                    inputType: "number"
-                    suffix: "m"
-                    onFieldTextChanged: function(newText) {
-                        if (configManager) {
-                            var val = parseFloat(newText)
-                            configManager.scanningDepth = (!isNaN(val) && val > 0) ? val : 0.0
-                        }
-                    }
-                }
-
-                // Boom Length
-                ConfigInputField {
-                    Layout.fillWidth: true
-                    label: root.tr("Ana Bom (m)")
-                    placeholder: root.tr("12.0")
-                    inputText: {
-                        if (!configManager) return "";
-                        return configManager.boomLength > 0 ? configManager.boomLength.toFixed(1) : "";
-                    }
-                    inputType: "number"
-                    suffix: "m"
-                    onFieldTextChanged: function(newText) {
-                        if (configManager) {
-                            var val = parseFloat(newText)
-                            configManager.boomLength = (!isNaN(val) && val > 0) ? val : 0.0
-                        }
-                    }
-                }
-            }
-
-            // Row 2: Arm Length ve Bucket Width
-            RowLayout {
-                Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
-                spacing: app ? app.normalSpacing : 12
-
-                // Arm Length
-                ConfigInputField {
-                    Layout.fillWidth: true
-                    label: root.tr("Arm Bom (m)")
-                    placeholder: root.tr("10.0")
-                    inputText: {
-                        if (!configManager) return "";
-                        return configManager.armLength > 0 ? configManager.armLength.toFixed(1) : "";
-                    }
-                    inputType: "number"
-                    suffix: "m"
-                    onFieldTextChanged: function(newText) {
-                        if (configManager) {
-                            var val = parseFloat(newText)
-                            configManager.armLength = (!isNaN(val) && val > 0) ? val : 0.0
-                        }
-                    }
-                }
-
-                // Bucket Width
-                ConfigInputField {
-                    Layout.fillWidth: true
-                    label: root.tr("Kova (m³)")
-                    placeholder: root.tr("3.0")
-                    inputText: {
-                        if (!configManager) return "";
-                        return configManager.bucketWidth > 0 ? configManager.bucketWidth.toFixed(1) : "";
-                    }
-                    inputType: "number"
-                    suffix: "m³"
-                    onFieldTextChanged: function(newText) {
-                        if (configManager) {
-                            var val = parseFloat(newText)
-                            configManager.bucketWidth = (!isNaN(val) && val > 0) ? val : 0.0
-                        }
-                    }
-                }
-            }
-
-            // Info Box
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.margins: 20
-                Layout.preferredHeight: infoContent.height + 24
-                color: Qt.rgba(root.infoColor.r, root.infoColor.g, root.infoColor.b, 0.1)
-                radius: 8
-                border.width: 1
-                border.color: Qt.rgba(root.infoColor.r, root.infoColor.g, root.infoColor.b, 0.3)
+            Repeater {
+                model: stepTitles.length
 
                 RowLayout {
-                    id: infoContent
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.margins: 12
-                    spacing: 12
+                    spacing: 0
 
-                    Text {
-                        text: "ℹ️"
-                        font.pixelSize: app ? app.mediumFontSize : 20
+                    // Step circle
+                    Rectangle {
+                        width: 36
+                        height: 36
+                        radius: 18
+                        color: index < currentStep ? root.primaryColor :
+                               (index === currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1))
+                        border.width: 2
+                        border.color: index <= currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.3)
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: index < currentStep ? "✓" : (index + 1).toString()
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: index <= currentStep ? "white" : root.textSecondaryColor
+                        }
                     }
 
-                    Text {
-                        Layout.fillWidth: true
-                        text: root.tr("Listeden bir ekskavatör seçin veya yeni ekskavatör bilgileri girin. Bu ölçüler 3D görselleştirme ve kazı hesaplamaları için kullanılacaktır.")
-                        font.pixelSize: app ? app.smallFontSize : 13
-                        color: "white"
-                        wrapMode: Text.WordWrap
+                    // Step label
+                    Column {
+                        Layout.leftMargin: 8
+                        Layout.rightMargin: index < stepTitles.length - 1 ? 0 : 0
+
+                        Text {
+                            text: stepTitles[index]
+                            font.pixelSize: 12
+                            font.bold: index === currentStep
+                            color: index <= currentStep ? root.textColor : root.textSecondaryColor
+                        }
+                    }
+
+                    // Connector line
+                    Rectangle {
+                        visible: index < stepTitles.length - 1
+                        Layout.preferredWidth: 60
+                        Layout.preferredHeight: 2
+                        Layout.leftMargin: 12
+                        Layout.rightMargin: 12
+                        color: index < currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.2)
                     }
                 }
             }
-
-            Item { Layout.fillHeight: true }
         }
     }
 
-    // Footer
+    // Content Area with Loader
+    Item {
+        id: contentArea
+        anchors.top: progressBar.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: footer.top
+        anchors.margins: app ? app.normalPadding : 16
+
+        Loader {
+            id: stepLoader
+            anchors.fill: parent
+            sourceComponent: currentStep === 0 ? step0ExcavatorSettings : step1BucketSettings
+        }
+    }
+
+    // Footer with navigation buttons
     Rectangle {
         id: footer
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: app ? app.buttonHeight * 1.8 : 80
-        color: root.surfaceColor
+        height: app ? app.buttonHeight * 2 : 80
+        color: root.cardColor
 
         Rectangle {
             anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
+            width: parent.width
             height: 1
             color: root.borderColor
         }
 
         RowLayout {
             anchors.centerIn: parent
-            width: parent.width - (app ? app.xlSpacing * 2 : 40)
-            spacing: app ? app.normalSpacing : 12
+            width: parent.width - 40
+            spacing: 16
 
-            // Preset olarak kaydet butonu
+            // Geri butonu
             Button {
-                Layout.preferredWidth: parent.width * 0.35
+                Layout.preferredWidth: 100
                 Layout.preferredHeight: app ? app.buttonHeight : 50
-                text: root.tr("Kaydet")
-                enabled: isFormValid && root.selectedPresetIndex === -1
-
-                property bool isFormValid: {
-                    if (!configManager) return false
-                    return configManager.excavatorName.length > 0 &&
-                           configManager.scanningDepth > 0 &&
-                           configManager.boomLength > 0 &&
-                           configManager.armLength > 0 &&
-                           configManager.bucketWidth > 0
-                }
+                visible: currentStep > 0
+                text: root.tr("Geri")
 
                 background: Rectangle {
-                    radius: 12
-                    color: parent.enabled
-                        ? (parent.pressed ? Qt.darker("#4CAF50", 1.2) : "#4CAF50")
-                        : Qt.rgba(0.5, 0.5, 0.5, 0.15)
-                    border.width: parent.enabled ? 0 : 1
-                    border.color: Qt.rgba(1, 1, 1, 0.1)
+                    radius: 8
+                    color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : Qt.rgba(1, 1, 1, 0.1)
+                    border.width: 1
+                    border.color: Qt.rgba(1, 1, 1, 0.3)
                 }
 
                 contentItem: Text {
                     text: parent.text
-                    font.pixelSize: app ? app.baseFontSize : 14
-                    font.bold: true
-                    color: parent.enabled ? "white" : Qt.rgba(1, 1, 1, 0.3)
+                    font.pixelSize: 14
+                    color: "white"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
 
                 onClicked: {
-                    if (configManager) {
-                        configManager.saveCurrentAsPreset();
-                    }
+                    if (currentStep > 0) currentStep--
                 }
             }
 
-            // Kaydet ve devam et butonu
-            Button {
-                Layout.fillWidth: true
-                Layout.preferredHeight: app ? app.buttonHeight : 50
-                text: root.tr("Kaydet ve Devam Et")
-                enabled: isFormValid
+            Item { Layout.fillWidth: true }
 
-                property bool isFormValid: {
-                    if (!configManager) return false
-                    return configManager.excavatorName.length > 0 &&
-                           configManager.scanningDepth > 0 &&
-                           configManager.boomLength > 0 &&
-                           configManager.armLength > 0 &&
-                           configManager.bucketWidth > 0
-                }
+            // Kaydet ve Bitir / Devam Et butonu
+            Button {
+                Layout.preferredWidth: currentStep === stepTitles.length - 1 ? 180 : 150
+                Layout.preferredHeight: app ? app.buttonHeight : 50
+                text: currentStep === stepTitles.length - 1 ?
+                      root.tr("Kaydet ve Bitir") + " ✓" :
+                      root.tr("Devam Et") + " →"
 
                 background: Rectangle {
-                    radius: 12
-                    color: parent.enabled
-                        ? (parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor)
-                        : Qt.rgba(0.5, 0.5, 0.5, 0.15)
-                    border.width: parent.enabled ? 0 : 1
-                    border.color: Qt.rgba(1, 1, 1, 0.1)
+                    radius: 8
+                    color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
                 }
 
                 contentItem: Text {
                     text: parent.text
-                    font.pixelSize: app ? app.mediumFontSize : 16
+                    font.pixelSize: 14
                     font.bold: true
-                    color: parent.enabled ? "white" : Qt.rgba(1, 1, 1, 0.3)
+                    color: "white"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
 
                 onClicked: {
-                    root.configSaved()
+                    if (currentStep < stepTitles.length - 1) {
+                        currentStep++
+                    } else {
+                        saveConfiguration()
+                        root.configSaved()
+                    }
                 }
             }
         }
     }
 
-    // ConfigInputField Component with explicit color properties
-    component ConfigInputField: ColumnLayout {
-        id: inputFieldRoot
-        property string label: ""
-        property string placeholder: ""
-        property string inputText: ""
-        property string inputType: "text" // "text" or "number"
-        property string suffix: ""
-
-        // Theme colors (passed from parent)
-        property color fieldPrimaryColor: root.primaryColor
-        property color fieldSurfaceColor: root.surfaceColor
-        property color fieldLabelColor: "white"  // Always white on dark background
-        property color fieldTextColor: root.inputTextColor
-        property color fieldPlaceholderColor: root.inputPlaceholderColor
-        property color fieldBorderColor: root.borderColor
-
-        signal fieldTextChanged(string newText)
-
-        spacing: app ? app.smallSpacing : 8
-
-        Text {
-            Layout.fillWidth: true
-            text: inputFieldRoot.label
-            font.pixelSize: app ? app.baseFontSize : 14
-            font.bold: true
-            color: "white"  // Always white
-            wrapMode: Text.NoWrap
-            elide: Text.ElideNone
-        }
+    // ==================== STEP 0: EXCAVATOR SETTINGS ====================
+    Component {
+        id: step0ExcavatorSettings
 
         Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: app ? app.buttonHeight : 50
-            color: Qt.rgba(1, 1, 1, 0.1)  // Dark semi-transparent background
-            radius: 8
-            border.width: inputField.activeFocus ? 2 : 1
-            border.color: inputField.activeFocus ? inputFieldRoot.fieldPrimaryColor : Qt.rgba(1, 1, 1, 0.3)
+            color: "transparent"
 
-            RowLayout {
+            ScrollView {
                 anchors.fill: parent
-                anchors.margins: app ? app.smallPadding : 12
-                spacing: app ? app.smallSpacing : 8
+                contentWidth: parent.width
+                clip: true
 
-                TextField {
-                    id: inputField
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    placeholderText: inputFieldRoot.placeholder
-                    font.pixelSize: app ? app.baseFontSize : 16
-                    color: "white"  // White text on dark background
-                    placeholderTextColor: Qt.rgba(1, 1, 1, 0.5)  // Semi-transparent white for placeholder
+                ColumnLayout {
+                    width: parent.width
+                    spacing: 16
 
-                    // Remove internal padding to prevent text offset
-                    leftPadding: 0
-                    rightPadding: 0
-                    topPadding: 0
-                    bottomPadding: 0
+                    // Info text
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 40
+                        color: Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.2)
+                        radius: 8
 
-                    // Show number keyboard for number inputs
-                    inputMethodHints: inputFieldRoot.inputType === "number" ? Qt.ImhFormattedNumbersOnly : Qt.ImhNone
-                    validator: inputFieldRoot.inputType === "number" ? doubleValidator : null
-
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-
-                    // Avoid binding loop by using Binding with restoreMode
-                    Binding {
-                        target: inputField
-                        property: "text"
-                        value: inputFieldRoot.inputText
-                        when: !inputField.activeFocus
-                        restoreMode: Binding.RestoreBinding
-                    }
-
-                    // Update text on focus loss to sync with external changes
-                    onActiveFocusChanged: {
-                        if (!activeFocus && text !== inputFieldRoot.inputText) {
-                            text = inputFieldRoot.inputText
+                        Text {
+                            anchors.centerIn: parent
+                            text: root.tr("Kayıtlı bir ekskavatör seçin veya yeni bilgileri girin")
+                            font.pixelSize: 12
+                            color: root.textSecondaryColor
                         }
                     }
 
-                    onTextChanged: {
-                        if (activeFocus) {
-                            inputFieldRoot.fieldTextChanged(inputField.text)
+                    // Excavator Preset Selection
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: contentCol.height + 24
+                        color: root.cardColor
+                        radius: 12
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            id: contentCol
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 12
+                            spacing: 12
+
+                            Text {
+                                text: root.tr("Ekskavatör Seçimi")
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            ComboBox {
+                                id: presetComboBox
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 50
+
+                                model: {
+                                    var list = [root.tr("Yeni Ekskavatör")];
+                                    if (configManager && configManager.excavatorPresets) {
+                                        for (var i = 0; i < configManager.excavatorPresets.length; i++) {
+                                            list.push(configManager.excavatorPresets[i].name);
+                                        }
+                                    }
+                                    return list;
+                                }
+
+                                currentIndex: root.selectedPresetIndex + 1
+
+                                onCurrentIndexChanged: {
+                                    if (currentIndex === 0) {
+                                        root.selectedPresetIndex = -1;
+                                        if (configManager) {
+                                            configManager.excavatorName = "";
+                                            configManager.scanningDepth = 0.0;
+                                            configManager.boomLength = 0.0;
+                                            configManager.armLength = 0.0;
+                                        }
+                                    } else if (currentIndex > 0 && configManager) {
+                                        var presetIndex = currentIndex - 1;
+                                        root.selectedPresetIndex = presetIndex;
+                                        configManager.loadExcavatorPreset(presetIndex);
+                                    }
+                                }
+
+                                contentItem: Text {
+                                    leftPadding: 12
+                                    text: presetComboBox.displayText
+                                    font.pixelSize: 14
+                                    color: "white"
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+
+                                background: Rectangle {
+                                    color: root.inputBgColor
+                                    radius: 8
+                                    border.width: presetComboBox.activeFocus ? 2 : 1
+                                    border.color: presetComboBox.activeFocus ? root.primaryColor : root.inputBorderColor
+                                }
+
+                                delegate: ItemDelegate {
+                                    width: presetComboBox.width
+                                    contentItem: Text {
+                                        text: modelData
+                                        color: "white"
+                                        font.pixelSize: 14
+                                    }
+                                    highlighted: presetComboBox.highlightedIndex === index
+                                    background: Rectangle {
+                                        color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) : root.inputBgColor
+                                    }
+                                }
+
+                                popup: Popup {
+                                    y: presetComboBox.height
+                                    width: presetComboBox.width
+                                    implicitHeight: contentItem.implicitHeight
+                                    padding: 1
+
+                                    contentItem: ListView {
+                                        clip: true
+                                        implicitHeight: contentHeight
+                                        model: presetComboBox.popup.visible ? presetComboBox.delegateModel : null
+                                    }
+
+                                    background: Rectangle {
+                                        color: "#2d3748"
+                                        border.color: root.borderColor
+                                        radius: 8
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    Component.onCompleted: {
-                        text = inputFieldRoot.inputText
+                    // Excavator Name
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 90
+                        color: root.cardColor
+                        radius: 12
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            Text {
+                                text: root.tr("Ekskavatör Adı")
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            TextField {
+                                id: excavatorNameField
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 40
+                                placeholderText: root.tr("Örn: UDHB Burak")
+                                font.pixelSize: 14
+                                color: "white"
+                                placeholderTextColor: root.textSecondaryColor
+
+                                text: configManager ? configManager.excavatorName : ""
+
+                                background: Rectangle {
+                                    color: root.inputBgColor
+                                    radius: 6
+                                    border.width: parent.activeFocus ? 2 : 1
+                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                }
+
+                                onTextChanged: {
+                                    if (configManager && activeFocus) {
+                                        configManager.excavatorName = text
+                                    }
+                                }
+                            }
+                        }
                     }
 
-                    DoubleValidator {
-                        id: doubleValidator
-                        bottom: 0
-                        decimals: 2
-                    }
-                }
+                    // Tarama Derinliği ve Ana Bom
+                    Row {
+                        Layout.fillWidth: true
+                        spacing: 12
 
-                Text {
-                    visible: inputFieldRoot.suffix.length > 0
-                    text: inputFieldRoot.suffix
-                    font.pixelSize: app ? app.baseFontSize : 14
-                    color: Qt.rgba(1, 1, 1, 0.7)  // Semi-transparent white for suffix
+                        // Tarama Derinliği
+                        Rectangle {
+                            width: (parent.width - 12) / 2
+                            height: 90
+                            color: root.cardColor
+                            radius: 12
+                            border.width: 1
+                            border.color: root.borderColor
+
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.margins: 12
+                                spacing: 8
+
+                                Text {
+                                    text: root.tr("Tarama Derinliği (m)")
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: root.textColor
+                                }
+
+                                TextField {
+                                    id: depthField
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 40
+                                    placeholderText: "15.0"
+                                    font.pixelSize: 14
+                                    color: "white"
+                                    placeholderTextColor: root.textSecondaryColor
+                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                    enabled: root.selectedPresetIndex === -1
+
+                                    text: configManager && configManager.scanningDepth > 0 ?
+                                          configManager.scanningDepth.toFixed(1) : ""
+
+                                    background: Rectangle {
+                                        color: depthField.enabled ? root.inputBgColor : Qt.rgba(0.5, 0.5, 0.5, 0.2)
+                                        radius: 6
+                                        border.width: parent.activeFocus ? 2 : 1
+                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                    }
+
+                                    onTextChanged: {
+                                        if (configManager && activeFocus) {
+                                            var val = parseFloat(text)
+                                            configManager.scanningDepth = !isNaN(val) ? val : 0
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Ana Bom
+                        Rectangle {
+                            width: (parent.width - 12) / 2
+                            height: 90
+                            color: root.cardColor
+                            radius: 12
+                            border.width: 1
+                            border.color: root.borderColor
+
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.margins: 12
+                                spacing: 8
+
+                                Text {
+                                    text: root.tr("Ana Bom (m)")
+                                    font.pixelSize: 12
+                                    font.bold: true
+                                    color: root.textColor
+                                }
+
+                                TextField {
+                                    id: boomField
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 40
+                                    placeholderText: "12.0"
+                                    font.pixelSize: 14
+                                    color: "white"
+                                    placeholderTextColor: root.textSecondaryColor
+                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                    enabled: root.selectedPresetIndex === -1
+
+                                    text: configManager && configManager.boomLength > 0 ?
+                                          configManager.boomLength.toFixed(1) : ""
+
+                                    background: Rectangle {
+                                        color: boomField.enabled ? root.inputBgColor : Qt.rgba(0.5, 0.5, 0.5, 0.2)
+                                        radius: 6
+                                        border.width: parent.activeFocus ? 2 : 1
+                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                    }
+
+                                    onTextChanged: {
+                                        if (configManager && activeFocus) {
+                                            var val = parseFloat(text)
+                                            configManager.boomLength = !isNaN(val) ? val : 0
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Arm Bom
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 90
+                        color: root.cardColor
+                        radius: 12
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            Text {
+                                text: root.tr("Arm Bom (m)")
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            TextField {
+                                id: armField
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 40
+                                placeholderText: "10.0"
+                                font.pixelSize: 14
+                                color: "white"
+                                placeholderTextColor: root.textSecondaryColor
+                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                enabled: root.selectedPresetIndex === -1
+
+                                text: configManager && configManager.armLength > 0 ?
+                                      configManager.armLength.toFixed(1) : ""
+
+                                background: Rectangle {
+                                    color: armField.enabled ? root.inputBgColor : Qt.rgba(0.5, 0.5, 0.5, 0.2)
+                                    radius: 6
+                                    border.width: parent.activeFocus ? 2 : 1
+                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                }
+
+                                onTextChanged: {
+                                    if (configManager && activeFocus) {
+                                        var val = parseFloat(text)
+                                        configManager.armLength = !isNaN(val) ? val : 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Kaydet butonu (Yeni ekskavatör için)
+                    Button {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 45
+                        visible: root.selectedPresetIndex === -1
+                        text: root.tr("Ekskavatörü Kaydet")
+                        enabled: configManager && configManager.excavatorName.length > 0 &&
+                                 configManager.scanningDepth > 0 &&
+                                 configManager.boomLength > 0 &&
+                                 configManager.armLength > 0
+
+                        background: Rectangle {
+                            radius: 8
+                            color: parent.enabled ?
+                                   (parent.pressed ? Qt.darker("#4CAF50", 1.2) : "#4CAF50") :
+                                   Qt.rgba(0.5, 0.5, 0.5, 0.3)
+                        }
+
+                        contentItem: Text {
+                            text: parent.text
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: parent.enabled ? "white" : Qt.rgba(1, 1, 1, 0.5)
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        onClicked: {
+                            if (configManager) {
+                                configManager.saveCurrentAsPreset()
+                            }
+                        }
+                    }
+
+                    Item { Layout.preferredHeight: 20 }
                 }
             }
         }
+    }
+
+    // ==================== STEP 1: BUCKET SETTINGS ====================
+    Component {
+        id: step1BucketSettings
+
+        Rectangle {
+            color: "transparent"
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 12
+
+                // Info text
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 40
+                    color: Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.2)
+                    radius: 8
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: root.tr("Kova boyutlarını girin veya kayıtlı bir kova seçin")
+                        font.pixelSize: 12
+                        color: root.textSecondaryColor
+                    }
+                }
+
+                // Bucket Selection
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 80
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 8
+
+                        Text {
+                            text: root.tr("Kova Seçimi")
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: root.textColor
+                        }
+
+                        ComboBox {
+                            id: bucketComboBox
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 40
+
+                            model: {
+                                var list = [root.tr("Yeni Kova")];
+                                for (var i = 0; i < root.savedBuckets.length; i++) {
+                                    list.push(root.savedBuckets[i].name);
+                                }
+                                return list;
+                            }
+
+                            currentIndex: root.selectedBucketIndex + 1
+
+                            onCurrentIndexChanged: {
+                                if (currentIndex === 0) {
+                                    root.selectedBucketIndex = -1;
+                                    root.bucketName = "";
+                                    root.bucketLength = 0;
+                                    root.bucketWidth = 0;
+                                    root.bucketDepth = 0;
+                                } else if (currentIndex > 0) {
+                                    var idx = currentIndex - 1;
+                                    root.selectedBucketIndex = idx;
+                                    var bucket = root.savedBuckets[idx];
+                                    root.bucketName = bucket.name;
+                                    root.bucketLength = bucket.length;
+                                    root.bucketWidth = bucket.width;
+                                    root.bucketDepth = bucket.depth;
+                                }
+                            }
+
+                            contentItem: Text {
+                                leftPadding: 12
+                                text: bucketComboBox.displayText
+                                font.pixelSize: 14
+                                color: "white"
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: root.inputBgColor
+                                radius: 6
+                                border.width: bucketComboBox.activeFocus ? 2 : 1
+                                border.color: bucketComboBox.activeFocus ? root.primaryColor : root.inputBorderColor
+                            }
+
+                            delegate: ItemDelegate {
+                                width: bucketComboBox.width
+                                contentItem: Text {
+                                    text: modelData
+                                    color: "white"
+                                    font.pixelSize: 14
+                                }
+                                highlighted: bucketComboBox.highlightedIndex === index
+                                background: Rectangle {
+                                    color: parent.highlighted ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) : root.inputBgColor
+                                }
+                            }
+
+                            popup: Popup {
+                                y: bucketComboBox.height
+                                width: bucketComboBox.width
+                                implicitHeight: contentItem.implicitHeight
+                                padding: 1
+
+                                contentItem: ListView {
+                                    clip: true
+                                    implicitHeight: contentHeight
+                                    model: bucketComboBox.popup.visible ? bucketComboBox.delegateModel : null
+                                }
+
+                                background: Rectangle {
+                                    color: "#2d3748"
+                                    border.color: root.borderColor
+                                    radius: 6
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Bucket Image with dimensions overlay
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 8
+
+                        Text {
+                            text: root.tr("Kova Boyutları")
+                            font.pixelSize: 14
+                            font.bold: true
+                            color: root.textColor
+                        }
+
+                        // Bucket visualization with Canvas
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+
+                            Canvas {
+                                id: bucketCanvas
+                                anchors.fill: parent
+
+                                onPaint: {
+                                    var ctx = getContext("2d")
+                                    ctx.reset()
+
+                                    // Background
+                                    ctx.fillStyle = "#1a1a2e"
+                                    ctx.fillRect(0, 0, width, height)
+
+                                    // Bucket outline (simplified 3D-ish view)
+                                    var bw = width * 0.6
+                                    var bh = height * 0.7
+                                    var bx = (width - bw) / 2
+                                    var by = (height - bh) / 2
+
+                                    // Main bucket body
+                                    ctx.strokeStyle = "#E5A033"
+                                    ctx.fillStyle = "#D4942A"
+                                    ctx.lineWidth = 3
+
+                                    // Back panel
+                                    ctx.beginPath()
+                                    ctx.moveTo(bx + bw * 0.1, by)
+                                    ctx.lineTo(bx + bw * 0.9, by)
+                                    ctx.lineTo(bx + bw, by + bh * 0.3)
+                                    ctx.lineTo(bx + bw, by + bh)
+                                    ctx.lineTo(bx, by + bh)
+                                    ctx.lineTo(bx, by + bh * 0.3)
+                                    ctx.closePath()
+                                    ctx.fill()
+                                    ctx.stroke()
+
+                                    // Inner shadow
+                                    ctx.fillStyle = "#B8822A"
+                                    ctx.beginPath()
+                                    ctx.moveTo(bx + bw * 0.15, by + bh * 0.1)
+                                    ctx.lineTo(bx + bw * 0.85, by + bh * 0.1)
+                                    ctx.lineTo(bx + bw * 0.9, by + bh * 0.35)
+                                    ctx.lineTo(bx + bw * 0.9, by + bh * 0.85)
+                                    ctx.lineTo(bx + bw * 0.1, by + bh * 0.85)
+                                    ctx.lineTo(bx + bw * 0.1, by + bh * 0.35)
+                                    ctx.closePath()
+                                    ctx.fill()
+
+                                    // Teeth at bottom
+                                    ctx.fillStyle = "#E5A033"
+                                    var teethCount = 5
+                                    var teethWidth = bw * 0.12
+                                    var teethHeight = bh * 0.12
+                                    var teethSpacing = (bw - teethWidth * teethCount) / (teethCount + 1)
+
+                                    for (var i = 0; i < teethCount; i++) {
+                                        var tx = bx + teethSpacing * (i + 1) + teethWidth * i
+                                        ctx.beginPath()
+                                        ctx.moveTo(tx, by + bh)
+                                        ctx.lineTo(tx + teethWidth / 2, by + bh + teethHeight)
+                                        ctx.lineTo(tx + teethWidth, by + bh)
+                                        ctx.closePath()
+                                        ctx.fill()
+                                        ctx.stroke()
+                                    }
+
+                                    // Dimension lines and labels
+                                    ctx.strokeStyle = "#319795"
+                                    ctx.fillStyle = "#319795"
+                                    ctx.lineWidth = 2
+                                    ctx.font = "bold 14px sans-serif"
+                                    ctx.textAlign = "center"
+
+                                    // Width dimension (horizontal at top)
+                                    var dimY = by - 25
+                                    ctx.beginPath()
+                                    ctx.moveTo(bx, dimY)
+                                    ctx.lineTo(bx + bw, dimY)
+                                    ctx.stroke()
+                                    // Arrow heads
+                                    ctx.beginPath()
+                                    ctx.moveTo(bx, dimY - 8)
+                                    ctx.lineTo(bx, dimY + 8)
+                                    ctx.stroke()
+                                    ctx.beginPath()
+                                    ctx.moveTo(bx + bw, dimY - 8)
+                                    ctx.lineTo(bx + bw, dimY + 8)
+                                    ctx.stroke()
+                                    // Label
+                                    ctx.fillStyle = "white"
+                                    var widthText = root.bucketWidth > 0 ? root.bucketWidth.toFixed(2) + " m" : root.tr("Genişlik")
+                                    ctx.fillText(widthText, bx + bw / 2, dimY - 8)
+
+                                    // Height dimension (vertical on right)
+                                    var dimX = bx + bw + 25
+                                    ctx.strokeStyle = "#319795"
+                                    ctx.beginPath()
+                                    ctx.moveTo(dimX, by)
+                                    ctx.lineTo(dimX, by + bh)
+                                    ctx.stroke()
+                                    // Arrow heads
+                                    ctx.beginPath()
+                                    ctx.moveTo(dimX - 8, by)
+                                    ctx.lineTo(dimX + 8, by)
+                                    ctx.stroke()
+                                    ctx.beginPath()
+                                    ctx.moveTo(dimX - 8, by + bh)
+                                    ctx.lineTo(dimX + 8, by + bh)
+                                    ctx.stroke()
+                                    // Label
+                                    ctx.save()
+                                    ctx.translate(dimX + 20, by + bh / 2)
+                                    ctx.rotate(-Math.PI / 2)
+                                    ctx.fillStyle = "white"
+                                    var lengthText = root.bucketLength > 0 ? root.bucketLength.toFixed(2) + " m" : root.tr("Boy")
+                                    ctx.fillText(lengthText, 0, 0)
+                                    ctx.restore()
+
+                                    // Depth dimension (diagonal/inside)
+                                    ctx.fillStyle = "white"
+                                    ctx.textAlign = "center"
+                                    var depthText = root.bucketDepth > 0 ? root.bucketDepth.toFixed(2) + " m" : root.tr("Derinlik")
+                                    ctx.fillText(depthText, bx + bw / 2, by + bh / 2)
+                                    ctx.font = "11px sans-serif"
+                                    ctx.fillStyle = root.textSecondaryColor
+                                    ctx.fillText("(" + root.tr("Derinlik") + ")", bx + bw / 2, by + bh / 2 + 16)
+                                }
+
+                                Connections {
+                                    target: root
+                                    function onBucketLengthChanged() { bucketCanvas.requestPaint() }
+                                    function onBucketWidthChanged() { bucketCanvas.requestPaint() }
+                                    function onBucketDepthChanged() { bucketCanvas.requestPaint() }
+                                }
+
+                                Component.onCompleted: requestPaint()
+                            }
+                        }
+                    }
+                }
+
+                // Dimension inputs
+                Row {
+                    Layout.fillWidth: true
+                    spacing: 8
+
+                    // Kova Adı
+                    Rectangle {
+                        width: (parent.width - 16) / 3
+                        height: 70
+                        color: root.cardColor
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 8
+                            spacing: 4
+
+                            Text {
+                                text: root.tr("Kova Adı")
+                                font.pixelSize: 11
+                                color: root.textSecondaryColor
+                            }
+
+                            TextField {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 32
+                                placeholderText: root.tr("Örn: Kova 1")
+                                font.pixelSize: 12
+                                color: "white"
+                                placeholderTextColor: Qt.rgba(1, 1, 1, 0.4)
+
+                                text: root.bucketName
+
+                                background: Rectangle {
+                                    color: root.inputBgColor
+                                    radius: 4
+                                    border.width: parent.activeFocus ? 2 : (root.bucketName.length > 0 ? 1.5 : 0)
+                                    border.color: parent.activeFocus ? root.primaryColor :
+                                                  (root.bucketName.length > 0 ? root.filledBorderColor : "transparent")
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus) root.bucketName = text
+                                }
+                            }
+                        }
+                    }
+
+                    // Boy (Length)
+                    Rectangle {
+                        width: (parent.width - 16) / 3
+                        height: 70
+                        color: root.cardColor
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 8
+                            spacing: 4
+
+                            Text {
+                                text: root.tr("Boy") + " (m)"
+                                font.pixelSize: 11
+                                color: root.textSecondaryColor
+                            }
+
+                            TextField {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 32
+                                placeholderText: "1.20"
+                                font.pixelSize: 12
+                                color: "white"
+                                placeholderTextColor: Qt.rgba(1, 1, 1, 0.4)
+                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                text: root.bucketLength > 0 ? root.bucketLength.toFixed(2) : ""
+
+                                background: Rectangle {
+                                    color: root.inputBgColor
+                                    radius: 4
+                                    border.width: parent.activeFocus ? 2 : (root.bucketLength > 0 ? 1.5 : 0)
+                                    border.color: parent.activeFocus ? root.primaryColor :
+                                                  (root.bucketLength > 0 ? root.filledBorderColor : "transparent")
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus) {
+                                        var val = parseFloat(text.replace(",", "."))
+                                        root.bucketLength = !isNaN(val) ? val : 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Genişlik (Width)
+                    Rectangle {
+                        width: (parent.width - 16) / 3
+                        height: 70
+                        color: root.cardColor
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 8
+                            spacing: 4
+
+                            Text {
+                                text: root.tr("Genişlik") + " (m)"
+                                font.pixelSize: 11
+                                color: root.textSecondaryColor
+                            }
+
+                            TextField {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 32
+                                placeholderText: "1.80"
+                                font.pixelSize: 12
+                                color: "white"
+                                placeholderTextColor: Qt.rgba(1, 1, 1, 0.4)
+                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(2) : ""
+
+                                background: Rectangle {
+                                    color: root.inputBgColor
+                                    radius: 4
+                                    border.width: parent.activeFocus ? 2 : (root.bucketWidth > 0 ? 1.5 : 0)
+                                    border.color: parent.activeFocus ? root.primaryColor :
+                                                  (root.bucketWidth > 0 ? root.filledBorderColor : "transparent")
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus) {
+                                        var val = parseFloat(text.replace(",", "."))
+                                        root.bucketWidth = !isNaN(val) ? val : 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Derinlik input + Save button
+                Row {
+                    Layout.fillWidth: true
+                    spacing: 8
+
+                    // Derinlik (Depth)
+                    Rectangle {
+                        width: (parent.width - 8) / 2
+                        height: 70
+                        color: root.cardColor
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 8
+                            spacing: 4
+
+                            Text {
+                                text: root.tr("Derinlik") + " (m)"
+                                font.pixelSize: 11
+                                color: root.textSecondaryColor
+                            }
+
+                            TextField {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 32
+                                placeholderText: "0.90"
+                                font.pixelSize: 12
+                                color: "white"
+                                placeholderTextColor: Qt.rgba(1, 1, 1, 0.4)
+                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(2) : ""
+
+                                background: Rectangle {
+                                    color: root.inputBgColor
+                                    radius: 4
+                                    border.width: parent.activeFocus ? 2 : (root.bucketDepth > 0 ? 1.5 : 0)
+                                    border.color: parent.activeFocus ? root.primaryColor :
+                                                  (root.bucketDepth > 0 ? root.filledBorderColor : "transparent")
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus) {
+                                        var val = parseFloat(text.replace(",", "."))
+                                        root.bucketDepth = !isNaN(val) ? val : 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Kovayı Kaydet butonu
+                    Rectangle {
+                        width: (parent.width - 8) / 2
+                        height: 70
+                        color: root.cardColor
+                        radius: 8
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        Button {
+                            anchors.centerIn: parent
+                            width: parent.width - 16
+                            height: 40
+                            text: root.tr("Kovayı Kaydet")
+                            enabled: root.bucketName.length > 0 &&
+                                     root.bucketLength > 0 &&
+                                     root.bucketWidth > 0 &&
+                                     root.bucketDepth > 0
+
+                            background: Rectangle {
+                                radius: 6
+                                color: parent.enabled ?
+                                       (parent.pressed ? Qt.darker("#4CAF50", 1.2) : "#4CAF50") :
+                                       Qt.rgba(0.5, 0.5, 0.5, 0.3)
+                            }
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: parent.enabled ? "white" : Qt.rgba(1, 1, 1, 0.5)
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                saveBucket()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Save bucket to list
+    function saveBucket() {
+        var newBucket = {
+            name: bucketName,
+            length: bucketLength,
+            width: bucketWidth,
+            depth: bucketDepth
+        }
+
+        var buckets = savedBuckets.slice()
+        buckets.push(newBucket)
+        savedBuckets = buckets
+
+        // Select the newly saved bucket
+        selectedBucketIndex = savedBuckets.length - 1
+
+        console.log("Bucket saved:", JSON.stringify(newBucket))
+    }
+
+    // Save all configuration
+    function saveConfiguration() {
+        // Save bucket to configManager if available
+        if (configManager) {
+            configManager.bucketWidth = bucketWidth
+            // Additional bucket properties could be saved here
+        }
+
+        console.log("Configuration saved:")
+        console.log("- Excavator:", configManager ? configManager.excavatorName : "N/A")
+        console.log("- Bucket:", bucketName, bucketLength, "x", bucketWidth, "x", bucketDepth, "m")
     }
 }
