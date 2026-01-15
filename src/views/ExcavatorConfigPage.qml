@@ -719,7 +719,7 @@ Rectangle {
                         // Boy (Height) label - Green, left side with vertical arrow
                         Item {
                             anchors.left: parent.left
-                            anchors.leftMargin: 25
+                            anchors.leftMargin: 35
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: -10
                             width: 70
@@ -793,81 +793,69 @@ Rectangle {
                             }
                         }
 
-                        // Derinlik (Depth) label - Green, right side with vertical arrow (same style as Boy)
+                        // Derinlik (Depth) label - Green, right side diagonal
                         Item {
                             anchors.right: parent.right
-                            anchors.rightMargin: 5
+                            anchors.rightMargin: 3
                             anchors.verticalCenter: parent.verticalCenter
-                            anchors.verticalCenterOffset: -10
-                            width: 75
-                            height: 80
+                            anchors.verticalCenterOffset: 5
+                            width: 80
+                            height: 55
 
-                            // Label (on left side)
+                            // Diagonal line with arrows at both ends
+                            Canvas {
+                                id: derinlikCanvas
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 40
+                                height: 50
+                                onPaint: {
+                                    var ctx = getContext("2d")
+                                    ctx.strokeStyle = "#4CAF50"
+                                    ctx.fillStyle = "#4CAF50"
+                                    ctx.lineWidth = 2
+
+                                    // Diagonal line (from bottom-left to top-right)
+                                    ctx.beginPath()
+                                    ctx.moveTo(5, height - 10)
+                                    ctx.lineTo(width - 5, 10)
+                                    ctx.stroke()
+
+                                    // Bottom-left arrow head
+                                    ctx.beginPath()
+                                    ctx.moveTo(0, height - 5)
+                                    ctx.lineTo(10, height - 8)
+                                    ctx.lineTo(8, height - 15)
+                                    ctx.closePath()
+                                    ctx.fill()
+
+                                    // Top-right arrow head
+                                    ctx.beginPath()
+                                    ctx.moveTo(width, 5)
+                                    ctx.lineTo(width - 10, 8)
+                                    ctx.lineTo(width - 8, 15)
+                                    ctx.closePath()
+                                    ctx.fill()
+                                }
+                            }
+
+                            // Label
                             Column {
-                                anchors.right: derinlikLine.left
-                                anchors.rightMargin: 4
+                                anchors.left: derinlikCanvas.right
+                                anchors.leftMargin: 2
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 0
 
                                 Text {
-                                    anchors.right: parent.right
                                     text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) + " mm" : "— mm"
                                     font.pixelSize: 11
                                     font.bold: true
                                     color: "#4CAF50"
                                 }
                                 Text {
-                                    anchors.right: parent.right
                                     text: "(Derinlik)"
                                     font.pixelSize: 9
                                     color: "#4CAF50"
-                                }
-                            }
-
-                            // Vertical line
-                            Rectangle {
-                                id: derinlikLine
-                                anchors.right: parent.right
-                                anchors.rightMargin: 2
-                                anchors.verticalCenter: parent.verticalCenter
-                                width: 2
-                                height: 60
-                                color: "#4CAF50"
-                            }
-
-                            // Top arrow head
-                            Canvas {
-                                anchors.horizontalCenter: derinlikLine.horizontalCenter
-                                anchors.bottom: derinlikLine.top
-                                width: 10
-                                height: 8
-                                onPaint: {
-                                    var ctx = getContext("2d")
-                                    ctx.fillStyle = "#4CAF50"
-                                    ctx.beginPath()
-                                    ctx.moveTo(5, 0)
-                                    ctx.lineTo(0, 8)
-                                    ctx.lineTo(10, 8)
-                                    ctx.closePath()
-                                    ctx.fill()
-                                }
-                            }
-
-                            // Bottom arrow head
-                            Canvas {
-                                anchors.horizontalCenter: derinlikLine.horizontalCenter
-                                anchors.top: derinlikLine.bottom
-                                width: 10
-                                height: 8
-                                onPaint: {
-                                    var ctx = getContext("2d")
-                                    ctx.fillStyle = "#4CAF50"
-                                    ctx.beginPath()
-                                    ctx.moveTo(5, 8)
-                                    ctx.lineTo(0, 0)
-                                    ctx.lineTo(10, 0)
-                                    ctx.closePath()
-                                    ctx.fill()
                                 }
                             }
                         }
@@ -876,7 +864,7 @@ Rectangle {
                         Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 4
+                            anchors.bottomMargin: 0
                             width: 160
                             height: 35
 
