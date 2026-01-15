@@ -690,7 +690,7 @@ Rectangle {
                     // Top section - Bucket Image with dimension labels (smaller)
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 160
+                        Layout.preferredHeight: 180
                         color: root.cardColor
                         radius: 12
                         border.width: 1
@@ -719,7 +719,7 @@ Rectangle {
                         // Boy (Height) label - Green, left side with vertical arrow
                         Item {
                             anchors.left: parent.left
-                            anchors.leftMargin: 8
+                            anchors.leftMargin: 15
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: -10
                             width: 70
@@ -793,10 +793,10 @@ Rectangle {
                             }
                         }
 
-                        // Derinlik (Depth) label - Blue, right side diagonal
+                        // Derinlik (Depth) label - Green, right side diagonal
                         Item {
                             anchors.right: parent.right
-                            anchors.rightMargin: 8
+                            anchors.rightMargin: 15
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: 10
                             width: 75
@@ -807,7 +807,7 @@ Rectangle {
                                 anchors.fill: parent
                                 onPaint: {
                                     var ctx = getContext("2d")
-                                    ctx.strokeStyle = "#2196F3"
+                                    ctx.strokeStyle = "#4CAF50"
                                     ctx.lineWidth = 2
 
                                     // Diagonal line
@@ -817,7 +817,7 @@ Rectangle {
                                     ctx.stroke()
 
                                     // Arrow head at top
-                                    ctx.fillStyle = "#2196F3"
+                                    ctx.fillStyle = "#4CAF50"
                                     ctx.beginPath()
                                     ctx.moveTo(35, 5)
                                     ctx.lineTo(28, 12)
@@ -838,22 +838,22 @@ Rectangle {
                                     text: root.bucketDepth > 0 ? root.bucketDepth.toFixed(0) + " mm" : "— mm"
                                     font.pixelSize: 11
                                     font.bold: true
-                                    color: "#2196F3"
+                                    color: "#4CAF50"
                                 }
                                 Text {
                                     anchors.right: parent.right
                                     text: "(Derinlik)"
                                     font.pixelSize: 9
-                                    color: "#2196F3"
+                                    color: "#4CAF50"
                                 }
                             }
                         }
 
-                        // En (Width) label - Blue, bottom center with horizontal arrows
+                        // En (Width) label - Green, bottom center with horizontal arrows
                         Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 6
+                            anchors.bottomMargin: 2
                             width: 140
                             height: 30
 
@@ -865,7 +865,7 @@ Rectangle {
                                 height: 10
                                 onPaint: {
                                     var ctx = getContext("2d")
-                                    ctx.fillStyle = "#2196F3"
+                                    ctx.fillStyle = "#4CAF50"
                                     ctx.beginPath()
                                     ctx.moveTo(0, 5)
                                     ctx.lineTo(10, 0)
@@ -882,7 +882,7 @@ Rectangle {
                                 anchors.verticalCenter: enLine.verticalCenter
                                 width: 25
                                 height: 2
-                                color: "#2196F3"
+                                color: "#4CAF50"
                             }
 
                             // Center label
@@ -896,14 +896,14 @@ Rectangle {
                                     text: root.bucketWidth > 0 ? root.bucketWidth.toFixed(0) + " mm" : "— mm"
                                     font.pixelSize: 11
                                     font.bold: true
-                                    color: "#2196F3"
+                                    color: "#4CAF50"
                                 }
                                 Text {
                                     id: enLine
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     text: "(En)"
                                     font.pixelSize: 9
-                                    color: "#2196F3"
+                                    color: "#4CAF50"
                                 }
                             }
 
@@ -914,7 +914,7 @@ Rectangle {
                                 anchors.verticalCenter: enLine.verticalCenter
                                 width: 25
                                 height: 2
-                                color: "#2196F3"
+                                color: "#4CAF50"
                             }
 
                             // Right arrow
@@ -925,7 +925,7 @@ Rectangle {
                                 height: 10
                                 onPaint: {
                                     var ctx = getContext("2d")
-                                    ctx.fillStyle = "#2196F3"
+                                    ctx.fillStyle = "#4CAF50"
                                     ctx.beginPath()
                                     ctx.moveTo(10, 5)
                                     ctx.lineTo(0, 0)
