@@ -96,16 +96,18 @@ Rectangle {
 
                     // Dashboard ikonu - Image component (özel ikon için)
                     Image {
+                        id: dashboardIconImage
                         source: "qrc:/ExcavatorUI_Qt3D/resources/icons/dashboard.png"
                         width: 24
                         height: 24
                         fillMode: Image.PreserveAspectFit
                         anchors.verticalCenter: parent.verticalCenter
-                        // Ikon yoksa fallback olarak Rectangle göster
                         visible: status === Image.Ready
                     }
+
+                    // Fallback ikon (Image yüklenmezse)
                     Rectangle {
-                        visible: dashboardIcon.status !== Image.Ready
+                        visible: dashboardIconImage.status !== Image.Ready
                         width: 24
                         height: 24
                         radius: 4
@@ -118,8 +120,6 @@ Rectangle {
                             font.pixelSize: 14
                             color: "white"
                         }
-
-                        property alias dashboardIcon: dashboardMenuItem.contentItem.children[0]
                     }
 
                     Text {
@@ -159,6 +159,7 @@ Rectangle {
 
                     // Çıkış ikonu - Image component (özel ikon için)
                     Image {
+                        id: logoutIconImage
                         source: "qrc:/ExcavatorUI_Qt3D/resources/icons/logout.png"
                         width: 24
                         height: 24
@@ -166,8 +167,10 @@ Rectangle {
                         anchors.verticalCenter: parent.verticalCenter
                         visible: status === Image.Ready
                     }
+
+                    // Fallback ikon (Image yüklenmezse)
                     Rectangle {
-                        visible: logoutIcon.status !== Image.Ready
+                        visible: logoutIconImage.status !== Image.Ready
                         width: 24
                         height: 24
                         radius: 4
@@ -180,8 +183,6 @@ Rectangle {
                             font.pixelSize: 14
                             color: "white"
                         }
-
-                        property alias logoutIcon: logoutMenuItem.contentItem.children[0]
                     }
 
                     Text {
