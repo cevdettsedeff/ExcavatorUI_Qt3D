@@ -170,33 +170,6 @@ Rectangle {
                 }
             }
 
-            // RTC Badge
-            Rectangle {
-                width: rtcText.width + 14
-                height: statusBar.badgeHeight
-                radius: 4
-                color: rtcMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
-                border.color: "#00bcd4"
-                border.width: 1
-
-                Text {
-                    id: rtcText
-                    anchors.centerIn: parent
-                    text: "RTC"
-                    font.pixelSize: statusBar.smallFontSize
-                    font.bold: true
-                    color: "#00bcd4"
-                }
-
-                MouseArea {
-                    id: rtcMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: statusBar.sensorClicked()
-                }
-            }
-
             // IMU Durumu
             Rectangle {
                 id: imuBox

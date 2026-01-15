@@ -74,8 +74,8 @@ Rectangle {
                             icon: "📡"
                             titleKey: "Sensors"
                             titleTr: "Sensörler"
-                            descKey: "IMU, GNSS, RTC calibration and sensor settings"
-                            descTr: "IMU, GNSS, RTC kalibrasyon ve sensör ayarları"
+                            descKey: "IMU and GNSS calibration and sensor settings"
+                            descTr: "IMU ve GNSS kalibrasyon ve sensör ayarları"
                             pageName: "sensors"
                             enabled: true
                         }
@@ -1414,87 +1414,6 @@ Rectangle {
                                                 anchors.horizontalCenter: parent.horizontalCenter
                                             }
                                         }
-                                    }
-                                }
-                            }
-                        }
-
-                        // RTC Kartı
-                        Rectangle {
-                            Layout.fillWidth: true
-                            Layout.margins: 15
-                            Layout.preferredHeight: rtcContent.height + 40
-                            radius: 12
-                            color: settingsPage.surfaceColor
-                            border.color: "#00bcd4"
-                            border.width: 2
-
-                            ColumnLayout {
-                                id: rtcContent
-                                anchors.left: parent.left
-                                anchors.right: parent.right
-                                anchors.top: parent.top
-                                anchors.margins: 20
-                                spacing: 15
-
-                                // Başlık
-                                RowLayout {
-                                    Layout.fillWidth: true
-
-                                    Rectangle {
-                                        width: 40
-                                        height: 40
-                                        radius: 20
-                                        color: "#00bcd4"
-
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: "⏱"
-                                            font.pixelSize: 18
-                                            color: "white"
-                                        }
-                                    }
-
-                                    Column {
-                                        Layout.fillWidth: true
-                                        spacing: 2
-
-                                        Text {
-                                            text: "RTC " + tr("Module")
-                                            font.pixelSize: app.mediumFontSize
-                                            font.bold: true
-                                            color: settingsPage.textColor
-                                        }
-
-                                        Text {
-                                            text: tr("Real Time Clock")
-                                            font.pixelSize: app.smallFontSize
-                                            color: "#00bcd4"
-                                        }
-                                    }
-                                }
-
-                                // Saat Senkronizasyonu butonu
-                                Button {
-                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: 45
-
-                                    background: Rectangle {
-                                        radius: 8
-                                        color: parent.pressed ? Qt.darker("#00bcd4", 1.2) : "#00bcd4"
-                                    }
-
-                                    contentItem: Text {
-                                        text: tr("Sync Time with GNSS")
-                                        font.pixelSize: app.baseFontSize
-                                        font.bold: true
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-
-                                    onClicked: {
-                                        console.log("RTC GNSS senkronizasyonu...")
                                     }
                                 }
                             }
