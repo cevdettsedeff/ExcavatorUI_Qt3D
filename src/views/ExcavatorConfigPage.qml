@@ -796,7 +796,7 @@ Rectangle {
                         // Derinlik (Depth) label - Green, right side diagonal
                         Item {
                             anchors.right: parent.right
-                            anchors.rightMargin: -12
+                            anchors.rightMargin: 15
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: 5
                             width: 80
