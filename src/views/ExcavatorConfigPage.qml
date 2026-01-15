@@ -719,7 +719,7 @@ Rectangle {
                         // Boy (Height) label - Green, left side with vertical arrow
                         Item {
                             anchors.left: parent.left
-                            anchors.leftMargin: 35
+                            anchors.leftMargin: 50
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: -10
                             width: 70
@@ -796,7 +796,7 @@ Rectangle {
                         // Derinlik (Depth) label - Green, right side diagonal
                         Item {
                             anchors.right: parent.right
-                            anchors.rightMargin: 3
+                            anchors.rightMargin: -5
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: 5
                             width: 80
@@ -864,7 +864,7 @@ Rectangle {
                         Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 0
+                            anchors.bottomMargin: -5
                             width: 160
                             height: 35
 
