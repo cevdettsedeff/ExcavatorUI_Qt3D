@@ -719,7 +719,7 @@ Rectangle {
                         // Boy (Height) label - Green, left side with vertical arrow
                         Item {
                             anchors.left: parent.left
-                            anchors.leftMargin: 15
+                            anchors.leftMargin: 25
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: -10
                             width: 70
@@ -793,43 +793,19 @@ Rectangle {
                             }
                         }
 
-                        // Derinlik (Depth) label - Green, right side diagonal
+                        // Derinlik (Depth) label - Green, right side with vertical arrow (same style as Boy)
                         Item {
                             anchors.right: parent.right
-                            anchors.rightMargin: 15
+                            anchors.rightMargin: 5
                             anchors.verticalCenter: parent.verticalCenter
-                            anchors.verticalCenterOffset: 10
+                            anchors.verticalCenterOffset: -10
                             width: 75
-                            height: 50
+                            height: 80
 
-                            // Diagonal line with arrow
-                            Canvas {
-                                anchors.fill: parent
-                                onPaint: {
-                                    var ctx = getContext("2d")
-                                    ctx.strokeStyle = "#4CAF50"
-                                    ctx.lineWidth = 2
-
-                                    // Diagonal line
-                                    ctx.beginPath()
-                                    ctx.moveTo(0, height - 5)
-                                    ctx.lineTo(35, 5)
-                                    ctx.stroke()
-
-                                    // Arrow head at top
-                                    ctx.fillStyle = "#4CAF50"
-                                    ctx.beginPath()
-                                    ctx.moveTo(35, 5)
-                                    ctx.lineTo(28, 12)
-                                    ctx.lineTo(32, 15)
-                                    ctx.closePath()
-                                    ctx.fill()
-                                }
-                            }
-
-                            // Label
+                            // Label (on left side)
                             Column {
-                                anchors.right: parent.right
+                                anchors.right: derinlikLine.left
+                                anchors.rightMargin: 4
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: 0
 
@@ -847,48 +823,115 @@ Rectangle {
                                     color: "#4CAF50"
                                 }
                             }
+
+                            // Vertical line
+                            Rectangle {
+                                id: derinlikLine
+                                anchors.right: parent.right
+                                anchors.rightMargin: 2
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 2
+                                height: 60
+                                color: "#4CAF50"
+                            }
+
+                            // Top arrow head
+                            Canvas {
+                                anchors.horizontalCenter: derinlikLine.horizontalCenter
+                                anchors.bottom: derinlikLine.top
+                                width: 10
+                                height: 8
+                                onPaint: {
+                                    var ctx = getContext("2d")
+                                    ctx.fillStyle = "#4CAF50"
+                                    ctx.beginPath()
+                                    ctx.moveTo(5, 0)
+                                    ctx.lineTo(0, 8)
+                                    ctx.lineTo(10, 8)
+                                    ctx.closePath()
+                                    ctx.fill()
+                                }
+                            }
+
+                            // Bottom arrow head
+                            Canvas {
+                                anchors.horizontalCenter: derinlikLine.horizontalCenter
+                                anchors.top: derinlikLine.bottom
+                                width: 10
+                                height: 8
+                                onPaint: {
+                                    var ctx = getContext("2d")
+                                    ctx.fillStyle = "#4CAF50"
+                                    ctx.beginPath()
+                                    ctx.moveTo(5, 8)
+                                    ctx.lineTo(0, 0)
+                                    ctx.lineTo(10, 0)
+                                    ctx.closePath()
+                                    ctx.fill()
+                                }
+                            }
                         }
 
-                        // En (Width) label - Green, bottom center with horizontal arrows
+                        // En (Width) label - Green, bottom center with horizontal arrow (same style as Boy)
                         Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 2
-                            width: 140
-                            height: 30
+                            anchors.bottomMargin: 4
+                            width: 160
+                            height: 35
 
-                            // Left arrow
+                            // Horizontal line
+                            Rectangle {
+                                id: enLine
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.bottom: parent.bottom
+                                anchors.bottomMargin: 2
+                                width: 100
+                                height: 2
+                                color: "#4CAF50"
+                            }
+
+                            // Left arrow head
                             Canvas {
-                                anchors.left: parent.left
                                 anchors.verticalCenter: enLine.verticalCenter
-                                width: 10
+                                anchors.right: enLine.left
+                                width: 8
                                 height: 10
                                 onPaint: {
                                     var ctx = getContext("2d")
                                     ctx.fillStyle = "#4CAF50"
                                     ctx.beginPath()
                                     ctx.moveTo(0, 5)
-                                    ctx.lineTo(10, 0)
-                                    ctx.lineTo(10, 10)
+                                    ctx.lineTo(8, 0)
+                                    ctx.lineTo(8, 10)
                                     ctx.closePath()
                                     ctx.fill()
                                 }
                             }
 
-                            // Left line
-                            Rectangle {
-                                anchors.left: parent.left
-                                anchors.leftMargin: 10
+                            // Right arrow head
+                            Canvas {
                                 anchors.verticalCenter: enLine.verticalCenter
-                                width: 25
-                                height: 2
-                                color: "#4CAF50"
+                                anchors.left: enLine.right
+                                width: 8
+                                height: 10
+                                onPaint: {
+                                    var ctx = getContext("2d")
+                                    ctx.fillStyle = "#4CAF50"
+                                    ctx.beginPath()
+                                    ctx.moveTo(8, 5)
+                                    ctx.lineTo(0, 0)
+                                    ctx.lineTo(0, 10)
+                                    ctx.closePath()
+                                    ctx.fill()
+                                }
                             }
 
-                            // Center label
+                            // Label (above line)
                             Column {
-                                id: enLabel
-                                anchors.centerIn: parent
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.bottom: enLine.top
+                                anchors.bottomMargin: 2
                                 spacing: 0
 
                                 Text {
@@ -899,39 +942,10 @@ Rectangle {
                                     color: "#4CAF50"
                                 }
                                 Text {
-                                    id: enLine
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     text: "(En)"
                                     font.pixelSize: 9
                                     color: "#4CAF50"
-                                }
-                            }
-
-                            // Right line
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.rightMargin: 10
-                                anchors.verticalCenter: enLine.verticalCenter
-                                width: 25
-                                height: 2
-                                color: "#4CAF50"
-                            }
-
-                            // Right arrow
-                            Canvas {
-                                anchors.right: parent.right
-                                anchors.verticalCenter: enLine.verticalCenter
-                                width: 10
-                                height: 10
-                                onPaint: {
-                                    var ctx = getContext("2d")
-                                    ctx.fillStyle = "#4CAF50"
-                                    ctx.beginPath()
-                                    ctx.moveTo(10, 5)
-                                    ctx.lineTo(0, 0)
-                                    ctx.lineTo(0, 10)
-                                    ctx.closePath()
-                                    ctx.fill()
                                 }
                             }
                         }
