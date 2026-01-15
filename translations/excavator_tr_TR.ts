@@ -313,7 +313,7 @@
     </message>
     <message>
         <source>Create New Account</source>
-        <translation>Yeni Kayıt Oluştur</translation>
+        <translation>Yeni Kullanıcı Oluştur</translation>
     </message>
     <message>
         <source>Please enter your information</source>
@@ -888,6 +888,390 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
     <message>
         <source>Stop</source>
         <translation>Durdur</translation>
+    </message>
+    <message>
+        <source>Corner Count</source>
+        <translation>Köşe Sayısı</translation>
+    </message>
+    <message>
+        <source>Köşe Sayısı</source>
+        <translation>Köşe Sayısı</translation>
+    </message>
+    <message>
+        <source>Koordinatlar</source>
+        <translation>Koordinatlar</translation>
+    </message>
+    <message>
+        <source>Coordinates</source>
+        <translation>Koordinatlar</translation>
+    </message>
+    <message>
+        <source>Önizleme</source>
+        <translation>Önizleme</translation>
+    </message>
+    <message>
+        <source>Batimetri</source>
+        <translation>Batimetri</translation>
+    </message>
+    <message>
+        <source>Bathymetry</source>
+        <translation>Batimetri</translation>
+    </message>
+    <message>
+        <source>Harita</source>
+        <translation>Harita</translation>
+    </message>
+    <message>
+        <source>Geri</source>
+        <translation>Geri</translation>
+    </message>
+    <message>
+        <source>Kaydet ve Bitir</source>
+        <translation>Kaydet ve Bitir</translation>
+    </message>
+    <message>
+        <source>Save and Finish</source>
+        <translation>Kaydet ve Bitir</translation>
+    </message>
+    <message>
+        <source>Devam Et</source>
+        <translation>Devam Et</translation>
+    </message>
+    <message>
+        <source>Continue</source>
+        <translation>Devam Et</translation>
+    </message>
+    <message>
+        <source>Kazı alanınız kaç köşeli?</source>
+        <translation>Kazı alanınız kaç köşeli?</translation>
+    </message>
+    <message>
+        <source>How many corners does your excavation area have?</source>
+        <translation>Kazı alanınız kaç köşeli?</translation>
+    </message>
+    <message>
+        <source>L şeklinde alanlar için 6, dikdörtgen için 4 seçin</source>
+        <translation>L şeklinde alanlar için 6, dikdörtgen için 4 seçin</translation>
+    </message>
+    <message>
+        <source>Select 6 for L-shaped areas, 4 for rectangle</source>
+        <translation>L şeklinde alanlar için 6, dikdörtgen için 4 seçin</translation>
+    </message>
+    <message>
+        <source>Köşe Noktası</source>
+        <translation>Köşe Noktası</translation>
+    </message>
+    <message>
+        <source>Corner Point</source>
+        <translation>Köşe Noktası</translation>
+    </message>
+    <message>
+        <source>veya doğrudan sayı girin</source>
+        <translation>veya doğrudan sayı girin</translation>
+    </message>
+    <message>
+        <source>or enter number directly</source>
+        <translation>veya doğrudan sayı girin</translation>
+    </message>
+    <message>
+        <source>Kazı Alanı Koordinatları</source>
+        <translation>Kazı Alanı Koordinatları</translation>
+    </message>
+    <message>
+        <source>Excavation Area Coordinates</source>
+        <translation>Kazı Alanı Koordinatları</translation>
+    </message>
+    <message>
+        <source>Test Verisi</source>
+        <translation>Test Verisi</translation>
+    </message>
+    <message>
+        <source>Test Data</source>
+        <translation>Test Verisi</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>No</translation>
+    </message>
+    <message>
+        <source>Y Koordinatı</source>
+        <translation>Y Koordinatı</translation>
+    </message>
+    <message>
+        <source>Y Coordinate</source>
+        <translation>Y Koordinatı</translation>
+    </message>
+    <message>
+        <source>X Koordinatı</source>
+        <translation>X Koordinatı</translation>
+    </message>
+    <message>
+        <source>X Coordinate</source>
+        <translation>X Koordinatı</translation>
+    </message>
+    <message>
+        <source>Girdiğiniz köşe noktalarından oluşan alan önizlemesi</source>
+        <translation>Girdiğiniz köşe noktalarından oluşan alan önizlemesi</translation>
+    </message>
+    <message>
+        <source>Preview of area formed by entered corner points</source>
+        <translation>Girdiğiniz köşe noktalarından oluşan alan önizlemesi</translation>
+    </message>
+    <message>
+        <source>Kazı Alanı Önizlemesi</source>
+        <translation>Kazı Alanı Önizlemesi</translation>
+    </message>
+    <message>
+        <source>Excavation Area Preview</source>
+        <translation>Kazı Alanı Önizlemesi</translation>
+    </message>
+    <message>
+        <source>Köşe</source>
+        <translation>Köşe</translation>
+    </message>
+    <message>
+        <source>Corner</source>
+        <translation>Köşe</translation>
+    </message>
+    <message>
+        <source>Çevre</source>
+        <translation>Çevre</translation>
+    </message>
+    <message>
+        <source>Perimeter</source>
+        <translation>Çevre</translation>
+    </message>
+    <message>
+        <source>Batimetrik Derinlik Noktaları</source>
+        <translation>Batimetrik Derinlik Noktaları</translation>
+    </message>
+    <message>
+        <source>Bathymetric Depth Points</source>
+        <translation>Batimetrik Derinlik Noktaları</translation>
+    </message>
+    <message>
+        <source>Ekle</source>
+        <translation>Ekle</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Ekle</translation>
+    </message>
+    <message>
+        <source>Derinlik</source>
+        <translation>Derinlik</translation>
+    </message>
+    <message>
+        <source>Henüz veri noktası eklenmedi</source>
+        <translation>Henüz veri noktası eklenmedi</translation>
+    </message>
+    <message>
+        <source>No data points added yet</source>
+        <translation>Henüz veri noktası eklenmedi</translation>
+    </message>
+    <message>
+        <source>Derinlik verisi eklemek için + Ekle butonuna tıklayın</source>
+        <translation>Derinlik verisi eklemek için + Ekle butonuna tıklayın</translation>
+    </message>
+    <message>
+        <source>Click + Add button to add depth data</source>
+        <translation>Derinlik verisi eklemek için + Ekle butonuna tıklayın</translation>
+    </message>
+    <message>
+        <source>Örnek veri ekle</source>
+        <translation>Örnek veri ekle</translation>
+    </message>
+    <message>
+        <source>Add sample data</source>
+        <translation>Örnek veri ekle</translation>
+    </message>
+    <message>
+        <source>nokta</source>
+        <translation>nokta</translation>
+    </message>
+    <message>
+        <source>point</source>
+        <translation>nokta</translation>
+    </message>
+    <message>
+        <source>Kontur Çizgili</source>
+        <translation>Kontur Çizgili</translation>
+    </message>
+    <message>
+        <source>Contour Lines</source>
+        <translation>Kontur Çizgili</translation>
+    </message>
+    <message>
+        <source>Grid Görünümü</source>
+        <translation>Grid Görünümü</translation>
+    </message>
+    <message>
+        <source>Grid View</source>
+        <translation>Grid Görünümü</translation>
+    </message>
+    <message>
+        <source>Köşe noktaları tanımlanmadı</source>
+        <translation>Köşe noktaları tanımlanmadı</translation>
+    </message>
+    <message>
+        <source>Corner points not defined</source>
+        <translation>Köşe noktaları tanımlanmadı</translation>
+    </message>
+    <message>
+        <source>veri noktası</source>
+        <translation>veri noktası</translation>
+    </message>
+    <message>
+        <source>data point</source>
+        <translation>veri noktası</translation>
+    </message>
+    <message>
+        <source>Kazı alanı yapılandırması tamamlandı!</source>
+        <translation>Kazı alanı yapılandırması tamamlandı!</translation>
+    </message>
+    <message>
+        <source>Dig area configuration completed!</source>
+        <translation>Kazı alanı yapılandırması tamamlandı!</translation>
+    </message>
+    <message>
+        <source>Temizle</source>
+        <translation>Temizle</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Temizle</translation>
+    </message>
+    <message>
+        <source>Tümünü Sil</source>
+        <translation>Tümünü Sil</translation>
+    </message>
+    <message>
+        <source>Delete All</source>
+        <translation>Tümünü Sil</translation>
+    </message>
+    <message>
+        <source>Kova</source>
+        <translation>Kova</translation>
+    </message>
+    <message>
+        <source>Bucket</source>
+        <translation>Kova</translation>
+    </message>
+    <message>
+        <source>Kova Seçimi</source>
+        <translation>Kova Seçimi</translation>
+    </message>
+    <message>
+        <source>Bucket Selection</source>
+        <translation>Kova Seçimi</translation>
+    </message>
+    <message>
+        <source>Yeni Kova</source>
+        <translation>Yeni Kova</translation>
+    </message>
+    <message>
+        <source>New Bucket</source>
+        <translation>Yeni Kova</translation>
+    </message>
+    <message>
+        <source>Kova Boyutları</source>
+        <translation>Kova Boyutları</translation>
+    </message>
+    <message>
+        <source>Bucket Dimensions</source>
+        <translation>Kova Boyutları</translation>
+    </message>
+    <message>
+        <source>Kova Adı</source>
+        <translation>Kova Adı</translation>
+    </message>
+    <message>
+        <source>Bucket Name</source>
+        <translation>Kova Adı</translation>
+    </message>
+    <message>
+        <source>Boy</source>
+        <translation>Boy</translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation>Boy</translation>
+    </message>
+    <message>
+        <source>Genişlik</source>
+        <translation>Genişlik</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation>Genişlik</translation>
+    </message>
+    <message>
+        <source>Kovayı Kaydet</source>
+        <translation>Kovayı Kaydet</translation>
+    </message>
+    <message>
+        <source>Save Bucket</source>
+        <translation>Kovayı Kaydet</translation>
+    </message>
+    <message>
+        <source>Kayıtlı bir ekskavatör seçin veya yeni bilgileri girin</source>
+        <translation>Kayıtlı bir ekskavatör seçin veya yeni bilgileri girin</translation>
+    </message>
+    <message>
+        <source>Select a saved excavator or enter new information</source>
+        <translation>Kayıtlı bir ekskavatör seçin veya yeni bilgileri girin</translation>
+    </message>
+    <message>
+        <source>Kova boyutlarını girin veya kayıtlı bir kova seçin</source>
+        <translation>Kova boyutlarını girin veya kayıtlı bir kova seçin</translation>
+    </message>
+    <message>
+        <source>Enter bucket dimensions or select a saved bucket</source>
+        <translation>Kova boyutlarını girin veya kayıtlı bir kova seçin</translation>
+    </message>
+    <message>
+        <source>Ekskavatörü Kaydet</source>
+        <translation>Ekskavatörü Kaydet</translation>
+    </message>
+    <message>
+        <source>Save Excavator</source>
+        <translation>Ekskavatörü Kaydet</translation>
+    </message>
+    <message>
+        <source>Örn: Kova 1</source>
+        <translation>Örn: Kova 1</translation>
+    </message>
+    <message>
+        <source>Ex: Bucket 1</source>
+        <translation>Örn: Kova 1</translation>
+    </message>
+    <message>
+        <source>Kova Ölçüleri</source>
+        <translation>Kova Ölçüleri</translation>
+    </message>
+    <message>
+        <source>Bucket Measurements</source>
+        <translation>Kova Ölçüleri</translation>
+    </message>
+    <message>
+        <source>En (Width)</source>
+        <translation>En (Width)</translation>
+    </message>
+    <message>
+        <source>Boy (Height)</source>
+        <translation>Boy (Height)</translation>
+    </message>
+    <message>
+        <source>Derinlik (Depth)</source>
+        <translation>Derinlik (Depth)</translation>
+    </message>
+    <message>
+        <source>UYGULA</source>
+        <translation>UYGULA</translation>
+    </message>
+    <message>
+        <source>APPLY</source>
+        <translation>UYGULA</translation>
     </message>
 </context>
 </TS>

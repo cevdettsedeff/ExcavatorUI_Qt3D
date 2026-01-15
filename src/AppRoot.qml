@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.VirtualKeyboard
 import ExcavatorUI_Qt3D
+import "./components"
 
 /**
  * AppRoot - Uygulamanın kalıcı root container'ı
