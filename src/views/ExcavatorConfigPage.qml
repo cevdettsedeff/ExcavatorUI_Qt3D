@@ -690,7 +690,7 @@ Rectangle {
                     // Top section - Bucket Image with dimension labels (smaller)
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 200
+                        Layout.preferredHeight: 220
                         color: root.cardColor
                         radius: 12
                         border.width: 1
@@ -719,7 +719,7 @@ Rectangle {
                         // Boy (Height) label - Green, left side with vertical arrow
                         Item {
                             anchors.left: parent.left
-                            anchors.leftMargin: 50
+                            anchors.leftMargin: 65
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: -10
                             width: 70
@@ -796,7 +796,7 @@ Rectangle {
                         // Derinlik (Depth) label - Green, right side diagonal
                         Item {
                             anchors.right: parent.right
-                            anchors.rightMargin: 15
+                            anchors.rightMargin: 30
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: 5
                             width: 80
@@ -864,7 +864,7 @@ Rectangle {
                         Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 5
+                            anchors.bottomMargin: 2
                             width: 160
                             height: 35
 
