@@ -15,6 +15,9 @@ Rectangle {
     property bool contentLoaded: false
     property int currentPageIndex: 0
 
+    // Dashboard'a dönüş sinyali
+    signal goToDashboard()
+
     // Dil değişikliği tetikleyici
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
 
@@ -49,42 +52,61 @@ Rectangle {
             onUserIconClicked: {
                 userMenu.open()
             }
+
+            onRtkClicked: {
+                // Ayarlar sayfasına git (index 4)
+                root.currentPageIndex = 4
+            }
+
+            onImuClicked: {
+                // Ayarlar sayfasına git (index 4)
+                root.currentPageIndex = 4
+            }
+
+            onGoToDashboard: {
+                // Config Dashboard'a dön
+                root.goToDashboard()
+            }
         }
 
-        // Kullanıcı menüsü
+        // Kullanıcı menüsü - Sadeleştirilmiş
         Menu {
             id: userMenu
-            x: root.width - 150
+            x: root.width - 200
             y: 50
+            width: 180
 
-            MenuItem {
-                text: authService && authService.currentUser ? authService.currentUser : ""
-                enabled: false
+            background: Rectangle {
+                color: themeManager ? themeManager.surfaceColor : "#2a2a2a"
+                radius: 8
+                border.width: 1
+                border.color: themeManager ? themeManager.borderColor : "#3a3a3a"
             }
 
-            MenuSeparator {}
-
             MenuItem {
-                text: "🌐 " + (translationService && translationService.currentLanguage === "tr_TR" ? "English" : "Türkçe")
+                text: "🏠 " + root.tr("Dashboard")
                 onTriggered: {
-                    if (translationService) {
-                        translationService.switchLanguage(
-                            translationService.currentLanguage === "tr_TR" ? "en_US" : "tr_TR"
-                        )
-                    }
+                    statusBar.goToDashboard()
+                }
+
+                background: Rectangle {
+                    color: parent.highlighted ? Qt.rgba(0.2, 0.6, 0.6, 0.2) : "transparent"
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: 14
+                    color: themeManager ? themeManager.textColor : "#ffffff"
+                    verticalAlignment: Text.AlignVCenter
                 }
             }
 
-            MenuItem {
-                text: (themeManager && themeManager.isDarkTheme ? "☀️ " : "🌙 ") + root.tr("Theme")
-                onTriggered: {
-                    if (themeManager) {
-                        themeManager.toggleTheme()
-                    }
+            MenuSeparator {
+                contentItem: Rectangle {
+                    implicitHeight: 1
+                    color: themeManager ? themeManager.borderColor : "#3a3a3a"
                 }
             }
-
-            MenuSeparator {}
 
             MenuItem {
                 text: "🚪 " + root.tr("Logout")
@@ -92,6 +114,17 @@ Rectangle {
                     if (authService) {
                         authService.logout()
                     }
+                }
+
+                background: Rectangle {
+                    color: parent.highlighted ? Qt.rgba(0.8, 0.2, 0.2, 0.2) : "transparent"
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: 14
+                    color: themeManager ? themeManager.textColor : "#ffffff"
+                    verticalAlignment: Text.AlignVCenter
                 }
             }
         }

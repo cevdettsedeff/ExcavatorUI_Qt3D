@@ -295,17 +295,25 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: app ? app.buttonHeight * 1.3 : 60
+        height: app ? app.buttonHeight * 2 : 80
         color: Qt.rgba(0, 0, 0, 0.3)
 
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: app ? app.smallPadding : 12
-            spacing: 12
+        Rectangle {
+            anchors.top: parent.top
+            width: parent.width
+            height: 1
+            color: root.borderColor
+        }
 
+        RowLayout {
+            anchors.centerIn: parent
+            width: parent.width - 40
+            spacing: 16
+
+            // Geri butonu
             Button {
-                Layout.preferredWidth: 120
-                Layout.fillHeight: true
+                Layout.preferredWidth: 100
+                Layout.preferredHeight: app ? app.buttonHeight : 50
                 visible: currentStep > 0
                 text: root.tr("Geri")
 
@@ -313,12 +321,12 @@ Rectangle {
                     radius: 8
                     color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : Qt.rgba(1, 1, 1, 0.1)
                     border.width: 1
-                    border.color: root.borderColor
+                    border.color: Qt.rgba(1, 1, 1, 0.3)
                 }
 
                 contentItem: Text {
                     text: parent.text
-                    font.pixelSize: app ? app.baseFontSize : 14
+                    font.pixelSize: 14
                     color: "white"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -329,34 +337,26 @@ Rectangle {
 
             Item { Layout.fillWidth: true }
 
+            // Kaydet ve Bitir / Devam Et butonu
             Button {
-                Layout.preferredWidth: 160
-                Layout.fillHeight: true
-                text: currentStep === totalSteps - 1 ? root.tr("Kaydet ve Bitir") : root.tr("Devam Et")
+                Layout.preferredWidth: currentStep === totalSteps - 1 ? 180 : 150
+                Layout.preferredHeight: app ? app.buttonHeight : 50
+                text: currentStep === totalSteps - 1 ?
+                      root.tr("Kaydet ve Bitir") + " ✓" :
+                      root.tr("Devam Et") + " →"
 
                 background: Rectangle {
                     radius: 8
                     color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
                 }
 
-                contentItem: Row {
-                    spacing: 8
-                    anchors.centerIn: parent
-
-                    Text {
-                        text: parent.parent.text
-                        font.pixelSize: app ? app.baseFontSize : 14
-                        font.bold: true
-                        color: "white"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                        text: currentStep === totalSteps - 1 ? "✓" : "→"
-                        font.pixelSize: 16
-                        color: "white"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
+                contentItem: Text {
+                    text: parent.text
+                    font.pixelSize: 14
+                    font.bold: true
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
                 }
 
                 onClicked: {
@@ -1582,6 +1582,10 @@ Rectangle {
         Rectangle {
             color: "transparent"
 
+            // Pan offset için property'ler
+            property real panOffsetX: 0
+            property real panOffsetY: 0
+
             ColumnLayout {
                 anchors.fill: parent
                 spacing: app ? app.smallSpacing : 8
@@ -1655,6 +1659,37 @@ Rectangle {
 
                         Item { Layout.fillWidth: true }
 
+                        // Reset Pan button
+                        Button {
+                            width: 36
+                            height: 36
+                            visible: mapZoom > 1.0 && (panOffsetX !== 0 || panOffsetY !== 0)
+
+                            background: Rectangle {
+                                radius: 6
+                                color: parent.pressed ? Qt.darker("#FF9800", 1.2) : "#FF9800"
+                            }
+
+                            contentItem: Text {
+                                text: "⟲"
+                                font.pixelSize: 18
+                                font.bold: true
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            onClicked: {
+                                panOffsetX = 0
+                                panOffsetY = 0
+                                bathymetricMapCanvas.requestPaint()
+                            }
+
+                            ToolTip.visible: hovered
+                            ToolTip.text: root.tr("Görünümü Sıfırla")
+                            ToolTip.delay: 500
+                        }
+
                         // Zoom controls
                         Row {
                             spacing: 6
@@ -1680,7 +1715,16 @@ Rectangle {
                                     verticalAlignment: Text.AlignVCenter
                                 }
 
-                                onClicked: if (mapZoom > 0.5) mapZoom -= 0.25
+                                onClicked: {
+                                    if (mapZoom > 0.5) {
+                                        mapZoom -= 0.25
+                                        // Reset pan when zooming out to 100% or less
+                                        if (mapZoom <= 1.0) {
+                                            panOffsetX = 0
+                                            panOffsetY = 0
+                                        }
+                                    }
+                                }
                             }
 
                             Rectangle {
@@ -1700,7 +1744,7 @@ Rectangle {
                             Button {
                                 width: 36
                                 height: 36
-                                enabled: mapZoom < 2.0
+                                enabled: mapZoom < 3.0
 
                                 background: Rectangle {
                                     radius: 6
@@ -1718,13 +1762,13 @@ Rectangle {
                                     verticalAlignment: Text.AlignVCenter
                                 }
 
-                                onClicked: if (mapZoom < 2.0) mapZoom += 0.25
+                                onClicked: if (mapZoom < 3.0) mapZoom += 0.25
                             }
                         }
                     }
                 }
 
-                // Map display - Dark theme
+                // Map display - Dark theme with pan support
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -1753,18 +1797,39 @@ Rectangle {
                             color: parent.color
                         }
 
-                        Text {
+                        Row {
                             anchors.centerIn: parent
-                            text: root.tr("Batimetrik Harita") + " - " +
-                                  (mapViewMode === 0 ? root.tr("Kontur Çizgili") : root.tr("Grid")) +
-                                  " (" + bathymetricPoints.length + " " + root.tr("nokta") + ")"
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: "white"
+                            spacing: 10
+
+                            Text {
+                                text: root.tr("Batimetrik Harita") + " - " +
+                                      (mapViewMode === 0 ? root.tr("Kontur Çizgili") : root.tr("Grid")) +
+                                      " (" + bathymetricPoints.length + " " + root.tr("nokta") + ")"
+                                font.pixelSize: 14
+                                font.bold: true
+                                color: "white"
+                            }
+
+                            // Pan hint when zoomed
+                            Rectangle {
+                                visible: mapZoom > 1.0
+                                width: panHintText.width + 12
+                                height: 20
+                                radius: 10
+                                color: Qt.rgba(1, 1, 1, 0.2)
+
+                                Text {
+                                    id: panHintText
+                                    anchors.centerIn: parent
+                                    text: "↔ " + root.tr("Sürükle")
+                                    font.pixelSize: 10
+                                    color: "white"
+                                }
+                            }
                         }
                     }
 
-                    // Map canvas with zoom
+                    // Map canvas with zoom and pan
                     Canvas {
                         id: bathymetricMapCanvas
                         anchors.top: mapTitle.bottom
@@ -1775,9 +1840,27 @@ Rectangle {
 
                         property int viewMode: mapViewMode
                         property real zoom: mapZoom
+                        property real offsetX: panOffsetX
+                        property real offsetY: panOffsetY
 
                         onViewModeChanged: requestPaint()
                         onZoomChanged: requestPaint()
+                        onOffsetXChanged: requestPaint()
+                        onOffsetYChanged: requestPaint()
+
+                        // Derinliğe göre renk hesaplama fonksiyonu
+                        function getDepthColor(depth) {
+                            var absDepth = Math.abs(depth)
+                            if (absDepth <= 0) return "#E8F4F8"
+                            if (absDepth < 3) return "#B8E0EE"
+                            if (absDepth < 6) return "#64C0DC"
+                            if (absDepth < 9) return "#3A9CC8"
+                            if (absDepth < 12) return "#1A75A8"
+                            if (absDepth < 15) return "#125E8C"
+                            if (absDepth < 20) return "#0B4770"
+                            if (absDepth < 25) return "#063554"
+                            return "#022338"
+                        }
 
                         onPaint: {
                             var ctx = getContext("2d")
@@ -1816,15 +1899,15 @@ Rectangle {
                                                      (height - 2 * padding) / dataHeight)
                             var scale = baseScale * zoom
 
-                            // Center the polygon in the canvas
+                            // Center the polygon in the canvas with pan offset
                             var centerDataX = (minX + maxX) / 2
                             var centerDataY = (minY + maxY) / 2
 
                             function tx(x) {
-                                return width / 2 + (x - centerDataX) * scale
+                                return width / 2 + (x - centerDataX) * scale + offsetX
                             }
                             function ty(y) {
-                                return height / 2 - (y - centerDataY) * scale
+                                return height / 2 - (y - centerDataY) * scale + offsetY
                             }
 
                             // Draw grid if grid mode
@@ -1862,17 +1945,20 @@ Rectangle {
                             ctx.fillStyle = "rgba(49, 151, 149, 0.2)"
                             ctx.fill()
 
-                            // Draw bathymetric points
+                            // Draw bathymetric points with depth-based coloring
                             if (bathymetricPoints.length > 0) {
                                 // Draw contour lines if contour mode
                                 if (viewMode === 0 && bathymetricPoints.length >= 2) {
-                                    ctx.strokeStyle = "#2589BC"
                                     ctx.lineWidth = 2
                                     ctx.setLineDash([5, 5])
 
                                     for (var c = 0; c < bathymetricPoints.length - 1; c++) {
                                         var pt1 = bathymetricPoints[c]
                                         var pt2 = bathymetricPoints[c + 1]
+
+                                        // Gradient line color based on average depth
+                                        var avgDepth = (Math.abs(pt1.depth) + Math.abs(pt2.depth)) / 2
+                                        ctx.strokeStyle = getDepthColor(avgDepth)
 
                                         ctx.beginPath()
                                         ctx.moveTo(tx(pt1.x), ty(pt1.y))
@@ -1882,34 +1968,60 @@ Rectangle {
                                     ctx.setLineDash([])
                                 }
 
-                                // Draw depth points
+                                // Draw depth points with bathymetric coloring
                                 for (var p = 0; p < bathymetricPoints.length; p++) {
                                     var pt = bathymetricPoints[p]
                                     var px = tx(pt.x)
                                     var py = ty(pt.y)
 
-                                    // Depth-based color
-                                    var depthRatio = Math.abs(pt.depth) / 30
-                                    var r = Math.floor(10 + depthRatio * 20)
-                                    var g = Math.floor(100 + (1-depthRatio) * 50)
-                                    var b = Math.floor(150 + depthRatio * 80)
-                                    ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")"
+                                    // Get depth-based color
+                                    var depthColor = getDepthColor(pt.depth)
+                                    var pointRadius = 14 * zoom
 
-                                    // Draw point
+                                    // Outer glow effect
+                                    var gradient = ctx.createRadialGradient(px, py, 0, px, py, pointRadius * 1.5)
+                                    gradient.addColorStop(0, depthColor)
+                                    gradient.addColorStop(0.7, depthColor)
+                                    gradient.addColorStop(1, "transparent")
+                                    ctx.fillStyle = gradient
                                     ctx.beginPath()
-                                    ctx.arc(px, py, 12 * zoom, 0, 2 * Math.PI)
+                                    ctx.arc(px, py, pointRadius * 1.5, 0, 2 * Math.PI)
                                     ctx.fill()
 
+                                    // Main colored circle
+                                    ctx.fillStyle = depthColor
+                                    ctx.beginPath()
+                                    ctx.arc(px, py, pointRadius, 0, 2 * Math.PI)
+                                    ctx.fill()
+
+                                    // White border
+                                    ctx.strokeStyle = "white"
+                                    ctx.lineWidth = 2 * zoom
+                                    ctx.beginPath()
+                                    ctx.arc(px, py, pointRadius, 0, 2 * Math.PI)
+                                    ctx.stroke()
+
+                                    // Inner white circle
                                     ctx.fillStyle = "white"
                                     ctx.beginPath()
-                                    ctx.arc(px, py, 8 * zoom, 0, 2 * Math.PI)
+                                    ctx.arc(px, py, 6 * zoom, 0, 2 * Math.PI)
                                     ctx.fill()
 
-                                    // Depth label
-                                    ctx.fillStyle = "#1A75A8"
+                                    // Depth label with background
+                                    var labelText = pt.depth.toFixed(1) + "m"
                                     ctx.font = "bold " + Math.round(10 * zoom) + "px sans-serif"
+                                    var textWidth = ctx.measureText(labelText).width
+
+                                    // Label background
+                                    ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
+                                    ctx.beginPath()
+                                    ctx.roundRect(px - textWidth/2 - 4, py + pointRadius + 2, textWidth + 8, 16 * zoom, 4)
+                                    ctx.fill()
+
+                                    // Label text
+                                    ctx.fillStyle = "white"
                                     ctx.textAlign = "center"
-                                    ctx.fillText(pt.depth.toFixed(1), px, py + 4)
+                                    ctx.fillText(labelText, px, py + pointRadius + 14 * zoom)
                                 }
                             }
 
@@ -1950,13 +2062,45 @@ Rectangle {
                         Component.onCompleted: requestPaint()
                     }
 
+                    // Pan/Drag MouseArea
+                    MouseArea {
+                        anchors.fill: bathymetricMapCanvas
+                        enabled: mapZoom > 1.0
+                        cursorShape: mapZoom > 1.0 ? (pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor) : Qt.ArrowCursor
+
+                        property real lastX: 0
+                        property real lastY: 0
+
+                        onPressed: function(mouse) {
+                            lastX = mouse.x
+                            lastY = mouse.y
+                        }
+
+                        onPositionChanged: function(mouse) {
+                            if (pressed && mapZoom > 1.0) {
+                                var deltaX = mouse.x - lastX
+                                var deltaY = mouse.y - lastY
+
+                                // Limit pan range based on zoom level
+                                var maxPan = bathymetricMapCanvas.width * (mapZoom - 1) * 0.5
+                                panOffsetX = Math.max(-maxPan, Math.min(maxPan, panOffsetX + deltaX))
+                                panOffsetY = Math.max(-maxPan, Math.min(maxPan, panOffsetY + deltaY))
+
+                                lastX = mouse.x
+                                lastY = mouse.y
+
+                                bathymetricMapCanvas.requestPaint()
+                            }
+                        }
+                    }
+
                     // Legend bar - dark theme
                     Rectangle {
                         id: legendBar
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        height: 50
+                        height: 45
                         color: Qt.rgba(0, 0, 0, 0.4)
                         radius: 10
 
@@ -1970,50 +2114,51 @@ Rectangle {
 
                         Row {
                             anchors.centerIn: parent
-                            spacing: 20
+                            spacing: 15
 
                             // Depth legend
                             Row {
-                                spacing: 8
+                                spacing: 6
                                 anchors.verticalCenter: parent.verticalCenter
 
                                 Text {
                                     text: root.tr("Derinlik") + ":"
-                                    font.pixelSize: 11
+                                    font.pixelSize: 10
                                     color: root.textSecondaryColor
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
 
                                 // Gradient bar
                                 Rectangle {
-                                    width: 100
-                                    height: 16
+                                    width: 80
+                                    height: 14
                                     radius: 3
                                     anchors.verticalCenter: parent.verticalCenter
 
                                     gradient: Gradient {
                                         orientation: Gradient.Horizontal
-                                        GradientStop { position: 0.0; color: "#C6E7F2" }
-                                        GradientStop { position: 0.3; color: "#55B0D4" }
-                                        GradientStop { position: 0.6; color: "#1A75A8" }
-                                        GradientStop { position: 1.0; color: "#063554" }
+                                        GradientStop { position: 0.0; color: "#E8F4F8" }
+                                        GradientStop { position: 0.2; color: "#64C0DC" }
+                                        GradientStop { position: 0.5; color: "#1A75A8" }
+                                        GradientStop { position: 0.8; color: "#063554" }
+                                        GradientStop { position: 1.0; color: "#022338" }
                                     }
                                 }
 
                                 Text {
                                     text: "0m → -30m"
-                                    font.pixelSize: 10
+                                    font.pixelSize: 9
                                     color: root.textSecondaryColor
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
 
-                            Rectangle { width: 1; height: 30; color: root.borderColor }
+                            Rectangle { width: 1; height: 25; color: root.borderColor }
 
                             // Point count
                             Text {
                                 text: bathymetricPoints.length + " " + root.tr("veri noktası")
-                                font.pixelSize: 11
+                                font.pixelSize: 10
                                 color: root.textSecondaryColor
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -2021,27 +2166,27 @@ Rectangle {
                     }
                 }
 
-                // Summary info
+                // Summary info - smaller
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 50
+                    Layout.preferredHeight: 40
                     color: "#38A169"
                     radius: 8
 
                     Row {
                         anchors.centerIn: parent
-                        spacing: 12
+                        spacing: 10
 
                         Text {
                             text: "✓"
-                            font.pixelSize: 20
+                            font.pixelSize: 16
                             color: "white"
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         Text {
                             text: root.tr("Kazı alanı yapılandırması tamamlandı!")
-                            font.pixelSize: app ? app.baseFontSize : 14
+                            font.pixelSize: app ? app.smallFontSize : 12
                             font.bold: true
                             color: "white"
                             anchors.verticalCenter: parent.verticalCenter

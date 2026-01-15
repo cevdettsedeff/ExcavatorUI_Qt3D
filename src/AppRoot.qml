@@ -220,7 +220,7 @@ ApplicationWindow {
                 }
             }
 
-            // ConfigDashboard'dan gelen sinyalleri dinle
+            // ConfigDashboard ve Main'den gelen sinyalleri dinle
             Connections {
                 target: viewLoader.item
                 ignoreUnknownSignals: true
@@ -236,6 +236,11 @@ ApplicationWindow {
                     if (authService) {
                         authService.logout()
                     }
+                }
+
+                function onGoToDashboard() {
+                    console.log("Config Dashboard'a dönülüyor...")
+                    currentView = "config-dashboard"
                 }
             }
 

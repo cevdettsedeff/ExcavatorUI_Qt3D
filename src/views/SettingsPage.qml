@@ -95,7 +95,7 @@ Rectangle {
                             descKey: "Screen theme, brightness and 3D model settings"
                             descTr: "Ekran teması, parlaklık ve 3D model ayarları"
                             pageName: "display"
-                            enabled: false
+                            enabled: true
                         }
                         ListElement {
                             icon: "🌐"
@@ -104,7 +104,7 @@ Rectangle {
                             descKey: "Language, distance and depth unit settings"
                             descTr: "Dil, mesafe ve derinlik birim ayarları"
                             pageName: "language"
-                            enabled: false
+                            enabled: true
                         }
                         ListElement {
                             icon: "🔒"
@@ -270,8 +270,11 @@ Rectangle {
                                     settingsStack.push(userManagementComponent)
                                 } else if (model.pageName === "screen") {
                                     settingsStack.push(screenSettingsComponent)
+                                } else if (model.pageName === "display") {
+                                    settingsStack.push(displaySettingsComponent)
+                                } else if (model.pageName === "language") {
+                                    settingsStack.push(languageSettingsComponent)
                                 }
-                                // Diğer sayfalar için benzer şekilde eklenebilir
                             }
 
                             onEntered: if (itemEnabled) parent.color = Qt.lighter(settingsPage.surfaceColor, 1.1)
@@ -729,6 +732,429 @@ Rectangle {
                         }
 
                         // Alt boşluk
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 20
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Görünüm (Display/Tema) Ayarları Sayfası Component
+    Component {
+        id: displaySettingsComponent
+
+        Rectangle {
+            color: settingsPage.color
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                // Geri butonu header
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: settingsPage.surfaceColor
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 15
+                        anchors.rightMargin: 15
+                        spacing: 15
+
+                        Button {
+                            text: "← " + tr("Back")
+                            flat: true
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: app.mediumFontSize
+                                color: settingsPage.primaryColor
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.2) : "transparent"
+                                radius: 8
+                            }
+
+                            onClicked: settingsStack.pop()
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Text {
+                            text: tr("Display")
+                            font.pixelSize: app.mediumFontSize
+                            font.bold: true
+                            color: settingsPage.textColor
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Item { width: 80 }
+                    }
+
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width
+                        height: 1
+                        color: settingsPage.borderColor
+                    }
+                }
+
+                // Tema Ayarları içeriği
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: parent.width
+                        spacing: 20
+                        anchors.margins: 20
+
+                        // Tema bölümü
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: themeContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: settingsPage.borderColor
+                            border.width: 1
+
+                            ColumnLayout {
+                                id: themeContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 20
+
+                                Text {
+                                    text: tr("Theme")
+                                    font.pixelSize: app.mediumFontSize
+                                    font.bold: true
+                                    color: settingsPage.textColor
+                                }
+
+                                // Tema seçimi
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 15
+
+                                    // Açık tema
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 100
+                                        radius: 12
+                                        color: themeManager && !themeManager.isDarkTheme ? settingsPage.primaryColor : Qt.darker(settingsPage.surfaceColor, 1.1)
+                                        border.color: themeManager && !themeManager.isDarkTheme ? settingsPage.primaryColor : settingsPage.borderColor
+                                        border.width: 2
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 8
+
+                                            Rectangle {
+                                                width: 40
+                                                height: 40
+                                                radius: 20
+                                                color: "#f7fafc"
+                                                border.color: "#e2e8f0"
+                                                border.width: 1
+                                                anchors.horizontalCenter: parent.horizontalCenter
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "☀️"
+                                                    font.pixelSize: 20
+                                                }
+                                            }
+
+                                            Text {
+                                                text: tr("Light")
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: themeManager && !themeManager.isDarkTheme ? "white" : settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                if (themeManager && themeManager.isDarkTheme) {
+                                                    themeManager.toggleTheme()
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Koyu tema
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 100
+                                        radius: 12
+                                        color: themeManager && themeManager.isDarkTheme ? settingsPage.primaryColor : Qt.darker(settingsPage.surfaceColor, 1.1)
+                                        border.color: themeManager && themeManager.isDarkTheme ? settingsPage.primaryColor : settingsPage.borderColor
+                                        border.width: 2
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 8
+
+                                            Rectangle {
+                                                width: 40
+                                                height: 40
+                                                radius: 20
+                                                color: "#2d3748"
+                                                border.color: "#4a5568"
+                                                border.width: 1
+                                                anchors.horizontalCenter: parent.horizontalCenter
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "🌙"
+                                                    font.pixelSize: 20
+                                                }
+                                            }
+
+                                            Text {
+                                                text: tr("Dark")
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: themeManager && themeManager.isDarkTheme ? "white" : settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                if (themeManager && !themeManager.isDarkTheme) {
+                                                    themeManager.toggleTheme()
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 20
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Dil & Birimler Ayarları Sayfası Component
+    Component {
+        id: languageSettingsComponent
+
+        Rectangle {
+            color: settingsPage.color
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                // Geri butonu header
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: settingsPage.surfaceColor
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 15
+                        anchors.rightMargin: 15
+                        spacing: 15
+
+                        Button {
+                            text: "← " + tr("Back")
+                            flat: true
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: app.mediumFontSize
+                                color: settingsPage.primaryColor
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.2) : "transparent"
+                                radius: 8
+                            }
+
+                            onClicked: settingsStack.pop()
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Text {
+                            text: tr("Language & Units")
+                            font.pixelSize: app.mediumFontSize
+                            font.bold: true
+                            color: settingsPage.textColor
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Item { width: 80 }
+                    }
+
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width
+                        height: 1
+                        color: settingsPage.borderColor
+                    }
+                }
+
+                // Dil Ayarları içeriği
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: parent.width
+                        spacing: 20
+                        anchors.margins: 20
+
+                        // Dil bölümü
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: languageContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: settingsPage.borderColor
+                            border.width: 1
+
+                            ColumnLayout {
+                                id: languageContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 20
+
+                                Text {
+                                    text: tr("Language")
+                                    font.pixelSize: app.mediumFontSize
+                                    font.bold: true
+                                    color: settingsPage.textColor
+                                }
+
+                                // Dil seçimi
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 15
+
+                                    // Türkçe
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 80
+                                        radius: 12
+                                        color: translationService && translationService.currentLanguage === "tr_TR" ? settingsPage.primaryColor : Qt.darker(settingsPage.surfaceColor, 1.1)
+                                        border.color: translationService && translationService.currentLanguage === "tr_TR" ? settingsPage.primaryColor : settingsPage.borderColor
+                                        border.width: 2
+
+                                        Row {
+                                            anchors.centerIn: parent
+                                            spacing: 12
+
+                                            Text {
+                                                text: "🇹🇷"
+                                                font.pixelSize: 28
+                                                anchors.verticalCenter: parent.verticalCenter
+                                            }
+
+                                            Text {
+                                                text: "Türkçe"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: translationService && translationService.currentLanguage === "tr_TR" ? "white" : settingsPage.textColor
+                                                anchors.verticalCenter: parent.verticalCenter
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                if (translationService && translationService.currentLanguage !== "tr_TR") {
+                                                    translationService.switchLanguage("tr_TR")
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // English
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 80
+                                        radius: 12
+                                        color: translationService && translationService.currentLanguage === "en_US" ? settingsPage.primaryColor : Qt.darker(settingsPage.surfaceColor, 1.1)
+                                        border.color: translationService && translationService.currentLanguage === "en_US" ? settingsPage.primaryColor : settingsPage.borderColor
+                                        border.width: 2
+
+                                        Row {
+                                            anchors.centerIn: parent
+                                            spacing: 12
+
+                                            Text {
+                                                text: "🇬🇧"
+                                                font.pixelSize: 28
+                                                anchors.verticalCenter: parent.verticalCenter
+                                            }
+
+                                            Text {
+                                                text: "English"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: translationService && translationService.currentLanguage === "en_US" ? "white" : settingsPage.textColor
+                                                anchors.verticalCenter: parent.verticalCenter
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                if (translationService && translationService.currentLanguage !== "en_US") {
+                                                    translationService.switchLanguage("en_US")
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Açıklama
+                                Text {
+                                    text: tr("App language will change immediately after selection")
+                                    font.pixelSize: app.smallFontSize
+                                    color: settingsPage.textSecondaryColor
+                                    wrapMode: Text.WordWrap
+                                    Layout.fillWidth: true
+                                }
+                            }
+                        }
+
                         Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 20

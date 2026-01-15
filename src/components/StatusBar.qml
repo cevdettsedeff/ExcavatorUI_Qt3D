@@ -28,6 +28,9 @@ Rectangle {
     property string currentTime: Qt.formatDateTime(new Date(), "HH:mm:ss")
 
     signal userIconClicked()
+    signal rtkClicked()
+    signal imuClicked()
+    signal goToDashboard()
 
     // Saat güncelleyici
     Timer {
@@ -44,7 +47,7 @@ Rectangle {
         anchors.fill: parent
         spacing: 0
 
-        // ÜST SATIR - Ekskavatör adı, kullanıcı, saat/tarih (Responsive)
+        // ÜST SATIR - Proje adı, ekskavatör, kullanıcı rolü, saat/tarih (Responsive)
         Rectangle {
             width: parent.width
             height: statusBar.rowHeight
@@ -56,71 +59,72 @@ Rectangle {
                 anchors.rightMargin: statusBar.height * 0.12
                 spacing: statusBar.height * 0.15
 
-                // SOL: Ekskavatör Adı (Responsive)
-                Row {
-                    spacing: statusBar.height * 0.06
-
-                    Rectangle {
-                        width: statusBar.miniIconSize * 0.6
-                        height: statusBar.miniIconSize * 0.6
-                        radius: width / 2
-                        color: "#4CAF50"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                        text: statusBar.excavatorName
-                        font.pixelSize: statusBar.baseFontSize
-                        font.bold: true
-                        color: "#ffffff"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                }
-
-                Item { Layout.fillWidth: true }
-
-                // ORTA: Kullanıcı Adı ve Rolü (Responsive)
+                // SOL: Proje Adı ve İkon (Responsive)
                 Row {
                     spacing: statusBar.height * 0.08
 
+                    // Proje ikonu (küp)
                     Rectangle {
-                        width: statusBar.iconSize
-                        height: statusBar.iconSize
-                        radius: width / 2
-                        color: "#3f51b5"
+                        width: statusBar.iconSize * 0.9
+                        height: statusBar.iconSize * 0.9
+                        radius: 4
+                        color: "#FF9800"
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
                             anchors.centerIn: parent
-                            text: authService && authService.currentUser ? authService.currentUser.charAt(0).toUpperCase() : "U"
+                            text: "◇"
                             font.pixelSize: statusBar.iconSize * 0.5
                             font.bold: true
                             color: "#ffffff"
                         }
                     }
 
-                    Column {
-                        spacing: statusBar.height * 0.02
+                    // Proje adı badge
+                    Rectangle {
+                        height: statusBar.rowHeight * 0.65
+                        width: projeNameText.width + statusBar.height * 0.2
+                        radius: statusBar.height * 0.04
+                        color: "#2a2a2a"
+                        border.color: "#444444"
+                        border.width: 1
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
-                            text: authService && authService.currentUser ? authService.currentUser : "Kullanıcı"
-                            font.pixelSize: statusBar.baseFontSize * 0.85
+                            id: projeNameText
+                            anchors.centerIn: parent
+                            text: statusBar.projectName
+                            font.pixelSize: statusBar.baseFontSize * 0.9
                             font.bold: true
                             color: "#ffffff"
-                        }
-
-                        Text {
-                            text: authService && authService.currentRole ? authService.currentRole : "Operatör"
-                            font.pixelSize: statusBar.smallFontSize
-                            color: "#888888"
                         }
                     }
                 }
 
+                // ORTA-SOL: Ekskavatör Adı (Responsive)
+                Text {
+                    text: statusBar.excavatorName
+                    font.pixelSize: statusBar.baseFontSize
+                    font.bold: true
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
                 Item { Layout.fillWidth: true }
 
-                // SAĞ: Saat ve Tarih (Responsive)
+                // ORTA-SAĞ: Kullanıcı Rolü (Sadece metin, ikon yok)
+                Text {
+                    text: (authService && authService.currentUser ? authService.currentUser : "admin") +
+                          " / " +
+                          (authService && authService.currentRole ? authService.currentRole : "Operator")
+                    font.pixelSize: statusBar.baseFontSize * 0.85
+                    color: "#888888"
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                Item { Layout.fillWidth: true }
+
+                // SAĞ: Saat ve Tarih + Menü (Responsive)
                 Row {
                     spacing: statusBar.height * 0.12
 
@@ -129,27 +133,20 @@ Rectangle {
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
-                            text: statusBar.currentTime
-                            font.pixelSize: statusBar.baseFontSize
+                            text: statusBar.currentDate + " | " + statusBar.currentTime.substring(0, 5)
+                            font.pixelSize: statusBar.baseFontSize * 0.9
                             font.bold: true
-                            color: "#00bcd4"
-                            anchors.right: parent.right
-                        }
-
-                        Text {
-                            text: statusBar.currentDate
-                            font.pixelSize: statusBar.smallFontSize
-                            color: "#888888"
+                            color: "#ffffff"
                             anchors.right: parent.right
                         }
                     }
 
-                    // Kullanıcı Menü İkonu (Responsive)
+                    // Menü İkonu (Responsive)
                     Rectangle {
                         width: statusBar.iconSize * 1.1
                         height: statusBar.iconSize * 1.1
                         radius: width / 2
-                        color: "#2a2a2a"
+                        color: menuMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
                         border.color: "#505050"
                         border.width: 1
                         anchors.verticalCenter: parent.verticalCenter
@@ -162,7 +159,9 @@ Rectangle {
                         }
 
                         MouseArea {
+                            id: menuMouseArea
                             anchors.fill: parent
+                            hoverEnabled: true
                             onClicked: statusBar.userIconClicked()
                         }
                     }
@@ -214,12 +213,13 @@ Rectangle {
                     Layout.fillWidth: true
                 }
 
-                // RTK Durumu - Detaylı (Responsive)
+                // RTK Durumu - Tıklanabilir (Responsive)
                 Rectangle {
+                    id: rtkBox
                     Layout.preferredWidth: statusBar.height * 0.85
                     Layout.preferredHeight: statusBar.rowHeight * 0.75
                     radius: statusBar.height * 0.04
-                    color: "#2a2a2a"
+                    color: rtkMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
                     border.color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
                     border.width: 1
 
@@ -254,7 +254,7 @@ Rectangle {
                             spacing: 0
 
                             Text {
-                                text: "RTK"
+                                text: "GNSS"
                                 font.pixelSize: statusBar.baseFontSize * 0.75
                                 font.bold: true
                                 color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
@@ -267,14 +267,48 @@ Rectangle {
                             }
                         }
                     }
+
+                    MouseArea {
+                        id: rtkMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: statusBar.rtkClicked()
+                    }
+
+                    ToolTip {
+                        visible: rtkMouseArea.containsMouse
+                        text: qsTr("RTK/GNSS Ayarları")
+                        delay: 500
+                    }
                 }
 
-                // IMU Durumu - Detaylı (Responsive)
+                // RTC Badge (Responsive)
                 Rectangle {
-                    Layout.preferredWidth: statusBar.height * 0.8
+                    Layout.preferredWidth: rtcText.width + statusBar.height * 0.12
                     Layout.preferredHeight: statusBar.rowHeight * 0.75
                     radius: statusBar.height * 0.04
                     color: "#2a2a2a"
+                    border.color: "#00bcd4"
+                    border.width: 1
+
+                    Text {
+                        id: rtcText
+                        anchors.centerIn: parent
+                        text: "RTC"
+                        font.pixelSize: statusBar.baseFontSize * 0.75
+                        font.bold: true
+                        color: "#00bcd4"
+                    }
+                }
+
+                // IMU Durumu - Tıklanabilir (Responsive)
+                Rectangle {
+                    id: imuBox
+                    Layout.preferredWidth: statusBar.height * 0.8
+                    Layout.preferredHeight: statusBar.rowHeight * 0.75
+                    radius: statusBar.height * 0.04
+                    color: imuMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
                     border.color: statusBar.imuOk ? "#4CAF50" : "#f44336"
                     border.width: 1
 
@@ -316,6 +350,20 @@ Rectangle {
                                 color: statusBar.imuOk ? "#4CAF50" : "#f44336"
                             }
                         }
+                    }
+
+                    MouseArea {
+                        id: imuMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: statusBar.imuClicked()
+                    }
+
+                    ToolTip {
+                        visible: imuMouseArea.containsMouse
+                        text: qsTr("IMU Sensör Ayarları")
+                        delay: 500
                     }
                 }
 
