@@ -74,10 +74,10 @@ Rectangle {
                             icon: "📡"
                             titleKey: "Sensors"
                             titleTr: "Sensörler"
-                            descKey: "IMU, GNSS, laser and other sensor settings"
-                            descTr: "IMU, GNSS, lazer ve diğer sensör ayarları"
+                            descKey: "IMU, GNSS, RTC calibration and sensor settings"
+                            descTr: "IMU, GNSS, RTC kalibrasyon ve sensör ayarları"
                             pageName: "sensors"
-                            enabled: false
+                            enabled: true
                         }
                         ListElement {
                             icon: "📍"
@@ -86,7 +86,7 @@ Rectangle {
                             descKey: "GNSS configuration, input and corrections"
                             descTr: "GNSS yapılandırması, giriş ve düzeltmeler"
                             pageName: "gps"
-                            enabled: false
+                            enabled: true
                         }
                         ListElement {
                             icon: "🖥️"
@@ -274,6 +274,10 @@ Rectangle {
                                     settingsStack.push(displaySettingsComponent)
                                 } else if (model.pageName === "language") {
                                     settingsStack.push(languageSettingsComponent)
+                                } else if (model.pageName === "sensors") {
+                                    settingsStack.push(sensorSettingsComponent)
+                                } else if (model.pageName === "gps") {
+                                    settingsStack.push(gpsSettingsComponent)
                                 }
                             }
 
@@ -1151,6 +1155,638 @@ Rectangle {
                                     color: settingsPage.textSecondaryColor
                                     wrapMode: Text.WordWrap
                                     Layout.fillWidth: true
+                                }
+                            }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 20
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Sensör Ayarları Sayfası Component
+    Component {
+        id: sensorSettingsComponent
+
+        Rectangle {
+            color: settingsPage.color
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                // Geri butonu header
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: settingsPage.surfaceColor
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 15
+                        anchors.rightMargin: 15
+                        spacing: 15
+
+                        Button {
+                            text: "← " + tr("Back")
+                            flat: true
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: app.mediumFontSize
+                                color: settingsPage.primaryColor
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.2) : "transparent"
+                                radius: 8
+                            }
+
+                            onClicked: settingsStack.pop()
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Text {
+                            text: tr("Sensors")
+                            font.pixelSize: app.mediumFontSize
+                            font.bold: true
+                            color: settingsPage.textColor
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Item { width: 80 }
+                    }
+
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width
+                        height: 1
+                        color: settingsPage.borderColor
+                    }
+                }
+
+                // Sensör Ayarları içeriği
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: parent.width
+                        spacing: 15
+                        anchors.margins: 15
+
+                        // IMU Sensör Kartı
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: imuContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: "#4CAF50"
+                            border.width: 2
+
+                            ColumnLayout {
+                                id: imuContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 15
+
+                                // Başlık
+                                RowLayout {
+                                    Layout.fillWidth: true
+
+                                    Rectangle {
+                                        width: 40
+                                        height: 40
+                                        radius: 20
+                                        color: "#4CAF50"
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "✓"
+                                            font.pixelSize: 20
+                                            font.bold: true
+                                            color: "white"
+                                        }
+                                    }
+
+                                    Column {
+                                        Layout.fillWidth: true
+                                        spacing: 2
+
+                                        Text {
+                                            text: "IMU " + tr("Sensor")
+                                            font.pixelSize: app.mediumFontSize
+                                            font.bold: true
+                                            color: settingsPage.textColor
+                                        }
+
+                                        Text {
+                                            text: tr("Connected") + " - OK"
+                                            font.pixelSize: app.smallFontSize
+                                            color: "#4CAF50"
+                                        }
+                                    }
+                                }
+
+                                // Kalibrasyon butonu
+                                Button {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 45
+
+                                    background: Rectangle {
+                                        radius: 8
+                                        color: parent.pressed ? Qt.darker("#FF9800", 1.2) : "#FF9800"
+                                    }
+
+                                    contentItem: Text {
+                                        text: tr("IMU Calibration")
+                                        font.pixelSize: app.baseFontSize
+                                        font.bold: true
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        console.log("IMU Kalibrasyon başlatılıyor...")
+                                    }
+                                }
+
+                                // IMU Verileri
+                                GridLayout {
+                                    Layout.fillWidth: true
+                                    columns: 3
+                                    rowSpacing: 10
+                                    columnSpacing: 10
+
+                                    // Pitch
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Pitch"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: imuService ? imuService.pitch.toFixed(2) + "°" : "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    // Roll
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Roll"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: imuService ? imuService.roll.toFixed(2) + "°" : "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    // Yaw
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Yaw"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: imuService ? imuService.yaw.toFixed(2) + "°" : "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // RTC Kartı
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: rtcContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: "#00bcd4"
+                            border.width: 2
+
+                            ColumnLayout {
+                                id: rtcContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 15
+
+                                // Başlık
+                                RowLayout {
+                                    Layout.fillWidth: true
+
+                                    Rectangle {
+                                        width: 40
+                                        height: 40
+                                        radius: 20
+                                        color: "#00bcd4"
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "⏱"
+                                            font.pixelSize: 18
+                                            color: "white"
+                                        }
+                                    }
+
+                                    Column {
+                                        Layout.fillWidth: true
+                                        spacing: 2
+
+                                        Text {
+                                            text: "RTC " + tr("Module")
+                                            font.pixelSize: app.mediumFontSize
+                                            font.bold: true
+                                            color: settingsPage.textColor
+                                        }
+
+                                        Text {
+                                            text: tr("Real Time Clock")
+                                            font.pixelSize: app.smallFontSize
+                                            color: "#00bcd4"
+                                        }
+                                    }
+                                }
+
+                                // Saat Senkronizasyonu butonu
+                                Button {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 45
+
+                                    background: Rectangle {
+                                        radius: 8
+                                        color: parent.pressed ? Qt.darker("#00bcd4", 1.2) : "#00bcd4"
+                                    }
+
+                                    contentItem: Text {
+                                        text: tr("Sync Time with GNSS")
+                                        font.pixelSize: app.baseFontSize
+                                        font.bold: true
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        console.log("RTC GNSS senkronizasyonu...")
+                                    }
+                                }
+                            }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 20
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // GPS Ayarları Sayfası Component
+    Component {
+        id: gpsSettingsComponent
+
+        Rectangle {
+            color: settingsPage.color
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                // Geri butonu header
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: settingsPage.surfaceColor
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 15
+                        anchors.rightMargin: 15
+                        spacing: 15
+
+                        Button {
+                            text: "← " + tr("Back")
+                            flat: true
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: app.mediumFontSize
+                                color: settingsPage.primaryColor
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.2) : "transparent"
+                                radius: 8
+                            }
+
+                            onClicked: settingsStack.pop()
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Text {
+                            text: "GPS / GNSS"
+                            font.pixelSize: app.mediumFontSize
+                            font.bold: true
+                            color: settingsPage.textColor
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Item { width: 80 }
+                    }
+
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width
+                        height: 1
+                        color: settingsPage.borderColor
+                    }
+                }
+
+                // GPS Ayarları içeriği
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: parent.width
+                        spacing: 15
+                        anchors.margins: 15
+
+                        // GNSS Durum Kartı
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: gnssContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: "#4CAF50"
+                            border.width: 2
+
+                            ColumnLayout {
+                                id: gnssContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 15
+
+                                // Başlık
+                                RowLayout {
+                                    Layout.fillWidth: true
+
+                                    // Sinyal çubukları
+                                    Row {
+                                        spacing: 3
+                                        height: 30
+
+                                        Repeater {
+                                            model: 4
+
+                                            Rectangle {
+                                                width: 6
+                                                height: 8 + index * 6
+                                                radius: 2
+                                                anchors.bottom: parent.bottom
+                                                color: index < 4 ? "#4CAF50" : "#555555"
+                                            }
+                                        }
+                                    }
+
+                                    Column {
+                                        Layout.fillWidth: true
+                                        spacing: 2
+
+                                        Text {
+                                            text: "GNSS / RTK"
+                                            font.pixelSize: app.mediumFontSize
+                                            font.bold: true
+                                            color: settingsPage.textColor
+                                        }
+
+                                        Text {
+                                            text: "RTK FIX - " + tr("High Precision")
+                                            font.pixelSize: app.smallFontSize
+                                            color: "#4CAF50"
+                                        }
+                                    }
+                                }
+
+                                // GPS Verileri
+                                GridLayout {
+                                    Layout.fillWidth: true
+                                    columns: 2
+                                    rowSpacing: 10
+                                    columnSpacing: 10
+
+                                    // Latitude
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: tr("Latitude")
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: "41.0082°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    // Longitude
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: tr("Longitude")
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: "28.9784°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    // Uydu Sayısı
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: tr("Satellites")
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: "12"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: "#4CAF50"
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    // HDOP
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "HDOP"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: "0.8"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: "#4CAF50"
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // NTRIP Ayarları butonu
+                                Button {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 45
+
+                                    background: Rectangle {
+                                        radius: 8
+                                        color: parent.pressed ? Qt.darker(settingsPage.primaryColor, 1.2) : settingsPage.primaryColor
+                                    }
+
+                                    contentItem: Text {
+                                        text: tr("NTRIP Settings")
+                                        font.pixelSize: app.baseFontSize
+                                        font.bold: true
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        console.log("NTRIP ayarları...")
+                                    }
                                 }
                             }
                         }

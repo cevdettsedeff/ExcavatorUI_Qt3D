@@ -53,13 +53,8 @@ Rectangle {
                 userMenu.open()
             }
 
-            onRtkClicked: {
-                // Ayarlar sayfasına git (index 4)
-                root.currentPageIndex = 4
-            }
-
-            onImuClicked: {
-                // Ayarlar sayfasına git (index 4)
+            onSensorClicked: {
+                // Sensör ayarları sayfasına git (index 4 = Ayarlar)
                 root.currentPageIndex = 4
             }
 
@@ -72,9 +67,9 @@ Rectangle {
         // Kullanıcı menüsü - Sadeleştirilmiş
         Menu {
             id: userMenu
-            x: root.width - 200
-            y: 50
-            width: 180
+            x: root.width - 220
+            y: statusBar.height
+            width: 200
 
             background: Rectangle {
                 color: themeManager ? themeManager.surfaceColor : "#2a2a2a"
@@ -84,20 +79,56 @@ Rectangle {
             }
 
             MenuItem {
-                text: "🏠 " + root.tr("Dashboard")
+                id: dashboardMenuItem
+                height: 48
                 onTriggered: {
                     statusBar.goToDashboard()
                 }
 
                 background: Rectangle {
-                    color: parent.highlighted ? Qt.rgba(0.2, 0.6, 0.6, 0.2) : "transparent"
+                    color: dashboardMenuItem.highlighted ? Qt.rgba(0.2, 0.6, 0.6, 0.2) : "transparent"
+                    radius: 4
                 }
 
-                contentItem: Text {
-                    text: parent.text
-                    font.pixelSize: 14
-                    color: themeManager ? themeManager.textColor : "#ffffff"
-                    verticalAlignment: Text.AlignVCenter
+                contentItem: Row {
+                    spacing: 12
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    // Dashboard ikonu - Image component (özel ikon için)
+                    Image {
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/icons/dashboard.png"
+                        width: 24
+                        height: 24
+                        fillMode: Image.PreserveAspectFit
+                        anchors.verticalCenter: parent.verticalCenter
+                        // Ikon yoksa fallback olarak Rectangle göster
+                        visible: status === Image.Ready
+                    }
+                    Rectangle {
+                        visible: dashboardIcon.status !== Image.Ready
+                        width: 24
+                        height: 24
+                        radius: 4
+                        color: "#4CAF50"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "⌂"
+                            font.pixelSize: 14
+                            color: "white"
+                        }
+
+                        property alias dashboardIcon: dashboardMenuItem.contentItem.children[0]
+                    }
+
+                    Text {
+                        text: root.tr("Dashboard")
+                        font.pixelSize: 16
+                        font.bold: true
+                        color: themeManager ? themeManager.textColor : "#ffffff"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
                 }
             }
 
@@ -109,7 +140,8 @@ Rectangle {
             }
 
             MenuItem {
-                text: "🚪 " + root.tr("Logout")
+                id: logoutMenuItem
+                height: 48
                 onTriggered: {
                     if (authService) {
                         authService.logout()
@@ -117,14 +149,48 @@ Rectangle {
                 }
 
                 background: Rectangle {
-                    color: parent.highlighted ? Qt.rgba(0.8, 0.2, 0.2, 0.2) : "transparent"
+                    color: logoutMenuItem.highlighted ? Qt.rgba(0.8, 0.2, 0.2, 0.2) : "transparent"
+                    radius: 4
                 }
 
-                contentItem: Text {
-                    text: parent.text
-                    font.pixelSize: 14
-                    color: themeManager ? themeManager.textColor : "#ffffff"
-                    verticalAlignment: Text.AlignVCenter
+                contentItem: Row {
+                    spacing: 12
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    // Çıkış ikonu - Image component (özel ikon için)
+                    Image {
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/icons/logout.png"
+                        width: 24
+                        height: 24
+                        fillMode: Image.PreserveAspectFit
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: status === Image.Ready
+                    }
+                    Rectangle {
+                        visible: logoutIcon.status !== Image.Ready
+                        width: 24
+                        height: 24
+                        radius: 4
+                        color: "#f44336"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "⏻"
+                            font.pixelSize: 14
+                            color: "white"
+                        }
+
+                        property alias logoutIcon: logoutMenuItem.contentItem.children[0]
+                    }
+
+                    Text {
+                        text: root.tr("Logout")
+                        font.pixelSize: 16
+                        font.bold: true
+                        color: themeManager ? themeManager.textColor : "#ffffff"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
                 }
             }
         }
