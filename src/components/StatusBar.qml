@@ -5,14 +5,15 @@ import QtQuick.Layouts
 // Üst Durum Çubuğu - Tek satır, tüm sensörler dahil - 10.1 inç responsive
 Rectangle {
     id: statusBar
-    height: Math.max(parent.height * 0.055, 55)  // Tek satır, daha kompakt
+    height: Math.max(parent.height * 0.055, 50)  // Tek satır, kompakt
     color: themeManager ? themeManager.backgroundColorDark : "#1a1a2e"
 
-    // Responsive boyutlar - BÜYÜTÜLMÜŞ
-    property real baseFontSize: height * 0.28  // Ana font: yüksekliğin %28'i
-    property real smallFontSize: height * 0.22  // Küçük font: yüksekliğin %22'si
-    property real iconSize: height * 0.55  // İkon boyutu: yüksekliğin %55'i
-    property real badgeHeight: height * 0.65  // Badge yüksekliği
+    // Responsive boyutlar - 10.1 inç için optimize
+    property real baseFontSize: height * 0.24  // Ana font: küçültüldü
+    property real smallFontSize: height * 0.20  // Küçük font
+    property real tinyFontSize: height * 0.18  // Çok küçük font (altlı üstlü için)
+    property real iconSize: height * 0.50  // İkon boyutu
+    property real badgeHeight: height * 0.60  // Badge yüksekliği
 
     // Properties
     property string projectName: "AŞ-KAZI-042"
@@ -52,27 +53,27 @@ Rectangle {
     // Tek satır içerik
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 12
-        anchors.rightMargin: 12
-        spacing: 10
+        anchors.leftMargin: 8
+        anchors.rightMargin: 8
+        spacing: 6
 
         // SOL: Proje İkonu + Proje Adı
         Row {
-            spacing: 8
+            spacing: 6
             Layout.alignment: Qt.AlignVCenter
 
             // Proje ikonu (küp)
             Rectangle {
-                width: statusBar.iconSize * 0.85
-                height: statusBar.iconSize * 0.85
-                radius: 4
+                width: statusBar.iconSize * 0.7
+                height: statusBar.iconSize * 0.7
+                radius: 3
                 color: "#FF9800"
                 anchors.verticalCenter: parent.verticalCenter
 
                 Text {
                     anchors.centerIn: parent
                     text: "◇"
-                    font.pixelSize: statusBar.iconSize * 0.45
+                    font.pixelSize: statusBar.iconSize * 0.38
                     font.bold: true
                     color: "#ffffff"
                 }
@@ -80,9 +81,9 @@ Rectangle {
 
             // Proje adı badge
             Rectangle {
-                height: statusBar.badgeHeight
-                width: projeNameText.width + 16
-                radius: 4
+                height: statusBar.badgeHeight * 0.85
+                width: projeNameText.width + 12
+                radius: 3
                 color: "#2a2a2a"
                 border.color: "#444444"
                 border.width: 1
@@ -92,17 +93,17 @@ Rectangle {
                     id: projeNameText
                     anchors.centerIn: parent
                     text: statusBar.projectName
-                    font.pixelSize: statusBar.baseFontSize
+                    font.pixelSize: statusBar.smallFontSize
                     font.bold: true
                     color: "#ffffff"
                 }
             }
         }
 
-        // Ekskavatör Adı
+        // Ekskavatör Adı - küçültüldü
         Text {
             text: statusBar.excavatorName
-            font.pixelSize: statusBar.baseFontSize * 1.1
+            font.pixelSize: statusBar.smallFontSize
             font.bold: true
             color: "#ffffff"
             Layout.alignment: Qt.AlignVCenter
@@ -223,14 +224,36 @@ Rectangle {
 
         Item { Layout.fillWidth: true }
 
-        // Kullanıcı Rolü
-        Text {
-            text: (authService && authService.currentUser ? authService.currentUser : "admin") +
-                  " / " +
-                  (authService && authService.currentRole ? authService.currentRole : "Operator")
-            font.pixelSize: statusBar.smallFontSize
-            color: "#888888"
+        // Kullanıcı Rolü - İkon + Altlı Üstlü
+        Row {
+            spacing: 5
             Layout.alignment: Qt.AlignVCenter
+
+            // Kullanıcı ikonu
+            Text {
+                text: "👤"
+                font.pixelSize: statusBar.smallFontSize
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            // Altlı üstlü kullanıcı bilgisi
+            Column {
+                spacing: 1
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                    text: authService && authService.currentUser ? authService.currentUser : "admin"
+                    font.pixelSize: statusBar.tinyFontSize
+                    font.bold: true
+                    color: "#ffffff"
+                }
+
+                Text {
+                    text: authService && authService.currentRole ? authService.currentRole : "Operator"
+                    font.pixelSize: statusBar.tinyFontSize
+                    color: "#888888"
+                }
+            }
         }
 
         // Ayırıcı çizgi
@@ -241,13 +264,36 @@ Rectangle {
             Layout.alignment: Qt.AlignVCenter
         }
 
-        // Tarih ve Saat
-        Text {
-            text: statusBar.currentDate + " | " + statusBar.currentTime
-            font.pixelSize: statusBar.baseFontSize
-            font.bold: true
-            color: "#ffffff"
+        // Tarih ve Saat - İkon + Altlı Üstlü
+        Row {
+            spacing: 5
             Layout.alignment: Qt.AlignVCenter
+
+            // Saat ikonu
+            Text {
+                text: "🕐"
+                font.pixelSize: statusBar.smallFontSize
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            // Altlı üstlü tarih/saat
+            Column {
+                spacing: 1
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                    text: statusBar.currentTime
+                    font.pixelSize: statusBar.tinyFontSize
+                    font.bold: true
+                    color: "#ffffff"
+                }
+
+                Text {
+                    text: statusBar.currentDate
+                    font.pixelSize: statusBar.tinyFontSize
+                    color: "#888888"
+                }
+            }
         }
 
         // Menü İkonu
