@@ -50,6 +50,18 @@ Rectangle {
         }
     }
 
+    // Sensör border yanıp sönme animasyonu
+    property bool sensorBorderVisible: true
+    Timer {
+        id: blinkTimer
+        interval: 800
+        running: true
+        repeat: true
+        onTriggered: {
+            statusBar.sensorBorderVisible = !statusBar.sensorBorderVisible
+        }
+    }
+
     // Tek satır içerik
     RowLayout {
         anchors.fill: parent
@@ -123,8 +135,14 @@ Rectangle {
                 height: statusBar.badgeHeight
                 radius: 4
                 color: gnssMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
-                border.color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
-                border.width: 1
+                border.color: statusBar.rtkConnected ?
+                    (statusBar.sensorBorderVisible ? "#4CAF50" : "#2a5a2a") :
+                    (statusBar.sensorBorderVisible ? "#f44336" : "#7a2a2a")
+                border.width: 2
+
+                Behavior on border.color {
+                    ColorAnimation { duration: 300 }
+                }
 
                 Row {
                     id: gnssContent
@@ -178,8 +196,14 @@ Rectangle {
                 height: statusBar.badgeHeight
                 radius: 4
                 color: imuMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
-                border.color: statusBar.imuOk ? "#4CAF50" : "#f44336"
-                border.width: 1
+                border.color: statusBar.imuOk ?
+                    (statusBar.sensorBorderVisible ? "#4CAF50" : "#2a5a2a") :
+                    (statusBar.sensorBorderVisible ? "#f44336" : "#7a2a2a")
+                border.width: 2
+
+                Behavior on border.color {
+                    ColorAnimation { duration: 300 }
+                }
 
                 Row {
                     id: imuContent

@@ -40,6 +40,25 @@ Rectangle {
         }
     }
 
+    // Kepçe Derinlik Göstergesi (Sol taraf) - Üstten alta kadar uzanır
+    BucketDepthIndicator {
+        id: bucketDepthIndicator
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: coordinateBar.top
+        anchors.leftMargin: app.smallPadding
+        anchors.topMargin: app.smallPadding
+        anchors.bottomMargin: app.smallPadding
+        width: app.largeIconSize * 3.3
+        z: 100  // Diğer elemanların üstünde
+
+        maxDepth: homePage.bucketMaxDepth
+        minDepth: homePage.bucketMinDepth
+        waterLevel: homePage.bucketWaterLevel
+        targetDepth: homePage.bucketTargetDepth
+        currentBucketDepth: homePage.bucketCurrentDepth
+    }
+
     // Ana içerik - Dikey düzen
     ColumnLayout {
         anchors.fill: parent
@@ -175,21 +194,8 @@ Rectangle {
                 }
             }
 
-            // Kepçe Derinlik Göstergesi (Sol taraf)
-            BucketDepthIndicator {
-                id: bucketDepthIndicator
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.margins: app.smallPadding
-                width: app.largeIconSize * 3.3
-
-                maxDepth: homePage.bucketMaxDepth
-                minDepth: homePage.bucketMinDepth
-                waterLevel: homePage.bucketWaterLevel
-                targetDepth: homePage.bucketTargetDepth
-                currentBucketDepth: homePage.bucketCurrentDepth
-            }
+            // Kepçe Derinlik Göstergesi - Ana sayfada gösterilmiyor, aşağı taşındı
+            // (Sol bar artık homePage seviyesinde)
 
             // Mouse kontrolü
             MouseArea {
@@ -217,27 +223,27 @@ Rectangle {
                 }
             }
 
-            // Sürüklenebilir Kontroller (Sağ taraf) - Responsive
+            // Sürüklenebilir Kontroller (Sağ taraf) - 10.1 inç için optimize
             Column {
                 id: manualControls
                 anchors.right: parent.right
                 anchors.top: view3DHeader.bottom
                 anchors.bottom: parent.bottom
-                anchors.margins: Math.max(5, parent.width * 0.01)
-                width: Math.max(100, Math.min(150, parent.width * 0.15))
-                spacing: Math.max(5, parent.height * 0.01)
+                anchors.margins: 4
+                width: Math.max(70, Math.min(90, parent.width * 0.12))
+                spacing: 2
 
                 // Başlık
                 Rectangle {
                     width: parent.width
-                    height: Math.max(30, Math.min(40, parent.width * 0.3))
+                    height: 22
                     color: themeManager ? themeManager.backgroundColorDark : "#1a2a3a"
-                    radius: 6
+                    radius: 4
 
                     Text {
                         anchors.centerIn: parent
                         text: tr("Manual Control")
-                        font.pixelSize: Math.max(9, Math.min(12, parent.width * 0.09))
+                        font.pixelSize: 8
                         font.bold: true
                         color: "#ffffff"
                     }
@@ -246,13 +252,13 @@ Rectangle {
                 // Rastgele Hareket Butonu
                 Button {
                     width: parent.width
-                    height: Math.max(35, Math.min(45, parent.width * 0.35))
+                    height: 28
 
                     background: Rectangle {
                         color: imuService && imuService.isRandomMode ? "#e91e63" : "#9c27b0"
-                        radius: 6
+                        radius: 4
                         border.color: imuService && imuService.isRandomMode ? "#f06292" : "#ba68c8"
-                        border.width: 2
+                        border.width: 1
 
                         Behavior on color {
                             ColorAnimation { duration: 200 }
@@ -262,7 +268,7 @@ Rectangle {
                     contentItem: Text {
                         anchors.centerIn: parent
                         text: imuService && imuService.isRandomMode ? tr("Stop") : tr("Test")
-                        font.pixelSize: Math.max(9, Math.min(12, parent.width * 0.1))
+                        font.pixelSize: 9
                         font.bold: true
                         color: "#ffffff"
                         horizontalAlignment: Text.AlignHCenter
@@ -285,11 +291,11 @@ Rectangle {
                 // Boom Kontrolü
                 Column {
                     width: parent.width
-                    spacing: Math.max(3, parent.width * 0.03)
+                    spacing: 1
 
                     Text {
                         text: "Boom"
-                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        font.pixelSize: 8
                         font.bold: true
                         color: "#ffc107"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -297,17 +303,17 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: Math.max(90, Math.min(120, parent.width * 0.9))
+                        height: (manualControls.height - 90) / 3  // Dinamik yükseklik
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
-                        radius: 6
+                        radius: 4
                         border.color: "#ffc107"
-                        border.width: 2
+                        border.width: 1
 
                         Slider {
                             id: boomSlider
                             anchors.centerIn: parent
-                            width: parent.height - 20
-                            height: parent.width - 20
+                            width: parent.height - 10
+                            height: parent.width - 10
                             orientation: Qt.Vertical
                             from: -25
                             to: 45
@@ -321,32 +327,32 @@ Rectangle {
                             }
 
                             background: Rectangle {
-                                x: boomSlider.leftPadding + (boomSlider.horizontal ? 0 : boomSlider.availableWidth / 2 - width / 2)
-                                y: boomSlider.topPadding + (boomSlider.horizontal ? boomSlider.availableHeight / 2 - height / 2 : 0)
-                                implicitWidth: boomSlider.horizontal ? 200 : 4
-                                implicitHeight: boomSlider.horizontal ? 4 : 200
-                                width: boomSlider.horizontal ? boomSlider.availableWidth : implicitWidth
-                                height: boomSlider.horizontal ? implicitHeight : boomSlider.availableHeight
+                                x: boomSlider.leftPadding + boomSlider.availableWidth / 2 - width / 2
+                                y: boomSlider.topPadding
+                                implicitWidth: 3
+                                implicitHeight: 200
+                                width: implicitWidth
+                                height: boomSlider.availableHeight
                                 radius: 2
                                 color: "#444444"
                             }
 
                             handle: Rectangle {
-                                x: boomSlider.leftPadding + (boomSlider.horizontal ? boomSlider.visualPosition * (boomSlider.availableWidth - width) : boomSlider.availableWidth / 2 - width / 2)
-                                y: boomSlider.topPadding + (boomSlider.horizontal ? boomSlider.availableHeight / 2 - height / 2 : boomSlider.visualPosition * (boomSlider.availableHeight - height))
-                                implicitWidth: 26
-                                implicitHeight: 26
-                                radius: 13
+                                x: boomSlider.leftPadding + boomSlider.availableWidth / 2 - width / 2
+                                y: boomSlider.topPadding + boomSlider.visualPosition * (boomSlider.availableHeight - height)
+                                implicitWidth: 18
+                                implicitHeight: 18
+                                radius: 9
                                 color: boomSlider.pressed ? "#f0a000" : "#ffc107"
                                 border.color: "#ffffff"
-                                border.width: 2
+                                border.width: 1
                             }
                         }
                     }
 
                     Text {
-                        text: (imuService ? imuService.boomAngle.toFixed(1) : "0.0") + "°"
-                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        text: (imuService ? imuService.boomAngle.toFixed(0) : "0") + "°"
+                        font.pixelSize: 8
                         color: "#ffc107"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -355,11 +361,11 @@ Rectangle {
                 // Arm Kontrolü
                 Column {
                     width: parent.width
-                    spacing: Math.max(3, parent.width * 0.03)
+                    spacing: 1
 
                     Text {
                         text: "Arm"
-                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        font.pixelSize: 8
                         font.bold: true
                         color: "#4CAF50"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -367,17 +373,17 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: Math.max(90, Math.min(120, parent.width * 0.9))
+                        height: (manualControls.height - 90) / 3
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
-                        radius: 6
+                        radius: 4
                         border.color: "#4CAF50"
-                        border.width: 2
+                        border.width: 1
 
                         Slider {
                             id: armSlider
                             anchors.centerIn: parent
-                            width: parent.height - 20
-                            height: parent.width - 20
+                            width: parent.height - 10
+                            height: parent.width - 10
                             orientation: Qt.Vertical
                             from: -60
                             to: 35
@@ -391,32 +397,32 @@ Rectangle {
                             }
 
                             background: Rectangle {
-                                x: armSlider.leftPadding + (armSlider.horizontal ? 0 : armSlider.availableWidth / 2 - width / 2)
-                                y: armSlider.topPadding + (armSlider.horizontal ? armSlider.availableHeight / 2 - height / 2 : 0)
-                                implicitWidth: armSlider.horizontal ? 200 : 4
-                                implicitHeight: armSlider.horizontal ? 4 : 200
-                                width: armSlider.horizontal ? armSlider.availableWidth : implicitWidth
-                                height: armSlider.horizontal ? implicitHeight : armSlider.availableHeight
+                                x: armSlider.leftPadding + armSlider.availableWidth / 2 - width / 2
+                                y: armSlider.topPadding
+                                implicitWidth: 3
+                                implicitHeight: 200
+                                width: implicitWidth
+                                height: armSlider.availableHeight
                                 radius: 2
                                 color: "#444444"
                             }
 
                             handle: Rectangle {
-                                x: armSlider.leftPadding + (armSlider.horizontal ? armSlider.visualPosition * (armSlider.availableWidth - width) : armSlider.availableWidth / 2 - width / 2)
-                                y: armSlider.topPadding + (armSlider.horizontal ? armSlider.availableHeight / 2 - height / 2 : armSlider.visualPosition * (armSlider.availableHeight - height))
-                                implicitWidth: 26
-                                implicitHeight: 26
-                                radius: 13
+                                x: armSlider.leftPadding + armSlider.availableWidth / 2 - width / 2
+                                y: armSlider.topPadding + armSlider.visualPosition * (armSlider.availableHeight - height)
+                                implicitWidth: 18
+                                implicitHeight: 18
+                                radius: 9
                                 color: armSlider.pressed ? "#2e7d32" : "#4CAF50"
                                 border.color: "#ffffff"
-                                border.width: 2
+                                border.width: 1
                             }
                         }
                     }
 
                     Text {
-                        text: (imuService ? imuService.armAngle.toFixed(1) : "0.0") + "°"
-                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        text: (imuService ? imuService.armAngle.toFixed(0) : "0") + "°"
+                        font.pixelSize: 8
                         color: "#4CAF50"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -425,11 +431,11 @@ Rectangle {
                 // Bucket Kontrolü
                 Column {
                     width: parent.width
-                    spacing: Math.max(3, parent.width * 0.03)
+                    spacing: 1
 
                     Text {
                         text: "Bucket"
-                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        font.pixelSize: 8
                         font.bold: true
                         color: "#2196F3"
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -437,17 +443,17 @@ Rectangle {
 
                     Rectangle {
                         width: parent.width
-                        height: Math.max(90, Math.min(120, parent.width * 0.9))
+                        height: (manualControls.height - 90) / 3
                         color: themeManager ? themeManager.backgroundColor : "#2a2a2a"
-                        radius: 6
+                        radius: 4
                         border.color: "#2196F3"
-                        border.width: 2
+                        border.width: 1
 
                         Slider {
                             id: bucketSlider
                             anchors.centerIn: parent
-                            width: parent.height - 20
-                            height: parent.width - 20
+                            width: parent.height - 10
+                            height: parent.width - 10
                             orientation: Qt.Vertical
                             from: -75
                             to: 50
@@ -461,32 +467,32 @@ Rectangle {
                             }
 
                             background: Rectangle {
-                                x: bucketSlider.leftPadding + (bucketSlider.horizontal ? 0 : bucketSlider.availableWidth / 2 - width / 2)
-                                y: bucketSlider.topPadding + (bucketSlider.horizontal ? bucketSlider.availableHeight / 2 - height / 2 : 0)
-                                implicitWidth: bucketSlider.horizontal ? 200 : 4
-                                implicitHeight: bucketSlider.horizontal ? 4 : 200
-                                width: bucketSlider.horizontal ? bucketSlider.availableWidth : implicitWidth
-                                height: bucketSlider.horizontal ? implicitHeight : bucketSlider.availableHeight
+                                x: bucketSlider.leftPadding + bucketSlider.availableWidth / 2 - width / 2
+                                y: bucketSlider.topPadding
+                                implicitWidth: 3
+                                implicitHeight: 200
+                                width: implicitWidth
+                                height: bucketSlider.availableHeight
                                 radius: 2
                                 color: "#444444"
                             }
 
                             handle: Rectangle {
-                                x: bucketSlider.leftPadding + (bucketSlider.horizontal ? bucketSlider.visualPosition * (bucketSlider.availableWidth - width) : bucketSlider.availableWidth / 2 - width / 2)
-                                y: bucketSlider.topPadding + (bucketSlider.horizontal ? bucketSlider.availableHeight / 2 - height / 2 : bucketSlider.visualPosition * (bucketSlider.availableHeight - height))
-                                implicitWidth: 26
-                                implicitHeight: 26
-                                radius: 13
+                                x: bucketSlider.leftPadding + bucketSlider.availableWidth / 2 - width / 2
+                                y: bucketSlider.topPadding + bucketSlider.visualPosition * (bucketSlider.availableHeight - height)
+                                implicitWidth: 18
+                                implicitHeight: 18
+                                radius: 9
                                 color: bucketSlider.pressed ? "#1565c0" : "#2196F3"
                                 border.color: "#ffffff"
-                                border.width: 2
+                                border.width: 1
                             }
                         }
                     }
 
                     Text {
-                        text: (imuService ? imuService.bucketAngle.toFixed(1) : "0.0") + "°"
-                        font.pixelSize: Math.max(8, Math.min(11, parent.width * 0.08))
+                        text: (imuService ? imuService.bucketAngle.toFixed(0) : "0") + "°"
+                        font.pixelSize: 8
                         color: "#2196F3"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -519,7 +525,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: tr("Top-Down View")
+                        text: tr("Top View")
                         font.pixelSize: app.baseFontSize
                         font.bold: true
                         color: "#ffffff"
