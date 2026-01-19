@@ -46,7 +46,7 @@ Rectangle {
         anchors.leftMargin: 2
         anchors.top: parent.top
         anchors.topMargin: barTop
-        width: 38
+        width: 40
 
         Repeater {
             id: scaleRepeater
@@ -75,23 +75,27 @@ Rectangle {
                     return 30
                 }
 
-                Text {
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    text: modelData + "m"
-                    font.pixelSize: 10
-                    font.bold: modelData === 0
-                    color: modelData === 0 ? "#00BCD4" : "#AAAAAA"
-                }
-
-                // Tick çizgisi
-                Rectangle {
+                // Tick çizgisi ve metin yan yana
+                Row {
                     anchors.right: parent.right
                     anchors.top: parent.top
-                    anchors.topMargin: 4
-                    width: 8
-                    height: modelData === 0 ? 4 : 2
-                    color: modelData === 0 ? "#00BCD4" : "#888888"
+                    spacing: 2
+
+                    Text {
+                        text: modelData + "m"
+                        font.pixelSize: 10
+                        font.bold: modelData === 0
+                        color: modelData === 0 ? "#00BCD4" : "#AAAAAA"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    // Tick çizgisi
+                    Rectangle {
+                        width: 6
+                        height: modelData === 0 ? 4 : 2
+                        color: modelData === 0 ? "#00BCD4" : "#888888"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
                 }
             }
         }

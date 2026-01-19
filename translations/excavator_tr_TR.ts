@@ -20,6 +20,10 @@
         <translation>Ekskavatör</translation>
     </message>
     <message>
+        <source>Project</source>
+        <translation>Proje</translation>
+    </message>
+    <message>
         <source>Map</source>
         <translation>Harita</translation>
     </message>

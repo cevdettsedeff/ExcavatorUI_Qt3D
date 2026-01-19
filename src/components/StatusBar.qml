@@ -69,7 +69,7 @@ Rectangle {
         anchors.rightMargin: 8
         spacing: 6
 
-        // SOL: Proje İkonu + Proje Adı
+        // SOL: Proje İkonu + Proje Adı (Altlı Üstlü)
         Row {
             spacing: 6
             Layout.alignment: Qt.AlignVCenter
@@ -91,19 +91,18 @@ Rectangle {
                 }
             }
 
-            // Proje adı badge
-            Rectangle {
-                height: statusBar.badgeHeight * 0.85
-                width: projeNameText.width + 12
-                radius: 3
-                color: "#2a2a2a"
-                border.color: "#444444"
-                border.width: 1
+            // Proje adı - Altlı üstlü
+            Column {
+                spacing: 1
                 anchors.verticalCenter: parent.verticalCenter
 
                 Text {
-                    id: projeNameText
-                    anchors.centerIn: parent
+                    text: tr("Project") + ":"
+                    font.pixelSize: statusBar.tinyFontSize
+                    color: "#888888"
+                }
+
+                Text {
                     text: statusBar.projectName
                     font.pixelSize: statusBar.smallFontSize
                     font.bold: true
@@ -112,13 +111,23 @@ Rectangle {
             }
         }
 
-        // Ekskavatör Adı - küçültüldü
-        Text {
-            text: statusBar.excavatorName
-            font.pixelSize: statusBar.smallFontSize
-            font.bold: true
-            color: "#ffffff"
+        // Ekskavatör Adı - Altlı Üstlü
+        Column {
+            spacing: 1
             Layout.alignment: Qt.AlignVCenter
+
+            Text {
+                text: tr("Excavator") + ":"
+                font.pixelSize: statusBar.tinyFontSize
+                color: "#888888"
+            }
+
+            Text {
+                text: statusBar.excavatorName
+                font.pixelSize: statusBar.smallFontSize
+                font.bold: true
+                color: "#ffffff"
+            }
         }
 
         Item { Layout.fillWidth: true }
