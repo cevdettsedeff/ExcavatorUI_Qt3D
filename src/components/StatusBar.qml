@@ -111,6 +111,14 @@ Rectangle {
             }
         }
 
+        // Ayırıcı çizgi - Proje ve Ekskavatör arası
+        Rectangle {
+            width: 1
+            height: statusBar.badgeHeight
+            color: "#444444"
+            Layout.alignment: Qt.AlignVCenter
+        }
+
         // Ekskavatör Adı - Altlı Üstlü
         Column {
             spacing: 1

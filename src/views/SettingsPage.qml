@@ -1245,25 +1245,24 @@ Rectangle {
                         spacing: 15
                         anchors.margins: 15
 
-                        // IMU Sensör Kartı
+                        // IMU 1 - Boom Sensör Kartı
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.margins: 15
-                            Layout.preferredHeight: imuContent.height + 40
+                            Layout.preferredHeight: imu1Content.height + 40
                             radius: 12
                             color: settingsPage.surfaceColor
                             border.color: "#4CAF50"
                             border.width: 2
 
                             ColumnLayout {
-                                id: imuContent
+                                id: imu1Content
                                 anchors.left: parent.left
                                 anchors.right: parent.right
                                 anchors.top: parent.top
                                 anchors.margins: 20
                                 spacing: 15
 
-                                // Başlık
                                 RowLayout {
                                     Layout.fillWidth: true
 
@@ -1287,7 +1286,7 @@ Rectangle {
                                         spacing: 2
 
                                         Text {
-                                            text: "IMU " + tr("Sensor")
+                                            text: "IMU 1 - Boom " + tr("Sensor")
                                             font.pixelSize: app.mediumFontSize
                                             font.bold: true
                                             color: settingsPage.textColor
@@ -1301,7 +1300,6 @@ Rectangle {
                                     }
                                 }
 
-                                // Kalibrasyon butonu
                                 Button {
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 45
@@ -1312,7 +1310,7 @@ Rectangle {
                                     }
 
                                     contentItem: Text {
-                                        text: tr("IMU Calibration")
+                                        text: "IMU 1 " + tr("Calibration")
                                         font.pixelSize: app.baseFontSize
                                         font.bold: true
                                         color: "white"
@@ -1321,18 +1319,16 @@ Rectangle {
                                     }
 
                                     onClicked: {
-                                        console.log("IMU Kalibrasyon başlatılıyor...")
+                                        console.log("IMU 1 Kalibrasyon başlatılıyor...")
                                     }
                                 }
 
-                                // IMU Verileri
                                 GridLayout {
                                     Layout.fillWidth: true
                                     columns: 3
                                     rowSpacing: 10
                                     columnSpacing: 10
 
-                                    // Pitch
                                     Rectangle {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 60
@@ -1351,7 +1347,7 @@ Rectangle {
                                             }
 
                                             Text {
-                                                text: imuService ? imuService.pitch.toFixed(2) + "°" : "0.00°"
+                                                text: imuService ? imuService.boomAngle.toFixed(2) + "°" : "0.00°"
                                                 font.pixelSize: app.baseFontSize
                                                 font.bold: true
                                                 color: settingsPage.textColor
@@ -1360,7 +1356,6 @@ Rectangle {
                                         }
                                     }
 
-                                    // Roll
                                     Rectangle {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 60
@@ -1379,7 +1374,7 @@ Rectangle {
                                             }
 
                                             Text {
-                                                text: imuService ? imuService.roll.toFixed(2) + "°" : "0.00°"
+                                                text: "0.00°"
                                                 font.pixelSize: app.baseFontSize
                                                 font.bold: true
                                                 color: settingsPage.textColor
@@ -1388,7 +1383,6 @@ Rectangle {
                                         }
                                     }
 
-                                    // Yaw
                                     Rectangle {
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 60
@@ -1407,7 +1401,343 @@ Rectangle {
                                             }
 
                                             Text {
-                                                text: imuService ? imuService.yaw.toFixed(2) + "°" : "0.00°"
+                                                text: "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // IMU 2 - Arm Sensör Kartı
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: imu2Content.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: "#4CAF50"
+                            border.width: 2
+
+                            ColumnLayout {
+                                id: imu2Content
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 15
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+
+                                    Rectangle {
+                                        width: 40
+                                        height: 40
+                                        radius: 20
+                                        color: "#4CAF50"
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "✓"
+                                            font.pixelSize: 20
+                                            font.bold: true
+                                            color: "white"
+                                        }
+                                    }
+
+                                    Column {
+                                        Layout.fillWidth: true
+                                        spacing: 2
+
+                                        Text {
+                                            text: "IMU 2 - Arm " + tr("Sensor")
+                                            font.pixelSize: app.mediumFontSize
+                                            font.bold: true
+                                            color: settingsPage.textColor
+                                        }
+
+                                        Text {
+                                            text: tr("Connected") + " - OK"
+                                            font.pixelSize: app.smallFontSize
+                                            color: "#4CAF50"
+                                        }
+                                    }
+                                }
+
+                                Button {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 45
+
+                                    background: Rectangle {
+                                        radius: 8
+                                        color: parent.pressed ? Qt.darker("#FF9800", 1.2) : "#FF9800"
+                                    }
+
+                                    contentItem: Text {
+                                        text: "IMU 2 " + tr("Calibration")
+                                        font.pixelSize: app.baseFontSize
+                                        font.bold: true
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        console.log("IMU 2 Kalibrasyon başlatılıyor...")
+                                    }
+                                }
+
+                                GridLayout {
+                                    Layout.fillWidth: true
+                                    columns: 3
+                                    rowSpacing: 10
+                                    columnSpacing: 10
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Pitch"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: imuService ? imuService.armAngle.toFixed(2) + "°" : "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Roll"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Yaw"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // IMU 3 - Bucket Sensör Kartı
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: imu3Content.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: "#4CAF50"
+                            border.width: 2
+
+                            ColumnLayout {
+                                id: imu3Content
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 15
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+
+                                    Rectangle {
+                                        width: 40
+                                        height: 40
+                                        radius: 20
+                                        color: "#4CAF50"
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "✓"
+                                            font.pixelSize: 20
+                                            font.bold: true
+                                            color: "white"
+                                        }
+                                    }
+
+                                    Column {
+                                        Layout.fillWidth: true
+                                        spacing: 2
+
+                                        Text {
+                                            text: "IMU 3 - Bucket " + tr("Sensor")
+                                            font.pixelSize: app.mediumFontSize
+                                            font.bold: true
+                                            color: settingsPage.textColor
+                                        }
+
+                                        Text {
+                                            text: tr("Connected") + " - OK"
+                                            font.pixelSize: app.smallFontSize
+                                            color: "#4CAF50"
+                                        }
+                                    }
+                                }
+
+                                Button {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 45
+
+                                    background: Rectangle {
+                                        radius: 8
+                                        color: parent.pressed ? Qt.darker("#FF9800", 1.2) : "#FF9800"
+                                    }
+
+                                    contentItem: Text {
+                                        text: "IMU 3 " + tr("Calibration")
+                                        font.pixelSize: app.baseFontSize
+                                        font.bold: true
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        console.log("IMU 3 Kalibrasyon başlatılıyor...")
+                                    }
+                                }
+
+                                GridLayout {
+                                    Layout.fillWidth: true
+                                    columns: 3
+                                    rowSpacing: 10
+                                    columnSpacing: 10
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Pitch"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: imuService ? imuService.bucketAngle.toFixed(2) + "°" : "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Roll"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: "0.00°"
+                                                font.pixelSize: app.baseFontSize
+                                                font.bold: true
+                                                color: settingsPage.textColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+                                        }
+                                    }
+
+                                    Rectangle {
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: 60
+                                        radius: 8
+                                        color: Qt.darker(settingsPage.surfaceColor, 1.1)
+
+                                        Column {
+                                            anchors.centerIn: parent
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Yaw"
+                                                font.pixelSize: app.smallFontSize
+                                                color: settingsPage.textSecondaryColor
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Text {
+                                                text: "0.00°"
                                                 font.pixelSize: app.baseFontSize
                                                 font.bold: true
                                                 color: settingsPage.textColor

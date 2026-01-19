@@ -43,7 +43,10 @@ Rectangle {
     // Ana Layout - Yatay (Sol: Derinlik Kartı, Sağ: İçerik)
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 4
+        anchors.leftMargin: 2
+        anchors.rightMargin: 4
+        anchors.topMargin: 4
+        anchors.bottomMargin: 4
         spacing: 4
 
         // SOL: Derinlik Göstergesi Kartı - Üstten alta uzanır
@@ -298,13 +301,13 @@ Rectangle {
                             }
                         }
 
-                        // Test Butonu
+                        // Test Butonu - Turkuaz
                         Rectangle {
                             width: 60
                             height: parent.height
-                            color: imuService && imuService.isRandomMode ? "#e91e63" : "#9c27b0"
+                            color: imuService && imuService.isRandomMode ? "#e91e63" : "#00BCD4"
                             radius: 4
-                            border.color: imuService && imuService.isRandomMode ? "#f06292" : "#ba68c8"
+                            border.color: imuService && imuService.isRandomMode ? "#f06292" : "#26C6DA"
                             border.width: 1
 
                             Text {
@@ -337,7 +340,7 @@ Rectangle {
                             height: parent.height
                             color: "#2a2a2a"
                             radius: 4
-                            border.color: "#ffc107"
+                            border.color: "#607D8B"
                             border.width: 2
 
                             Row {
@@ -349,7 +352,7 @@ Rectangle {
                                     text: "Boom"
                                     font.pixelSize: 9
                                     font.bold: true
-                                    color: "#ffc107"
+                                    color: "#90A4AE"
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 36
                                 }
@@ -386,7 +389,7 @@ Rectangle {
                                         width: 16
                                         height: 16
                                         radius: 8
-                                        color: boomSlider.pressed ? "#f0a000" : "#ffc107"
+                                        color: boomSlider.pressed ? "#546E7A" : "#607D8B"
                                         border.color: "#ffffff"
                                         border.width: 1
                                     }
@@ -396,7 +399,7 @@ Rectangle {
                                     text: (imuService ? imuService.boomAngle.toFixed(0) : "0") + "°"
                                     font.pixelSize: 10
                                     font.bold: true
-                                    color: "#ffc107"
+                                    color: "#90A4AE"
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 30
                                     horizontalAlignment: Text.AlignRight
@@ -410,7 +413,7 @@ Rectangle {
                             height: parent.height
                             color: "#2a2a2a"
                             radius: 4
-                            border.color: "#4CAF50"
+                            border.color: "#607D8B"
                             border.width: 2
 
                             Row {
@@ -422,7 +425,7 @@ Rectangle {
                                     text: "Arm"
                                     font.pixelSize: 9
                                     font.bold: true
-                                    color: "#4CAF50"
+                                    color: "#90A4AE"
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 36
                                 }
@@ -459,7 +462,7 @@ Rectangle {
                                         width: 16
                                         height: 16
                                         radius: 8
-                                        color: armSlider.pressed ? "#2e7d32" : "#4CAF50"
+                                        color: armSlider.pressed ? "#546E7A" : "#607D8B"
                                         border.color: "#ffffff"
                                         border.width: 1
                                     }
@@ -469,7 +472,7 @@ Rectangle {
                                     text: (imuService ? imuService.armAngle.toFixed(0) : "0") + "°"
                                     font.pixelSize: 10
                                     font.bold: true
-                                    color: "#4CAF50"
+                                    color: "#90A4AE"
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 30
                                     horizontalAlignment: Text.AlignRight
@@ -483,7 +486,7 @@ Rectangle {
                             height: parent.height
                             color: "#2a2a2a"
                             radius: 4
-                            border.color: "#2196F3"
+                            border.color: "#607D8B"
                             border.width: 2
 
                             Row {
@@ -495,7 +498,7 @@ Rectangle {
                                     text: "Bucket"
                                     font.pixelSize: 9
                                     font.bold: true
-                                    color: "#2196F3"
+                                    color: "#90A4AE"
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 36
                                 }
@@ -532,7 +535,7 @@ Rectangle {
                                         width: 16
                                         height: 16
                                         radius: 8
-                                        color: bucketSlider.pressed ? "#1565c0" : "#2196F3"
+                                        color: bucketSlider.pressed ? "#546E7A" : "#607D8B"
                                         border.color: "#ffffff"
                                         border.width: 1
                                     }
@@ -542,7 +545,7 @@ Rectangle {
                                     text: (imuService ? imuService.bucketAngle.toFixed(0) : "0") + "°"
                                     font.pixelSize: 10
                                     font.bold: true
-                                    color: "#2196F3"
+                                    color: "#90A4AE"
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 30
                                     horizontalAlignment: Text.AlignRight
@@ -556,7 +559,7 @@ Rectangle {
             // ALT: Mini Görünümler (yan yana)
             Row {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 160
+                Layout.preferredHeight: 180
                 spacing: 4
 
                 // Üstten Görünüm

@@ -1294,6 +1294,10 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <translation>IMU Kalibrasyonu</translation>
     </message>
     <message>
+        <source>Calibration</source>
+        <translation>Kalibrasyon</translation>
+    </message>
+    <message>
         <source>Module</source>
         <translation>Modül</translation>
     </message>
