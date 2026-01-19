@@ -20,6 +20,10 @@
         <translation>Ekskavatör</translation>
     </message>
     <message>
+        <source>Project</source>
+        <translation>Proje</translation>
+    </message>
+    <message>
         <source>Map</source>
         <translation>Harita</translation>
     </message>
@@ -1272,6 +1276,86 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
     <message>
         <source>APPLY</source>
         <translation>UYGULA</translation>
+    </message>
+    <message>
+        <source>Dashboard</source>
+        <translation>Dashboard</translation>
+    </message>
+    <message>
+        <source>Sensor</source>
+        <translation>Sensör</translation>
+    </message>
+    <message>
+        <source>Connected</source>
+        <translation>Bağlı</translation>
+    </message>
+    <message>
+        <source>IMU Calibration</source>
+        <translation>IMU Kalibrasyonu</translation>
+    </message>
+    <message>
+        <source>Calibration</source>
+        <translation>Kalibrasyon</translation>
+    </message>
+    <message>
+        <source>Module</source>
+        <translation>Modül</translation>
+    </message>
+    <message>
+        <source>Real Time Clock</source>
+        <translation>Gerçek Zamanlı Saat</translation>
+    </message>
+    <message>
+        <source>Sync Time with GNSS</source>
+        <translation>GNSS ile Saat Senkronize Et</translation>
+    </message>
+    <message>
+        <source>High Precision</source>
+        <translation>Yüksek Hassasiyet</translation>
+    </message>
+    <message>
+        <source>Latitude</source>
+        <translation>Enlem</translation>
+    </message>
+    <message>
+        <source>Longitude</source>
+        <translation>Boylam</translation>
+    </message>
+    <message>
+        <source>Satellites</source>
+        <translation>Uydular</translation>
+    </message>
+    <message>
+        <source>NTRIP Settings</source>
+        <translation>NTRIP Ayarları</translation>
+    </message>
+    <message>
+        <source>Theme</source>
+        <translation>Tema</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation>Dil</translation>
+    </message>
+    <message>
+        <source>App language will change immediately after selection</source>
+        <translation>Uygulama dili seçimden hemen sonra değişecektir</translation>
+    </message>
+    <message>
+        <source>Sürükle</source>
+        <translation>Sürükle</translation>
+    </message>
+    <message>
+        <source>Drag</source>
+        <translation>Sürükle</translation>
+    </message>
+    <message>
+        <source>Görünümü Sıfırla</source>
+        <translation>Görünümü Sıfırla</translation>
+    </message>
+    <message>
+        <source>Reset View</source>
+        <translation>Görünümü Sıfırla</translation>
     </message>
 </context>
 </TS>

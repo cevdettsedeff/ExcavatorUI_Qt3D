@@ -286,6 +286,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         resources/logos/netas_logo.png resources/logos/tcdd_teknik_logo.png
         resources/screensaver/excavator_screensaver.png
         RESOURCES resources/images/bucket.png
+        RESOURCES resources/icons/dashboard.png resources/icons/logout.png
 )
 
 target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
