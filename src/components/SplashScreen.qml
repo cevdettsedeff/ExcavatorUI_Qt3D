@@ -21,7 +21,7 @@ Rectangle {
         to: 1.0
         duration: displayDuration
         running: true
-        easing.type: Easing.InOutQuad
+        easing.type: Easing.Linear  // Linear for smooth consistent progress
 
         onFinished: {
             splashFinishedTimer.start()
@@ -105,7 +105,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.preferredWidth: 120
                     Layout.preferredHeight: 60
-                    source: "qrc:/ExcavatorUI_Qt3D/resources/logos/tkysm_logo.png"
+                    source: "qrc:/ExcavatorUI_Qt3D/resources/logos/tkysm_logo.jpg"
                     fillMode: Image.PreserveAspectFit
                     visible: status === Image.Ready
 
@@ -245,12 +245,7 @@ Rectangle {
                             GradientStop { position: 1.0; color: "#0891b2" }  // Darker turquoise
                         }
 
-                        Behavior on width {
-                            NumberAnimation {
-                                duration: 100
-                                easing.type: Easing.OutQuad
-                            }
-                        }
+                        // No Behavior - let it follow progress property smoothly
                     }
                 }
             }
