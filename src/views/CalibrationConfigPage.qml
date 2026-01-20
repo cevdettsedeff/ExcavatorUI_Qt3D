@@ -12,7 +12,7 @@ import QtQuick.Layouts
  */
 Rectangle {
     id: root
-    color: themeManager ? themeManager.backgroundColor : "#f7fafc"
+    color: themeManager ? themeManager.backgroundColor : "#1a1a2e"
 
     signal back()
     signal configSaved()
@@ -34,16 +34,20 @@ Rectangle {
     // Global responsive değişkenlere erişim
     property var app: ApplicationWindow.window
 
-    // Theme colors with fallbacks
-    property color primaryColor: themeManager ? themeManager.primaryColor : "#319795"
-    property color surfaceColor: themeManager ? themeManager.surfaceColor : "#ffffff"
-    property color backgroundColor: themeManager ? themeManager.backgroundColor : "#f7fafc"
-    property color textColor: themeManager ? themeManager.textColor : "#2d3748"
-    property color textSecondaryColor: themeManager ? themeManager.textSecondaryColor : "#718096"
-    property color borderColor: themeManager ? themeManager.borderColor : "#e2e8f0"
-    property color themeInfoColor: themeManager ? themeManager.infoColor : "#4299e1"
-    property color warningColor: themeManager ? themeManager.warningColor : "#ed8936"
-    property color successColor: themeManager ? themeManager.successColor : "#48bb78"
+    // Theme colors (dark theme optimized)
+    property color primaryColor: (themeManager && themeManager.primaryColor) ? themeManager.primaryColor : "#319795"
+    property color surfaceColor: (themeManager && themeManager.surfaceColor) ? themeManager.surfaceColor : "#ffffff"
+    property color backgroundColor: (themeManager && themeManager.backgroundColor) ? themeManager.backgroundColor : "#1a1a2e"
+    property color textColor: "white"
+    property color textSecondaryColor: "#a0aec0"
+    property color borderColor: Qt.rgba(1, 1, 1, 0.2)
+    property color cardColor: Qt.rgba(1, 1, 1, 0.05)
+    property color inputBgColor: Qt.rgba(1, 1, 1, 0.1)
+    property color inputBorderColor: Qt.rgba(1, 1, 1, 0.3)
+    property color filledBorderColor: "#319795"
+    property color infoColor: "#4299e1"
+    property color warningColor: "#ed8936"
+    property color successColor: "#48bb78"
 
     // Calibration settings (placeholder values - will be connected to ConfigManager)
     property real imuOffsetX: 0.0
@@ -124,10 +128,10 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: app.normalPadding
                 Layout.preferredHeight: infoContent.height + app.normalPadding * 1.5
-                color: Qt.rgba(root.themeInfoColor.r, root.themeInfoColor.g, root.themeInfoColor.b, 0.1)
+                color: Qt.rgba(root.infoColor.r, root.infoColor.g, root.infoColor.b, 0.1)
                 radius: app.normalRadius
                 border.width: 1
-                border.color: Qt.rgba(root.themeInfoColor.r, root.themeInfoColor.g, root.themeInfoColor.b, 0.3)
+                border.color: Qt.rgba(root.infoColor.r, root.infoColor.g, root.infoColor.b, 0.3)
 
                 RowLayout {
                     id: infoContent
@@ -157,7 +161,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: app.normalPadding
                 Layout.preferredHeight: imuContent.height + app.normalPadding * 2
-                color: root.surfaceColor
+                color: root.cardColor
                 radius: app.normalRadius
                 border.width: 1
                 border.color: root.borderColor
@@ -362,7 +366,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.margins: app.normalPadding
                 Layout.preferredHeight: gpsContent.height + app.normalPadding * 2
-                color: root.surfaceColor
+                color: root.cardColor
                 radius: app.normalRadius
                 border.width: 1
                 border.color: root.borderColor
@@ -470,7 +474,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: app.buttonHeight * 1.8
-        color: root.surfaceColor
+        color: root.cardColor
         border.width: 1
         border.color: root.borderColor
 
