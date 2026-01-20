@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "../components"
 
 /**
@@ -23,6 +24,41 @@ Rectangle {
 
     // Global responsive değişkenlere erişim
     property var app: ApplicationWindow.window
+
+    // FileDialog for loading existing projects
+    FileDialog {
+        id: projectFileDialog
+        title: root.tr("Proje Dosyası Seç")
+        currentFolder: Qt.resolvedUrl(".")
+        nameFilters: [root.tr("JSON Dosyaları (*.json)"), "All files (*)"]
+        fileMode: FileDialog.OpenFile
+
+        onAccepted: {
+            console.log("Selected project file:", selectedFile)
+            root.projectFilePath = selectedFile.toString()
+
+            // TODO: Load project from JSON file
+            // For now, just move to next step
+            if (root.projectMode === "existing" && root.projectFilePath !== "") {
+                // Validate and load JSON
+                loadProjectFromFile(root.projectFilePath)
+            }
+        }
+
+        onRejected: {
+            console.log("File selection cancelled")
+        }
+    }
+
+    // Function to load project from JSON file
+    function loadProjectFromFile(filePath) {
+        console.log("Loading project from:", filePath)
+        // TODO: Implement JSON loading logic
+        // For now, just proceed to next step
+        if (currentStep === 0) {
+            currentStep = 1
+        }
+    }
 
     // Translation support
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -545,6 +581,8 @@ Rectangle {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     root.projectMode = "existing"
+                                    // Open file dialog to select project file
+                                    projectFileDialog.open()
                                 }
                             }
 

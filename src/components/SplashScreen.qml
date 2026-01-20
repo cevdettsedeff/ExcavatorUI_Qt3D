@@ -55,7 +55,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.preferredWidth: 80
                     Layout.preferredHeight: 80
-                    source: "qrc:/resources/logos/uab_logo.png"
+                    source: "qrc:/ExcavatorUI_Qt3D/resources/logos/uab_logo.png"
                     fillMode: Image.PreserveAspectFit
                     visible: status === Image.Ready
 
@@ -105,7 +105,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.preferredWidth: 120
                     Layout.preferredHeight: 60
-                    source: "qrc:/resources/logos/tkysm_logo.png"
+                    source: "qrc:/ExcavatorUI_Qt3D/resources/logos/tkysm_logo.png"
                     fillMode: Image.PreserveAspectFit
                     visible: status === Image.Ready
 
@@ -149,7 +149,7 @@ Rectangle {
                 anchors.centerIn: parent
                 width: Math.min(parent.width * 0.7, 500)
                 height: Math.min(parent.height * 0.9, 350)
-                source: "qrc:/resources/images/excavator_wireframe.png"
+                source: "qrc:/ExcavatorUI_Qt3D/resources/images/excavator_wireframe.png"
                 fillMode: Image.PreserveAspectFit
                 visible: status === Image.Ready
 
@@ -270,7 +270,7 @@ Rectangle {
                     id: netasLogo
                     Layout.preferredWidth: 140
                     Layout.preferredHeight: 50
-                    source: "qrc:/resources/logos/netas_logo.png"
+                    source: "qrc:/ExcavatorUI_Qt3D/resources/logos/netas_logo.png"
                     fillMode: Image.PreserveAspectFit
                     visible: status === Image.Ready
 
@@ -295,7 +295,7 @@ Rectangle {
                     id: tcddLogo
                     Layout.preferredWidth: 140
                     Layout.preferredHeight: 50
-                    source: "qrc:/resources/logos/tcdd_teknik_logo.png"
+                    source: "qrc:/ExcavatorUI_Qt3D/resources/logos/tcdd_teknik_logo.png"
                     fillMode: Image.PreserveAspectFit
                     visible: status === Image.Ready
 

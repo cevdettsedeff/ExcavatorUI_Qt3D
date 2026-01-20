@@ -953,6 +953,102 @@ Rectangle {
                             }
                         }
 
+                        // Splash Screen Timeout Ayarı
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: splashTimeoutContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: settingsPage.borderColor
+                            border.width: 1
+
+                            ColumnLayout {
+                                id: splashTimeoutContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 20
+
+                                Text {
+                                    text: tr("Splash Screen Duration")
+                                    font.pixelSize: app.mediumFontSize
+                                    font.bold: true
+                                    color: settingsPage.textColor
+                                }
+
+                                Text {
+                                    Layout.fillWidth: true
+                                    text: tr("Set how long the splash screen is displayed when the application starts (1-10 seconds)")
+                                    font.pixelSize: app.smallFontSize
+                                    color: settingsPage.textSecondaryColor
+                                    wrapMode: Text.WordWrap
+                                }
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 15
+
+                                    Text {
+                                        text: tr("Duration:")
+                                        font.pixelSize: app.baseFontSize
+                                        color: settingsPage.textColor
+                                    }
+
+                                    Slider {
+                                        id: splashTimeoutSlider
+                                        Layout.fillWidth: true
+                                        from: 1000
+                                        to: 10000
+                                        stepSize: 500
+                                        value: configManager ? configManager.splashScreenTimeoutMilliseconds : 3000
+
+                                        onValueChanged: {
+                                            if (configManager && configManager.splashScreenTimeoutMilliseconds !== value) {
+                                                configManager.splashScreenTimeoutMilliseconds = value
+                                            }
+                                        }
+
+                                        background: Rectangle {
+                                            x: splashTimeoutSlider.leftPadding
+                                            y: splashTimeoutSlider.topPadding + splashTimeoutSlider.availableHeight / 2 - height / 2
+                                            width: splashTimeoutSlider.availableWidth
+                                            height: 6
+                                            radius: 3
+                                            color: settingsPage.borderColor
+
+                                            Rectangle {
+                                                width: splashTimeoutSlider.visualPosition * parent.width
+                                                height: parent.height
+                                                radius: parent.radius
+                                                color: settingsPage.primaryColor
+                                            }
+                                        }
+
+                                        handle: Rectangle {
+                                            x: splashTimeoutSlider.leftPadding + splashTimeoutSlider.visualPosition * (splashTimeoutSlider.availableWidth - width)
+                                            y: splashTimeoutSlider.topPadding + splashTimeoutSlider.availableHeight / 2 - height / 2
+                                            width: 20
+                                            height: 20
+                                            radius: 10
+                                            color: splashTimeoutSlider.pressed ? Qt.darker(settingsPage.primaryColor, 1.2) : settingsPage.primaryColor
+                                            border.color: "white"
+                                            border.width: 2
+                                        }
+                                    }
+
+                                    Text {
+                                        text: (configManager ? configManager.splashScreenTimeoutMilliseconds / 1000 : 3) + " " + tr("sec")
+                                        font.pixelSize: app.baseFontSize
+                                        font.bold: true
+                                        color: settingsPage.primaryColor
+                                        Layout.preferredWidth: 60
+                                    }
+                                }
+                            }
+                        }
+
                         Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 20
