@@ -64,8 +64,8 @@ ApplicationWindow {
     // ============================================
 
     // Mevcut görünüm durumu
-    // "login" -> "config-dashboard" -> "dashboard"
-    property string currentView: "login"
+    // "splash" -> "login" -> "config-dashboard" -> "dashboard"
+    property string currentView: "splash"
 
     // Screensaver durumu
     property bool screenSaverActive: false
@@ -209,6 +209,8 @@ ApplicationWindow {
 
             function getViewSource() {
                 switch (currentView) {
+                    case "splash":
+                        return "qrc:/ExcavatorUI_Qt3D/src/components/SplashScreen.qml"
                     case "login":
                         return "qrc:/ExcavatorUI_Qt3D/src/auth/LoginContainer.qml"
                     case "config-dashboard":
@@ -224,6 +226,11 @@ ApplicationWindow {
             Connections {
                 target: viewLoader.item
                 ignoreUnknownSignals: true
+
+                function onSplashFinished() {
+                    console.log("Splash screen tamamlandı, login ekranına geçiliyor...")
+                    currentView = "login"
+                }
 
                 function onConfigurationComplete() {
                     console.log("Konfigürasyon tamamlandı, ana dashboard'a geçiliyor...")
@@ -241,6 +248,15 @@ ApplicationWindow {
                 function onGoToDashboard() {
                     console.log("Config Dashboard'a dönülüyor...")
                     currentView = "config-dashboard"
+                }
+            }
+
+            // SplashScreen timeout değerini ConfigManager'dan al
+            onLoaded: {
+                if (currentView === "splash" && viewLoader.item) {
+                    if (configManager && configManager.splashScreenTimeoutMilliseconds) {
+                        viewLoader.item.displayDuration = configManager.splashScreenTimeoutMilliseconds
+                    }
                 }
             }
 

@@ -41,6 +41,9 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_alarmConfigured(false)
     , m_screenSaverEnabled(true)
     , m_screenSaverTimeoutSeconds(120)  // Varsayılan 2 dakika = 120 saniye
+    , m_splashScreenTimeoutMilliseconds(3000)  // Varsayılan 3 saniye = 3000 milisaniye
+    , m_safetyConfigured(false)
+    , m_calibrationConfigured(false)
 {
     setDefaultValues();
     initializeGridDepths();
@@ -164,6 +167,11 @@ void ConfigManager::parseConfig(const QJsonObject &json)
     // Parse screen saver settings
     if (json.contains("screen_saver") && json["screen_saver"].isObject()) {
         parseScreenSaverSettings(json["screen_saver"].toObject());
+    }
+
+    // Parse splash screen settings
+    if (json.contains("splash_screen") && json["splash_screen"].isObject()) {
+        parseSplashScreenSettings(json["splash_screen"].toObject());
     }
 
     // Parse excavator presets
@@ -333,7 +341,7 @@ QString ConfigManager::getDepthRangeName(double depth) const
 
 bool ConfigManager::isConfigured() const
 {
-    return m_excavatorConfigured && m_digAreaConfigured && m_mapConfigured && m_alarmConfigured;
+    return m_excavatorConfigured && m_digAreaConfigured && m_safetyConfigured && m_calibrationConfigured;
 }
 
 // Excavator setters
@@ -774,6 +782,24 @@ void ConfigManager::markAlarmConfigured()
     }
 }
 
+void ConfigManager::markSafetyConfigured()
+{
+    if (!m_safetyConfigured) {
+        m_safetyConfigured = true;
+        emit safetyConfiguredChanged();
+        emit isConfiguredChanged();
+    }
+}
+
+void ConfigManager::markCalibrationConfigured()
+{
+    if (!m_calibrationConfigured) {
+        m_calibrationConfigured = true;
+        emit calibrationConfiguredChanged();
+        emit isConfiguredChanged();
+    }
+}
+
 void ConfigManager::resetConfiguration()
 {
     m_excavatorConfigured = false;
@@ -908,6 +934,13 @@ void ConfigManager::parseScreenSaverSettings(const QJsonObject &screenSaverSetti
     }
 }
 
+void ConfigManager::parseSplashScreenSettings(const QJsonObject &splashScreenSettings)
+{
+    if (splashScreenSettings.contains("timeout_milliseconds")) {
+        setSplashScreenTimeoutMilliseconds(splashScreenSettings["timeout_milliseconds"].toInt(3000));
+    }
+}
+
 void ConfigManager::parseExcavatorPresets(const QJsonArray &presets)
 {
     m_excavatorPresets.clear();
@@ -951,6 +984,18 @@ void ConfigManager::setScreenSaverTimeoutSeconds(int seconds)
     if (m_screenSaverTimeoutSeconds != clampedSeconds) {
         m_screenSaverTimeoutSeconds = clampedSeconds;
         emit screenSaverTimeoutSecondsChanged();
+        saveConfig();  // Ayar değiştiğinde kaydet
+    }
+}
+
+// Splash Screen setters
+void ConfigManager::setSplashScreenTimeoutMilliseconds(int milliseconds)
+{
+    // Min: 1000 ms (1 saniye), Max: 10000 ms (10 saniye)
+    int clampedMilliseconds = qBound(1000, milliseconds, 10000);
+    if (m_splashScreenTimeoutMilliseconds != clampedMilliseconds) {
+        m_splashScreenTimeoutMilliseconds = clampedMilliseconds;
+        emit splashScreenTimeoutMillisecondsChanged();
         saveConfig();  // Ayar değiştiğinde kaydet
     }
 }
@@ -1044,6 +1089,11 @@ bool ConfigManager::saveConfig()
     screenSaver["enabled"] = m_screenSaverEnabled;
     screenSaver["timeout_seconds"] = m_screenSaverTimeoutSeconds;
     root["screen_saver"] = screenSaver;
+
+    // Splash Screen settings
+    QJsonObject splashScreen;
+    splashScreen["timeout_milliseconds"] = m_splashScreenTimeoutMilliseconds;
+    root["splash_screen"] = splashScreen;
 
     // Excavator presets
     QJsonArray presetsArray;

@@ -240,6 +240,8 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/DigAreaConfigPage.qml
         src/views/MapConfigPage.qml
         src/views/AlarmConfigPage.qml
+        src/views/SafetyConfigPage.qml
+        src/views/CalibrationConfigPage.qml
         src/views/ExcavatorView.qml
         src/views/MapView.qml
         src/views/SimpleMapView.qml
@@ -257,6 +259,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/components/Grid3D.qml
         src/components/BathymetricPlane.qml
         src/components/LoadingScreen.qml
+        src/components/SplashScreen.qml
         src/components/BathymetricMapCanvas.qml
         src/components/BathymetricLegend.qml
         src/components/MapDecorations.qml
