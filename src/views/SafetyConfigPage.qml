@@ -30,8 +30,33 @@ Rectangle {
         }
     }
 
-    // Global responsive değişkenlere erişim
-    property var app: ApplicationWindow.window
+    // Global responsive değişkenlere erişim - fallback ile
+    property var app: ApplicationWindow.window || defaultAppValues
+
+    // Fallback values for when ApplicationWindow.window is not available yet
+    readonly property QtObject defaultAppValues: QtObject {
+        property real fontScale: 1.0
+        property real baseFontSize: 16
+        property real smallFontSize: 14
+        property real mediumFontSize: 20
+        property real largeFontSize: 24
+        property real buttonHeight: 60
+        property real smallButtonHeight: 50
+        property real largeButtonHeight: 70
+        property real smallSpacing: 10
+        property real normalSpacing: 16
+        property real largeSpacing: 26
+        property real xlSpacing: 40
+        property real smallPadding: 12
+        property real normalPadding: 20
+        property real largePadding: 32
+        property real smallRadius: 4
+        property real normalRadius: 8
+        property real largeRadius: 12
+        property real smallIconSize: 20
+        property real normalIconSize: 24
+        property real largeIconSize: 32
+    }
 
     // Theme colors (dark theme optimized)
     property color primaryColor: (themeManager && themeManager.primaryColor) ? themeManager.primaryColor : "#319795"
