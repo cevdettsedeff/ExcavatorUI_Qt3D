@@ -290,6 +290,9 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         resources/screensaver/excavator_screensaver.png
         RESOURCES resources/images/bucket.png
         RESOURCES resources/icons/dashboard.png resources/icons/logout.png
+        RESOURCES resources/icons/config_calibration.png resources/icons/config_safety.png
+        RESOURCES resources/logos/tkysm_logo.jpg resources/logos/uab_logo.png
+        RESOURCES resources/images/excavator_wireframe.png
 )
 
 target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
