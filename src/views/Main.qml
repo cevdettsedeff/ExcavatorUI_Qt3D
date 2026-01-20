@@ -12,7 +12,7 @@ Rectangle {
     id: root
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
 
-    property bool contentLoaded: false
+    property bool contentLoaded: true
     property int currentPageIndex: 0
 
     // Dashboard'a dönüş sinyali
@@ -242,101 +242,5 @@ Rectangle {
         }
     }
 
-    // Loading Screen (inline - module import sorunu için)
-    Rectangle {
-        id: loadingScreen
-        anchors.fill: parent
-        z: 1000
-        color: themeManager ? themeManager.backgroundColor : "#2d3748"
-        visible: !root.contentLoaded
-        opacity: root.contentLoaded ? 0 : 1
-
-        property real progress: 0.0
-        property real loadProgress: 0.0
-        property real targetProgress: 0.0
-
-        Column {
-            anchors.centerIn: parent
-            spacing: 30
-
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "ExcavatorUI"
-                font.pixelSize: 48
-                font.bold: true
-                color: "#4CAF50"
-            }
-
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "Yükleniyor..."
-                font.pixelSize: 20
-                color: "#888888"
-            }
-
-            // Progress bar
-            Rectangle {
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 300
-                height: 8
-                radius: 4
-                color: "#333333"
-
-                Rectangle {
-                    width: parent.width * loadingScreen.progress
-                    height: parent.height
-                    radius: 4
-                    color: "#4CAF50"
-
-                    Behavior on width {
-                        NumberAnimation { duration: 100 }
-                    }
-                }
-            }
-
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: Math.round(loadingScreen.progress * 100) + "%"
-                font.pixelSize: 16
-                color: "#888888"
-            }
-        }
-
-        Timer {
-            interval: 30
-            repeat: true
-            running: !root.contentLoaded
-
-            onTriggered: {
-                if (root.contentLoaded) {
-                    loadingScreen.targetProgress = 1.0
-                } else {
-                    if (loadingScreen.targetProgress < 0.9) {
-                        loadingScreen.targetProgress += 0.02
-                    }
-                }
-
-                if (loadingScreen.loadProgress < loadingScreen.targetProgress) {
-                    var diff = loadingScreen.targetProgress - loadingScreen.loadProgress
-                    loadingScreen.loadProgress += diff * 0.15
-                }
-
-                loadingScreen.progress = loadingScreen.loadProgress
-            }
-        }
-
-        Behavior on opacity {
-            NumberAnimation { duration: 500 }
-        }
-    }
-
-    Timer {
-        id: loadingCompleteTimer
-        interval: 1500
-        running: true
-        onTriggered: {
-            root.contentLoaded = true
-        }
-    }
 
 }

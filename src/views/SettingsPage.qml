@@ -89,6 +89,24 @@ Rectangle {
                             enabled: true
                         }
                         ListElement {
+                            icon: "🔵"
+                            titleKey: "Bluetooth"
+                            titleTr: "Bluetooth"
+                            descKey: "Bluetooth connection and device management"
+                            descTr: "Bluetooth bağlantısı ve cihaz yönetimi"
+                            pageName: "bluetooth"
+                            enabled: true
+                        }
+                        ListElement {
+                            icon: "🔊"
+                            titleKey: "Audio"
+                            titleTr: "Ses"
+                            descKey: "Volume, notification sounds and audio settings"
+                            descTr: "Ses seviyesi, bildirim sesleri ve ses ayarları"
+                            pageName: "audio"
+                            enabled: true
+                        }
+                        ListElement {
                             icon: "🖥️"
                             titleKey: "Display"
                             titleTr: "Görünüm"
@@ -278,6 +296,10 @@ Rectangle {
                                     settingsStack.push(sensorSettingsComponent)
                                 } else if (model.pageName === "gps") {
                                     settingsStack.push(gpsSettingsComponent)
+                                } else if (model.pageName === "bluetooth") {
+                                    settingsStack.push(bluetoothSettingsComponent)
+                                } else if (model.pageName === "audio") {
+                                    settingsStack.push(audioSettingsComponent)
                                 }
                             }
 
@@ -2182,6 +2204,476 @@ Rectangle {
                                     onClicked: {
                                         console.log("NTRIP ayarları...")
                                     }
+                                }
+                            }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 20
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Bluetooth Ayarları Sayfası Component
+    Component {
+        id: bluetoothSettingsComponent
+
+        Rectangle {
+            color: settingsPage.color
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                // Geri butonu header
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: settingsPage.surfaceColor
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 15
+                        anchors.rightMargin: 15
+                        spacing: 15
+
+                        Button {
+                            text: "← " + tr("Back")
+                            flat: true
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: app.mediumFontSize
+                                color: settingsPage.primaryColor
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.2) : "transparent"
+                                radius: 8
+                            }
+
+                            onClicked: settingsStack.pop()
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Text {
+                            text: tr("Bluetooth")
+                            font.pixelSize: app.mediumFontSize
+                            font.bold: true
+                            color: settingsPage.textColor
+                        }
+
+                        Item { Layout.fillWidth: true }
+                        Item { width: 80 }
+                    }
+
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width
+                        height: 1
+                        color: settingsPage.borderColor
+                    }
+                }
+
+                // Bluetooth Ayarları içeriği
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: parent.width
+                        spacing: 20
+                        anchors.margins: 20
+
+                        // Bluetooth Durum
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: bluetoothStatusContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: settingsPage.borderColor
+                            border.width: 1
+
+                            ColumnLayout {
+                                id: bluetoothStatusContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 20
+
+                                Text {
+                                    text: tr("Bluetooth Durumu")
+                                    font.pixelSize: app.mediumFontSize
+                                    font.bold: true
+                                    color: settingsPage.textColor
+                                }
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 15
+
+                                    Text {
+                                        text: tr("Bluetooth Açık/Kapalı")
+                                        font.pixelSize: app.baseFontSize
+                                        color: settingsPage.textColor
+                                        Layout.fillWidth: true
+                                    }
+
+                                    Switch {
+                                        id: bluetoothEnabledSwitch
+                                        checked: true
+                                        Layout.preferredHeight: app.buttonHeight / 2
+                                    }
+                                }
+
+                                Text {
+                                    text: tr("Bluetooth bağlantısını açıp kapatabilirsiniz")
+                                    font.pixelSize: app.smallFontSize
+                                    color: settingsPage.textSecondaryColor
+                                    wrapMode: Text.WordWrap
+                                    Layout.fillWidth: true
+                                }
+                            }
+                        }
+
+                        // Bağlı Cihazlar
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: bluetoothDevicesContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: settingsPage.borderColor
+                            border.width: 1
+
+                            ColumnLayout {
+                                id: bluetoothDevicesContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 20
+
+                                Text {
+                                    text: tr("Bağlı Cihazlar")
+                                    font.pixelSize: app.mediumFontSize
+                                    font.bold: true
+                                    color: settingsPage.textColor
+                                }
+
+                                Text {
+                                    text: tr("Henüz bağlı cihaz bulunmamaktadır")
+                                    font.pixelSize: app.baseFontSize
+                                    color: settingsPage.textSecondaryColor
+                                    Layout.fillWidth: true
+                                }
+
+                                Button {
+                                    Layout.preferredWidth: 200
+                                    Layout.preferredHeight: app.buttonHeight
+                                    text: tr("Yeni Cihaz Ara")
+
+                                    background: Rectangle {
+                                        radius: 8
+                                        color: parent.pressed ? Qt.darker(settingsPage.primaryColor, 1.2) : settingsPage.primaryColor
+                                    }
+
+                                    contentItem: Text {
+                                        text: parent.text
+                                        font.pixelSize: app.baseFontSize
+                                        font.bold: true
+                                        color: "white"
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                    }
+
+                                    onClicked: {
+                                        console.log("Bluetooth cihaz arama...")
+                                    }
+                                }
+                            }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 20
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Ses Ayarları Sayfası Component
+    Component {
+        id: audioSettingsComponent
+
+        Rectangle {
+            color: settingsPage.color
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                // Geri butonu header
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 50
+                    color: settingsPage.surfaceColor
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 15
+                        anchors.rightMargin: 15
+                        spacing: 15
+
+                        Button {
+                            text: "← " + tr("Back")
+                            flat: true
+
+                            contentItem: Text {
+                                text: parent.text
+                                font.pixelSize: app.mediumFontSize
+                                color: settingsPage.primaryColor
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.pressed ? Qt.rgba(settingsPage.primaryColor.r, settingsPage.primaryColor.g, settingsPage.primaryColor.b, 0.2) : "transparent"
+                                radius: 8
+                            }
+
+                            onClicked: settingsStack.pop()
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        Text {
+                            text: tr("Audio")
+                            font.pixelSize: app.mediumFontSize
+                            font.bold: true
+                            color: settingsPage.textColor
+                        }
+
+                        Item { Layout.fillWidth: true }
+                        Item { width: 80 }
+                    }
+
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width
+                        height: 1
+                        color: settingsPage.borderColor
+                    }
+                }
+
+                // Ses Ayarları içeriği
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: parent.width
+                        spacing: 20
+                        anchors.margins: 20
+
+                        // Ses Durumu
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: audioStatusContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: settingsPage.borderColor
+                            border.width: 1
+
+                            ColumnLayout {
+                                id: audioStatusContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 20
+
+                                Text {
+                                    text: tr("Ses Ayarları")
+                                    font.pixelSize: app.mediumFontSize
+                                    font.bold: true
+                                    color: settingsPage.textColor
+                                }
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 15
+
+                                    Text {
+                                        text: tr("Ses Açık/Kapalı")
+                                        font.pixelSize: app.baseFontSize
+                                        color: settingsPage.textColor
+                                        Layout.fillWidth: true
+                                    }
+
+                                    Switch {
+                                        id: audioEnabledSwitch
+                                        checked: true
+                                        Layout.preferredHeight: app.buttonHeight / 2
+                                    }
+                                }
+
+                                Text {
+                                    text: tr("Sistem seslerini açıp kapatabilirsiniz")
+                                    font.pixelSize: app.smallFontSize
+                                    color: settingsPage.textSecondaryColor
+                                    wrapMode: Text.WordWrap
+                                    Layout.fillWidth: true
+                                }
+                            }
+                        }
+
+                        // Ses Seviyesi
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: audioVolumeContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: settingsPage.borderColor
+                            border.width: 1
+
+                            ColumnLayout {
+                                id: audioVolumeContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 20
+
+                                Text {
+                                    text: tr("Ses Seviyesi")
+                                    font.pixelSize: app.mediumFontSize
+                                    font.bold: true
+                                    color: settingsPage.textColor
+                                }
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 15
+
+                                    Text {
+                                        text: tr("Genel Ses")
+                                        font.pixelSize: app.baseFontSize
+                                        color: settingsPage.textColor
+                                        Layout.preferredWidth: 120
+                                    }
+
+                                    Slider {
+                                        id: masterVolumeSlider
+                                        from: 0
+                                        to: 100
+                                        value: 75
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: app.buttonHeight
+                                    }
+
+                                    Text {
+                                        text: Math.round(masterVolumeSlider.value) + "%"
+                                        font.pixelSize: app.baseFontSize
+                                        color: settingsPage.textColor
+                                        Layout.preferredWidth: 50
+                                    }
+                                }
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 15
+
+                                    Text {
+                                        text: tr("Alarm Sesi")
+                                        font.pixelSize: app.baseFontSize
+                                        color: settingsPage.textColor
+                                        Layout.preferredWidth: 120
+                                    }
+
+                                    Slider {
+                                        id: alarmVolumeSlider
+                                        from: 0
+                                        to: 100
+                                        value: 100
+                                        Layout.fillWidth: true
+                                        Layout.preferredHeight: app.buttonHeight
+                                    }
+
+                                    Text {
+                                        text: Math.round(alarmVolumeSlider.value) + "%"
+                                        font.pixelSize: app.baseFontSize
+                                        color: settingsPage.textColor
+                                        Layout.preferredWidth: 50
+                                    }
+                                }
+                            }
+                        }
+
+                        // Bildirim Sesleri
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.margins: 15
+                            Layout.preferredHeight: notificationContent.height + 40
+                            radius: 12
+                            color: settingsPage.surfaceColor
+                            border.color: settingsPage.borderColor
+                            border.width: 1
+
+                            ColumnLayout {
+                                id: notificationContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: 20
+                                spacing: 20
+
+                                Text {
+                                    text: tr("Bildirim Sesleri")
+                                    font.pixelSize: app.mediumFontSize
+                                    font.bold: true
+                                    color: settingsPage.textColor
+                                }
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 15
+
+                                    Text {
+                                        text: tr("Bildirim Sesi Aktif")
+                                        font.pixelSize: app.baseFontSize
+                                        color: settingsPage.textColor
+                                        Layout.fillWidth: true
+                                    }
+
+                                    Switch {
+                                        id: notificationSoundSwitch
+                                        checked: true
+                                        Layout.preferredHeight: app.buttonHeight / 2
+                                    }
+                                }
+
+                                Text {
+                                    text: tr("Sistem bildirimleri için ses çalmayı açıp kapatabilirsiniz")
+                                    font.pixelSize: app.smallFontSize
+                                    color: settingsPage.textSecondaryColor
+                                    wrapMode: Text.WordWrap
+                                    Layout.fillWidth: true
                                 }
                             }
                         }

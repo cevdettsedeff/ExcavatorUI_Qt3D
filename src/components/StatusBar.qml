@@ -26,6 +26,8 @@ Rectangle {
     property string excavatorName: "CAT 390F LME"
     property string currentDate: Qt.formatDateTime(new Date(), "dd.MM.yyyy")
     property string currentTime: Qt.formatDateTime(new Date(), "HH:mm")
+    property bool bluetoothEnabled: true
+    property bool audioEnabled: true
 
     // Signals
     signal userIconClicked()
@@ -259,6 +261,65 @@ Rectangle {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: statusBar.sensorClicked()
+                }
+            }
+
+            // Bluetooth Toggle
+            Rectangle {
+                id: bluetoothBox
+                width: statusBar.iconSize * 1.2
+                height: statusBar.iconSize * 1.2
+                radius: 4
+                color: bluetoothMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
+                border.color: statusBar.bluetoothEnabled ? "#2196F3" : "#666666"
+                border.width: 1
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "🔵"
+                    font.pixelSize: statusBar.smallFontSize * 0.9
+                    opacity: statusBar.bluetoothEnabled ? 1.0 : 0.4
+                }
+
+                MouseArea {
+                    id: bluetoothMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        statusBar.bluetoothEnabled = !statusBar.bluetoothEnabled
+                        console.log("Bluetooth:", statusBar.bluetoothEnabled ? "Açık" : "Kapalı")
+                    }
+                }
+            }
+
+            // Audio Toggle
+            Rectangle {
+                id: audioBox
+                width: statusBar.iconSize * 1.2
+                height: statusBar.iconSize * 1.2
+                radius: 4
+                color: audioMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
+                border.color: statusBar.audioEnabled ? "#FF9800" : "#666666"
+                border.width: 1
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                    anchors.centerIn: parent
+                    text: statusBar.audioEnabled ? "🔊" : "🔇"
+                    font.pixelSize: statusBar.smallFontSize * 0.9
+                }
+
+                MouseArea {
+                    id: audioMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        statusBar.audioEnabled = !statusBar.audioEnabled
+                        console.log("Ses:", statusBar.audioEnabled ? "Açık" : "Kapalı")
+                    }
                 }
             }
         }

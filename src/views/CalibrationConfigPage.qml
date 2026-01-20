@@ -537,7 +537,7 @@ Rectangle {
 
                 background: Rectangle {
                     radius: app.normalRadius
-                    color: parent.pressed ? Qt.darker(root.successColor, 1.2) : root.successColor
+                    color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
                 }
 
                 contentItem: Text {
