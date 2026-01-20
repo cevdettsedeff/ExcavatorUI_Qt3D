@@ -275,12 +275,7 @@ Rectangle {
                 border.width: 1
                 anchors.verticalCenter: parent.verticalCenter
 
-                Text {
-                    anchors.centerIn: parent
-                    text: "🔵"
-                    font.pixelSize: statusBar.smallFontSize * 0.9
-                    opacity: statusBar.bluetoothEnabled ? 1.0 : 0.4
-                }
+                // Ikon buraya eklenecek
 
                 MouseArea {
                     id: bluetoothMouseArea
@@ -305,11 +300,7 @@ Rectangle {
                 border.width: 1
                 anchors.verticalCenter: parent.verticalCenter
 
-                Text {
-                    anchors.centerIn: parent
-                    text: statusBar.audioEnabled ? "🔊" : "🔇"
-                    font.pixelSize: statusBar.smallFontSize * 0.9
-                }
+                // Ikon buraya eklenecek
 
                 MouseArea {
                     id: audioMouseArea
@@ -326,35 +317,22 @@ Rectangle {
 
         Item { Layout.fillWidth: true }
 
-        // Kullanıcı Rolü - İkon + Altlı Üstlü
-        Row {
-            spacing: 5
+        // Kullanıcı Rolü - Altlı Üstlü
+        Column {
+            spacing: 1
             Layout.alignment: Qt.AlignVCenter
 
-            // Kullanıcı ikonu
             Text {
-                text: "👤"
-                font.pixelSize: statusBar.smallFontSize
-                anchors.verticalCenter: parent.verticalCenter
+                text: authService && authService.currentUser ? authService.currentUser : "admin"
+                font.pixelSize: statusBar.tinyFontSize
+                font.bold: true
+                color: "#ffffff"
             }
 
-            // Altlı üstlü kullanıcı bilgisi
-            Column {
-                spacing: 1
-                anchors.verticalCenter: parent.verticalCenter
-
-                Text {
-                    text: authService && authService.currentUser ? authService.currentUser : "admin"
-                    font.pixelSize: statusBar.tinyFontSize
-                    font.bold: true
-                    color: "#ffffff"
-                }
-
-                Text {
-                    text: authService && authService.currentRole ? authService.currentRole : "Operator"
-                    font.pixelSize: statusBar.tinyFontSize
-                    color: "#888888"
-                }
+            Text {
+                text: authService && authService.currentRole ? authService.currentRole : "Operator"
+                font.pixelSize: statusBar.tinyFontSize
+                color: "#888888"
             }
         }
 
@@ -366,35 +344,22 @@ Rectangle {
             Layout.alignment: Qt.AlignVCenter
         }
 
-        // Tarih ve Saat - İkon + Altlı Üstlü
-        Row {
-            spacing: 5
+        // Tarih ve Saat - Altlı Üstlü
+        Column {
+            spacing: 1
             Layout.alignment: Qt.AlignVCenter
 
-            // Saat ikonu
             Text {
-                text: "🕐"
-                font.pixelSize: statusBar.smallFontSize
-                anchors.verticalCenter: parent.verticalCenter
+                text: statusBar.currentTime
+                font.pixelSize: statusBar.tinyFontSize
+                font.bold: true
+                color: "#ffffff"
             }
 
-            // Altlı üstlü tarih/saat
-            Column {
-                spacing: 1
-                anchors.verticalCenter: parent.verticalCenter
-
-                Text {
-                    text: statusBar.currentTime
-                    font.pixelSize: statusBar.tinyFontSize
-                    font.bold: true
-                    color: "#ffffff"
-                }
-
-                Text {
-                    text: statusBar.currentDate
-                    font.pixelSize: statusBar.tinyFontSize
-                    color: "#888888"
-                }
+            Text {
+                text: statusBar.currentDate
+                font.pixelSize: statusBar.tinyFontSize
+                color: "#888888"
             }
         }
 
