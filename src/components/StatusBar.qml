@@ -275,7 +275,16 @@ Rectangle {
                 border.width: 1
                 anchors.verticalCenter: parent.verticalCenter
 
-                // Ikon buraya eklenecek
+                Image {
+                    anchors.centerIn: parent
+                    width: parent.width * 0.6
+                    height: parent.height * 0.6
+                    source: statusBar.bluetoothEnabled ?
+                        "qrc:/ExcavatorUI_Qt3D/resources/icons/bluetooth.png" :
+                        "qrc:/ExcavatorUI_Qt3D/resources/icons/bluetooth_disabled.png"
+                    fillMode: Image.PreserveAspectFit
+                    opacity: statusBar.bluetoothEnabled ? 1.0 : 0.5
+                }
 
                 MouseArea {
                     id: bluetoothMouseArea
@@ -300,7 +309,15 @@ Rectangle {
                 border.width: 1
                 anchors.verticalCenter: parent.verticalCenter
 
-                // Ikon buraya eklenecek
+                Image {
+                    anchors.centerIn: parent
+                    width: parent.width * 0.6
+                    height: parent.height * 0.6
+                    source: statusBar.audioEnabled ?
+                        "qrc:/ExcavatorUI_Qt3D/resources/icons/audio.png" :
+                        "qrc:/ExcavatorUI_Qt3D/resources/icons/audio_muted.png"
+                    fillMode: Image.PreserveAspectFit
+                }
 
                 MouseArea {
                     id: audioMouseArea
