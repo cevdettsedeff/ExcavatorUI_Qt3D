@@ -78,7 +78,7 @@ Rectangle {
         anchors.rightMargin: 8
         spacing: 8
 
-        // KART 1: Proje Kartı
+        // KART 1: Proje ve Ekskavatör Kartı (Altlı Üstlü)
         Rectangle {
             id: projectCard
             width: projectContent.width + 16
@@ -121,32 +121,26 @@ Rectangle {
                     }
                 }
 
-                Text {
-                    text: statusBar.projectName
-                    font.pixelSize: statusBar.smallFontSize
-                    font.bold: true
-                    color: "#FF9800"
+                // Proje ve Ekskavatör Adları - Altlı Üstlü
+                Column {
+                    spacing: 2
                     anchors.verticalCenter: parent.verticalCenter
+
+                    Text {
+                        text: statusBar.projectName
+                        font.pixelSize: statusBar.smallFontSize
+                        font.bold: true
+                        color: "#FF9800"
+                    }
+
+                    Text {
+                        text: statusBar.excavatorName
+                        font.pixelSize: statusBar.tinyFontSize
+                        color: "#888888"
+                    }
                 }
-            }
-        }
 
-        // KART 2: Ekskavatör Kartı
-        Rectangle {
-            id: excavatorCard
-            width: excavatorContent.width + 16
-            height: statusBar.badgeHeight
-            radius: 6
-            color: "#1e2738"
-            border.color: "#FF9800"
-            border.width: 2
-
-            Row {
-                id: excavatorContent
-                anchors.centerIn: parent
-                spacing: 8
-
-                // Kamyon ikonu
+                // Ekskavatör ikonu
                 Image {
                     id: truckIcon
                     source: "qrc:/ExcavatorUI_Qt3D/resources/icons/excavator.png"
@@ -172,14 +166,6 @@ Rectangle {
                         font.pixelSize: statusBar.iconSize * 0.4
                         color: "#ffffff"
                     }
-                }
-
-                Text {
-                    text: statusBar.excavatorName
-                    font.pixelSize: statusBar.smallFontSize
-                    font.bold: true
-                    color: "#FF9800"
-                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
         }
