@@ -17,12 +17,10 @@ Rectangle {
 
     // Properties
     property string projectName: "AŞ-KAZI-042"
-    property bool rtkConnected: true
-    property string rtkStatus: "FIX"  // FIX, FLOAT, SINGLE, NONE
-    property bool imuOk: true
-    property int alarmCount: 1
-    property bool gpsConnected: true
-    property int satellites: 12
+    property bool gnssOk: true  // GNSS durumu: true = yeşil, false = gri
+    property bool imu1Ok: true  // IMU/1 durumu
+    property bool imu2Ok: true  // IMU/2 durumu
+    property bool imu3Ok: true  // IMU/3 durumu
     property string excavatorName: "CAT 390F LME"
     property string currentDate: Qt.formatDateTime(new Date(), "dd.MM.yyyy")
     property string currentTime: Qt.formatDateTime(new Date(), "HH:mm")
@@ -33,6 +31,15 @@ Rectangle {
     signal userIconClicked()
     signal sensorClicked()  // Tüm sensörler için tek signal
     signal goToDashboard()
+
+    // IMU genel durumu hesaplama fonksiyonu
+    // Hepsi OK = yeşil, biri arızalı = turuncu, hepsi arızalı = gri
+    function getImuStatusColor() {
+        var okCount = (imu1Ok ? 1 : 0) + (imu2Ok ? 1 : 0) + (imu3Ok ? 1 : 0)
+        if (okCount === 3) return "#4CAF50"  // Yeşil
+        if (okCount === 0) return "#666666"  // Gri
+        return "#FF9800"  // Turuncu
+    }
 
     // Dil desteği
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -147,21 +154,15 @@ Rectangle {
             spacing: 8
             Layout.alignment: Qt.AlignVCenter
 
-            // GNSS/RTK Durumu
+            // GNSS Durumu
             Rectangle {
                 id: gnssBox
                 width: gnssContent.width + 16
                 height: statusBar.badgeHeight
                 radius: 4
-                color: gnssMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
-                border.color: statusBar.rtkConnected ?
-                    (statusBar.sensorBorderVisible ? "#4CAF50" : "#2a5a2a") :
-                    (statusBar.sensorBorderVisible ? "#f44336" : "#7a2a2a")
+                color: "#2a2a2a"
+                border.color: statusBar.gnssOk ? "#4CAF50" : "#666666"
                 border.width: 2
-
-                Behavior on border.color {
-                    ColorAnimation { duration: 300 }
-                }
 
                 Row {
                     id: gnssContent
@@ -182,10 +183,7 @@ Rectangle {
                                 height: 4 + index * 4
                                 radius: 1
                                 anchors.bottom: parent.bottom
-                                color: {
-                                    var strength = statusBar.rtkConnected ? (statusBar.rtkStatus === "FIX" ? 4 : (statusBar.rtkStatus === "FLOAT" ? 3 : 2)) : 0
-                                    return index < strength ? "#4CAF50" : "#555555"
-                                }
+                                color: statusBar.gnssOk ? "#4CAF50" : "#666666"
                             }
                         }
                     }
@@ -194,162 +192,203 @@ Rectangle {
                         text: "GNSS"
                         font.pixelSize: statusBar.smallFontSize
                         font.bold: true
-                        color: statusBar.rtkConnected ? "#4CAF50" : "#f44336"
+                        color: statusBar.gnssOk ? "#4CAF50" : "#666666"
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }
-
-                MouseArea {
-                    id: gnssMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: statusBar.sensorClicked()
-                }
             }
 
-            // IMU Durumu
-            Rectangle {
-                id: imuBox
-                width: imuContent.width + 16
-                height: statusBar.badgeHeight
-                radius: 4
-                color: imuMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
-                border.color: statusBar.imuOk ?
-                    (statusBar.sensorBorderVisible ? "#4CAF50" : "#2a5a2a") :
-                    (statusBar.sensorBorderVisible ? "#f44336" : "#7a2a2a")
-                border.width: 2
+            // IMU Durumları (3 ayrı sensör)
+            Row {
+                spacing: 4
+                Layout.alignment: Qt.AlignVCenter
 
-                Behavior on border.color {
-                    ColorAnimation { duration: 300 }
-                }
+                // IMU/1
+                Rectangle {
+                    width: imu1Content.width + 12
+                    height: statusBar.badgeHeight
+                    radius: 4
+                    color: "#2a2a2a"
+                    border.color: statusBar.imu1Ok ? "#4CAF50" : "#666666"
+                    border.width: 2
 
-                Row {
-                    id: imuContent
-                    anchors.centerIn: parent
-                    spacing: 6
+                    Row {
+                        id: imu1Content
+                        anchors.centerIn: parent
+                        spacing: 4
 
-                    // Durum ikonu
-                    Rectangle {
-                        width: statusBar.smallFontSize * 1.1
-                        height: statusBar.smallFontSize * 1.1
-                        radius: width / 2
-                        color: statusBar.imuOk ? "#4CAF50" : "#f44336"
-                        anchors.verticalCenter: parent.verticalCenter
+                        // Sinyal çubukları
+                        Row {
+                            spacing: 1
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: statusBar.badgeHeight * 0.5
+
+                            Repeater {
+                                model: 3
+
+                                Rectangle {
+                                    width: 2
+                                    height: 3 + index * 3
+                                    radius: 1
+                                    anchors.bottom: parent.bottom
+                                    color: statusBar.imu1Ok ? "#4CAF50" : "#666666"
+                                }
+                            }
+                        }
 
                         Text {
-                            anchors.centerIn: parent
-                            text: statusBar.imuOk ? "✓" : "!"
-                            font.pixelSize: statusBar.smallFontSize * 0.7
+                            text: "IMU/1"
+                            font.pixelSize: statusBar.tinyFontSize
                             font.bold: true
-                            color: "#ffffff"
+                            color: statusBar.imu1Ok ? "#4CAF50" : "#666666"
+                            anchors.verticalCenter: parent.verticalCenter
                         }
                     }
+                }
 
-                    Text {
-                        text: "IMU"
-                        font.pixelSize: statusBar.smallFontSize
-                        font.bold: true
-                        color: "#ffffff"
-                        anchors.verticalCenter: parent.verticalCenter
+                // IMU/2
+                Rectangle {
+                    width: imu2Content.width + 12
+                    height: statusBar.badgeHeight
+                    radius: 4
+                    color: "#2a2a2a"
+                    border.color: statusBar.imu2Ok ? "#4CAF50" : "#666666"
+                    border.width: 2
+
+                    Row {
+                        id: imu2Content
+                        anchors.centerIn: parent
+                        spacing: 4
+
+                        // Sinyal çubukları
+                        Row {
+                            spacing: 1
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: statusBar.badgeHeight * 0.5
+
+                            Repeater {
+                                model: 3
+
+                                Rectangle {
+                                    width: 2
+                                    height: 3 + index * 3
+                                    radius: 1
+                                    anchors.bottom: parent.bottom
+                                    color: statusBar.imu2Ok ? "#4CAF50" : "#666666"
+                                }
+                            }
+                        }
+
+                        Text {
+                            text: "IMU/2"
+                            font.pixelSize: statusBar.tinyFontSize
+                            font.bold: true
+                            color: statusBar.imu2Ok ? "#4CAF50" : "#666666"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
                     }
                 }
 
-                MouseArea {
-                    id: imuMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: statusBar.sensorClicked()
-                }
-            }
+                // IMU/3
+                Rectangle {
+                    width: imu3Content.width + 12
+                    height: statusBar.badgeHeight
+                    radius: 4
+                    color: "#2a2a2a"
+                    border.color: statusBar.imu3Ok ? "#4CAF50" : "#666666"
+                    border.width: 2
 
-            // Bluetooth Toggle
-            Rectangle {
-                id: bluetoothBox
-                width: statusBar.iconSize * 1.2
-                height: statusBar.iconSize * 1.2
-                radius: 4
-                color: bluetoothMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
-                border.color: statusBar.bluetoothEnabled ? "#2196F3" : "#666666"
-                border.width: 1
-                anchors.verticalCenter: parent.verticalCenter
+                    Row {
+                        id: imu3Content
+                        anchors.centerIn: parent
+                        spacing: 4
 
-                Image {
-                    anchors.centerIn: parent
-                    width: parent.width * 0.6
-                    height: parent.height * 0.6
-                    source: statusBar.bluetoothEnabled ?
-                        "qrc:/ExcavatorUI_Qt3D/resources/icons/bluetooth.png" :
-                        "qrc:/ExcavatorUI_Qt3D/resources/icons/bluetooth_disabled.png"
-                    fillMode: Image.PreserveAspectFit
-                    opacity: statusBar.bluetoothEnabled ? 1.0 : 0.5
-                }
+                        // Sinyal çubukları
+                        Row {
+                            spacing: 1
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: statusBar.badgeHeight * 0.5
 
-                MouseArea {
-                    id: bluetoothMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        statusBar.bluetoothEnabled = !statusBar.bluetoothEnabled
-                        console.log("Bluetooth:", statusBar.bluetoothEnabled ? "Açık" : "Kapalı")
+                            Repeater {
+                                model: 3
+
+                                Rectangle {
+                                    width: 2
+                                    height: 3 + index * 3
+                                    radius: 1
+                                    anchors.bottom: parent.bottom
+                                    color: statusBar.imu3Ok ? "#4CAF50" : "#666666"
+                                }
+                            }
+                        }
+
+                        Text {
+                            text: "IMU/3"
+                            font.pixelSize: statusBar.tinyFontSize
+                            font.bold: true
+                            color: statusBar.imu3Ok ? "#4CAF50" : "#666666"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
                     }
                 }
             }
 
-            // Audio Toggle
-            Rectangle {
-                id: audioBox
-                width: statusBar.iconSize * 1.2
-                height: statusBar.iconSize * 1.2
-                radius: 4
-                color: audioMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
-                border.color: statusBar.audioEnabled ? "#FF9800" : "#666666"
-                border.width: 1
-                anchors.verticalCenter: parent.verticalCenter
-
-                Image {
-                    anchors.centerIn: parent
-                    width: parent.width * 0.6
-                    height: parent.height * 0.6
-                    source: statusBar.audioEnabled ?
-                        "qrc:/ExcavatorUI_Qt3D/resources/icons/audio.png" :
-                        "qrc:/ExcavatorUI_Qt3D/resources/icons/audio_muted.png"
-                    fillMode: Image.PreserveAspectFit
-                }
-
-                MouseArea {
-                    id: audioMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        statusBar.audioEnabled = !statusBar.audioEnabled
-                        console.log("Ses:", statusBar.audioEnabled ? "Açık" : "Kapalı")
-                    }
-                }
-            }
         }
 
         Item { Layout.fillWidth: true }
 
-        // Kullanıcı Rolü - Altlı Üstlü
-        Column {
-            spacing: 1
+        // User Bilgisi - İkon + Kullanıcı Adı + Rol
+        Row {
+            spacing: 8
             Layout.alignment: Qt.AlignVCenter
 
-            Text {
-                text: authService && authService.currentUser ? authService.currentUser : "admin"
-                font.pixelSize: statusBar.tinyFontSize
-                font.bold: true
-                color: "#ffffff"
+            // User İkonu
+            Rectangle {
+                width: statusBar.iconSize * 1.3
+                height: statusBar.iconSize * 1.3
+                radius: width / 2
+                color: "#2a2a2a"
+                border.color: "#4CAF50"
+                border.width: 2
+                anchors.verticalCenter: parent.verticalCenter
+
+                Image {
+                    id: userIconImage
+                    anchors.centerIn: parent
+                    width: parent.width * 0.6
+                    height: parent.height * 0.6
+                    source: "qrc:/ExcavatorUI_Qt3D/resources/icons/user.png"
+                    fillMode: Image.PreserveAspectFit
+                    visible: status === Image.Ready
+                }
+
+                // Fallback ikon (Image yüklenmezse)
+                Text {
+                    visible: userIconImage.status !== Image.Ready
+                    anchors.centerIn: parent
+                    text: "👤"
+                    font.pixelSize: statusBar.iconSize * 0.6
+                    color: "#ffffff"
+                }
             }
 
-            Text {
-                text: authService && authService.currentRole ? authService.currentRole : "Operator"
-                font.pixelSize: statusBar.tinyFontSize
-                color: "#888888"
+            // Kullanıcı Adı ve Rol
+            Column {
+                spacing: 1
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                    text: authService && authService.currentUser ? authService.currentUser : "LOREMIPSUMDOLOR"
+                    font.pixelSize: statusBar.tinyFontSize
+                    font.bold: true
+                    color: "#ffffff"
+                }
+
+                Text {
+                    text: authService && authService.currentRole ? authService.currentRole : "Operator"
+                    font.pixelSize: statusBar.tinyFontSize
+                    color: "#888888"
+                }
             }
         }
 
