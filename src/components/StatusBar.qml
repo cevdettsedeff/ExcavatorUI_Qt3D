@@ -359,8 +359,6 @@ Rectangle {
             }
         }
 
-        }
-
         Item { Layout.fillWidth: true }
 
         // KART 5: Kullanıcı, Saat ve Menü Kartı
