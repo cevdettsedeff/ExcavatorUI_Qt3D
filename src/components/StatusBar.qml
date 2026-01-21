@@ -216,7 +216,7 @@ Rectangle {
             }
         }
 
-        // KART 4: IMU Kartı (3 IMU yan yana)
+        // KART 4: IMU Kartı (3 IMU yan yana, ikonlar altlı üstlü)
         Rectangle {
             id: imuCard
             width: imuCardContent.width + 16
@@ -232,14 +232,16 @@ Rectangle {
                 spacing: 8
 
                 // IMU/1
-                Row {
-                    spacing: 4
+                Column {
+                    spacing: 2
+                    width: 30
+                    anchors.verticalCenter: parent.verticalCenter
 
                     // Sinyal çubukları
                     Row {
                         spacing: 1
-                        anchors.verticalCenter: parent.verticalCenter
-                        height: statusBar.badgeHeight * 0.5
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        height: statusBar.badgeHeight * 0.4
 
                         Repeater {
                             model: 3
@@ -259,7 +261,7 @@ Rectangle {
                         font.pixelSize: statusBar.tinyFontSize
                         font.bold: true
                         color: statusBar.imu1Ok ? "#4CAF50" : "#666666"
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
                     }
                 }
 
@@ -272,14 +274,16 @@ Rectangle {
                 }
 
                 // IMU/2
-                Row {
-                    spacing: 4
+                Column {
+                    spacing: 2
+                    width: 30
+                    anchors.verticalCenter: parent.verticalCenter
 
                     // Sinyal çubukları
                     Row {
                         spacing: 1
-                        anchors.verticalCenter: parent.verticalCenter
-                        height: statusBar.badgeHeight * 0.5
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        height: statusBar.badgeHeight * 0.4
 
                         Repeater {
                             model: 3
@@ -299,7 +303,7 @@ Rectangle {
                         font.pixelSize: statusBar.tinyFontSize
                         font.bold: true
                         color: statusBar.imu2Ok ? "#4CAF50" : "#666666"
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
                     }
                 }
 
@@ -312,14 +316,16 @@ Rectangle {
                 }
 
                 // IMU/3
-                Row {
-                    spacing: 4
+                Column {
+                    spacing: 2
+                    width: 30
+                    anchors.verticalCenter: parent.verticalCenter
 
                     // Sinyal çubukları
                     Row {
                         spacing: 1
-                        anchors.verticalCenter: parent.verticalCenter
-                        height: statusBar.badgeHeight * 0.5
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        height: statusBar.badgeHeight * 0.4
 
                         Repeater {
                             model: 3
@@ -339,7 +345,7 @@ Rectangle {
                         font.pixelSize: statusBar.tinyFontSize
                         font.bold: true
                         color: statusBar.imu3Ok ? "#4CAF50" : "#666666"
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
                     }
                 }
             }
@@ -347,7 +353,7 @@ Rectangle {
 
         Item { Layout.fillWidth: true }
 
-        // KART 5: Kullanıcı, Saat ve Menü Kartı
+        // KART 5: Kullanıcı ve Saat Kartı
         Rectangle {
             id: userCard
             width: userCardContent.width + 16
@@ -437,14 +443,22 @@ Rectangle {
                         color: "#888888"
                     }
                 }
+            }
+        }
 
-                // Ayırıcı çizgi
-                Rectangle {
-                    width: 1
-                    height: statusBar.badgeHeight * 0.6
-                    color: "#444444"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+        // KART 6: Hamburger Menü Kartı
+        Rectangle {
+            id: menuCard
+            width: menuCardContent.width + 16
+            height: statusBar.badgeHeight
+            radius: 6
+            color: "#1e2738"
+            border.color: "#505050"
+            border.width: 2
+
+            Row {
+                id: menuCardContent
+                anchors.centerIn: parent
 
                 // Hamburger Menü İkonu
                 Rectangle {
