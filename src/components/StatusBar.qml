@@ -26,6 +26,8 @@ Rectangle {
     property string excavatorName: "CAT 390F LME"
     property string currentDate: Qt.formatDateTime(new Date(), "dd.MM.yyyy")
     property string currentTime: Qt.formatDateTime(new Date(), "HH:mm")
+    property bool bluetoothEnabled: true
+    property bool audioEnabled: true
 
     // Signals
     signal userIconClicked()
@@ -261,39 +263,93 @@ Rectangle {
                     onClicked: statusBar.sensorClicked()
                 }
             }
+
+            // Bluetooth Toggle
+            Rectangle {
+                id: bluetoothBox
+                width: statusBar.iconSize * 1.2
+                height: statusBar.iconSize * 1.2
+                radius: 4
+                color: bluetoothMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
+                border.color: statusBar.bluetoothEnabled ? "#2196F3" : "#666666"
+                border.width: 1
+                anchors.verticalCenter: parent.verticalCenter
+
+                Image {
+                    anchors.centerIn: parent
+                    width: parent.width * 0.6
+                    height: parent.height * 0.6
+                    source: statusBar.bluetoothEnabled ?
+                        "qrc:/ExcavatorUI_Qt3D/resources/icons/bluetooth.png" :
+                        "qrc:/ExcavatorUI_Qt3D/resources/icons/bluetooth_disabled.png"
+                    fillMode: Image.PreserveAspectFit
+                    opacity: statusBar.bluetoothEnabled ? 1.0 : 0.5
+                }
+
+                MouseArea {
+                    id: bluetoothMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        statusBar.bluetoothEnabled = !statusBar.bluetoothEnabled
+                        console.log("Bluetooth:", statusBar.bluetoothEnabled ? "Açık" : "Kapalı")
+                    }
+                }
+            }
+
+            // Audio Toggle
+            Rectangle {
+                id: audioBox
+                width: statusBar.iconSize * 1.2
+                height: statusBar.iconSize * 1.2
+                radius: 4
+                color: audioMouseArea.containsMouse ? "#3a3a3a" : "#2a2a2a"
+                border.color: statusBar.audioEnabled ? "#FF9800" : "#666666"
+                border.width: 1
+                anchors.verticalCenter: parent.verticalCenter
+
+                Image {
+                    anchors.centerIn: parent
+                    width: parent.width * 0.6
+                    height: parent.height * 0.6
+                    source: statusBar.audioEnabled ?
+                        "qrc:/ExcavatorUI_Qt3D/resources/icons/audio.png" :
+                        "qrc:/ExcavatorUI_Qt3D/resources/icons/audio_muted.png"
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                MouseArea {
+                    id: audioMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        statusBar.audioEnabled = !statusBar.audioEnabled
+                        console.log("Ses:", statusBar.audioEnabled ? "Açık" : "Kapalı")
+                    }
+                }
+            }
         }
 
         Item { Layout.fillWidth: true }
 
-        // Kullanıcı Rolü - İkon + Altlı Üstlü
-        Row {
-            spacing: 5
+        // Kullanıcı Rolü - Altlı Üstlü
+        Column {
+            spacing: 1
             Layout.alignment: Qt.AlignVCenter
 
-            // Kullanıcı ikonu
             Text {
-                text: "👤"
-                font.pixelSize: statusBar.smallFontSize
-                anchors.verticalCenter: parent.verticalCenter
+                text: authService && authService.currentUser ? authService.currentUser : "admin"
+                font.pixelSize: statusBar.tinyFontSize
+                font.bold: true
+                color: "#ffffff"
             }
 
-            // Altlı üstlü kullanıcı bilgisi
-            Column {
-                spacing: 1
-                anchors.verticalCenter: parent.verticalCenter
-
-                Text {
-                    text: authService && authService.currentUser ? authService.currentUser : "admin"
-                    font.pixelSize: statusBar.tinyFontSize
-                    font.bold: true
-                    color: "#ffffff"
-                }
-
-                Text {
-                    text: authService && authService.currentRole ? authService.currentRole : "Operator"
-                    font.pixelSize: statusBar.tinyFontSize
-                    color: "#888888"
-                }
+            Text {
+                text: authService && authService.currentRole ? authService.currentRole : "Operator"
+                font.pixelSize: statusBar.tinyFontSize
+                color: "#888888"
             }
         }
 
@@ -305,35 +361,22 @@ Rectangle {
             Layout.alignment: Qt.AlignVCenter
         }
 
-        // Tarih ve Saat - İkon + Altlı Üstlü
-        Row {
-            spacing: 5
+        // Tarih ve Saat - Altlı Üstlü
+        Column {
+            spacing: 1
             Layout.alignment: Qt.AlignVCenter
 
-            // Saat ikonu
             Text {
-                text: "🕐"
-                font.pixelSize: statusBar.smallFontSize
-                anchors.verticalCenter: parent.verticalCenter
+                text: statusBar.currentTime
+                font.pixelSize: statusBar.tinyFontSize
+                font.bold: true
+                color: "#ffffff"
             }
 
-            // Altlı üstlü tarih/saat
-            Column {
-                spacing: 1
-                anchors.verticalCenter: parent.verticalCenter
-
-                Text {
-                    text: statusBar.currentTime
-                    font.pixelSize: statusBar.tinyFontSize
-                    font.bold: true
-                    color: "#ffffff"
-                }
-
-                Text {
-                    text: statusBar.currentDate
-                    font.pixelSize: statusBar.tinyFontSize
-                    color: "#888888"
-                }
+            Text {
+                text: statusBar.currentDate
+                font.pixelSize: statusBar.tinyFontSize
+                color: "#888888"
             }
         }
 

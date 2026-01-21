@@ -72,6 +72,15 @@ class ConfigManager : public QObject
     Q_PROPERTY(bool screenSaverEnabled READ screenSaverEnabled WRITE setScreenSaverEnabled NOTIFY screenSaverEnabledChanged)
     Q_PROPERTY(int screenSaverTimeoutSeconds READ screenSaverTimeoutSeconds WRITE setScreenSaverTimeoutSeconds NOTIFY screenSaverTimeoutSecondsChanged)
 
+    // Splash Screen settings
+    Q_PROPERTY(int splashScreenTimeoutMilliseconds READ splashScreenTimeoutMilliseconds WRITE setSplashScreenTimeoutMilliseconds NOTIFY splashScreenTimeoutMillisecondsChanged)
+
+    // Safety settings
+    Q_PROPERTY(bool safetyConfigured READ safetyConfigured NOTIFY safetyConfiguredChanged)
+
+    // Calibration settings
+    Q_PROPERTY(bool calibrationConfigured READ calibrationConfigured NOTIFY calibrationConfiguredChanged)
+
 public:
     explicit ConfigManager(QObject *parent = nullptr);
     ~ConfigManager();
@@ -130,6 +139,15 @@ public:
     bool screenSaverEnabled() const { return m_screenSaverEnabled; }
     int screenSaverTimeoutSeconds() const { return m_screenSaverTimeoutSeconds; }
 
+    // Splash Screen getters
+    int splashScreenTimeoutMilliseconds() const { return m_splashScreenTimeoutMilliseconds; }
+
+    // Safety getters
+    bool safetyConfigured() const { return m_safetyConfigured; }
+
+    // Calibration getters
+    bool calibrationConfigured() const { return m_calibrationConfigured; }
+
     // Property setters
     void setConfigPath(const QString &path);
 
@@ -166,6 +184,9 @@ public:
     // Screen Saver setters
     void setScreenSaverEnabled(bool enabled);
     void setScreenSaverTimeoutSeconds(int seconds);
+
+    // Splash Screen setters
+    void setSplashScreenTimeoutMilliseconds(int milliseconds);
 
     /**
      * Load configuration from JSON file
@@ -263,6 +284,16 @@ public:
     Q_INVOKABLE void markAlarmConfigured();
 
     /**
+     * Mark safety configuration as complete
+     */
+    Q_INVOKABLE void markSafetyConfigured();
+
+    /**
+     * Mark calibration configuration as complete
+     */
+    Q_INVOKABLE void markCalibrationConfigured();
+
+    /**
      * Reset all configurations
      */
     Q_INVOKABLE void resetConfiguration();
@@ -320,6 +351,15 @@ signals:
     // Screen Saver signals
     void screenSaverEnabledChanged();
     void screenSaverTimeoutSecondsChanged();
+
+    // Splash Screen signals
+    void splashScreenTimeoutMillisecondsChanged();
+
+    // Safety signals
+    void safetyConfiguredChanged();
+
+    // Calibration signals
+    void calibrationConfiguredChanged();
 
 private:
     QString m_configPath;
@@ -389,6 +429,15 @@ private:
     bool m_screenSaverEnabled;
     int m_screenSaverTimeoutSeconds;  // saniye cinsinden (min: 10, max: 1800)
 
+    // Splash Screen settings
+    int m_splashScreenTimeoutMilliseconds;  // milisaniye cinsinden (min: 1000, max: 10000)
+
+    // Safety settings
+    bool m_safetyConfigured;
+
+    // Calibration settings
+    bool m_calibrationConfigured;
+
     // JSON parsing helpers
     void parseConfig(const QJsonObject &json);
     void parseBathymetrySettings(const QJsonObject &bathymetry);
@@ -400,6 +449,7 @@ private:
     void parseMapSettings(const QJsonObject &mapSettings);
     void parseAlarmSettings(const QJsonObject &alarmSettings);
     void parseScreenSaverSettings(const QJsonObject &screenSaverSettings);
+    void parseSplashScreenSettings(const QJsonObject &splashScreenSettings);
     void parseExcavatorPresets(const QJsonArray &presets);
     QColor parseColor(const QString &colorString) const;
     void setDefaultValues();

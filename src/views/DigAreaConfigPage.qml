@@ -1,12 +1,14 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "../components"
 
 /**
  * DigAreaConfigPage - Kazı Alanı Ayarları Sayfası
  *
  * Wizard-style adım adım ilerleyen tasarım:
+ * 0. Proje seçimi (Yeni Proje / Mevcut Projeyi Aç)
  * 1. Köşe sayısı seçimi
  * 2. Köşe koordinatları girişi
  * 3. Polygon önizlemesi
@@ -22,6 +24,41 @@ Rectangle {
 
     // Global responsive değişkenlere erişim
     property var app: ApplicationWindow.window
+
+    // FileDialog for loading existing projects
+    FileDialog {
+        id: projectFileDialog
+        title: root.tr("Proje Dosyası Seç")
+        currentFolder: Qt.resolvedUrl(".")
+        nameFilters: [root.tr("JSON Dosyaları (*.json)"), "All files (*)"]
+        fileMode: FileDialog.OpenFile
+
+        onAccepted: {
+            console.log("Selected project file:", selectedFile)
+            root.projectFilePath = selectedFile.toString()
+
+            // TODO: Load project from JSON file
+            // For now, just move to next step
+            if (root.projectMode === "existing" && root.projectFilePath !== "") {
+                // Validate and load JSON
+                loadProjectFromFile(root.projectFilePath)
+            }
+        }
+
+        onRejected: {
+            console.log("File selection cancelled")
+        }
+    }
+
+    // Function to load project from JSON file
+    function loadProjectFromFile(filePath) {
+        console.log("Loading project from:", filePath)
+        // TODO: Implement JSON loading logic
+        // For now, just proceed to next step
+        if (currentStep === 0) {
+            currentStep = 1
+        }
+    }
 
     // Translation support
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
@@ -51,17 +88,23 @@ Rectangle {
     property color canvasBgColor: Qt.rgba(0, 0, 0, 0.3)  // Dark canvas background
 
     // ==================== WIZARD STATE ====================
-    property int currentStep: 0  // 0-4 arası
-    property int totalSteps: 5
+    property int currentStep: 0  // 0-5 arası
+    property int totalSteps: 6
 
     // Step titles
     property var stepTitles: [
+        root.tr("Proje Seçimi"),
         root.tr("Köşe Sayısı"),
         root.tr("Koordinatlar"),
         root.tr("Önizleme"),
         root.tr("Batimetri"),
         root.tr("Harita")
     ]
+
+    // Project selection
+    property string projectMode: "new"  // "new" or "existing"
+    property string projectName: ""
+    property string projectFilePath: ""
 
     // ==================== POLYGON DATA ====================
     property int cornerCount: 4
@@ -253,39 +296,46 @@ Rectangle {
         anchors.bottom: footer.top
         anchors.margins: app ? app.smallPadding : 12
 
-        // Step 0: Corner Count Selection
+        // Step 0: Project Selection
         Loader {
             anchors.fill: parent
             active: currentStep === 0
-            sourceComponent: step0CornerCount
+            sourceComponent: step0ProjectSelection
         }
 
-        // Step 1: Corner Coordinates Input
+        // Step 1: Corner Count Selection
         Loader {
             anchors.fill: parent
             active: currentStep === 1
-            sourceComponent: step1CornerCoordinates
+            sourceComponent: step1CornerCount
         }
 
-        // Step 2: Polygon Preview
+        // Step 2: Corner Coordinates Input
         Loader {
             anchors.fill: parent
             active: currentStep === 2
-            sourceComponent: step2PolygonPreview
+            sourceComponent: step2CornerCoordinates
         }
 
-        // Step 3: Bathymetric Data Entry
+        // Step 3: Polygon Preview
         Loader {
             anchors.fill: parent
             active: currentStep === 3
-            sourceComponent: step3BathymetricData
+            sourceComponent: step3PolygonPreview
         }
 
-        // Step 4: Map Views
+        // Step 4: Bathymetric Data Entry
         Loader {
             anchors.fill: parent
             active: currentStep === 4
-            sourceComponent: step4MapViews
+            sourceComponent: step4BathymetricData
+        }
+
+        // Step 5: Map Views
+        Loader {
+            anchors.fill: parent
+            active: currentStep === 5
+            sourceComponent: step5MapViews
         }
     }
 
@@ -372,9 +422,297 @@ Rectangle {
         }
     }
 
-    // ==================== STEP 0: CORNER COUNT ====================
+    // ==================== STEP 0: PROJECT SELECTION ====================
     Component {
-        id: step0CornerCount
+        id: step0ProjectSelection
+
+        Rectangle {
+            color: "transparent"
+
+            ScrollView {
+                anchors.fill: parent
+                contentWidth: parent.width
+
+                ColumnLayout {
+                    width: parent.width
+                    spacing: app ? app.normalSpacing * 2 : 32
+
+                    Item { height: app ? app.smallSpacing : 12 }
+
+                    // Info Card
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.margins: app ? app.normalPadding : 20
+                        Layout.preferredHeight: infoContent.height + (app ? app.normalPadding * 2 : 32)
+                        color: Qt.rgba(0.2, 0.6, 0.8, 0.15)
+                        radius: app ? app.normalRadius : 12
+                        border.width: 1
+                        border.color: Qt.rgba(0.2, 0.6, 0.8, 0.3)
+
+                        RowLayout {
+                            id: infoContent
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.margins: app ? app.normalPadding : 20
+                            spacing: app ? app.normalSpacing : 16
+
+                            Text {
+                                text: "📐"
+                                font.pixelSize: app ? app.mediumFontSize : 24
+                            }
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: root.tr("Yeni bir kazı alanı projesi oluşturabilir veya daha önce kaydedilmiş bir projeyi açabilirsiniz.")
+                                font.pixelSize: app ? app.baseFontSize : 14
+                                color: root.textSecondaryColor
+                                wrapMode: Text.WordWrap
+                            }
+                        }
+                    }
+
+                    // Project Selection Cards
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Layout.margins: app ? app.normalPadding : 20
+                        spacing: app ? app.normalSpacing * 1.5 : 24
+
+                        // New Project Card
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: newProjectContent.height + (app ? app.largePadding * 2 : 48)
+                            color: root.projectMode === "new" ? Qt.rgba(0.2, 0.6, 0.5, 0.2) : root.cardColor
+                            radius: app ? app.normalRadius : 16
+                            border.width: root.projectMode === "new" ? 2 : 1
+                            border.color: root.projectMode === "new" ? root.primaryColor : root.borderColor
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    root.projectMode = "new"
+                                }
+                            }
+
+                            ColumnLayout {
+                                id: newProjectContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.margins: app ? app.largePadding : 32
+                                spacing: app ? app.normalSpacing : 16
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: app ? app.normalSpacing : 16
+
+                                    Rectangle {
+                                        Layout.preferredWidth: app ? app.largeIconSize : 64
+                                        Layout.preferredHeight: app ? app.largeIconSize : 64
+                                        radius: (app ? app.largeIconSize : 64) / 2
+                                        color: Qt.rgba(0.2, 0.6, 0.5, 0.2)
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "+"
+                                            font.pixelSize: app ? app.xlFontSize : 36
+                                            font.bold: true
+                                            color: root.primaryColor
+                                        }
+                                    }
+
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: app ? app.smallSpacing / 2 : 6
+
+                                        Text {
+                                            text: root.tr("Yeni Proje Oluştur")
+                                            font.pixelSize: app ? app.largeFontSize : 24
+                                            font.bold: true
+                                            color: root.textColor
+                                        }
+
+                                        Text {
+                                            text: root.tr("Sıfırdan yeni bir kazı alanı projesi başlatın")
+                                            font.pixelSize: app ? app.baseFontSize : 14
+                                            color: root.textSecondaryColor
+                                            wrapMode: Text.WordWrap
+                                        }
+                                    }
+
+                                    Item {
+                                        Layout.preferredWidth: app ? app.iconSize : 32
+                                        Layout.preferredHeight: app ? app.iconSize : 32
+
+                                        Rectangle {
+                                            anchors.centerIn: parent
+                                            width: app ? app.normalSpacing * 1.5 : 24
+                                            height: app ? app.normalSpacing * 1.5 : 24
+                                            radius: (app ? app.normalSpacing * 1.5 : 24) / 2
+                                            border.width: 2
+                                            border.color: root.projectMode === "new" ? root.primaryColor : root.borderColor
+                                            color: root.projectMode === "new" ? root.primaryColor : "transparent"
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: "✓"
+                                                font.pixelSize: app ? app.smallFontSize : 14
+                                                color: "white"
+                                                visible: root.projectMode === "new"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Existing Project Card
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: existingProjectContent.height + (app ? app.largePadding * 2 : 48)
+                            color: root.projectMode === "existing" ? Qt.rgba(0.2, 0.6, 0.5, 0.2) : root.cardColor
+                            radius: app ? app.normalRadius : 16
+                            border.width: root.projectMode === "existing" ? 2 : 1
+                            border.color: root.projectMode === "existing" ? root.primaryColor : root.borderColor
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    root.projectMode = "existing"
+                                    // Open file dialog to select project file
+                                    projectFileDialog.open()
+                                }
+                            }
+
+                            ColumnLayout {
+                                id: existingProjectContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.margins: app ? app.largePadding : 32
+                                spacing: app ? app.normalSpacing : 16
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: app ? app.normalSpacing : 16
+
+                                    Rectangle {
+                                        Layout.preferredWidth: app ? app.largeIconSize : 64
+                                        Layout.preferredHeight: app ? app.largeIconSize : 64
+                                        radius: (app ? app.largeIconSize : 64) / 2
+                                        color: Qt.rgba(0.6, 0.5, 0.2, 0.2)
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "📁"
+                                            font.pixelSize: app ? app.iconSize : 32
+                                        }
+                                    }
+
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: app ? app.smallSpacing / 2 : 6
+
+                                        Text {
+                                            text: root.tr("Mevcut Projeyi Aç")
+                                            font.pixelSize: app ? app.largeFontSize : 24
+                                            font.bold: true
+                                            color: root.textColor
+                                        }
+
+                                        Text {
+                                            text: root.tr("Daha önce kaydedilmiş bir proje dosyasını yükleyin")
+                                            font.pixelSize: app ? app.baseFontSize : 14
+                                            color: root.textSecondaryColor
+                                            wrapMode: Text.WordWrap
+                                        }
+                                    }
+
+                                    Item {
+                                        Layout.preferredWidth: app ? app.iconSize : 32
+                                        Layout.preferredHeight: app ? app.iconSize : 32
+
+                                        Rectangle {
+                                            anchors.centerIn: parent
+                                            width: app ? app.normalSpacing * 1.5 : 24
+                                            height: app ? app.normalSpacing * 1.5 : 24
+                                            radius: (app ? app.normalSpacing * 1.5 : 24) / 2
+                                            border.width: 2
+                                            border.color: root.projectMode === "existing" ? root.primaryColor : root.borderColor
+                                            color: root.projectMode === "existing" ? root.primaryColor : "transparent"
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: "✓"
+                                                font.pixelSize: app ? app.smallFontSize : 14
+                                                color: "white"
+                                                visible: root.projectMode === "existing"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Project Name Input (only for new project)
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.margins: app ? app.normalPadding : 20
+                        Layout.preferredHeight: projectNameContent.height + (app ? app.normalPadding * 2 : 32)
+                        color: root.cardColor
+                        radius: app ? app.normalRadius : 12
+                        border.width: 1
+                        border.color: root.borderColor
+                        visible: root.projectMode === "new"
+
+                        ColumnLayout {
+                            id: projectNameContent
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: app ? app.normalPadding : 20
+                            spacing: app ? app.smallSpacing : 12
+
+                            Text {
+                                text: root.tr("Proje Adı")
+                                font.pixelSize: app ? app.mediumFontSize : 18
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            TextField {
+                                Layout.fillWidth: true
+                                placeholderText: root.tr("Örn: İstanbul Limanı Kazı Alanı")
+                                text: root.projectName
+                                font.pixelSize: app ? app.baseFontSize : 14
+                                color: root.inputTextColor
+
+                                background: Rectangle {
+                                    radius: app ? app.smallRadius : 8
+                                    color: root.inputBgColor
+                                    border.width: parent.activeFocus ? 2 : 1
+                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                }
+
+                                onTextChanged: {
+                                    root.projectName = text
+                                }
+                            }
+                        }
+                    }
+
+                    Item { height: app ? app.largeSpacing : 40 }
+                }
+            }
+        }
+    }
+
+    // ==================== STEP 1: CORNER COUNT ====================
+    Component {
+        id: step1CornerCount
 
         Rectangle {
             color: "transparent"
@@ -571,9 +909,9 @@ Rectangle {
         }
     }
 
-    // ==================== STEP 1: CORNER COORDINATES ====================
+    // ==================== STEP 2: CORNER COORDINATES ====================
     Component {
-        id: step1CornerCoordinates
+        id: step2CornerCoordinates
 
         Rectangle {
             color: "transparent"
@@ -856,9 +1194,9 @@ Rectangle {
         }
     }
 
-    // ==================== STEP 2: POLYGON PREVIEW ====================
+    // ==================== STEP 3: POLYGON PREVIEW ====================
     Component {
-        id: step2PolygonPreview
+        id: step3PolygonPreview
 
         Rectangle {
             color: "transparent"
@@ -1122,9 +1460,9 @@ Rectangle {
         }
     }
 
-    // ==================== STEP 3: BATHYMETRIC DATA ====================
+    // ==================== STEP 4: BATHYMETRIC DATA ====================
     Component {
-        id: step3BathymetricData
+        id: step4BathymetricData
 
         Rectangle {
             color: "transparent"
@@ -1575,9 +1913,9 @@ Rectangle {
         }
     }
 
-    // ==================== STEP 4: MAP VIEWS ====================
+    // ==================== STEP 5: MAP VIEWS ====================
     Component {
-        id: step4MapViews
+        id: step5MapViews
 
         Rectangle {
             color: "transparent"

@@ -1357,5 +1357,175 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Reset View</source>
         <translation>Görünümü Sıfırla</translation>
     </message>
+    <message>
+        <source>Emniyet Ayarları</source>
+        <translation>Emniyet Ayarları</translation>
+    </message>
+    <message>
+        <source>Sabit engeller ve çarpışma uyarısı</source>
+        <translation>Sabit engeller ve çarpışma uyarısı</translation>
+    </message>
+    <message>
+        <source>Kalibrasyon Ayarları</source>
+        <translation>Kalibrasyon Ayarları</translation>
+    </message>
+    <message>
+        <source>Sensör kalibrasyonu ve ayarları</source>
+        <translation>Sensör kalibrasyonu ve ayarları</translation>
+    </message>
+    <message>
+        <source>Proje Seçimi</source>
+        <translation>Proje Seçimi</translation>
+    </message>
+    <message>
+        <source>Yeni bir kazı alanı projesi oluşturabilir veya daha önce kaydedilmiş bir projeyi açabilirsiniz.</source>
+        <translation>Yeni bir kazı alanı projesi oluşturabilir veya daha önce kaydedilmiş bir projeyi açabilirsiniz.</translation>
+    </message>
+    <message>
+        <source>Yeni Proje Oluştur</source>
+        <translation>Yeni Proje Oluştur</translation>
+    </message>
+    <message>
+        <source>Sıfırdan yeni bir kazı alanı projesi başlatın</source>
+        <translation>Sıfırdan yeni bir kazı alanı projesi başlatın</translation>
+    </message>
+    <message>
+        <source>Mevcut Projeyi Aç</source>
+        <translation>Mevcut Projeyi Aç</translation>
+    </message>
+    <message>
+        <source>Daha önce kaydedilmiş bir proje dosyasını yükleyin</source>
+        <translation>Daha önce kaydedilmiş bir proje dosyasını yükleyin</translation>
+    </message>
+    <message>
+        <source>Proje Adı</source>
+        <translation>Proje Adı</translation>
+    </message>
+    <message>
+        <source>Örn: İstanbul Limanı Kazı Alanı</source>
+        <translation>Örn: İstanbul Limanı Kazı Alanı</translation>
+    </message>
+    <message>
+        <source>Çarpışma Uyarısı</source>
+        <translation>Çarpışma Uyarısı</translation>
+    </message>
+    <message>
+        <source>Minimum Uyarı Mesafesi</source>
+        <translation>Minimum Uyarı Mesafesi</translation>
+    </message>
+    <message>
+        <source>Ekskavatörün engellere ne kadar yaklaştığında uyarı verileceğini belirleyin</source>
+        <translation>Ekskavatörün engellere ne kadar yaklaştığında uyarı verileceğini belirleyin</translation>
+    </message>
+    <message>
+        <source>Engel Tespiti</source>
+        <translation>Engel Tespiti</translation>
+    </message>
+    <message>
+        <source>Otomatik engel tespitini etkinleştirin veya devre dışı bırakın</source>
+        <translation>Otomatik engel tespitini etkinleştirin veya devre dışı bırakın</translation>
+    </message>
+    <message>
+        <source>Sabit Engeller</source>
+        <translation>Sabit Engeller</translation>
+    </message>
+    <message>
+        <source>Engel Ekle</source>
+        <translation>Engel Ekle</translation>
+    </message>
+    <message>
+        <source>Henüz tanımlanmış engel bulunmuyor.
+'Engel Ekle' butonuna tıklayarak yeni engel ekleyebilirsiniz.</source>
+        <translation>Henüz tanımlanmış engel bulunmuyor.
+'Engel Ekle' butonuna tıklayarak yeni engel ekleyebilirsiniz.</translation>
+    </message>
+    <message>
+        <source>Tanımlı engel sayısı: </source>
+        <translation>Tanımlı engel sayısı: </translation>
+    </message>
+    <message>
+        <source>İptal</source>
+        <translation>İptal</translation>
+    </message>
+    <message>
+        <source>Kaydet</source>
+        <translation>Kaydet</translation>
+    </message>
+    <message>
+        <source>IMU Sensör Kalibrasyonu</source>
+        <translation>IMU Sensör Kalibrasyonu</translation>
+    </message>
+    <message>
+        <source>Otomatik Kalibrasyon</source>
+        <translation>Otomatik Kalibrasyon</translation>
+    </message>
+    <message>
+        <source>Her başlatmada otomatik kalibrasyon yap</source>
+        <translation>Her başlatmada otomatik kalibrasyon yap</translation>
+    </message>
+    <message>
+        <source>Manuel Kalibrasyon Başlat</source>
+        <translation>Manuel Kalibrasyon Başlat</translation>
+    </message>
+    <message>
+        <source>Kalibrasyon Yapılıyor... %1%</source>
+        <translation>Kalibrasyon Yapılıyor... %1%</translation>
+    </message>
+    <message>
+        <source>Offset Değerleri</source>
+        <translation>Offset Değerleri</translation>
+    </message>
+    <message>
+        <source>GPS/Konum Kalibrasyonu</source>
+        <translation>GPS/Konum Kalibrasyonu</translation>
+    </message>
+    <message>
+        <source>GPS offset değerleri, ekskavatörün gerçek konumu ile GPS'in gösterdiği konum arasındaki farkı düzeltir.</source>
+        <translation>GPS offset değerleri, ekskavatörün gerçek konumu ile GPS'in gösterdiği konum arasındaki farkı düzeltir.</translation>
+    </message>
+    <message>
+        <source>Latitude Offset:</source>
+        <translation>Enlem Offset:</translation>
+    </message>
+    <message>
+        <source>Longitude Offset:</source>
+        <translation>Boylam Offset:</translation>
+    </message>
+    <message>
+        <source>GPS Offsetlerini Sıfırla</source>
+        <translation>GPS Offsetlerini Sıfırla</translation>
+    </message>
+    <message>
+        <source>Sensör kalibrasyonu, ekskavatörün doğru açı ve konum ölçümleri yapabilmesi için gereklidir. Kalibrasyonu başlatmadan önce ekskavatörün düz bir zemine park edildiğinden emin olun.</source>
+        <translation>Sensör kalibrasyonu, ekskavatörün doğru açı ve konum ölçümleri yapabilmesi için gereklidir. Kalibrasyonu başlatmadan önce ekskavatörün düz bir zemine park edildiğinden emin olun.</translation>
+    </message>
+    <message>
+        <source>Emniyet ayarları ile sabit engelleri tanımlayabilir ve çarpışma uyarılarını yapılandırabilirsiniz.</source>
+        <translation>Emniyet ayarları ile sabit engelleri tanımlayabilir ve çarpışma uyarılarını yapılandırabilirsiniz.</translation>
+    </message>
+    <message>
+        <source>Splash Screen Duration</source>
+        <translation>Açılış Ekranı Süresi</translation>
+    </message>
+    <message>
+        <source>Set how long the splash screen is displayed when the application starts (1-10 seconds)</source>
+        <translation>Uygulama başladığında açılış ekranının ne kadar süreyle gösterileceğini ayarlayın (1-10 saniye)</translation>
+    </message>
+    <message>
+        <source>Duration:</source>
+        <translation>Süre:</translation>
+    </message>
+    <message>
+        <source>sec</source>
+        <translation>sn</translation>
+    </message>
+    <message>
+        <source>Proje Dosyası Seç</source>
+        <translation>Proje Dosyası Seç</translation>
+    </message>
+    <message>
+        <source>JSON Dosyaları (*.json)</source>
+        <translation>JSON Dosyaları (*.json)</translation>
+    </message>
 </context>
 </TS>

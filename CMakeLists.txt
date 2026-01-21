@@ -240,6 +240,8 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/views/DigAreaConfigPage.qml
         src/views/MapConfigPage.qml
         src/views/AlarmConfigPage.qml
+        src/views/SafetyConfigPage.qml
+        src/views/CalibrationConfigPage.qml
         src/views/ExcavatorView.qml
         src/views/MapView.qml
         src/views/SimpleMapView.qml
@@ -257,6 +259,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         src/components/Grid3D.qml
         src/components/BathymetricPlane.qml
         src/components/LoadingScreen.qml
+        src/components/SplashScreen.qml
         src/components/BathymetricMapCanvas.qml
         src/components/BathymetricLegend.qml
         src/components/MapDecorations.qml
@@ -287,6 +290,10 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         resources/screensaver/excavator_screensaver.png
         RESOURCES resources/images/bucket.png
         RESOURCES resources/icons/dashboard.png resources/icons/logout.png
+        RESOURCES resources/icons/config_calibration.png resources/icons/config_safety.png
+        RESOURCES resources/logos/tkysm_logo.jpg resources/logos/uab_logo.png
+        RESOURCES resources/images/excavator_wireframe.png
+        RESOURCES resources/icons/audio.png resources/icons/audio_muted.png resources/icons/bluetooth.png resources/icons/bluetooth_disabled.png
 )
 
 target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE

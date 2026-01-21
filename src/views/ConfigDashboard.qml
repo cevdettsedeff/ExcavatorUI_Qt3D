@@ -9,8 +9,8 @@ import QtQuick.Layouts
  * 4 konfigürasyon kutucuğu içerir:
  * 1. Ekskavatör Ayarları
  * 2. Kazı Alanı Ayarları
- * 3. Harita Ayarları
- * 4. Alarm Ayarları
+ * 3. Emniyet Ayarları
+ * 4. Kalibrasyon Ayarları
  */
 Rectangle {
     id: root
@@ -37,8 +37,8 @@ Rectangle {
     signal configurationComplete()
     signal openExcavatorConfig()
     signal openDigAreaConfig()
-    signal openMapConfig()
-    signal openAlarmConfig()
+    signal openSafetyConfig()
+    signal openCalibrationConfig()
     signal backToLogin()
 
     // Config progress hesaplama (root seviyesinde)
@@ -46,8 +46,8 @@ Rectangle {
         var count = 0;
         if (configManager && configManager.excavatorConfigured) count++;
         if (configManager && configManager.digAreaConfigured) count++;
-        if (configManager && configManager.mapConfigured) count++;
-        if (configManager && configManager.alarmConfigured) count++;
+        if (configManager && configManager.safetyConfigured) count++;
+        if (configManager && configManager.calibrationConfigured) count++;
         return count / 4;
     }
 
@@ -290,16 +290,16 @@ Rectangle {
                             }
                         }
 
-                        // 3. Harita Ayarları
+                        // 3. Emniyet Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
                             Layout.preferredHeight: app.largeIconSize * 3.8
-                            title: root.tr("Harita Ayarları")
-                            description: root.tr("Kazı yapılacak alanı haritadan seçin")
-                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_map.png"
-                            icon: "🗺"
+                            title: root.tr("Emniyet Ayarları")
+                            description: root.tr("Sabit engeller ve çarpışma uyarısı")
+                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_safety.png"
+                            icon: "🛡️"
                             stepNumber: 3
-                            isConfigured: configManager ? configManager.mapConfigured : false
+                            isConfigured: configManager ? configManager.safetyConfigured : false
                             isEnabled: true
                             // Theme colors
                             tilePrimaryColor: root.primaryColor
@@ -310,20 +310,20 @@ Rectangle {
                             tileWarningColor: root.warningColor
 
                             onClicked: {
-                                stackView.push(mapConfigComponent)
+                                stackView.push(safetyConfigComponent)
                             }
                         }
 
-                        // 4. Alarm Ayarları
+                        // 4. Kalibrasyon Ayarları
                         ConfigTile {
                             Layout.fillWidth: true
                             Layout.preferredHeight: app.largeIconSize * 3.8
-                            title: root.tr("Alarm Ayarları")
-                            description: root.tr("Alarm renklerini özelleştirin")
-                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_alarm.png"
-                            icon: "🔔"
+                            title: root.tr("Kalibrasyon Ayarları")
+                            description: root.tr("Sensör kalibrasyonu ve ayarları")
+                            imageSource: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_calibration.png"
+                            icon: "⚙️"
                             stepNumber: 4
-                            isConfigured: configManager ? configManager.alarmConfigured : false
+                            isConfigured: configManager ? configManager.calibrationConfigured : false
                             isEnabled: true
                             // Theme colors
                             tilePrimaryColor: root.primaryColor
@@ -334,7 +334,7 @@ Rectangle {
                             tileWarningColor: root.warningColor
 
                             onClicked: {
-                                stackView.push(alarmConfigComponent)
+                                stackView.push(calibrationConfigComponent)
                             }
                         }
                     }
@@ -419,14 +419,14 @@ Rectangle {
         }
     }
 
-    // Map Config Component
+    // Safety Config Component
     Component {
-        id: mapConfigComponent
-        MapConfigPage {
+        id: safetyConfigComponent
+        SafetyConfigPage {
             onBack: stackView.pop()
             onConfigSaved: {
                 if (configManager) {
-                    configManager.markMapConfigured()
+                    configManager.markSafetyConfigured()
                     configManager.saveConfig()
                 }
                 stackView.pop()
@@ -434,14 +434,14 @@ Rectangle {
         }
     }
 
-    // Alarm Config Component
+    // Calibration Config Component
     Component {
-        id: alarmConfigComponent
-        AlarmConfigPage {
+        id: calibrationConfigComponent
+        CalibrationConfigPage {
             onBack: stackView.pop()
             onConfigSaved: {
                 if (configManager) {
-                    configManager.markAlarmConfigured()
+                    configManager.markCalibrationConfigured()
                     configManager.saveConfig()
                 }
                 stackView.pop()
