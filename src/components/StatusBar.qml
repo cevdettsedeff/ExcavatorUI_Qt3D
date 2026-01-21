@@ -100,16 +100,10 @@ Rectangle {
                 }
             }
 
-            // Proje adı - Altlı üstlü
+            // Proje ve Ekskavatör Adı - Altlı üstlü
             Column {
-                spacing: 1
+                spacing: 2
                 anchors.verticalCenter: parent.verticalCenter
-
-                Text {
-                    text: tr("Project") + ":"
-                    font.pixelSize: statusBar.tinyFontSize
-                    color: "#888888"
-                }
 
                 Text {
                     text: statusBar.projectName
@@ -117,33 +111,12 @@ Rectangle {
                     font.bold: true
                     color: "#ffffff"
                 }
-            }
-        }
 
-        // Ayırıcı çizgi - Proje ve Ekskavatör arası
-        Rectangle {
-            width: 1
-            height: statusBar.badgeHeight
-            color: "#444444"
-            Layout.alignment: Qt.AlignVCenter
-        }
-
-        // Ekskavatör Adı - Altlı Üstlü
-        Column {
-            spacing: 1
-            Layout.alignment: Qt.AlignVCenter
-
-            Text {
-                text: tr("Excavator") + ":"
-                font.pixelSize: statusBar.tinyFontSize
-                color: "#888888"
-            }
-
-            Text {
-                text: statusBar.excavatorName
-                font.pixelSize: statusBar.smallFontSize
-                font.bold: true
-                color: "#ffffff"
+                Text {
+                    text: statusBar.excavatorName
+                    font.pixelSize: statusBar.tinyFontSize
+                    color: "#888888"
+                }
             }
         }
 
