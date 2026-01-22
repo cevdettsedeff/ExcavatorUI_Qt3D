@@ -15,7 +15,7 @@ import "./components"
  */
 ApplicationWindow {
     id: appRoot
-    // Başlangıç pencere boyutu
+    // Başlangıç pencere boyutu (520x835) ama responsive 800x1280 referansına göre
     width: 520
     height: 835
     visible: true
@@ -26,8 +26,8 @@ ApplicationWindow {
     // GLOBAL RESPONSIVE DESIGN SYSTEM - 10.1 inç
     // ============================================
 
-    // Temel ölçekler
-    property real fontScale: Math.min(width / 520, height / 835)
+    // Temel ölçekler - 800x1280 referansına göre
+    property real fontScale: Math.min(width / 800, height / 1280)
 
     // Font boyutları (10.1 inç için optimize - BÜYÜTÜLMÜŞ)
     property real baseFontSize: 22 * fontScale      // Normal metin (14→22)
