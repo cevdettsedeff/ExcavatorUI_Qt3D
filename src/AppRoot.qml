@@ -15,9 +15,9 @@ import "./components"
  */
 ApplicationWindow {
     id: appRoot
-    // 10.1 inç tablet ekran için sabit boyut (portrait)
-    width: 800
-    height: 1280
+    // Başlangıç pencere boyutu
+    width: 520
+    height: 835
     visible: true
     title: qsTr("EHK - Harita Ve Görselleştirme Yönetimi")
     color: themeManager ? themeManager.backgroundColor : "#2d3748"
@@ -27,7 +27,7 @@ ApplicationWindow {
     // ============================================
 
     // Temel ölçekler
-    property real fontScale: Math.min(width / 800, height / 1280)
+    property real fontScale: Math.min(width / 520, height / 835)
 
     // Font boyutları (10.1 inç için optimize - BÜYÜTÜLMÜŞ)
     property real baseFontSize: 22 * fontScale      // Normal metin (14→22)

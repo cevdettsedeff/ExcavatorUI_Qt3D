@@ -201,16 +201,16 @@ Rectangle {
 
                 // Sinyal çubukları
                 Row {
-                    spacing: 2
+                    spacing: 1
                     anchors.horizontalCenter: parent.horizontalCenter
-                    height: statusBar.badgeHeight * 0.4
+                    height: statusBar.badgeHeight * 0.35
 
                     Repeater {
                         model: 4
 
                         Rectangle {
-                            width: 3
-                            height: 4 + index * 4
+                            width: 2
+                            height: 3 + index * 3
                             radius: 1
                             anchors.bottom: parent.bottom
                             color: statusBar.gnssOk ? "#4CAF50" : "#666666"
