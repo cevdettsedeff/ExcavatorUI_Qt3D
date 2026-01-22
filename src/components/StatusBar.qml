@@ -93,37 +93,69 @@ Rectangle {
                 anchors.centerIn: parent
                 spacing: 8
 
-                // Klasör ikonu
-                Image {
-                    id: folderIcon
-                    source: "qrc:/ExcavatorUI_Qt3D/resources/icons/folder.png"
-                    width: statusBar.iconSize * 0.6
-                    height: statusBar.iconSize * 0.6
-                    fillMode: Image.PreserveAspectFit
-                    anchors.verticalCenter: parent.verticalCenter
-                    visible: status === Image.Ready
-                }
-
-                // Fallback ikon
-                Rectangle {
-                    visible: folderIcon.status !== Image.Ready
-                    width: statusBar.iconSize * 0.6
-                    height: statusBar.iconSize * 0.6
-                    radius: 3
-                    color: "#FF9800"
+                // İkonlar - Sol tarafta altlı üstlü
+                Column {
+                    spacing: 3
                     anchors.verticalCenter: parent.verticalCenter
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: "📁"
-                        font.pixelSize: statusBar.iconSize * 0.4
-                        color: "#ffffff"
+                    // Klasör ikonu
+                    Rectangle {
+                        width: statusBar.iconSize * 0.5
+                        height: statusBar.iconSize * 0.5
+                        color: "transparent"
+                        anchors.horizontalCenter: parent.horizontalCenter
+
+                        Image {
+                            id: folderIcon
+                            source: "qrc:/ExcavatorUI_Qt3D/resources/icons/folder.png"
+                            width: parent.width
+                            height: parent.height
+                            fillMode: Image.PreserveAspectFit
+                            anchors.centerIn: parent
+                            visible: status === Image.Ready
+                        }
+
+                        // Fallback ikon
+                        Text {
+                            visible: folderIcon.status !== Image.Ready
+                            anchors.centerIn: parent
+                            text: "📁"
+                            font.pixelSize: statusBar.iconSize * 0.35
+                            color: "#FF9800"
+                        }
+                    }
+
+                    // Ekskavatör ikonu
+                    Rectangle {
+                        width: statusBar.iconSize * 0.5
+                        height: statusBar.iconSize * 0.5
+                        color: "transparent"
+                        anchors.horizontalCenter: parent.horizontalCenter
+
+                        Image {
+                            id: truckIcon
+                            source: "qrc:/ExcavatorUI_Qt3D/resources/icons/excavator.png"
+                            width: parent.width
+                            height: parent.height
+                            fillMode: Image.PreserveAspectFit
+                            anchors.centerIn: parent
+                            visible: status === Image.Ready
+                        }
+
+                        // Fallback ikon
+                        Text {
+                            visible: truckIcon.status !== Image.Ready
+                            anchors.centerIn: parent
+                            text: "🚜"
+                            font.pixelSize: statusBar.iconSize * 0.35
+                            color: "#FF9800"
+                        }
                     }
                 }
 
-                // Proje ve Ekskavatör Adları - Altlı Üstlü
+                // Proje ve Ekskavatör Adları - Sağ tarafta altlı üstlü
                 Column {
-                    spacing: 2
+                    spacing: 3
                     anchors.verticalCenter: parent.verticalCenter
 
                     Text {
@@ -133,38 +165,17 @@ Rectangle {
                         color: "#FF9800"
                     }
 
+                    // Ayırıcı çizgi
+                    Rectangle {
+                        width: 60
+                        height: 1
+                        color: "#444444"
+                    }
+
                     Text {
                         text: statusBar.excavatorName
                         font.pixelSize: statusBar.tinyFontSize
                         color: "#888888"
-                    }
-                }
-
-                // Ekskavatör ikonu
-                Image {
-                    id: truckIcon
-                    source: "qrc:/ExcavatorUI_Qt3D/resources/icons/excavator.png"
-                    width: statusBar.iconSize * 0.6
-                    height: statusBar.iconSize * 0.6
-                    fillMode: Image.PreserveAspectFit
-                    anchors.verticalCenter: parent.verticalCenter
-                    visible: status === Image.Ready
-                }
-
-                // Fallback ikon
-                Rectangle {
-                    visible: truckIcon.status !== Image.Ready
-                    width: statusBar.iconSize * 0.6
-                    height: statusBar.iconSize * 0.6
-                    radius: 3
-                    color: "#FF9800"
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "🚜"
-                        font.pixelSize: statusBar.iconSize * 0.4
-                        color: "#ffffff"
                     }
                 }
             }
