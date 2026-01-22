@@ -86,7 +86,7 @@ Rectangle {
             radius: 6
             color: "#1e2738"
             border.color: "#FF9800"
-            border.width: 2
+            border.width: 1
 
             Row {
                 id: projectContent
@@ -191,7 +191,7 @@ Rectangle {
             radius: 6
             color: "#1e2738"
             border.color: statusBar.gnssOk ? "#4CAF50" : "#666666"
-            border.width: 2
+            border.width: 1
 
             Row {
                 id: gnssContent
@@ -235,7 +235,7 @@ Rectangle {
             radius: 6
             color: "#1e2738"
             border.color: statusBar.getImuStatusColor()
-            border.width: 2
+            border.width: 1
 
             Row {
                 id: imuCardContent
@@ -372,7 +372,7 @@ Rectangle {
             radius: 6
             color: "#1e2738"
             border.color: "#505050"
-            border.width: 2
+            border.width: 1
 
             Row {
                 id: userCardContent
@@ -386,7 +386,7 @@ Rectangle {
                     radius: width / 2
                     color: "#2a2a2a"
                     border.color: "#4CAF50"
-                    border.width: 2
+                    border.width: 1
                     anchors.verticalCenter: parent.verticalCenter
 
                     Image {
@@ -465,7 +465,7 @@ Rectangle {
             radius: 6
             color: "#1e2738"
             border.color: "#505050"
-            border.width: 2
+            border.width: 1
 
             Row {
                 id: menuCardContent
