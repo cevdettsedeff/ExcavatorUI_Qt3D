@@ -85,17 +85,17 @@ Rectangle {
             height: statusBar.badgeHeight
             radius: 6
             color: "#1e2738"
-            border.color: "#FF9800"
+            border.color: "#666666"
             border.width: 1
 
             Row {
                 id: projectContent
                 anchors.centerIn: parent
-                spacing: 8
+                spacing: 6
 
                 // İkonlar - Sol tarafta altlı üstlü
                 Column {
-                    spacing: 3
+                    spacing: 2
                     anchors.verticalCenter: parent.verticalCenter
 
                     // Klasör ikonu
@@ -155,14 +155,14 @@ Rectangle {
 
                 // Proje ve Ekskavatör Adları - Sağ tarafta altlı üstlü
                 Column {
-                    spacing: 3
+                    spacing: 2
                     anchors.verticalCenter: parent.verticalCenter
 
                     Text {
                         text: statusBar.projectName
-                        font.pixelSize: statusBar.smallFontSize
+                        font.pixelSize: statusBar.tinyFontSize
                         font.bold: true
-                        color: "#FF9800"
+                        color: "#ffffff"
                     }
 
                     // Ayırıcı çizgi
