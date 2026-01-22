@@ -294,6 +294,7 @@ qt_add_qml_module(ExcavatorUI_Qt3DApp
         RESOURCES resources/logos/tkysm_logo.jpg resources/logos/uab_logo.png
         RESOURCES resources/images/excavator_wireframe.png
         RESOURCES resources/icons/audio.png resources/icons/audio_muted.png resources/icons/bluetooth.png resources/icons/bluetooth_disabled.png
+        RESOURCES resources/icons/folder.png resources/icons/user.png
 )
 
 target_link_libraries(ExcavatorUI_Qt3DApp PRIVATE
