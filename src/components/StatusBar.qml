@@ -76,7 +76,7 @@ Rectangle {
         anchors.fill: parent
         anchors.leftMargin: 8
         anchors.rightMargin: 8
-        spacing: 8
+        spacing: 4
 
         // KART 1: Proje ve Ekskavatör Kartı (Altlı Üstlü)
         Rectangle {
@@ -183,7 +183,7 @@ Rectangle {
 
         Item { Layout.fillWidth: true }
 
-        // KART 3: GNSS Kartı
+        // KART 3: GNSS Kartı (Altlı üstlü)
         Rectangle {
             id: gnssCard
             width: gnssContent.width + 16
@@ -193,16 +193,17 @@ Rectangle {
             border.color: statusBar.gnssOk ? "#4CAF50" : "#666666"
             border.width: 1
 
-            Row {
+            Column {
                 id: gnssContent
                 anchors.centerIn: parent
-                spacing: 6
+                spacing: 2
+                width: 35
 
                 // Sinyal çubukları
                 Row {
                     spacing: 2
-                    anchors.verticalCenter: parent.verticalCenter
-                    height: statusBar.badgeHeight * 0.6
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    height: statusBar.badgeHeight * 0.4
 
                     Repeater {
                         model: 4
@@ -219,10 +220,10 @@ Rectangle {
 
                 Text {
                     text: "GNSS"
-                    font.pixelSize: statusBar.smallFontSize
+                    font.pixelSize: statusBar.tinyFontSize
                     font.bold: true
                     color: statusBar.gnssOk ? "#4CAF50" : "#666666"
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
         }
