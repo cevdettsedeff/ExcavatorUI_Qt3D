@@ -134,7 +134,7 @@ Rectangle {
 
                         Image {
                             id: truckIcon
-                            source: "qrc:/ExcavatorUI_Qt3D/resources/icons/excavator.png"
+                            source: "qrc:/ExcavatorUI_Qt3D/resources/icons/config_excavator.png"
                             width: parent.width
                             height: parent.height
                             fillMode: Image.PreserveAspectFit
