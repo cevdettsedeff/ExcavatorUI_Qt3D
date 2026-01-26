@@ -89,7 +89,7 @@ Rectangle {
 
     // ==================== WIZARD STATE ====================
     property int currentStep: 0  // 0-5 arası
-    property int totalSteps: 6
+    property int totalSteps: 7
 
     // Step titles
     property var stepTitles: [
@@ -174,29 +174,29 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: app ? app.buttonHeight * 1.3 : 55
+        height: app ? app.buttonHeight * 1.5 : 60
         color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: app ? app.smallPadding : 12
-            anchors.rightMargin: app ? app.smallPadding : 12
+            anchors.leftMargin: app ? app.smallPadding : 16
+            anchors.rightMargin: app ? app.smallPadding : 16
 
             Button {
-                Layout.preferredWidth: app ? app.buttonHeight * 0.8 : 35
-                Layout.preferredHeight: app ? app.buttonHeight * 0.8 : 35
+                Layout.preferredWidth: app ? app.buttonHeight : 40
+                Layout.preferredHeight: app ? app.buttonHeight : 40
                 flat: true
 
                 contentItem: Text {
                     text: "←"
-                    font.pixelSize: 22
+                    font.pixelSize: 24
                     color: "white"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
 
                 background: Rectangle {
-                    radius: 17
+                    radius: 20
                     color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
                 }
 
@@ -212,13 +212,13 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: root.tr("Kazı Alanı Ayarları")
-                font.pixelSize: app ? app.mediumFontSize * 0.9 : 18
+                font.pixelSize: app ? app.mediumFontSize : 20
                 font.bold: true
                 color: "white"
                 horizontalAlignment: Text.AlignHCenter
             }
 
-            Item { Layout.preferredWidth: app ? app.buttonHeight * 0.8 : 35 }
+            Item { Layout.preferredWidth: app ? app.buttonHeight : 40 }
         }
     }
 
