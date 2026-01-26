@@ -2707,10 +2707,8 @@ Rectangle {
         id: step6Obstacles
 
         Rectangle {
+            id: obstaclesRoot
             color: "transparent"
-
-            // Local safe accessor
-            property var safeCurrentObs: root.currentObstacle ? root.currentObstacle : {id: "", type: "point", depth: 0, points: []}
 
             RowLayout {
                 anchors.fill: parent
@@ -2718,7 +2716,7 @@ Rectangle {
 
                 // Left Panel - Obstacle List
                 Rectangle {
-                    Layout.preferredWidth: parent.width * 0.35
+                    Layout.preferredWidth: 280
                     Layout.fillHeight: true
                     color: root.cardColor
                     radius: 12
@@ -2739,13 +2737,13 @@ Rectangle {
                         }
 
                         // Add buttons
-                        Row {
+                        RowLayout {
                             Layout.fillWidth: true
                             spacing: 8
 
                             Button {
-                                width: (parent.width - 8) / 2
-                                height: 36
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 36
 
                                 background: Rectangle {
                                     radius: 6
@@ -2765,8 +2763,8 @@ Rectangle {
                             }
 
                             Button {
-                                width: (parent.width - 8) / 2
-                                height: 36
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 36
 
                                 background: Rectangle {
                                     radius: 6
@@ -2788,19 +2786,20 @@ Rectangle {
 
                         // Obstacle list using Repeater for safety
                         ScrollView {
+                            id: obstacleScrollView
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             clip: true
 
                             Column {
-                                width: parent.width
+                                width: obstacleScrollView.width
                                 spacing: 6
 
                                 Repeater {
                                     model: obstacles
 
                                     Rectangle {
-                                        width: parent.width
+                                        width: obstacleScrollView.width - 20
                                         height: 60
                                         radius: 8
                                         color: index === selectedObstacleIndex ?
@@ -3010,15 +3009,15 @@ Rectangle {
                                     }
 
                                     // Point type - single coordinate
-                                    Row {
+                                    RowLayout {
                                         Layout.fillWidth: true
                                         spacing: 8
                                         visible: root.currentObstacle && root.currentObstacle.type === "point"
 
                                         TextField {
                                             id: pointXField
-                                            width: (parent.width - 80) / 2
-                                            height: 36
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 36
                                             placeholderText: "X (ITRF)"
                                             font.pixelSize: 12
                                             color: "white"
@@ -3038,8 +3037,8 @@ Rectangle {
 
                                         TextField {
                                             id: pointYField
-                                            width: (parent.width - 80) / 2
-                                            height: 36
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 36
                                             placeholderText: "Y (ITRF)"
                                             font.pixelSize: 12
                                             color: "white"
@@ -3058,8 +3057,8 @@ Rectangle {
                                         }
 
                                         Button {
-                                            width: 60
-                                            height: 36
+                                            Layout.preferredWidth: 60
+                                            Layout.preferredHeight: 36
 
                                             background: Rectangle {
                                                 radius: 6
@@ -3094,14 +3093,14 @@ Rectangle {
                                         spacing: 6
 
                                         // Add new point row
-                                        Row {
+                                        RowLayout {
                                             Layout.fillWidth: true
                                             spacing: 6
 
                                             TextField {
                                                 id: areaXField
-                                                width: (parent.width - 70) / 2
-                                                height: 32
+                                                Layout.fillWidth: true
+                                                Layout.preferredHeight: 32
                                                 placeholderText: "X"
                                                 font.pixelSize: 11
                                                 color: "white"
@@ -3118,8 +3117,8 @@ Rectangle {
 
                                             TextField {
                                                 id: areaYField
-                                                width: (parent.width - 70) / 2
-                                                height: 32
+                                                Layout.fillWidth: true
+                                                Layout.preferredHeight: 32
                                                 placeholderText: "Y"
                                                 font.pixelSize: 11
                                                 color: "white"
@@ -3135,8 +3134,8 @@ Rectangle {
                                             }
 
                                             Button {
-                                                width: 50
-                                                height: 32
+                                                Layout.preferredWidth: 50
+                                                Layout.preferredHeight: 32
 
                                                 background: Rectangle {
                                                     radius: 4
@@ -3166,19 +3165,20 @@ Rectangle {
 
                                         // Points list using Repeater
                                         ScrollView {
+                                            id: pointsScrollView
                                             Layout.fillWidth: true
                                             Layout.fillHeight: true
                                             clip: true
 
                                             Column {
-                                                width: parent.width
+                                                width: pointsScrollView.width
                                                 spacing: 4
 
                                                 Repeater {
                                                     model: root.currentObstacle ? root.currentObstacle.points : []
 
                                                     Rectangle {
-                                                        width: parent.width
+                                                        width: pointsScrollView.width - 10
                                                         height: 28
                                                         radius: 4
                                                         color: Qt.rgba(1, 1, 1, 0.05)
