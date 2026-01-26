@@ -123,6 +123,21 @@ Rectangle {
     // Engeller listesi: [{id: "E1", type: "point" veya "area", depth: -5.0, points: [{x, y}]}]
     property var obstacles: []
     property int selectedObstacleIndex: -1
+    // Safe accessor for current obstacle
+    property var currentObstacle: {
+        if (selectedObstacleIndex >= 0 && selectedObstacleIndex < obstacles.length) {
+            return obstacles[selectedObstacleIndex]
+        }
+        return null
+    }
+
+    // Safe obstacle getter
+    function getObstacle(idx) {
+        if (idx >= 0 && idx < obstacles.length) {
+            return obstacles[idx]
+        }
+        return {id: "", type: "point", depth: 0, points: []}
+    }
 
     // Initialize corner points when count changes
     onCornerCountChanged: {
@@ -2694,6 +2709,9 @@ Rectangle {
         Rectangle {
             color: "transparent"
 
+            // Local safe accessor
+            property var safeCurrentObs: root.currentObstacle ? root.currentObstacle : {id: "", type: "point", depth: 0, points: []}
+
             RowLayout {
                 anchors.fill: parent
                 spacing: 12
@@ -2768,92 +2786,95 @@ Rectangle {
                             }
                         }
 
-                        // Obstacle list
+                        // Obstacle list using Repeater for safety
                         ScrollView {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             clip: true
 
-                            ListView {
-                                id: obstacleListView
-                                model: obstacles.length
+                            Column {
+                                width: parent.width
                                 spacing: 6
 
-                                delegate: Rectangle {
-                                    width: obstacleListView.width
-                                    height: 60
-                                    radius: 8
-                                    color: index === selectedObstacleIndex ?
-                                           Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) :
-                                           Qt.rgba(1, 1, 1, 0.05)
-                                    border.width: index === selectedObstacleIndex ? 2 : 1
-                                    border.color: index === selectedObstacleIndex ? root.primaryColor : root.borderColor
+                                Repeater {
+                                    model: obstacles
 
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: selectedObstacleIndex = index
-                                    }
+                                    Rectangle {
+                                        width: parent.width
+                                        height: 60
+                                        radius: 8
+                                        color: index === selectedObstacleIndex ?
+                                               Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) :
+                                               Qt.rgba(1, 1, 1, 0.05)
+                                        border.width: index === selectedObstacleIndex ? 2 : 1
+                                        border.color: index === selectedObstacleIndex ? root.primaryColor : root.borderColor
 
-                                    RowLayout {
-                                        anchors.fill: parent
-                                        anchors.margins: 8
-                                        spacing: 8
-
-                                        // Obstacle icon
-                                        Rectangle {
-                                            width: 36
-                                            height: 36
-                                            radius: 18
-                                            color: obstacles[index].type === "point" ? "#FF9800" : "#E91E63"
-
-                                            Text {
-                                                anchors.centerIn: parent
-                                                text: obstacles[index].type === "point" ? "●" : "◆"
-                                                font.pixelSize: 16
-                                                color: "white"
-                                            }
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            onClicked: selectedObstacleIndex = index
                                         }
 
-                                        // Obstacle info
-                                        Column {
-                                            Layout.fillWidth: true
-                                            spacing: 2
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.margins: 8
+                                            spacing: 8
 
-                                            Text {
-                                                text: obstacles[index].id
-                                                font.pixelSize: 14
-                                                font.bold: true
-                                                color: root.textColor
+                                            // Obstacle icon
+                                            Rectangle {
+                                                width: 36
+                                                height: 36
+                                                radius: 18
+                                                color: modelData.type === "point" ? "#FF9800" : "#E91E63"
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: modelData.type === "point" ? "●" : "◆"
+                                                    font.pixelSize: 16
+                                                    color: "white"
+                                                }
                                             }
 
-                                            Text {
-                                                text: (obstacles[index].type === "point" ? root.tr("Nokta") : root.tr("Alan")) +
-                                                      " | " + root.tr("Derinlik") + ": " + obstacles[index].depth.toFixed(1) + "m"
-                                                font.pixelSize: 11
-                                                color: root.textSecondaryColor
-                                            }
-                                        }
+                                            // Obstacle info
+                                            Column {
+                                                Layout.fillWidth: true
+                                                spacing: 2
 
-                                        // Delete button
-                                        Button {
-                                            width: 28
-                                            height: 28
-                                            flat: true
+                                                Text {
+                                                    text: modelData.id
+                                                    font.pixelSize: 14
+                                                    font.bold: true
+                                                    color: root.textColor
+                                                }
 
-                                            background: Rectangle {
-                                                radius: 14
-                                                color: parent.pressed ? Qt.rgba(1, 0, 0, 0.3) : "transparent"
-                                            }
-
-                                            contentItem: Text {
-                                                text: "✕"
-                                                font.pixelSize: 14
-                                                color: "#f56565"
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
+                                                Text {
+                                                    text: (modelData.type === "point" ? root.tr("Nokta") : root.tr("Alan")) +
+                                                          " | " + root.tr("Derinlik") + ": " + modelData.depth.toFixed(1) + "m"
+                                                    font.pixelSize: 11
+                                                    color: root.textSecondaryColor
+                                                }
                                             }
 
-                                            onClicked: root.removeObstacle(index)
+                                            // Delete button
+                                            Button {
+                                                width: 28
+                                                height: 28
+                                                flat: true
+
+                                                background: Rectangle {
+                                                    radius: 14
+                                                    color: parent.pressed ? Qt.rgba(1, 0, 0, 0.3) : "transparent"
+                                                }
+
+                                                contentItem: Text {
+                                                    text: "✕"
+                                                    font.pixelSize: 14
+                                                    color: "#f56565"
+                                                    horizontalAlignment: Text.AlignHCenter
+                                                    verticalAlignment: Text.AlignVCenter
+                                                }
+
+                                                onClicked: root.removeObstacle(index)
+                                            }
                                         }
                                     }
                                 }
@@ -2889,8 +2910,8 @@ Rectangle {
 
                         // Header
                         Text {
-                            text: selectedObstacleIndex >= 0 ?
-                                  obstacles[selectedObstacleIndex].id + " - " + root.tr("Engel Düzenle") :
+                            text: root.currentObstacle ?
+                                  root.currentObstacle.id + " - " + root.tr("Engel Düzenle") :
                                   root.tr("Engel Seçin")
                             font.pixelSize: 16
                             font.bold: true
@@ -2901,7 +2922,7 @@ Rectangle {
                         ColumnLayout {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            visible: selectedObstacleIndex >= 0
+                            visible: root.currentObstacle !== null
                             spacing: 12
 
                             // Depth input - IMPORTANT
@@ -2945,8 +2966,7 @@ Rectangle {
                                         placeholderTextColor: root.textSecondaryColor
                                         inputMethodHints: Qt.ImhFormattedNumbersOnly
 
-                                        text: selectedObstacleIndex >= 0 && obstacles[selectedObstacleIndex] ?
-                                              obstacles[selectedObstacleIndex].depth.toString() : ""
+                                        text: root.currentObstacle ? root.currentObstacle.depth.toString() : ""
 
                                         background: Rectangle {
                                             color: root.inputBgColor
@@ -2970,7 +2990,7 @@ Rectangle {
                             // Coordinate inputs
                             Rectangle {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: selectedObstacleIndex >= 0 && obstacles[selectedObstacleIndex].type === "area" ? 200 : 100
+                                Layout.preferredHeight: root.currentObstacle && root.currentObstacle.type === "area" ? 200 : 100
                                 color: Qt.rgba(1, 1, 1, 0.05)
                                 radius: 8
                                 border.width: 1
@@ -2982,7 +3002,7 @@ Rectangle {
                                     spacing: 8
 
                                     Text {
-                                        text: selectedObstacleIndex >= 0 && obstacles[selectedObstacleIndex].type === "point" ?
+                                        text: root.currentObstacle && root.currentObstacle.type === "point" ?
                                               root.tr("Nokta Koordinatı") : root.tr("Alan Köşe Noktaları")
                                         font.pixelSize: 13
                                         font.bold: true
@@ -2993,7 +3013,7 @@ Rectangle {
                                     Row {
                                         Layout.fillWidth: true
                                         spacing: 8
-                                        visible: selectedObstacleIndex >= 0 && obstacles[selectedObstacleIndex].type === "point"
+                                        visible: root.currentObstacle && root.currentObstacle.type === "point"
 
                                         TextField {
                                             id: pointXField
@@ -3005,8 +3025,8 @@ Rectangle {
                                             placeholderTextColor: root.textSecondaryColor
                                             inputMethodHints: Qt.ImhFormattedNumbersOnly
 
-                                            text: selectedObstacleIndex >= 0 && obstacles[selectedObstacleIndex].points.length > 0 ?
-                                                  obstacles[selectedObstacleIndex].points[0].x.toString() : ""
+                                            text: root.currentObstacle && root.currentObstacle.points.length > 0 ?
+                                                  root.currentObstacle.points[0].x.toString() : ""
 
                                             background: Rectangle {
                                                 color: root.inputBgColor
@@ -3026,8 +3046,8 @@ Rectangle {
                                             placeholderTextColor: root.textSecondaryColor
                                             inputMethodHints: Qt.ImhFormattedNumbersOnly
 
-                                            text: selectedObstacleIndex >= 0 && obstacles[selectedObstacleIndex].points.length > 0 ?
-                                                  obstacles[selectedObstacleIndex].points[0].y.toString() : ""
+                                            text: root.currentObstacle && root.currentObstacle.points.length > 0 ?
+                                                  root.currentObstacle.points[0].y.toString() : ""
 
                                             background: Rectangle {
                                                 color: root.inputBgColor
@@ -3070,7 +3090,7 @@ Rectangle {
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         Layout.fillHeight: true
-                                        visible: selectedObstacleIndex >= 0 && obstacles[selectedObstacleIndex].type === "area"
+                                        visible: root.currentObstacle && root.currentObstacle.type === "area"
                                         spacing: 6
 
                                         // Add new point row
@@ -3144,64 +3164,69 @@ Rectangle {
                                             }
                                         }
 
-                                        // Points list
+                                        // Points list using Repeater
                                         ScrollView {
                                             Layout.fillWidth: true
                                             Layout.fillHeight: true
                                             clip: true
 
-                                            ListView {
-                                                model: selectedObstacleIndex >= 0 ? obstacles[selectedObstacleIndex].points.length : 0
+                                            Column {
+                                                width: parent.width
                                                 spacing: 4
 
-                                                delegate: Rectangle {
-                                                    width: parent.width
-                                                    height: 28
-                                                    radius: 4
-                                                    color: Qt.rgba(1, 1, 1, 0.05)
+                                                Repeater {
+                                                    model: root.currentObstacle ? root.currentObstacle.points : []
 
-                                                    RowLayout {
-                                                        anchors.fill: parent
-                                                        anchors.margins: 4
-                                                        spacing: 6
+                                                    Rectangle {
+                                                        width: parent.width
+                                                        height: 28
+                                                        radius: 4
+                                                        color: Qt.rgba(1, 1, 1, 0.05)
 
-                                                        Text {
-                                                            text: obstacles[selectedObstacleIndex].id + "." + (index + 1)
-                                                            font.pixelSize: 10
-                                                            font.bold: true
-                                                            color: "#E91E63"
-                                                        }
+                                                        RowLayout {
+                                                            anchors.fill: parent
+                                                            anchors.margins: 4
+                                                            spacing: 6
 
-                                                        Text {
-                                                            Layout.fillWidth: true
-                                                            text: "X: " + obstacles[selectedObstacleIndex].points[index].x.toFixed(2) +
-                                                                  "  Y: " + obstacles[selectedObstacleIndex].points[index].y.toFixed(2)
-                                                            font.pixelSize: 10
-                                                            color: root.textSecondaryColor
-                                                        }
-
-                                                        Button {
-                                                            width: 20
-                                                            height: 20
-                                                            flat: true
-
-                                                            contentItem: Text {
-                                                                text: "✕"
+                                                            Text {
+                                                                text: (root.currentObstacle ? root.currentObstacle.id : "E") + "." + (index + 1)
                                                                 font.pixelSize: 10
-                                                                color: "#f56565"
-                                                                horizontalAlignment: Text.AlignHCenter
-                                                                verticalAlignment: Text.AlignVCenter
+                                                                font.bold: true
+                                                                color: "#E91E63"
                                                             }
 
-                                                            background: Rectangle {
-                                                                radius: 10
-                                                                color: parent.pressed ? Qt.rgba(1, 0, 0, 0.2) : "transparent"
+                                                            Text {
+                                                                Layout.fillWidth: true
+                                                                text: "X: " + modelData.x.toFixed(2) + "  Y: " + modelData.y.toFixed(2)
+                                                                font.pixelSize: 10
+                                                                color: root.textSecondaryColor
                                                             }
 
-                                                            onClicked: {
-                                                                var list = obstacles.slice()
-                                                                list[selectedObstacleIndex].points.splice(index, 1)
-                                                                obstacles = list
+                                                            Button {
+                                                                width: 20
+                                                                height: 20
+                                                                flat: true
+
+                                                                contentItem: Text {
+                                                                    text: "✕"
+                                                                    font.pixelSize: 10
+                                                                    color: "#f56565"
+                                                                    horizontalAlignment: Text.AlignHCenter
+                                                                    verticalAlignment: Text.AlignVCenter
+                                                                }
+
+                                                                background: Rectangle {
+                                                                    radius: 10
+                                                                    color: parent.pressed ? Qt.rgba(1, 0, 0, 0.2) : "transparent"
+                                                                }
+
+                                                                onClicked: {
+                                                                    if (selectedObstacleIndex >= 0 && selectedObstacleIndex < obstacles.length) {
+                                                                        var list = obstacles.slice()
+                                                                        list[selectedObstacleIndex].points.splice(index, 1)
+                                                                        obstacles = list
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -3283,12 +3308,13 @@ Rectangle {
                                         ctx.fillStyle = "rgba(49, 151, 149, 0.15)"
                                         ctx.fill()
 
-                                        // Draw all obstacles
+                                        // Draw all obstacles safely
                                         for (var k = 0; k < obstacles.length; k++) {
                                             var obs = obstacles[k]
+                                            if (!obs) continue
                                             var isSelected = k === selectedObstacleIndex
 
-                                            if (obs.type === "point" && obs.points.length > 0) {
+                                            if (obs.type === "point" && obs.points && obs.points.length > 0) {
                                                 var px = tx(obs.points[0].x)
                                                 var py = ty(obs.points[0].y)
 
@@ -3307,7 +3333,7 @@ Rectangle {
                                                     ctx.textAlign = "center"
                                                     ctx.fillText(obs.id, px, py - 15)
                                                 }
-                                            } else if (obs.type === "area" && obs.points.length > 0) {
+                                            } else if (obs.type === "area" && obs.points && obs.points.length > 0) {
                                                 ctx.strokeStyle = isSelected ? "#E91E63" : "rgba(233, 30, 99, 0.6)"
                                                 ctx.fillStyle = isSelected ? "rgba(233, 30, 99, 0.3)" : "rgba(233, 30, 99, 0.15)"
                                                 ctx.lineWidth = isSelected ? 3 : 2
@@ -3355,7 +3381,7 @@ Rectangle {
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            visible: selectedObstacleIndex < 0
+                            visible: root.currentObstacle === null
                             color: "transparent"
 
                             Column {
