@@ -88,8 +88,8 @@ Rectangle {
     property color canvasBgColor: Qt.rgba(0, 0, 0, 0.3)  // Dark canvas background
 
     // ==================== WIZARD STATE ====================
-    property int currentStep: 0  // 0-5 arası
-    property int totalSteps: 6
+    property int currentStep: 0  // 0-7 arası
+    property int totalSteps: 8
 
     // Step titles
     property var stepTitles: [
@@ -98,7 +98,9 @@ Rectangle {
         root.tr("Koordinatlar"),
         root.tr("Önizleme"),
         root.tr("Batimetri"),
-        root.tr("Harita")
+        root.tr("Harita"),
+        root.tr("Engel Girişi"),
+        root.tr("Engel Önizleme")
     ]
 
     // Project selection
@@ -117,6 +119,29 @@ Rectangle {
     // ==================== MAP VIEW MODE ====================
     property int mapViewMode: 0  // 0: Contour lines, 1: Grid
     property real mapZoom: 1.0  // Zoom level for map
+
+    // ==================== OBSTACLES DATA ====================
+    // Engeller listesi:
+    // - Nokta: {id: "E1", type: "point", depth: -5.0, points: [{x, y, label: "E1"}]}
+    // - Alan: {id: "E2", type: "area", depth: -5.0, points: [{x, y, label: "E2-1"}, {x, y, label: "E2-2"}, {x, y, label: "E2-3"}, {x, y, label: "E2-4"}]}
+    property var obstacles: []
+    property int selectedObstacleIndex: -1
+    property int selectedCornerIndex: -1  // Seçili köşe indeksi (alan engelleri için)
+    // Safe accessor for current obstacle
+    property var currentObstacle: {
+        if (selectedObstacleIndex >= 0 && selectedObstacleIndex < obstacles.length) {
+            return obstacles[selectedObstacleIndex]
+        }
+        return null
+    }
+
+    // Safe obstacle getter
+    function getObstacle(idx) {
+        if (idx >= 0 && idx < obstacles.length) {
+            return obstacles[idx]
+        }
+        return {id: "", type: "point", depth: 0, points: []}
+    }
 
     // Initialize corner points when count changes
     onCornerCountChanged: {
@@ -168,29 +193,29 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: app ? app.buttonHeight * 1.3 : 55
+        height: app ? app.buttonHeight * 1.5 : 60
         color: root.primaryColor
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: app ? app.smallPadding : 12
-            anchors.rightMargin: app ? app.smallPadding : 12
+            anchors.leftMargin: app ? app.smallPadding : 16
+            anchors.rightMargin: app ? app.smallPadding : 16
 
             Button {
-                Layout.preferredWidth: app ? app.buttonHeight * 0.8 : 35
-                Layout.preferredHeight: app ? app.buttonHeight * 0.8 : 35
+                Layout.preferredWidth: app ? app.buttonHeight : 40
+                Layout.preferredHeight: app ? app.buttonHeight : 40
                 flat: true
 
                 contentItem: Text {
                     text: "←"
-                    font.pixelSize: 22
+                    font.pixelSize: 24
                     color: "white"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
 
                 background: Rectangle {
-                    radius: 17
+                    radius: 20
                     color: parent.pressed ? Qt.rgba(1, 1, 1, 0.2) : "transparent"
                 }
 
@@ -206,13 +231,13 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: root.tr("Kazı Alanı Ayarları")
-                font.pixelSize: app ? app.mediumFontSize * 0.9 : 18
+                font.pixelSize: app ? app.mediumFontSize : 20
                 font.bold: true
                 color: "white"
                 horizontalAlignment: Text.AlignHCenter
             }
 
-            Item { Layout.preferredWidth: app ? app.buttonHeight * 0.8 : 35 }
+            Item { Layout.preferredWidth: app ? app.buttonHeight : 40 }
         }
     }
 
@@ -336,6 +361,20 @@ Rectangle {
             anchors.fill: parent
             active: currentStep === 5
             sourceComponent: step5MapViews
+        }
+
+        // Step 6: Obstacle Input (Engel Girişi)
+        Loader {
+            anchors.fill: parent
+            active: currentStep === 6
+            sourceComponent: step6ObstacleInput
+        }
+
+        // Step 7: Obstacle Preview (Engel Önizleme)
+        Loader {
+            anchors.fill: parent
+            active: currentStep === 7
+            sourceComponent: step7ObstaclePreview
         }
     }
 
@@ -2001,7 +2040,7 @@ Rectangle {
                         Button {
                             width: 36
                             height: 36
-                            visible: mapZoom > 1.0 && (panOffsetX !== 0 || panOffsetY !== 0)
+                            visible: panOffsetX !== 0 || panOffsetY !== 0
 
                             background: Rectangle {
                                 radius: 6
@@ -2314,16 +2353,16 @@ Rectangle {
 
                                     // Get depth-based color
                                     var depthColor = getDepthColor(pt.depth)
-                                    var pointRadius = 14 * zoom
+                                    var pointRadius = 22 * zoom  // Larger radius to fit text
 
                                     // Outer glow effect
-                                    var gradient = ctx.createRadialGradient(px, py, 0, px, py, pointRadius * 1.5)
+                                    var gradient = ctx.createRadialGradient(px, py, 0, px, py, pointRadius * 1.3)
                                     gradient.addColorStop(0, depthColor)
-                                    gradient.addColorStop(0.7, depthColor)
+                                    gradient.addColorStop(0.8, depthColor)
                                     gradient.addColorStop(1, "transparent")
                                     ctx.fillStyle = gradient
                                     ctx.beginPath()
-                                    ctx.arc(px, py, pointRadius * 1.5, 0, 2 * Math.PI)
+                                    ctx.arc(px, py, pointRadius * 1.3, 0, 2 * Math.PI)
                                     ctx.fill()
 
                                     // Main colored circle
@@ -2334,32 +2373,32 @@ Rectangle {
 
                                     // White border
                                     ctx.strokeStyle = "white"
-                                    ctx.lineWidth = 2 * zoom
+                                    ctx.lineWidth = 2.5 * zoom
                                     ctx.beginPath()
                                     ctx.arc(px, py, pointRadius, 0, 2 * Math.PI)
                                     ctx.stroke()
 
-                                    // Inner white circle
-                                    ctx.fillStyle = "white"
-                                    ctx.beginPath()
-                                    ctx.arc(px, py, 6 * zoom, 0, 2 * Math.PI)
-                                    ctx.fill()
-
-                                    // Depth label with background
-                                    var labelText = pt.depth.toFixed(1) + "m"
-                                    ctx.font = "bold " + Math.round(10 * zoom) + "px sans-serif"
-                                    var textWidth = ctx.measureText(labelText).width
-
-                                    // Label background
-                                    ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
-                                    ctx.beginPath()
-                                    ctx.roundRect(px - textWidth/2 - 4, py + pointRadius + 2, textWidth + 8, 16 * zoom, 4)
-                                    ctx.fill()
-
-                                    // Label text
-                                    ctx.fillStyle = "white"
+                                    // Depth value text INSIDE the circle
+                                    var depthValue = Math.abs(pt.depth).toFixed(1)
+                                    ctx.font = "bold " + Math.round(11 * zoom) + "px sans-serif"
                                     ctx.textAlign = "center"
-                                    ctx.fillText(labelText, px, py + pointRadius + 14 * zoom)
+                                    ctx.textBaseline = "middle"
+
+                                    // Text shadow for better readability
+                                    ctx.fillStyle = "rgba(0, 0, 0, 0.6)"
+                                    ctx.fillText(depthValue, px + 1, py + 1)
+
+                                    // White text
+                                    ctx.fillStyle = "white"
+                                    ctx.fillText(depthValue, px, py)
+
+                                    // Small "m" label below the number
+                                    ctx.font = Math.round(8 * zoom) + "px sans-serif"
+                                    ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
+                                    ctx.fillText("m", px, py + 10 * zoom)
+
+                                    // Reset textBaseline
+                                    ctx.textBaseline = "alphabetic"
                                 }
                             }
 
@@ -2400,34 +2439,63 @@ Rectangle {
                         Component.onCompleted: requestPaint()
                     }
 
-                    // Pan/Drag MouseArea
+                    // Pan/Drag MouseArea - Always enabled for dragging
                     MouseArea {
+                        id: mapPanArea
                         anchors.fill: bathymetricMapCanvas
-                        enabled: mapZoom > 1.0
-                        cursorShape: mapZoom > 1.0 ? (pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor) : Qt.ArrowCursor
+                        z: 100  // Ensure it's on top
+                        enabled: true
+                        cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
+                        hoverEnabled: true
 
                         property real lastX: 0
                         property real lastY: 0
+                        property bool isDragging: false
 
                         onPressed: function(mouse) {
                             lastX = mouse.x
                             lastY = mouse.y
+                            isDragging = true
+                        }
+
+                        onReleased: {
+                            isDragging = false
                         }
 
                         onPositionChanged: function(mouse) {
-                            if (pressed && mapZoom > 1.0) {
+                            if (isDragging && pressed) {
                                 var deltaX = mouse.x - lastX
                                 var deltaY = mouse.y - lastY
 
-                                // Limit pan range based on zoom level
-                                var maxPan = bathymetricMapCanvas.width * (mapZoom - 1) * 0.5
-                                panOffsetX = Math.max(-maxPan, Math.min(maxPan, panOffsetX + deltaX))
-                                panOffsetY = Math.max(-maxPan, Math.min(maxPan, panOffsetY + deltaY))
+                                // Calculate max pan based on zoom and canvas size
+                                var maxPanX = bathymetricMapCanvas.width * Math.max(0.5, (mapZoom - 0.5)) * 0.6
+                                var maxPanY = bathymetricMapCanvas.height * Math.max(0.5, (mapZoom - 0.5)) * 0.6
+
+                                panOffsetX = Math.max(-maxPanX, Math.min(maxPanX, panOffsetX + deltaX))
+                                panOffsetY = Math.max(-maxPanY, Math.min(maxPanY, panOffsetY + deltaY))
 
                                 lastX = mouse.x
                                 lastY = mouse.y
 
                                 bathymetricMapCanvas.requestPaint()
+                            }
+                        }
+
+                        // Mouse wheel zoom support
+                        onWheel: function(wheel) {
+                            if (wheel.angleDelta.y > 0) {
+                                // Zoom in
+                                if (mapZoom < 3.0) mapZoom += 0.25
+                            } else {
+                                // Zoom out
+                                if (mapZoom > 0.5) {
+                                    mapZoom -= 0.25
+                                    // Reset pan when zooming out significantly
+                                    if (mapZoom <= 0.75) {
+                                        panOffsetX = 0
+                                        panOffsetY = 0
+                                    }
+                                }
                             }
                         }
                     }
@@ -2504,27 +2572,27 @@ Rectangle {
                     }
                 }
 
-                // Summary info - smaller
+                // Summary info - compact
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 40
+                    Layout.preferredHeight: 32
                     color: "#38A169"
-                    radius: 8
+                    radius: 6
 
                     Row {
                         anchors.centerIn: parent
-                        spacing: 10
+                        spacing: 6
 
                         Text {
                             text: "✓"
-                            font.pixelSize: 16
+                            font.pixelSize: 12
                             color: "white"
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         Text {
-                            text: root.tr("Kazı alanı yapılandırması tamamlandı!")
-                            font.pixelSize: app ? app.smallFontSize : 12
+                            text: root.tr("Harita görünümü hazır")
+                            font.pixelSize: 11
                             font.bold: true
                             color: "white"
                             anchors.verticalCenter: parent.verticalCenter
@@ -2596,5 +2664,1327 @@ Rectangle {
         console.log("- Corner count:", cornerCount)
         console.log("- Corner points:", JSON.stringify(cornerPoints))
         console.log("- Bathymetric points:", JSON.stringify(bathymetricPoints))
+        console.log("- Obstacles:", JSON.stringify(obstacles))
+    }
+
+    // ==================== OBSTACLE HELPER FUNCTIONS ====================
+    function addObstacle(type) {
+        var newId = "E" + (obstacles.length + 1)
+        var defaultPoints = []
+
+        // Varsayılan koordinatları hesapla (kazı alanı merkezinde)
+        var centerX = 0, centerY = 0
+        if (cornerPoints.length > 0) {
+            for (var i = 0; i < cornerPoints.length; i++) {
+                centerX += cornerPoints[i].x
+                centerY += cornerPoints[i].y
+            }
+            centerX /= cornerPoints.length
+            centerY /= cornerPoints.length
+        }
+
+        if (type === "point") {
+            // Tek nokta için
+            defaultPoints = [{x: centerX, y: centerY, label: newId}]
+        } else {
+            // Alan için 4 köşe noktası (10m x 10m varsayılan)
+            var size = 5  // Yarı kenar uzunluğu
+            defaultPoints = [
+                {x: centerX - size, y: centerY - size, label: newId + "-1"},
+                {x: centerX + size, y: centerY - size, label: newId + "-2"},
+                {x: centerX + size, y: centerY + size, label: newId + "-3"},
+                {x: centerX - size, y: centerY + size, label: newId + "-4"}
+            ]
+        }
+
+        var newObstacle = {
+            id: newId,
+            type: type,  // "point" or "area"
+            depth: 0.0,
+            points: defaultPoints
+        }
+        var list = obstacles.slice()
+        list.push(newObstacle)
+        obstacles = list
+        selectedObstacleIndex = obstacles.length - 1
+        selectedCornerIndex = 0
+    }
+
+    function removeObstacle(index) {
+        if (index >= 0 && index < obstacles.length) {
+            var list = obstacles.slice()
+            list.splice(index, 1)
+            // Re-number obstacles and their corner labels
+            for (var i = 0; i < list.length; i++) {
+                var newId = "E" + (i + 1)
+                list[i].id = newId
+                // Update point labels
+                for (var j = 0; j < list[i].points.length; j++) {
+                    if (list[i].type === "point") {
+                        list[i].points[j].label = newId
+                    } else {
+                        list[i].points[j].label = newId + "-" + (j + 1)
+                    }
+                }
+            }
+            obstacles = list
+            if (selectedObstacleIndex >= obstacles.length) {
+                selectedObstacleIndex = obstacles.length - 1
+            }
+            selectedCornerIndex = 0
+        }
+    }
+
+    function updateObstacle(index, field, value) {
+        if (index >= 0 && index < obstacles.length) {
+            var list = obstacles.slice()
+            list[index][field] = value
+            obstacles = list
+        }
+    }
+
+    function updateObstacleCorner(obstacleIndex, cornerIndex, x, y) {
+        if (obstacleIndex >= 0 && obstacleIndex < obstacles.length) {
+            var obs = obstacles[obstacleIndex]
+            if (cornerIndex >= 0 && cornerIndex < obs.points.length) {
+                var list = obstacles.slice()
+                list[obstacleIndex].points[cornerIndex].x = x
+                list[obstacleIndex].points[cornerIndex].y = y
+                obstacles = list
+            }
+        }
+    }
+
+    function addPointToObstacle(index, x, y) {
+        if (index >= 0 && index < obstacles.length) {
+            var list = obstacles.slice()
+            var pointCount = list[index].points.length
+            var label = list[index].type === "point" ? list[index].id : list[index].id + "-" + (pointCount + 1)
+            list[index].points.push({x: x, y: y, label: label})
+            obstacles = list
+        }
+    }
+
+    // Örnek engel verisi oluştur
+    function generateSampleObstacles() {
+        if (cornerPoints.length < 3) return
+
+        // Köşe noktalarından merkez ve boyut hesapla
+        var minX = Infinity, maxX = -Infinity
+        var minY = Infinity, maxY = -Infinity
+        for (var i = 0; i < cornerPoints.length; i++) {
+            if (cornerPoints[i].x < minX) minX = cornerPoints[i].x
+            if (cornerPoints[i].x > maxX) maxX = cornerPoints[i].x
+            if (cornerPoints[i].y < minY) minY = cornerPoints[i].y
+            if (cornerPoints[i].y > maxY) maxY = cornerPoints[i].y
+        }
+
+        var centerX = (minX + maxX) / 2
+        var centerY = (minY + maxY) / 2
+        var rangeX = (maxX - minX) * 0.3
+        var rangeY = (maxY - minY) * 0.3
+
+        var newObstacles = []
+
+        // Alan engeli (dikdörtgen benzeri - 4 köşe noktalı)
+        var areaOffsetX = (Math.random() - 0.5) * rangeX * 0.5
+        var areaOffsetY = (Math.random() - 0.5) * rangeY * 0.5
+        var areaSize = Math.min(rangeX, rangeY) * 0.4
+        newObstacles.push({
+            id: "E1",
+            type: "area",
+            depth: -(Math.random() * 8 + 3).toFixed(1) * 1,  // -3 ile -11 arası
+            points: [
+                {x: centerX + areaOffsetX - areaSize/2, y: centerY + areaOffsetY - areaSize/2, label: "E1-1"},
+                {x: centerX + areaOffsetX + areaSize/2, y: centerY + areaOffsetY - areaSize/2, label: "E1-2"},
+                {x: centerX + areaOffsetX + areaSize/2, y: centerY + areaOffsetY + areaSize/2, label: "E1-3"},
+                {x: centerX + areaOffsetX - areaSize/2, y: centerY + areaOffsetY + areaSize/2, label: "E1-4"}
+            ]
+        })
+
+        // Nokta engeli
+        var pointOffsetX = (Math.random() - 0.3) * rangeX
+        var pointOffsetY = (Math.random() - 0.3) * rangeY
+        newObstacles.push({
+            id: "E2",
+            type: "point",
+            depth: -(Math.random() * 6 + 2).toFixed(1) * 1,  // -2 ile -8 arası
+            points: [
+                {x: centerX + pointOffsetX, y: centerY + pointOffsetY, label: "E2"}
+            ]
+        })
+
+        obstacles = newObstacles
+        selectedObstacleIndex = 0
+        selectedCornerIndex = 0
+    }
+
+    // ==================== STEP 6: OBSTACLE INPUT ====================
+    Component {
+        id: step6ObstacleInput
+
+        Rectangle {
+            id: obstacleInputRoot
+            color: "transparent"
+
+            Flickable {
+                anchors.fill: parent
+                contentHeight: mainColumn.height
+                clip: true
+                boundsBehavior: Flickable.StopAtBounds
+
+                ColumnLayout {
+                    id: mainColumn
+                    width: parent.width
+                    spacing: 8
+
+                    // ========== TOP: Obstacle List (Compact) ==========
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 290
+                        color: root.cardColor
+                        radius: 10
+                        border.width: 1
+                        border.color: root.borderColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            spacing: 6
+
+                            // Header
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 8
+
+                                Text {
+                                    text: root.tr("Engeller")
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: root.textColor
+                                }
+
+                                Text {
+                                    text: "(" + obstacles.length + ")"
+                                    font.pixelSize: 11
+                                    color: root.textSecondaryColor
+                                }
+
+                                Item { Layout.fillWidth: true }
+                            }
+
+                            // Action buttons - side by side with text
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 6
+
+                                Button {
+                                    Layout.fillWidth: true
+                                    implicitHeight: 32
+
+                                    background: Rectangle {
+                                        radius: 6
+                                        color: parent.pressed ? Qt.darker("#FF9800", 1.2) :
+                                               parent.hovered ? Qt.lighter("#FF9800", 1.1) : "#FF9800"
+                                    }
+
+                                    contentItem: Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+                                        Text {
+                                            text: "●"
+                                            font.pixelSize: 12
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                        Text {
+                                            text: root.tr("Nokta Engel Ekle")
+                                            font.pixelSize: 10
+                                            font.bold: true
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                    }
+
+                                    onClicked: root.addObstacle("point")
+                                }
+
+                                Button {
+                                    Layout.fillWidth: true
+                                    implicitHeight: 32
+
+                                    background: Rectangle {
+                                        radius: 6
+                                        color: parent.pressed ? Qt.darker("#E91E63", 1.2) :
+                                               parent.hovered ? Qt.lighter("#E91E63", 1.1) : "#E91E63"
+                                    }
+
+                                    contentItem: Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+                                        Text {
+                                            text: "◆"
+                                            font.pixelSize: 12
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                        Text {
+                                            text: root.tr("Alan Engel Ekle")
+                                            font.pixelSize: 10
+                                            font.bold: true
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                    }
+
+                                    onClicked: root.addObstacle("area")
+                                }
+
+                                Button {
+                                    Layout.fillWidth: true
+                                    implicitHeight: 32
+
+                                    background: Rectangle {
+                                        radius: 6
+                                        color: parent.pressed ? Qt.darker("#9C27B0", 1.2) :
+                                               parent.hovered ? Qt.lighter("#9C27B0", 1.1) : "#9C27B0"
+                                    }
+
+                                    contentItem: Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+                                        Text {
+                                            text: "⚡"
+                                            font.pixelSize: 12
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                        Text {
+                                            text: root.tr("Örnek Veri")
+                                            font.pixelSize: 10
+                                            font.bold: true
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                    }
+
+                                    onClicked: root.generateSampleObstacles()
+                                }
+                            }
+
+                        // Obstacle list
+                        ScrollView {
+                            id: obstacleListScroll
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            clip: true
+
+                            Column {
+                                width: obstacleListScroll.width - 5
+                                spacing: 4
+
+                                Repeater {
+                                    model: obstacles
+
+                                    Rectangle {
+                                        width: obstacleListScroll.width - 10
+                                        height: 44
+                                        radius: 6
+                                        color: index === selectedObstacleIndex ?
+                                               Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.25) :
+                                               Qt.rgba(1, 1, 1, 0.05)
+                                        border.width: index === selectedObstacleIndex ? 2 : 1
+                                        border.color: index === selectedObstacleIndex ? root.primaryColor : Qt.rgba(1,1,1,0.1)
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            onClicked: {
+                                                selectedObstacleIndex = index
+                                                selectedCornerIndex = 0
+                                            }
+                                        }
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.margins: 6
+                                            spacing: 6
+
+                                            // Type icon
+                                            Rectangle {
+                                                width: 28
+                                                height: 28
+                                                radius: 14
+                                                color: modelData.type === "point" ? "#FF9800" : "#E91E63"
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: modelData.type === "point" ? "●" : "◆"
+                                                    font.pixelSize: 12
+                                                    color: "white"
+                                                }
+                                            }
+
+                                            // Info
+                                            Column {
+                                                Layout.fillWidth: true
+                                                spacing: 1
+
+                                                Text {
+                                                    text: modelData.id + " - " + (modelData.type === "point" ? root.tr("Nokta") : root.tr("Alan"))
+                                                    font.pixelSize: 11
+                                                    font.bold: true
+                                                    color: root.textColor
+                                                }
+
+                                                Text {
+                                                    text: modelData.depth.toFixed(1) + "m | " + modelData.points.length + " " + root.tr("köşe")
+                                                    font.pixelSize: 9
+                                                    color: root.textSecondaryColor
+                                                }
+                                            }
+
+                                            // Delete button
+                                            Button {
+                                                width: 22
+                                                height: 22
+
+                                                background: Rectangle {
+                                                    radius: 11
+                                                    color: parent.pressed ? Qt.rgba(1, 0, 0, 0.3) : Qt.rgba(1, 0, 0, 0.15)
+                                                }
+
+                                                contentItem: Text {
+                                                    text: "✕"
+                                                    font.pixelSize: 11
+                                                    color: "#f56565"
+                                                    horizontalAlignment: Text.AlignHCenter
+                                                    verticalAlignment: Text.AlignVCenter
+                                                }
+
+                                                onClicked: root.removeObstacle(index)
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Empty state
+                                Rectangle {
+                                    width: obstacleListScroll.width - 10
+                                    height: 80
+                                    radius: 6
+                                    color: Qt.rgba(1, 1, 1, 0.03)
+                                    visible: obstacles.length === 0
+
+                                    Column {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+
+                                        Text {
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: "⚓"
+                                            font.pixelSize: 24
+                                            color: root.textSecondaryColor
+                                            opacity: 0.5
+                                        }
+
+                                        Text {
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: root.tr("Henüz engel yok")
+                                            font.pixelSize: 11
+                                            color: root.textSecondaryColor
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                    // ========== BOTTOM: Obstacle Editor (Compact) ==========
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 320
+                        color: root.cardColor
+                        radius: 10
+                        border.width: 1
+                        border.color: root.borderColor
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        spacing: 8
+                        visible: root.currentObstacle !== null
+
+                        // Compact Header
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 8
+
+                            Rectangle {
+                                width: 28
+                                height: 28
+                                radius: 14
+                                color: root.currentObstacle && root.currentObstacle.type === "point" ? "#FF9800" : "#E91E63"
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: root.currentObstacle && root.currentObstacle.type === "point" ? "●" : "◆"
+                                    font.pixelSize: 14
+                                    color: "white"
+                                }
+                            }
+
+                            Text {
+                                text: root.currentObstacle ? root.currentObstacle.id + " " + root.tr("Düzenleme") : ""
+                                font.pixelSize: 13
+                                font.bold: true
+                                color: root.textColor
+                            }
+
+                            Text {
+                                text: root.currentObstacle ?
+                                      (root.currentObstacle.type === "point" ? root.tr("Nokta Engel") : root.tr("Alan Engel")) : ""
+                                font.pixelSize: 10
+                                color: root.textSecondaryColor
+                            }
+
+                            Item { Layout.fillWidth: true }
+                        }
+
+                        // Separator
+                        Rectangle {
+                            Layout.fillWidth: true
+                            height: 1
+                            color: root.borderColor
+                        }
+
+                        // Compact Depth input section
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 10
+
+                            Text {
+                                text: root.tr("Derinlik") + ":"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: "#FF9800"
+                            }
+
+                            TextField {
+                                id: depthInputField
+                                Layout.preferredWidth: 70
+                                Layout.preferredHeight: 28
+                                placeholderText: "-5.0"
+                                font.pixelSize: 12
+                                font.bold: true
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                                text: root.currentObstacle ? root.currentObstacle.depth.toString() : ""
+
+                                background: Rectangle {
+                                    color: root.inputBgColor
+                                    radius: 4
+                                    border.width: parent.activeFocus ? 2 : 1
+                                    border.color: parent.activeFocus ? "#FF9800" : root.inputBorderColor
+                                }
+
+                                onTextChanged: {
+                                    if (activeFocus && selectedObstacleIndex >= 0) {
+                                        var val = parseFloat(text)
+                                        if (!isNaN(val)) {
+                                            root.updateObstacle(selectedObstacleIndex, "depth", val)
+                                        }
+                                    }
+                                }
+                            }
+
+                            Text {
+                                text: "m"
+                                font.pixelSize: 11
+                                color: root.textSecondaryColor
+                            }
+
+                            Item { Layout.fillWidth: true }
+
+                            Text {
+                                text: root.tr("Köşe Koordinatları") + " (" + (root.currentObstacle ? root.currentObstacle.points.length : 0) + ")"
+                                font.pixelSize: 11
+                                font.bold: true
+                                color: root.textColor
+                            }
+                        }
+
+                        // Compact Corner coordinates - single column list
+                        ScrollView {
+                            id: cornerScrollView
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            clip: true
+
+                            Column {
+                                width: cornerScrollView.width - 10
+                                spacing: 6
+
+                                Repeater {
+                                    model: root.currentObstacle ? root.currentObstacle.points : []
+
+                                    Rectangle {
+                                        width: parent.width
+                                        height: 36
+                                        radius: 6
+                                        color: index === selectedCornerIndex ?
+                                               Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.2) :
+                                               Qt.rgba(1, 1, 1, 0.05)
+                                        border.width: index === selectedCornerIndex ? 2 : 1
+                                        border.color: index === selectedCornerIndex ? root.primaryColor :
+                                                     Qt.rgba(1, 1, 1, 0.1)
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            onClicked: selectedCornerIndex = index
+                                        }
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 6
+                                            anchors.rightMargin: 6
+                                            spacing: 8
+
+                                            // Corner label badge
+                                            Rectangle {
+                                                width: 40
+                                                height: 20
+                                                radius: 4
+                                                color: root.currentObstacle && root.currentObstacle.type === "point" ? "#FF9800" : "#E91E63"
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: modelData.label || ""
+                                                    font.pixelSize: 10
+                                                    font.bold: true
+                                                    color: "white"
+                                                }
+                                            }
+
+                                            // X input
+                                            Text {
+                                                text: "X:"
+                                                font.pixelSize: 10
+                                                font.bold: true
+                                                color: root.textSecondaryColor
+                                            }
+
+                                            TextField {
+                                                Layout.preferredWidth: 70
+                                                Layout.preferredHeight: 24
+                                                font.pixelSize: 10
+                                                color: "white"
+                                                horizontalAlignment: Text.AlignRight
+                                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                                text: modelData.x.toFixed(2)
+
+                                                background: Rectangle {
+                                                    color: root.inputBgColor
+                                                    radius: 3
+                                                    border.width: parent.activeFocus ? 2 : 1
+                                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                }
+
+                                                onEditingFinished: {
+                                                    var val = parseFloat(text)
+                                                    if (!isNaN(val)) {
+                                                        root.updateObstacleCorner(selectedObstacleIndex, index, val, modelData.y)
+                                                    }
+                                                }
+                                            }
+
+                                            // Y input
+                                            Text {
+                                                text: "Y:"
+                                                font.pixelSize: 10
+                                                font.bold: true
+                                                color: root.textSecondaryColor
+                                            }
+
+                                            TextField {
+                                                Layout.preferredWidth: 70
+                                                Layout.preferredHeight: 24
+                                                font.pixelSize: 10
+                                                color: "white"
+                                                horizontalAlignment: Text.AlignRight
+                                                inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                                text: modelData.y.toFixed(2)
+
+                                                background: Rectangle {
+                                                    color: root.inputBgColor
+                                                    radius: 3
+                                                    border.width: parent.activeFocus ? 2 : 1
+                                                    border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                }
+
+                                                onEditingFinished: {
+                                                    var val = parseFloat(text)
+                                                    if (!isNaN(val)) {
+                                                        root.updateObstacleCorner(selectedObstacleIndex, index, modelData.x, val)
+                                                    }
+                                                }
+                                            }
+
+                                            Item { Layout.fillWidth: true }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Empty state when no obstacle selected
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: 12
+                        visible: root.currentObstacle === null
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "⚓"
+                            font.pixelSize: 48
+                            color: root.textSecondaryColor
+                            opacity: 0.4
+                        }
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.tr("Düzenlemek için engel seçin")
+                            font.pixelSize: 14
+                            color: root.textSecondaryColor
+                        }
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: root.tr("veya sol taraftan yeni engel ekleyin")
+                            font.pixelSize: 12
+                            color: root.textSecondaryColor
+                            opacity: 0.7
+                        }
+                    }
+                }
+                }
+            }
+        }
+    }
+
+    // ==================== STEP 7: OBSTACLE PREVIEW ====================
+    Component {
+        id: step7ObstaclePreview
+
+        Rectangle {
+            id: obstaclePreviewRoot
+            color: "transparent"
+
+            // Pan and zoom properties
+            property real previewZoom: 1.0
+            property real previewPanX: 0
+            property real previewPanY: 0
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#1a1a2e"
+                radius: 12
+                border.width: 2
+                border.color: "#1A75A8"
+                clip: true
+
+                // Map header
+                Rectangle {
+                    id: previewMapHeader
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: 50
+                    color: "#1A75A8"
+                    radius: 10
+
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: 10
+                        color: parent.color
+                    }
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 15
+                        anchors.rightMargin: 15
+
+                        Text {
+                            text: root.tr("Engel Önizleme - Kazı Alanı Üzerinde")
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: "white"
+                        }
+
+                        Item { Layout.fillWidth: true }
+
+                        // Zoom controls
+                        Row {
+                            spacing: 8
+
+                            Button {
+                                width: 28
+                                height: 28
+                                text: "-"
+                                font.pixelSize: 16
+                                font.bold: true
+                                onClicked: {
+                                    if (previewZoom > 0.5) {
+                                        previewZoom -= 0.25
+                                        if (previewZoom <= 0.75) {
+                                            previewPanX = 0
+                                            previewPanY = 0
+                                        }
+                                    }
+                                }
+                                background: Rectangle {
+                                    radius: 4
+                                    color: parent.pressed ? "#0d5a7d" : "#1A75A8"
+                                    border.width: 1
+                                    border.color: "white"
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    font: parent.font
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+
+                            Text {
+                                text: Math.round(previewZoom * 100) + "%"
+                                font.pixelSize: 11
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Button {
+                                width: 28
+                                height: 28
+                                text: "+"
+                                font.pixelSize: 16
+                                font.bold: true
+                                onClicked: {
+                                    if (previewZoom < 3.0) previewZoom += 0.25
+                                }
+                                background: Rectangle {
+                                    radius: 4
+                                    color: parent.pressed ? "#0d5a7d" : "#1A75A8"
+                                    border.width: 1
+                                    border.color: "white"
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    font: parent.font
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+
+                            // Reset button
+                            Button {
+                                width: 28
+                                height: 28
+                                visible: previewPanX !== 0 || previewPanY !== 0 || previewZoom !== 1.0
+                                onClicked: {
+                                    previewZoom = 1.0
+                                    previewPanX = 0
+                                    previewPanY = 0
+                                }
+                                background: Rectangle {
+                                    radius: 4
+                                    color: parent.pressed ? "#0d5a7d" : "#1A75A8"
+                                    border.width: 1
+                                    border.color: "white"
+                                }
+                                contentItem: Text {
+                                    text: "⟲"
+                                    font.pixelSize: 14
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+                        }
+
+                        // Compact Legend
+                        Row {
+                            spacing: 8
+
+                            Rectangle {
+                                width: 10
+                                height: 10
+                                radius: 5
+                                color: "#FF9800"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Text {
+                                text: root.tr("Nokta")
+                                font.pixelSize: 10
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Rectangle {
+                                width: 10
+                                height: 10
+                                radius: 2
+                                color: "#E91E63"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Text {
+                                text: root.tr("Alan")
+                                font.pixelSize: 10
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                    }
+                }
+
+                // Canvas for map preview with pan/zoom
+                Canvas {
+                    id: obstaclePreviewCanvas
+                    anchors.top: previewMapHeader.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.margins: 20
+
+                    property real zoom: obstaclePreviewRoot.previewZoom
+                    property real panX: obstaclePreviewRoot.previewPanX
+                    property real panY: obstaclePreviewRoot.previewPanY
+
+                    onZoomChanged: requestPaint()
+                    onPanXChanged: requestPaint()
+                    onPanYChanged: requestPaint()
+
+                    onPaint: {
+                            var ctx = getContext("2d")
+                            ctx.reset()
+
+                            ctx.fillStyle = "#1a1a2e"
+                            ctx.fillRect(0, 0, width, height)
+
+                            if (cornerPoints.length < 3) {
+                                ctx.fillStyle = "rgba(255, 255, 255, 0.3)"
+                                ctx.font = "14px sans-serif"
+                                ctx.textAlign = "center"
+                                ctx.fillText(root.tr("Köşe noktaları tanımlanmadı"), width/2, height/2)
+                                return
+                            }
+
+                            var minX = Infinity, maxX = -Infinity
+                            var minY = Infinity, maxY = -Infinity
+
+                            for (var i = 0; i < cornerPoints.length; i++) {
+                                if (cornerPoints[i].x < minX) minX = cornerPoints[i].x
+                                if (cornerPoints[i].x > maxX) maxX = cornerPoints[i].x
+                                if (cornerPoints[i].y < minY) minY = cornerPoints[i].y
+                                if (cornerPoints[i].y > maxY) maxY = cornerPoints[i].y
+                            }
+
+                            var dataWidth = maxX - minX || 100
+                            var dataHeight = maxY - minY || 100
+                            var padding = 30
+                            var baseScale = Math.min((width - 2 * padding) / dataWidth,
+                                                (height - 2 * padding) / dataHeight)
+                            var scale = baseScale * zoom
+
+                            var centerDataX = (minX + maxX) / 2
+                            var centerDataY = (minY + maxY) / 2
+
+                            function tx(x) { return width / 2 + (x - centerDataX) * scale + panX }
+                            function ty(y) { return height / 2 - (y - centerDataY) * scale + panY }
+
+                            // Draw grid
+                            ctx.strokeStyle = "rgba(255, 255, 255, 0.1)"
+                            ctx.lineWidth = 1
+                            var gridSize = 40
+                            for (var gx = 0; gx < width; gx += gridSize) {
+                                ctx.beginPath()
+                                ctx.moveTo(gx, 0)
+                                ctx.lineTo(gx, height)
+                                ctx.stroke()
+                            }
+                            for (var gy = 0; gy < height; gy += gridSize) {
+                                ctx.beginPath()
+                                ctx.moveTo(0, gy)
+                                ctx.lineTo(width, gy)
+                                ctx.stroke()
+                            }
+
+                            // Draw polygon
+                            ctx.strokeStyle = "#319795"
+                            ctx.lineWidth = 3
+                            ctx.beginPath()
+                            ctx.moveTo(tx(cornerPoints[0].x), ty(cornerPoints[0].y))
+                            for (var j = 1; j < cornerPoints.length; j++) {
+                                ctx.lineTo(tx(cornerPoints[j].x), ty(cornerPoints[j].y))
+                            }
+                            ctx.closePath()
+                            ctx.stroke()
+                            ctx.fillStyle = "rgba(49, 151, 149, 0.2)"
+                            ctx.fill()
+
+                            // Draw corner labels
+                            ctx.fillStyle = "#319795"
+                            ctx.font = "bold 12px sans-serif"
+                            ctx.textAlign = "center"
+                            for (var c = 0; c < cornerPoints.length; c++) {
+                                var cpx = tx(cornerPoints[c].x)
+                                var cpy = ty(cornerPoints[c].y)
+                                ctx.beginPath()
+                                ctx.arc(cpx, cpy, 5, 0, 2 * Math.PI)
+                                ctx.fill()
+                                ctx.fillStyle = "white"
+                                ctx.fillText(cornerPoints[c].label, cpx, cpy - 10)
+                                ctx.fillStyle = "#319795"
+                            }
+
+                            // Draw obstacles
+                            for (var k = 0; k < obstacles.length; k++) {
+                                var obs = obstacles[k]
+                                if (!obs) continue
+                                var isSelected = k === selectedObstacleIndex
+
+                                if (obs.type === "point" && obs.points && obs.points.length > 0) {
+                                    var px = tx(obs.points[0].x)
+                                    var py = ty(obs.points[0].y)
+
+                                    // Glow effect
+                                    if (isSelected) {
+                                        var gradient = ctx.createRadialGradient(px, py, 0, px, py, 25)
+                                        gradient.addColorStop(0, "rgba(255, 152, 0, 0.5)")
+                                        gradient.addColorStop(1, "transparent")
+                                        ctx.fillStyle = gradient
+                                        ctx.beginPath()
+                                        ctx.arc(px, py, 25, 0, 2 * Math.PI)
+                                        ctx.fill()
+                                    }
+
+                                    ctx.fillStyle = isSelected ? "#FF9800" : "rgba(255, 152, 0, 0.7)"
+                                    ctx.beginPath()
+                                    ctx.arc(px, py, isSelected ? 14 : 10, 0, 2 * Math.PI)
+                                    ctx.fill()
+
+                                    ctx.strokeStyle = "white"
+                                    ctx.lineWidth = 2
+                                    ctx.stroke()
+
+                                    // Label with background
+                                    ctx.fillStyle = "white"
+                                    ctx.font = "bold 10px sans-serif"
+                                    ctx.textAlign = "center"
+                                    ctx.fillText(obs.id, px, py + 4)
+                                    ctx.font = "9px sans-serif"
+                                    ctx.fillText(obs.depth.toFixed(1) + "m", px, py + 24)
+
+                                } else if (obs.type === "area" && obs.points && obs.points.length > 0) {
+                                    ctx.strokeStyle = isSelected ? "#E91E63" : "rgba(233, 30, 99, 0.7)"
+                                    ctx.fillStyle = isSelected ? "rgba(233, 30, 99, 0.35)" : "rgba(233, 30, 99, 0.2)"
+                                    ctx.lineWidth = isSelected ? 3 : 2
+
+                                    ctx.beginPath()
+                                    ctx.moveTo(tx(obs.points[0].x), ty(obs.points[0].y))
+                                    for (var m = 1; m < obs.points.length; m++) {
+                                        ctx.lineTo(tx(obs.points[m].x), ty(obs.points[m].y))
+                                    }
+                                    if (obs.points.length > 2) ctx.closePath()
+                                    ctx.stroke()
+                                    if (obs.points.length > 2) ctx.fill()
+
+                                    // Calculate center for offset directions
+                                    var centerX = 0, centerY = 0
+                                    for (var cp = 0; cp < obs.points.length; cp++) {
+                                        centerX += obs.points[cp].x
+                                        centerY += obs.points[cp].y
+                                    }
+                                    centerX /= obs.points.length
+                                    centerY /= obs.points.length
+                                    var labelCX = tx(centerX)
+                                    var labelCY = ty(centerY)
+
+                                    // Corner points with smart label positioning
+                                    for (var n = 0; n < obs.points.length; n++) {
+                                        var cpx = tx(obs.points[n].x)
+                                        var cpy = ty(obs.points[n].y)
+
+                                        // Draw corner point
+                                        ctx.fillStyle = isSelected ? "#E91E63" : "rgba(233, 30, 99, 0.8)"
+                                        ctx.beginPath()
+                                        ctx.arc(cpx, cpy, isSelected ? 6 : 4, 0, 2 * Math.PI)
+                                        ctx.fill()
+
+                                        // Draw corner label only when selected (smart offset away from center)
+                                        if (isSelected && obs.points[n].label) {
+                                            // Calculate offset direction (away from center)
+                                            var dx = cpx - labelCX
+                                            var dy = cpy - labelCY
+                                            var dist = Math.sqrt(dx * dx + dy * dy)
+                                            if (dist > 0) {
+                                                dx = dx / dist * 18
+                                                dy = dy / dist * 18
+                                            } else {
+                                                dy = -18
+                                            }
+
+                                            ctx.fillStyle = "rgba(233, 30, 99, 0.9)"
+                                            var lblWidth = ctx.measureText(obs.points[n].label).width + 6
+                                            ctx.fillRect(cpx + dx - lblWidth/2, cpy + dy - 8, lblWidth, 14)
+                                            ctx.fillStyle = "white"
+                                            ctx.font = "bold 8px sans-serif"
+                                            ctx.textAlign = "center"
+                                            ctx.fillText(obs.points[n].label, cpx + dx, cpy + dy + 3)
+                                        }
+                                    }
+
+                                    // Label at center (always show)
+                                    ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
+                                    var idText = obs.id
+                                    var depthText = obs.depth.toFixed(1) + "m"
+                                    ctx.font = "bold 10px sans-serif"
+                                    var idWidth = ctx.measureText(idText).width
+                                    ctx.font = "9px sans-serif"
+                                    var depthWidth = ctx.measureText(depthText).width
+                                    var boxWidth = Math.max(idWidth, depthWidth) + 12
+                                    ctx.fillRect(labelCX - boxWidth/2, labelCY - 8, boxWidth, 22)
+                                    ctx.fillStyle = "white"
+                                    ctx.font = "bold 10px sans-serif"
+                                    ctx.textAlign = "center"
+                                    ctx.fillText(idText, labelCX, labelCY + 3)
+                                    ctx.font = "9px sans-serif"
+                                    ctx.fillText(depthText, labelCX, labelCY + 12)
+                                }
+                            }
+                        }
+
+                    Connections {
+                        target: root
+                        function onCornerPointsChanged() { obstaclePreviewCanvas.requestPaint() }
+                        function onObstaclesChanged() { obstaclePreviewCanvas.requestPaint() }
+                        function onSelectedObstacleIndexChanged() { obstaclePreviewCanvas.requestPaint() }
+                    }
+
+                    Component.onCompleted: requestPaint()
+
+                    // Pan/drag and click to select obstacle
+                    MouseArea {
+                        id: previewPanArea
+                        anchors.fill: parent
+                        cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
+                        hoverEnabled: true
+
+                        property real lastX: 0
+                        property real lastY: 0
+                        property bool isDragging: false
+                        property real dragDistance: 0
+
+                        onPressed: function(mouse) {
+                            lastX = mouse.x
+                            lastY = mouse.y
+                            isDragging = true
+                            dragDistance = 0
+                        }
+
+                        onReleased: function(mouse) {
+                            // If it was a click (not drag), try to select obstacle
+                            if (dragDistance < 10) {
+                                selectObstacleAt(mouse.x, mouse.y)
+                            }
+                            isDragging = false
+                        }
+
+                        onPositionChanged: function(mouse) {
+                            if (isDragging && pressed) {
+                                var deltaX = mouse.x - lastX
+                                var deltaY = mouse.y - lastY
+                                dragDistance += Math.abs(deltaX) + Math.abs(deltaY)
+
+                                var maxPanX = parent.width * Math.max(0.5, (obstaclePreviewRoot.previewZoom - 0.5)) * 0.6
+                                var maxPanY = parent.height * Math.max(0.5, (obstaclePreviewRoot.previewZoom - 0.5)) * 0.6
+
+                                obstaclePreviewRoot.previewPanX = Math.max(-maxPanX, Math.min(maxPanX, obstaclePreviewRoot.previewPanX + deltaX))
+                                obstaclePreviewRoot.previewPanY = Math.max(-maxPanY, Math.min(maxPanY, obstaclePreviewRoot.previewPanY + deltaY))
+
+                                lastX = mouse.x
+                                lastY = mouse.y
+                            }
+                        }
+
+                        onWheel: function(wheel) {
+                            if (wheel.angleDelta.y > 0) {
+                                if (obstaclePreviewRoot.previewZoom < 3.0) obstaclePreviewRoot.previewZoom += 0.25
+                            } else {
+                                if (obstaclePreviewRoot.previewZoom > 0.5) {
+                                    obstaclePreviewRoot.previewZoom -= 0.25
+                                    if (obstaclePreviewRoot.previewZoom <= 0.75) {
+                                        obstaclePreviewRoot.previewPanX = 0
+                                        obstaclePreviewRoot.previewPanY = 0
+                                    }
+                                }
+                            }
+                        }
+
+                        function selectObstacleAt(mx, my) {
+                            if (cornerPoints.length < 3) return
+
+                            var minX = Infinity, maxX = -Infinity
+                            var minY = Infinity, maxY = -Infinity
+
+                            for (var i = 0; i < cornerPoints.length; i++) {
+                                if (cornerPoints[i].x < minX) minX = cornerPoints[i].x
+                                if (cornerPoints[i].x > maxX) maxX = cornerPoints[i].x
+                                if (cornerPoints[i].y < minY) minY = cornerPoints[i].y
+                                if (cornerPoints[i].y > maxY) maxY = cornerPoints[i].y
+                            }
+
+                            var dataWidth = maxX - minX || 100
+                            var dataHeight = maxY - minY || 100
+                            var padding = 30
+                            var baseScale = Math.min((parent.width - 2 * padding) / dataWidth,
+                                                (parent.height - 2 * padding) / dataHeight)
+                            var scale = baseScale * obstaclePreviewRoot.previewZoom
+
+                            var centerDataX = (minX + maxX) / 2
+                            var centerDataY = (minY + maxY) / 2
+
+                            function tx(x) { return parent.width / 2 + (x - centerDataX) * scale + obstaclePreviewRoot.previewPanX }
+                            function ty(y) { return parent.height / 2 - (y - centerDataY) * scale + obstaclePreviewRoot.previewPanY }
+
+                            for (var k = 0; k < obstacles.length; k++) {
+                                var obs = obstacles[k]
+                                if (!obs || !obs.points || obs.points.length === 0) continue
+
+                                if (obs.type === "point") {
+                                    var px = tx(obs.points[0].x)
+                                    var py = ty(obs.points[0].y)
+                                    var dist = Math.sqrt(Math.pow(mx - px, 2) + Math.pow(my - py, 2))
+                                    if (dist < 20) {
+                                        selectedObstacleIndex = k
+                                        return
+                                    }
+                                } else if (obs.type === "area" && obs.points.length >= 3) {
+                                    var sumX = 0, sumY = 0
+                                    for (var p = 0; p < obs.points.length; p++) {
+                                        sumX += obs.points[p].x
+                                        sumY += obs.points[p].y
+                                    }
+                                    var cx = tx(sumX / obs.points.length)
+                                    var cy = ty(sumY / obs.points.length)
+                                    var distToCenter = Math.sqrt(Math.pow(mx - cx, 2) + Math.pow(my - cy, 2))
+                                    if (distToCenter < 40) {
+                                        selectedObstacleIndex = k
+                                        return
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Info panel at bottom
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.margins: 15
+                    height: 60
+                    radius: 8
+                    color: Qt.rgba(0, 0, 0, 0.5)
+                    visible: root.currentObstacle !== null
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        spacing: 20
+
+                        Rectangle {
+                            width: 40
+                            height: 40
+                            radius: 20
+                            color: root.currentObstacle && root.currentObstacle.type === "point" ? "#FF9800" : "#E91E63"
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: root.currentObstacle && root.currentObstacle.type === "point" ? "●" : "◆"
+                                font.pixelSize: 18
+                                color: "white"
+                            }
+                        }
+
+                        Column {
+                            Layout.fillWidth: true
+                            spacing: 2
+
+                            Text {
+                                text: root.currentObstacle ? root.currentObstacle.id : ""
+                                font.pixelSize: 16
+                                font.bold: true
+                                color: "white"
+                            }
+
+                            Text {
+                                text: root.currentObstacle ?
+                                      (root.currentObstacle.type === "point" ? root.tr("Nokta Engel") : root.tr("Alan Engel")) +
+                                      " | " + root.tr("Derinlik") + ": " + root.currentObstacle.depth.toFixed(1) + "m" +
+                                      " | " + root.currentObstacle.points.length + " " + root.tr("köşe") : ""
+                                font.pixelSize: 12
+                                color: Qt.rgba(1, 1, 1, 0.7)
+                            }
+                        }
+
+                        Text {
+                            text: root.tr("Tıklayarak engel seçin")
+                            font.pixelSize: 11
+                            color: Qt.rgba(1, 1, 1, 0.5)
+                        }
+                    }
+                }
+
+                // Empty state
+                Column {
+                    anchors.centerIn: parent
+                    spacing: 15
+                    visible: obstacles.length === 0
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: "⚓"
+                        font.pixelSize: 64
+                        color: "white"
+                        opacity: 0.3
+                    }
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: root.tr("Henüz engel tanımlanmadı")
+                        font.pixelSize: 16
+                        color: "white"
+                        opacity: 0.6
+                    }
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: root.tr("Önceki adımdan engel ekleyin")
+                        font.pixelSize: 13
+                        color: "white"
+                        opacity: 0.4
+                    }
+                }
+            }
+        }
     }
 }

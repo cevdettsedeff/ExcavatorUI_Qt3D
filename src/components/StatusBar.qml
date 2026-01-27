@@ -5,7 +5,7 @@ import QtQuick.Layouts
 // Üst Durum Çubuğu - Tek satır, tüm sensörler dahil - 10.1 inç responsive
 Rectangle {
     id: statusBar
-    height: Math.max(parent.height * 0.08, 65)  // Dikeylemesine genişletildi
+    height: Math.max(parent.height * 0.055, 50)  // Tek satır, kompakt
     color: themeManager ? themeManager.backgroundColorDark : "#1a1a2e"
 
     // Responsive boyutlar - 10.1 inç için optimize
@@ -13,7 +13,7 @@ Rectangle {
     property real smallFontSize: height * 0.20  // Küçük font
     property real tinyFontSize: height * 0.18  // Çok küçük font (altlı üstlü için)
     property real iconSize: height * 0.50  // İkon boyutu
-    property real badgeHeight: height * 0.75  // Badge yüksekliği artırıldı
+    property real badgeHeight: height * 0.60  // Badge yüksekliği
 
     // Properties
     property string projectName: "AŞ-KAZI-042"
@@ -365,182 +365,94 @@ Rectangle {
 
         Item { Layout.fillWidth: true }
 
-        // KART 5: Kullanıcı, Saat ve Durum İkonları (Altlı Üstlü)
-        Column {
-            spacing: 3
-            Layout.alignment: Qt.AlignVCenter
+        // KART 5: Kullanıcı ve Saat Kartı
+        Rectangle {
+            id: userCard
+            width: userCardContent.width + 16
+            height: statusBar.badgeHeight
+            radius: 6
+            color: "#1e2738"
+            border.color: "#505050"
+            border.width: 1
 
-            // Kullanıcı ve Saat Kartı
-            Rectangle {
-                id: userCard
-                width: userCardContent.width + 16
-                height: statusBar.badgeHeight * 0.55
-                radius: 6
-                color: "#1e2738"
-                border.color: "#505050"
-                border.width: 1
+            Row {
+                id: userCardContent
+                anchors.centerIn: parent
+                spacing: 10
 
-                Row {
-                    id: userCardContent
-                    anchors.centerIn: parent
-                    spacing: 10
+                // User İkonu
+                Rectangle {
+                    width: statusBar.iconSize * 0.8
+                    height: statusBar.iconSize * 0.8
+                    radius: width / 2
+                    color: "#2a2a2a"
+                    border.color: "#4CAF50"
+                    border.width: 1
+                    anchors.verticalCenter: parent.verticalCenter
 
-                    // User İkonu
-                    Rectangle {
-                        width: statusBar.iconSize * 0.8
-                        height: statusBar.iconSize * 0.8
-                        radius: width / 2
-                        color: "#2a2a2a"
-                        border.color: "#4CAF50"
-                        border.width: 1
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        Image {
-                            id: userIconImage
-                            anchors.centerIn: parent
-                            width: parent.width * 0.6
-                            height: parent.height * 0.6
-                            source: "qrc:/ExcavatorUI_Qt3D/resources/icons/user.png"
-                            fillMode: Image.PreserveAspectFit
-                            visible: status === Image.Ready
-                        }
-
-                        // Fallback ikon (Image yüklenmezse)
-                        Text {
-                            visible: userIconImage.status !== Image.Ready
-                            anchors.centerIn: parent
-                            text: "👤"
-                            font.pixelSize: statusBar.iconSize * 0.5
-                            color: "#ffffff"
-                        }
+                    Image {
+                        id: userIconImage
+                        anchors.centerIn: parent
+                        width: parent.width * 0.6
+                        height: parent.height * 0.6
+                        source: "qrc:/ExcavatorUI_Qt3D/resources/icons/user.png"
+                        fillMode: Image.PreserveAspectFit
+                        visible: status === Image.Ready
                     }
 
-                    // Kullanıcı Adı ve Rol
-                    Column {
-                        spacing: 1
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        Text {
-                            text: authService && authService.currentUser ? authService.currentUser : "LOREMIPSUMDOLOR"
-                            font.pixelSize: statusBar.tinyFontSize
-                            font.bold: true
-                            color: "#ffffff"
-                        }
-
-                        Text {
-                            text: authService && authService.currentRole ? authService.currentRole : "Operator"
-                            font.pixelSize: statusBar.tinyFontSize
-                            color: "#888888"
-                        }
-                    }
-
-                    // Ayırıcı çizgi
-                    Rectangle {
-                        width: 1
-                        height: statusBar.badgeHeight * 0.4
-                        color: "#444444"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    // Tarih ve Saat
-                    Column {
-                        spacing: 1
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        Text {
-                            text: statusBar.currentTime
-                            font.pixelSize: statusBar.smallFontSize
-                            font.bold: true
-                            color: "#ffffff"
-                        }
-
-                        Text {
-                            text: statusBar.currentDate
-                            font.pixelSize: statusBar.tinyFontSize
-                            color: "#888888"
-                        }
+                    // Fallback ikon (Image yüklenmezse)
+                    Text {
+                        visible: userIconImage.status !== Image.Ready
+                        anchors.centerIn: parent
+                        text: "👤"
+                        font.pixelSize: statusBar.iconSize * 0.5
+                        color: "#ffffff"
                     }
                 }
-            }
 
-            // Bluetooth ve Ses Durum Kartı (Küçük ve uzun bar)
-            Rectangle {
-                id: statusCard
-                width: userCardContent.width + 16
-                height: statusBar.badgeHeight * 0.35
-                radius: 6
-                color: "#1e2738"
-                border.color: "#505050"
-                border.width: 1
+                // Kullanıcı Adı ve Rol
+                Column {
+                    spacing: 1
+                    anchors.verticalCenter: parent.verticalCenter
 
-                Row {
-                    id: statusCardContent
-                    anchors.centerIn: parent
-                    spacing: 8
-
-                    // Bluetooth durumu
-                    Rectangle {
-                        width: statusBar.iconSize * 0.6
-                        height: statusBar.iconSize * 0.6
-                        radius: 3
-                        color: "transparent"
-                        border.color: statusBar.bluetoothEnabled ? "#2196F3" : "#444444"
-                        border.width: 1
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        Image {
-                            id: btStatusIcon
-                            anchors.centerIn: parent
-                            width: parent.width * 0.65
-                            height: parent.height * 0.65
-                            source: statusBar.bluetoothEnabled ?
-                                "qrc:/ExcavatorUI_Qt3D/resources/icons/bluetooth.png" :
-                                "qrc:/ExcavatorUI_Qt3D/resources/icons/bluetooth_disabled.png"
-                            fillMode: Image.PreserveAspectFit
-                            visible: status === Image.Ready
-                            opacity: statusBar.bluetoothEnabled ? 1.0 : 0.5
-                        }
-
-                        // Fallback
-                        Text {
-                            visible: btStatusIcon.status !== Image.Ready
-                            anchors.centerIn: parent
-                            text: "⚡"
-                            font.pixelSize: statusBar.iconSize * 0.4
-                            color: statusBar.bluetoothEnabled ? "#2196F3" : "#666666"
-                        }
+                    Text {
+                        text: authService && authService.currentUser ? authService.currentUser : "LOREMIPSUMDOLOR"
+                        font.pixelSize: statusBar.tinyFontSize
+                        font.bold: true
+                        color: "#ffffff"
                     }
 
-                    // Ses durumu
-                    Rectangle {
-                        width: statusBar.iconSize * 0.6
-                        height: statusBar.iconSize * 0.6
-                        radius: 3
-                        color: "transparent"
-                        border.color: statusBar.audioEnabled ? "#FF9800" : "#444444"
-                        border.width: 1
-                        anchors.verticalCenter: parent.verticalCenter
+                    Text {
+                        text: authService && authService.currentRole ? authService.currentRole : "Operator"
+                        font.pixelSize: statusBar.tinyFontSize
+                        color: "#888888"
+                    }
+                }
 
-                        Image {
-                            id: audioStatusIcon
-                            anchors.centerIn: parent
-                            width: parent.width * 0.65
-                            height: parent.height * 0.65
-                            source: statusBar.audioEnabled ?
-                                "qrc:/ExcavatorUI_Qt3D/resources/icons/audio.png" :
-                                "qrc:/ExcavatorUI_Qt3D/resources/icons/audio_muted.png"
-                            fillMode: Image.PreserveAspectFit
-                            visible: status === Image.Ready
-                        }
+                // Ayırıcı çizgi
+                Rectangle {
+                    width: 1
+                    height: statusBar.badgeHeight * 0.6
+                    color: "#444444"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
 
-                        // Fallback
-                        Text {
-                            visible: audioStatusIcon.status !== Image.Ready
-                            anchors.centerIn: parent
-                            text: statusBar.audioEnabled ? "🔊" : "🔇"
-                            font.pixelSize: statusBar.iconSize * 0.4
-                            color: statusBar.audioEnabled ? "#FF9800" : "#666666"
-                        }
+                // Tarih ve Saat
+                Column {
+                    spacing: 1
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Text {
+                        text: statusBar.currentTime
+                        font.pixelSize: statusBar.smallFontSize
+                        font.bold: true
+                        color: "#ffffff"
+                    }
+
+                    Text {
+                        text: statusBar.currentDate
+                        font.pixelSize: statusBar.tinyFontSize
+                        color: "#888888"
                     }
                 }
             }

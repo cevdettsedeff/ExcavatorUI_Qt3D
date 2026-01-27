@@ -1005,5 +1005,97 @@ Redirecting to login screen...</translation>
         <source>En</source>
         <translation>Width</translation>
     </message>
+    <message>
+        <source>Engeller</source>
+        <translation>Obstacles</translation>
+    </message>
+    <message>
+        <source>Nokta Engel Ekle</source>
+        <translation>Add Point Obstacle</translation>
+    </message>
+    <message>
+        <source>Alan Engel Ekle</source>
+        <translation>Add Area Obstacle</translation>
+    </message>
+    <message>
+        <source>Örnek Veri Oluştur</source>
+        <translation>Generate Sample Data</translation>
+    </message>
+    <message>
+        <source>engel tanımlı</source>
+        <translation>obstacles defined</translation>
+    </message>
+    <message>
+        <source>Engel Girişi</source>
+        <translation>Obstacle Input</translation>
+    </message>
+    <message>
+        <source>Engel Önizleme</source>
+        <translation>Obstacle Preview</translation>
+    </message>
+    <message>
+        <source>Nokta Engel</source>
+        <translation>Point Obstacle</translation>
+    </message>
+    <message>
+        <source>Alan Engel</source>
+        <translation>Area Obstacle</translation>
+    </message>
+    <message>
+        <source>Alan Engel (4 Köşe)</source>
+        <translation>Area Obstacle (4 Corners)</translation>
+    </message>
+    <message>
+        <source>Düzenleme</source>
+        <translation>Edit</translation>
+    </message>
+    <message>
+        <source>Köşe Koordinatları</source>
+        <translation>Corner Coordinates</translation>
+    </message>
+    <message>
+        <source>köşe</source>
+        <translation>corners</translation>
+    </message>
+    <message>
+        <source>Metre cinsinden</source>
+        <translation>In meters</translation>
+    </message>
+    <message>
+        <source>Henüz engel yok</source>
+        <translation>No obstacles yet</translation>
+    </message>
+    <message>
+        <source>Yukarıdaki butonlarla ekleyin</source>
+        <translation>Add using buttons above</translation>
+    </message>
+    <message>
+        <source>Düzenlemek için engel seçin</source>
+        <translation>Select an obstacle to edit</translation>
+    </message>
+    <message>
+        <source>veya sol taraftan yeni engel ekleyin</source>
+        <translation>or add a new obstacle from the left</translation>
+    </message>
+    <message>
+        <source>Engel Önizleme - Kazı Alanı Üzerinde</source>
+        <translation>Obstacle Preview - On Excavation Area</translation>
+    </message>
+    <message>
+        <source>engel</source>
+        <translation>obstacles</translation>
+    </message>
+    <message>
+        <source>Tıklayarak engel seçin</source>
+        <translation>Click to select obstacle</translation>
+    </message>
+    <message>
+        <source>Henüz engel tanımlanmadı</source>
+        <translation>No obstacles defined yet</translation>
+    </message>
+    <message>
+        <source>Önceki adımdan engel ekleyin</source>
+        <translation>Add obstacles from previous step</translation>
+    </message>
 </context>
 </TS>

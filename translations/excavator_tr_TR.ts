@@ -1527,5 +1527,97 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>JSON Dosyaları (*.json)</source>
         <translation>JSON Dosyaları (*.json)</translation>
     </message>
+    <message>
+        <source>Engeller</source>
+        <translation>Engeller</translation>
+    </message>
+    <message>
+        <source>Nokta Engel Ekle</source>
+        <translation>Nokta Engel Ekle</translation>
+    </message>
+    <message>
+        <source>Alan Engel Ekle</source>
+        <translation>Alan Engel Ekle</translation>
+    </message>
+    <message>
+        <source>Örnek Veri Oluştur</source>
+        <translation>Örnek Veri Oluştur</translation>
+    </message>
+    <message>
+        <source>engel tanımlı</source>
+        <translation>engel tanımlı</translation>
+    </message>
+    <message>
+        <source>Engel Girişi</source>
+        <translation>Engel Girişi</translation>
+    </message>
+    <message>
+        <source>Engel Önizleme</source>
+        <translation>Engel Önizleme</translation>
+    </message>
+    <message>
+        <source>Nokta Engel</source>
+        <translation>Nokta Engel</translation>
+    </message>
+    <message>
+        <source>Alan Engel</source>
+        <translation>Alan Engel</translation>
+    </message>
+    <message>
+        <source>Alan Engel (4 Köşe)</source>
+        <translation>Alan Engel (4 Köşe)</translation>
+    </message>
+    <message>
+        <source>Düzenleme</source>
+        <translation>Düzenleme</translation>
+    </message>
+    <message>
+        <source>Köşe Koordinatları</source>
+        <translation>Köşe Koordinatları</translation>
+    </message>
+    <message>
+        <source>köşe</source>
+        <translation>köşe</translation>
+    </message>
+    <message>
+        <source>Metre cinsinden</source>
+        <translation>Metre cinsinden</translation>
+    </message>
+    <message>
+        <source>Henüz engel yok</source>
+        <translation>Henüz engel yok</translation>
+    </message>
+    <message>
+        <source>Yukarıdaki butonlarla ekleyin</source>
+        <translation>Yukarıdaki butonlarla ekleyin</translation>
+    </message>
+    <message>
+        <source>Düzenlemek için engel seçin</source>
+        <translation>Düzenlemek için engel seçin</translation>
+    </message>
+    <message>
+        <source>veya sol taraftan yeni engel ekleyin</source>
+        <translation>veya sol taraftan yeni engel ekleyin</translation>
+    </message>
+    <message>
+        <source>Engel Önizleme - Kazı Alanı Üzerinde</source>
+        <translation>Engel Önizleme - Kazı Alanı Üzerinde</translation>
+    </message>
+    <message>
+        <source>engel</source>
+        <translation>engel</translation>
+    </message>
+    <message>
+        <source>Tıklayarak engel seçin</source>
+        <translation>Tıklayarak engel seçin</translation>
+    </message>
+    <message>
+        <source>Henüz engel tanımlanmadı</source>
+        <translation>Henüz engel tanımlanmadı</translation>
+    </message>
+    <message>
+        <source>Önceki adımdan engel ekleyin</source>
+        <translation>Önceki adımdan engel ekleyin</translation>
+    </message>
 </context>
 </TS>
