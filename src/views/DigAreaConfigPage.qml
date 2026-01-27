@@ -2830,7 +2830,7 @@ Rectangle {
             ScrollView {
                 anchors.fill: parent
                 clip: true
-                contentWidth: availableWidth
+                contentWidth: width
 
                 ColumnLayout {
                     width: parent.width
@@ -2839,24 +2839,24 @@ Rectangle {
                     // ========== TOP: Obstacle List ==========
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 280
-                        color: root.cardColor
-                        radius: 12
-                        border.width: 1
-                        border.color: root.borderColor
+                        Layout.preferredHeight: 260
+                    color: root.cardColor
+                    radius: 12
+                    border.width: 1
+                    border.color: root.borderColor
 
-                        ColumnLayout {
-                            anchors.fill: parent
-                            anchors.margins: 12
-                            spacing: 8
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 10
 
-                            // Header
-                            Text {
-                                text: root.tr("Engeller")
-                                font.pixelSize: 16
-                                font.bold: true
-                                color: root.textColor
-                            }
+                        // Header
+                        Text {
+                            text: root.tr("Engeller")
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: root.textColor
+                        }
 
                         // Action buttons - stacked vertically
                         Column {
@@ -3120,17 +3120,17 @@ Rectangle {
                     // ========== BOTTOM: Obstacle Editor ==========
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 380
+                        Layout.preferredHeight: 400
                         color: root.cardColor
                         radius: 12
                         border.width: 1
                         border.color: root.borderColor
 
                         ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 12
-                        visible: root.currentObstacle !== null
+                            anchors.fill: parent
+                            anchors.margins: 15
+                            spacing: 12
+                            visible: root.currentObstacle !== null
 
                         // Header
                         RowLayout {
@@ -3438,6 +3438,8 @@ Rectangle {
                         }
                     }
                 }
+                }
+            }
             }
         }
     }
