@@ -3519,60 +3519,36 @@ Rectangle {
                             }
                         }
 
-                        Rectangle { width: 1; height: 24; color: Qt.rgba(1, 1, 1, 0.3) }
-
-                        // Legend
+                        // Compact Legend
                         Row {
-                            spacing: 15
+                            spacing: 8
 
-                            Row {
-                                spacing: 5
-                                Rectangle {
-                                    width: 14
-                                    height: 14
-                                    radius: 7
-                                    color: "#FF9800"
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                                Text {
-                                    text: root.tr("Nokta")
-                                    font.pixelSize: 11
-                                    color: "white"
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                            }
-
-                            Row {
-                                spacing: 5
-                                Rectangle {
-                                    width: 14
-                                    height: 14
-                                    radius: 3
-                                    color: "#E91E63"
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                                Text {
-                                    text: root.tr("Alan")
-                                    font.pixelSize: 11
-                                    color: "white"
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
-                            }
-
-                            // Obstacle count
                             Rectangle {
-                                width: obstacleCountText.width + 16
-                                height: 24
-                                radius: 12
-                                color: Qt.rgba(1, 1, 1, 0.2)
+                                width: 10
+                                height: 10
+                                radius: 5
+                                color: "#FF9800"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Text {
+                                text: root.tr("Nokta")
+                                font.pixelSize: 10
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
 
-                                Text {
-                                    id: obstacleCountText
-                                    anchors.centerIn: parent
-                                    text: obstacles.length + " " + root.tr("engel")
-                                    font.pixelSize: 11
-                                    color: "white"
-                                }
+                            Rectangle {
+                                width: 10
+                                height: 10
+                                radius: 2
+                                color: "#E91E63"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Text {
+                                text: root.tr("Alan")
+                                font.pixelSize: 10
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
                             }
                         }
                     }
