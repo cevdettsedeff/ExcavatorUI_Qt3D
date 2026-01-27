@@ -2827,31 +2827,36 @@ Rectangle {
             id: obstacleInputRoot
             color: "transparent"
 
-            RowLayout {
+            ScrollView {
                 anchors.fill: parent
-                spacing: 15
+                clip: true
+                contentWidth: availableWidth
 
-                // ========== LEFT: Obstacle List ==========
-                Rectangle {
-                    Layout.preferredWidth: 280
-                    Layout.fillHeight: true
-                    color: root.cardColor
-                    radius: 12
-                    border.width: 1
-                    border.color: root.borderColor
+                ColumnLayout {
+                    width: parent.width
+                    spacing: 12
 
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 10
+                    // ========== TOP: Obstacle List ==========
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 280
+                        color: root.cardColor
+                        radius: 12
+                        border.width: 1
+                        border.color: root.borderColor
 
-                        // Header
-                        Text {
-                            text: root.tr("Engeller")
-                            font.pixelSize: 16
-                            font.bold: true
-                            color: root.textColor
-                        }
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            // Header
+                            Text {
+                                text: root.tr("Engeller")
+                                font.pixelSize: 16
+                                font.bold: true
+                                color: root.textColor
+                            }
 
                         // Action buttons - stacked vertically
                         Column {
@@ -3111,18 +3116,17 @@ Rectangle {
                             }
                         }
                     }
-                }
 
-                // ========== RIGHT: Obstacle Editor ==========
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: root.cardColor
-                    radius: 12
-                    border.width: 1
-                    border.color: root.borderColor
+                    // ========== BOTTOM: Obstacle Editor ==========
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 380
+                        color: root.cardColor
+                        radius: 12
+                        border.width: 1
+                        border.color: root.borderColor
 
-                    ColumnLayout {
+                        ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 15
                         spacing: 12
