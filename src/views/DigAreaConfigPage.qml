@@ -3265,25 +3265,23 @@ Rectangle {
                             }
                         }
 
-                        // Corner coordinates grid
+                        // Corner coordinates list (vertical)
                         ScrollView {
                             id: cornerScrollView
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             clip: true
 
-                            GridLayout {
+                            Column {
                                 width: cornerScrollView.width - 10
-                                columns: 2
-                                columnSpacing: 10
-                                rowSpacing: 10
+                                spacing: 8
 
                                 Repeater {
                                     model: root.currentObstacle ? root.currentObstacle.points : []
 
                                     Rectangle {
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 90
+                                        width: cornerScrollView.width - 15
+                                        height: 70
                                         radius: 8
                                         color: index === selectedCornerIndex ?
                                                Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.2) :
@@ -3297,104 +3295,104 @@ Rectangle {
                                             onClicked: selectedCornerIndex = index
                                         }
 
-                                        ColumnLayout {
+                                        RowLayout {
                                             anchors.fill: parent
-                                            anchors.margins: 8
-                                            spacing: 6
+                                            anchors.margins: 10
+                                            spacing: 12
 
-                                            // Corner label
-                                            RowLayout {
-                                                Layout.fillWidth: true
-
-                                                Rectangle {
-                                                    width: 50
-                                                    height: 22
-                                                    radius: 4
-                                                    color: root.currentObstacle && root.currentObstacle.type === "point" ? "#FF9800" : "#E91E63"
-
-                                                    Text {
-                                                        anchors.centerIn: parent
-                                                        text: modelData.label || ""
-                                                        font.pixelSize: 11
-                                                        font.bold: true
-                                                        color: "white"
-                                                    }
-                                                }
-
-                                                Item { Layout.fillWidth: true }
-                                            }
-
-                                            // X coordinate
-                                            RowLayout {
-                                                Layout.fillWidth: true
-                                                spacing: 6
+                                            // Corner label badge
+                                            Rectangle {
+                                                width: 50
+                                                height: 50
+                                                radius: 8
+                                                color: root.currentObstacle && root.currentObstacle.type === "point" ? "#FF9800" : "#E91E63"
 
                                                 Text {
-                                                    text: "X:"
-                                                    font.pixelSize: 11
+                                                    anchors.centerIn: parent
+                                                    text: modelData.label || ""
+                                                    font.pixelSize: 12
                                                     font.bold: true
-                                                    color: root.textSecondaryColor
-                                                    Layout.preferredWidth: 20
-                                                }
-
-                                                TextField {
-                                                    Layout.fillWidth: true
-                                                    Layout.preferredHeight: 28
-                                                    font.pixelSize: 11
                                                     color: "white"
-                                                    horizontalAlignment: Text.AlignRight
-                                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                                    text: modelData.x.toFixed(2)
+                                                }
+                                            }
 
-                                                    background: Rectangle {
-                                                        color: root.inputBgColor
-                                                        radius: 4
-                                                        border.width: parent.activeFocus ? 2 : 1
-                                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                            // X and Y inputs
+                                            Column {
+                                                Layout.fillWidth: true
+                                                spacing: 4
+
+                                                // X coordinate
+                                                RowLayout {
+                                                    width: parent.width
+                                                    spacing: 8
+
+                                                    Text {
+                                                        text: "X:"
+                                                        font.pixelSize: 12
+                                                        font.bold: true
+                                                        color: root.textSecondaryColor
+                                                        Layout.preferredWidth: 20
                                                     }
 
-                                                    onEditingFinished: {
-                                                        var val = parseFloat(text)
-                                                        if (!isNaN(val)) {
-                                                            root.updateObstacleCorner(selectedObstacleIndex, index, val, modelData.y)
+                                                    TextField {
+                                                        Layout.fillWidth: true
+                                                        Layout.preferredHeight: 28
+                                                        font.pixelSize: 12
+                                                        color: "white"
+                                                        horizontalAlignment: Text.AlignRight
+                                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                                        text: modelData.x.toFixed(2)
+
+                                                        background: Rectangle {
+                                                            color: root.inputBgColor
+                                                            radius: 4
+                                                            border.width: parent.activeFocus ? 2 : 1
+                                                            border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                        }
+
+                                                        onEditingFinished: {
+                                                            var val = parseFloat(text)
+                                                            if (!isNaN(val)) {
+                                                                root.updateObstacleCorner(selectedObstacleIndex, index, val, modelData.y)
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
 
-                                            // Y coordinate
-                                            RowLayout {
-                                                Layout.fillWidth: true
-                                                spacing: 6
+                                                // Y coordinate
+                                                RowLayout {
+                                                    width: parent.width
+                                                    spacing: 8
 
-                                                Text {
-                                                    text: "Y:"
-                                                    font.pixelSize: 11
-                                                    font.bold: true
-                                                    color: root.textSecondaryColor
-                                                    Layout.preferredWidth: 20
-                                                }
-
-                                                TextField {
-                                                    Layout.fillWidth: true
-                                                    Layout.preferredHeight: 28
-                                                    font.pixelSize: 11
-                                                    color: "white"
-                                                    horizontalAlignment: Text.AlignRight
-                                                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                                    text: modelData.y.toFixed(2)
-
-                                                    background: Rectangle {
-                                                        color: root.inputBgColor
-                                                        radius: 4
-                                                        border.width: parent.activeFocus ? 2 : 1
-                                                        border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                    Text {
+                                                        text: "Y:"
+                                                        font.pixelSize: 12
+                                                        font.bold: true
+                                                        color: root.textSecondaryColor
+                                                        Layout.preferredWidth: 20
                                                     }
 
-                                                    onEditingFinished: {
-                                                        var val = parseFloat(text)
-                                                        if (!isNaN(val)) {
-                                                            root.updateObstacleCorner(selectedObstacleIndex, index, modelData.x, val)
+                                                    TextField {
+                                                        Layout.fillWidth: true
+                                                        Layout.preferredHeight: 28
+                                                        font.pixelSize: 12
+                                                        color: "white"
+                                                        horizontalAlignment: Text.AlignRight
+                                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                                        text: modelData.y.toFixed(2)
+
+                                                        background: Rectangle {
+                                                            color: root.inputBgColor
+                                                            radius: 4
+                                                            border.width: parent.activeFocus ? 2 : 1
+                                                            border.color: parent.activeFocus ? root.primaryColor : root.inputBorderColor
+                                                        }
+
+                                                        onEditingFinished: {
+                                                            var val = parseFloat(text)
+                                                            if (!isNaN(val)) {
+                                                                root.updateObstacleCorner(selectedObstacleIndex, index, modelData.x, val)
+                                                            }
                                                         }
                                                     }
                                                 }
