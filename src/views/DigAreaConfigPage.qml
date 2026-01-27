@@ -2845,91 +2845,117 @@ Rectangle {
                         anchors.margins: 12
                         spacing: 10
 
-                        // Header with title and buttons
-                        RowLayout {
+                        // Header
+                        Text {
+                            text: root.tr("Engeller")
+                            font.pixelSize: 16
+                            font.bold: true
+                            color: root.textColor
+                        }
+
+                        // Action buttons - stacked vertically
+                        Column {
                             Layout.fillWidth: true
-                            spacing: 8
-
-                            Text {
-                                text: root.tr("Engeller")
-                                font.pixelSize: 16
-                                font.bold: true
-                                color: root.textColor
-                            }
-
-                            Item { Layout.fillWidth: true }
+                            spacing: 6
 
                             // Add Point button
                             Button {
-                                Layout.preferredWidth: 36
-                                Layout.preferredHeight: 32
+                                width: parent.width
+                                height: 36
 
                                 background: Rectangle {
                                     radius: 6
-                                    color: parent.pressed ? Qt.darker("#FF9800", 1.2) : "#FF9800"
+                                    color: parent.pressed ? Qt.darker("#FF9800", 1.2) :
+                                           parent.hovered ? Qt.lighter("#FF9800", 1.1) : "#FF9800"
                                 }
 
-                                contentItem: Text {
-                                    text: "●"
-                                    font.pixelSize: 14
-                                    color: "white"
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                }
+                                contentItem: Row {
+                                    anchors.centerIn: parent
+                                    spacing: 8
 
-                                ToolTip.visible: hovered
-                                ToolTip.text: root.tr("Nokta Engel Ekle")
-                                ToolTip.delay: 300
+                                    Text {
+                                        text: "●"
+                                        font.pixelSize: 14
+                                        color: "white"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Text {
+                                        text: root.tr("Nokta Engel Ekle")
+                                        font.pixelSize: 12
+                                        font.bold: true
+                                        color: "white"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
 
                                 onClicked: root.addObstacle("point")
                             }
 
                             // Add Area button
                             Button {
-                                Layout.preferredWidth: 36
-                                Layout.preferredHeight: 32
+                                width: parent.width
+                                height: 36
 
                                 background: Rectangle {
                                     radius: 6
-                                    color: parent.pressed ? Qt.darker("#E91E63", 1.2) : "#E91E63"
+                                    color: parent.pressed ? Qt.darker("#E91E63", 1.2) :
+                                           parent.hovered ? Qt.lighter("#E91E63", 1.1) : "#E91E63"
                                 }
 
-                                contentItem: Text {
-                                    text: "◆"
-                                    font.pixelSize: 14
-                                    color: "white"
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                }
+                                contentItem: Row {
+                                    anchors.centerIn: parent
+                                    spacing: 8
 
-                                ToolTip.visible: hovered
-                                ToolTip.text: root.tr("Alan Engel Ekle (4 Köşe)")
-                                ToolTip.delay: 300
+                                    Text {
+                                        text: "◆"
+                                        font.pixelSize: 14
+                                        color: "white"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Text {
+                                        text: root.tr("Alan Engel Ekle")
+                                        font.pixelSize: 12
+                                        font.bold: true
+                                        color: "white"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
 
                                 onClicked: root.addObstacle("area")
                             }
 
                             // Sample data button
                             Button {
-                                Layout.preferredWidth: 36
-                                Layout.preferredHeight: 32
+                                width: parent.width
+                                height: 36
 
                                 background: Rectangle {
                                     radius: 6
-                                    color: parent.pressed ? Qt.darker("#9C27B0", 1.2) : "#9C27B0"
+                                    color: parent.pressed ? Qt.darker("#9C27B0", 1.2) :
+                                           parent.hovered ? Qt.lighter("#9C27B0", 1.1) : "#9C27B0"
                                 }
 
-                                contentItem: Text {
-                                    text: "⚡"
-                                    font.pixelSize: 14
-                                    color: "white"
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                }
+                                contentItem: Row {
+                                    anchors.centerIn: parent
+                                    spacing: 8
 
-                                ToolTip.visible: hovered
-                                ToolTip.text: root.tr("Örnek Veri Oluştur")
-                                ToolTip.delay: 300
+                                    Text {
+                                        text: "⚡"
+                                        font.pixelSize: 14
+                                        color: "white"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Text {
+                                        text: root.tr("Örnek Veri Oluştur")
+                                        font.pixelSize: 12
+                                        font.bold: true
+                                        color: "white"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
 
                                 onClicked: root.generateSampleObstacles()
                             }
