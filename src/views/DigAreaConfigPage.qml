@@ -3519,7 +3519,7 @@ Rectangle {
                             }
                         }
 
-                        Rectangle { width: 1; height: 24; color: "rgba(255,255,255,0.3)" }
+                        Rectangle { width: 1; height: 24; color: Qt.rgba(1, 1, 1, 0.3) }
 
                         // Legend
                         Row {
