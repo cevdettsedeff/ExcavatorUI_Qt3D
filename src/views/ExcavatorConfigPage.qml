@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components"
 
 /**
  * ExcavatorConfigPage - Ekskavatör Ayarları Sayfası (2 Sekmeli Wizard)
@@ -119,68 +120,14 @@ Rectangle {
     }
 
     // Progress Indicator
-    Rectangle {
+    StepProgressIndicator {
         id: progressBar
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 70
-        color: root.cardColor
-
-        RowLayout {
-            anchors.centerIn: parent
-            spacing: 0
-
-            Repeater {
-                model: stepTitles.length
-
-                RowLayout {
-                    spacing: 0
-
-                    // Step circle
-                    Rectangle {
-                        width: 36
-                        height: 36
-                        radius: 18
-                        color: index < currentStep ? root.primaryColor :
-                               (index === currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1))
-                        border.width: 2
-                        border.color: index <= currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.3)
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: index < currentStep ? "✓" : (index + 1).toString()
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: index <= currentStep ? "white" : root.textSecondaryColor
-                        }
-                    }
-
-                    // Step label
-                    Column {
-                        Layout.leftMargin: 8
-                        Layout.rightMargin: index < stepTitles.length - 1 ? 0 : 0
-
-                        Text {
-                            text: stepTitles[index]
-                            font.pixelSize: 12
-                            font.bold: index === currentStep
-                            color: index <= currentStep ? root.textColor : root.textSecondaryColor
-                        }
-                    }
-
-                    // Connector line
-                    Rectangle {
-                        visible: index < stepTitles.length - 1
-                        Layout.preferredWidth: 60
-                        Layout.preferredHeight: 2
-                        Layout.leftMargin: 12
-                        Layout.rightMargin: 12
-                        color: index < currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.2)
-                    }
-                }
-            }
-        }
+        currentStep: root.currentStep
+        stepTitles: root.stepTitles
+        primaryColor: root.primaryColor
     }
 
     // Content Area with Loader

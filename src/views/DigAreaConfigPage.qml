@@ -25,39 +25,77 @@ Rectangle {
     // Global responsive değişkenlere erişim
     property var app: ApplicationWindow.window
 
-    // FileDialog for loading existing projects
-    FileDialog {
-        id: projectFileDialog
-        title: root.tr("Proje Dosyası Seç")
-        currentFolder: Qt.resolvedUrl(".")
-        nameFilters: [root.tr("JSON Dosyaları (*.json)"), "All files (*)"]
-        fileMode: FileDialog.OpenFile
+    // FileDialog for loading existing projects (folder selection)
+    FolderDialog {
+        id: projectFolderDialog
+        title: root.tr("Proje Klasörü Seç")
+        currentFolder: Qt.resolvedUrl("file://" + (configManager ? configManager.projectPath : ".") + "/../")
 
         onAccepted: {
-            console.log("Selected project file:", selectedFile)
-            root.projectFilePath = selectedFile.toString()
+            var folderPath = selectedFolder.toString().replace("file://", "")
+            console.log("Selected project folder:", folderPath)
+            root.projectFilePath = folderPath
 
-            // TODO: Load project from JSON file
-            // For now, just move to next step
-            if (root.projectMode === "existing" && root.projectFilePath !== "") {
-                // Validate and load JSON
-                loadProjectFromFile(root.projectFilePath)
+            // Load project using ConfigManager
+            if (root.projectMode === "existing" && folderPath !== "") {
+                loadProjectFromFolder(folderPath)
             }
         }
 
         onRejected: {
-            console.log("File selection cancelled")
+            console.log("Folder selection cancelled")
         }
     }
 
-    // Function to load project from JSON file
-    function loadProjectFromFile(filePath) {
-        console.log("Loading project from:", filePath)
-        // TODO: Implement JSON loading logic
-        // For now, just proceed to next step
-        if (currentStep === 0) {
-            currentStep = 1
+    // Mevcut projeler listesi
+    property var existingProjects: configManager ? configManager.getExistingProjects() : []
+    property int selectedProjectIndex: -1
+
+    // Mevcut projeleri yenileme fonksiyonu
+    function refreshProjectList() {
+        if (configManager) {
+            existingProjects = configManager.getExistingProjects()
         }
+    }
+
+    // Function to load project from folder
+    function loadProjectFromFolder(folderPath) {
+        console.log("Loading project from folder:", folderPath)
+        if (configManager && configManager.loadProject(folderPath)) {
+            // Load successful - populate data from configManager
+            root.projectName = configManager.projectName
+            root.projectFilePath = configManager.projectPath
+
+            // Load corner points, bathymetric data, obstacles from saved config
+            loadConfigurationData()
+
+            // Move to next step
+            if (currentStep === 0) {
+                currentStep = 1
+            }
+        }
+    }
+
+    // Function to create new project
+    function createNewProject() {
+        if (root.projectName.trim() === "") {
+            console.log("Project name cannot be empty")
+            return false
+        }
+
+        if (configManager && configManager.createProject(root.projectName.trim())) {
+            console.log("Project created successfully:", root.projectName)
+            return true
+        }
+        return false
+    }
+
+    // Load configuration data from configManager
+    function loadConfigurationData() {
+        // This will be called when loading an existing project
+        // to populate the UI with saved data
+        console.log("Loading configuration data from project")
+        // TODO: Load corner points, bathymetric data, obstacles from configManager
     }
 
     // Translation support
@@ -449,11 +487,37 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (currentStep < totalSteps - 1) {
+                    if (currentStep === 0) {
+                        // Step 0: Project selection
+                        if (root.projectMode === "new") {
+                            // Create new project
+                            if (root.projectName.trim() === "") {
+                                console.log("Please enter project name")
+                                return
+                            }
+                            if (createNewProject()) {
+                                currentStep++
+                            }
+                        } else {
+                            // Load existing project
+                            if (root.selectedProjectIndex >= 0 && root.selectedProjectIndex < root.existingProjects.length) {
+                                var projectName = root.existingProjects[root.selectedProjectIndex]
+                                var projectPath = (configManager ? configManager.projectPath.replace(configManager.projectName, "") : "./projects/") + projectName
+                                // Düzeltme: projects base dir kullan
+                                projectPath = "./projects/" + projectName
+                                loadProjectFromFolder(projectPath)
+                            } else {
+                                console.log("Please select a project")
+                            }
+                        }
+                    } else if (currentStep < totalSteps - 1) {
                         currentStep++
                     } else {
                         // Save and finish
                         saveConfiguration()
+                        if (configManager) {
+                            configManager.saveProjectConfig()
+                        }
                         root.configSaved()
                     }
                 }
@@ -620,8 +684,7 @@ Rectangle {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     root.projectMode = "existing"
-                                    // Open file dialog to select project file
-                                    projectFileDialog.open()
+                                    root.refreshProjectList()
                                 }
                             }
 
@@ -662,7 +725,7 @@ Rectangle {
                                         }
 
                                         Text {
-                                            text: root.tr("Daha önce kaydedilmiş bir proje dosyasını yükleyin")
+                                            text: root.tr("Daha önce kaydedilmiş bir proje seçin")
                                             font.pixelSize: app ? app.baseFontSize : 14
                                             color: root.textSecondaryColor
                                             wrapMode: Text.WordWrap
@@ -691,6 +754,138 @@ Rectangle {
                                             }
                                         }
                                     }
+                                }
+                            }
+                        }
+
+                        // Mevcut Projeler Listesi (only visible when existing mode selected)
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: projectListContent.height + (app ? app.normalPadding * 2 : 32)
+                            color: root.cardColor
+                            radius: app ? app.normalRadius : 12
+                            border.width: 1
+                            border.color: root.borderColor
+                            visible: root.projectMode === "existing"
+
+                            ColumnLayout {
+                                id: projectListContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: app ? app.normalPadding : 20
+                                spacing: app ? app.smallSpacing : 12
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+
+                                    Text {
+                                        text: root.tr("Kayıtlı Projeler")
+                                        font.pixelSize: app ? app.mediumFontSize : 18
+                                        font.bold: true
+                                        color: root.textColor
+                                    }
+
+                                    Item { Layout.fillWidth: true }
+
+                                    Button {
+                                        text: root.tr("Klasörden Aç")
+                                        font.pixelSize: app ? app.smallFontSize : 12
+
+                                        background: Rectangle {
+                                            radius: app ? app.smallRadius : 6
+                                            color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
+                                        }
+
+                                        contentItem: Text {
+                                            text: parent.text
+                                            font: parent.font
+                                            color: "white"
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+
+                                        onClicked: {
+                                            projectFolderDialog.open()
+                                        }
+                                    }
+                                }
+
+                                // Proje listesi
+                                ListView {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: Math.min(root.existingProjects.length * 50, 200)
+                                    clip: true
+                                    model: root.existingProjects
+                                    visible: root.existingProjects.length > 0
+
+                                    delegate: Rectangle {
+                                        width: ListView.view.width
+                                        height: 45
+                                        color: root.selectedProjectIndex === index ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) : (mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent")
+                                        radius: app ? app.smallRadius : 6
+
+                                        MouseArea {
+                                            id: mouseArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                root.selectedProjectIndex = index
+                                                root.projectName = modelData
+                                            }
+                                        }
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.margins: app ? app.smallPadding : 8
+                                            spacing: app ? app.smallSpacing : 8
+
+                                            Text {
+                                                text: "📁"
+                                                font.pixelSize: app ? app.baseFontSize : 16
+                                            }
+
+                                            Text {
+                                                Layout.fillWidth: true
+                                                text: modelData
+                                                font.pixelSize: app ? app.baseFontSize : 14
+                                                font.bold: root.selectedProjectIndex === index
+                                                color: root.textColor
+                                                elide: Text.ElideRight
+                                            }
+
+                                            Rectangle {
+                                                width: 20
+                                                height: 20
+                                                radius: 10
+                                                border.width: 2
+                                                border.color: root.selectedProjectIndex === index ? root.primaryColor : root.borderColor
+                                                color: root.selectedProjectIndex === index ? root.primaryColor : "transparent"
+                                                visible: root.selectedProjectIndex === index
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "✓"
+                                                    font.pixelSize: 12
+                                                    color: "white"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Proje yok mesajı
+                                Text {
+                                    Layout.fillWidth: true
+                                    Layout.topMargin: app ? app.normalSpacing : 16
+                                    Layout.bottomMargin: app ? app.normalSpacing : 16
+                                    text: root.tr("Henüz kayıtlı proje bulunmuyor.\n'Klasörden Aç' butonu ile proje klasörü seçebilirsiniz.")
+                                    font.pixelSize: app ? app.baseFontSize : 14
+                                    color: root.textSecondaryColor
+                                    horizontalAlignment: Text.AlignHCenter
+                                    wrapMode: Text.WordWrap
+                                    visible: root.existingProjects.length === 0
                                 }
                             }
                         }

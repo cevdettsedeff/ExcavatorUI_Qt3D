@@ -81,6 +81,10 @@ class ConfigManager : public QObject
     // Calibration settings
     Q_PROPERTY(bool calibrationConfigured READ calibrationConfigured NOTIFY calibrationConfiguredChanged)
 
+    // Project settings
+    Q_PROPERTY(QString projectName READ projectName WRITE setProjectName NOTIFY projectNameChanged)
+    Q_PROPERTY(QString projectPath READ projectPath NOTIFY projectPathChanged)
+
 public:
     explicit ConfigManager(QObject *parent = nullptr);
     ~ConfigManager();
@@ -148,6 +152,10 @@ public:
     // Calibration getters
     bool calibrationConfigured() const { return m_calibrationConfigured; }
 
+    // Project getters
+    QString projectName() const { return m_projectName; }
+    QString projectPath() const { return m_projectPath; }
+
     // Property setters
     void setConfigPath(const QString &path);
 
@@ -188,11 +196,41 @@ public:
     // Splash Screen setters
     void setSplashScreenTimeoutMilliseconds(int milliseconds);
 
+    // Project setters
+    void setProjectName(const QString &name);
+
     /**
      * Load configuration from JSON file
      * @return true if successful
      */
     Q_INVOKABLE bool loadConfig();
+
+    /**
+     * Create new project with given name
+     * Creates a folder and configurations.json inside
+     * @param name Project name
+     * @return true if successful
+     */
+    Q_INVOKABLE bool createProject(const QString &name);
+
+    /**
+     * Load existing project from folder path
+     * @param folderPath Path to project folder
+     * @return true if successful
+     */
+    Q_INVOKABLE bool loadProject(const QString &folderPath);
+
+    /**
+     * Save current project configuration
+     * @return true if successful
+     */
+    Q_INVOKABLE bool saveProjectConfig();
+
+    /**
+     * Get list of existing projects
+     * @return List of project folder names
+     */
+    Q_INVOKABLE QStringList getExistingProjects();
 
     /**
      * Reload configuration from disk
@@ -361,6 +399,12 @@ signals:
     // Calibration signals
     void calibrationConfiguredChanged();
 
+    // Project signals
+    void projectNameChanged();
+    void projectPathChanged();
+    void projectLoaded();
+    void projectCreated();
+
 private:
     QString m_configPath;
     bool m_isLoaded;
@@ -437,6 +481,11 @@ private:
 
     // Calibration settings
     bool m_calibrationConfigured;
+
+    // Project settings
+    QString m_projectName;
+    QString m_projectPath;
+    QString m_projectsBaseDir;
 
     // JSON parsing helpers
     void parseConfig(const QJsonObject &json);

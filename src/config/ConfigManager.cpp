@@ -51,6 +51,9 @@ ConfigManager::ConfigManager(QObject *parent)
 
     // Default config path
     m_configPath = QDir::currentPath() + "/config/bathymetry_config.json";
+
+    // Projects base directory
+    m_projectsBaseDir = QDir::currentPath() + "/projects";
 }
 
 ConfigManager::~ConfigManager()
@@ -1131,4 +1134,129 @@ bool ConfigManager::saveConfig()
 
     qDebug() << "Configuration saved to" << m_configPath;
     return true;
+}
+
+// Project management functions
+void ConfigManager::setProjectName(const QString &name)
+{
+    if (m_projectName != name) {
+        m_projectName = name;
+        emit projectNameChanged();
+    }
+}
+
+bool ConfigManager::createProject(const QString &name)
+{
+    if (name.isEmpty()) {
+        emit errorOccurred("Proje adı boş olamaz.");
+        return false;
+    }
+
+    // Create projects base directory if it doesn't exist
+    QDir baseDir(m_projectsBaseDir);
+    if (!baseDir.exists()) {
+        if (!baseDir.mkpath(".")) {
+            emit errorOccurred("Projeler klasörü oluşturulamadı: " + m_projectsBaseDir);
+            return false;
+        }
+    }
+
+    // Create project folder
+    QString projectFolder = m_projectsBaseDir + "/" + name;
+    QDir projectDir(projectFolder);
+
+    if (projectDir.exists()) {
+        emit errorOccurred("Bu isimde bir proje zaten mevcut: " + name);
+        return false;
+    }
+
+    if (!projectDir.mkpath(".")) {
+        emit errorOccurred("Proje klasörü oluşturulamadı: " + projectFolder);
+        return false;
+    }
+
+    // Set project properties
+    m_projectName = name;
+    m_projectPath = projectFolder;
+    m_configPath = projectFolder + "/configurations.json";
+
+    emit projectNameChanged();
+    emit projectPathChanged();
+
+    // Save initial configuration
+    if (!saveConfig()) {
+        emit errorOccurred("Proje konfigürasyonu kaydedilemedi.");
+        return false;
+    }
+
+    emit projectCreated();
+    qDebug() << "Project created:" << name << "at" << projectFolder;
+
+    return true;
+}
+
+bool ConfigManager::loadProject(const QString &folderPath)
+{
+    QDir projectDir(folderPath);
+    if (!projectDir.exists()) {
+        emit errorOccurred("Proje klasörü bulunamadı: " + folderPath);
+        return false;
+    }
+
+    QString configFile = folderPath + "/configurations.json";
+    if (!QFile::exists(configFile)) {
+        emit errorOccurred("Proje konfigürasyon dosyası bulunamadı: " + configFile);
+        return false;
+    }
+
+    // Set project properties
+    m_projectName = projectDir.dirName();
+    m_projectPath = folderPath;
+    m_configPath = configFile;
+
+    emit projectNameChanged();
+    emit projectPathChanged();
+
+    // Load configuration
+    if (!loadConfig()) {
+        emit errorOccurred("Proje konfigürasyonu yüklenemedi.");
+        return false;
+    }
+
+    emit projectLoaded();
+    qDebug() << "Project loaded:" << m_projectName << "from" << folderPath;
+
+    return true;
+}
+
+bool ConfigManager::saveProjectConfig()
+{
+    if (m_projectPath.isEmpty()) {
+        emit errorOccurred("Aktif proje yok. Önce bir proje oluşturun veya açın.");
+        return false;
+    }
+
+    return saveConfig();
+}
+
+QStringList ConfigManager::getExistingProjects()
+{
+    QStringList projects;
+
+    QDir baseDir(m_projectsBaseDir);
+    if (!baseDir.exists()) {
+        return projects;
+    }
+
+    QStringList entries = baseDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    for (const QString &entry : entries) {
+        QString configPath = m_projectsBaseDir + "/" + entry + "/configurations.json";
+        if (QFile::exists(configPath)) {
+            projects.append(entry);
+        }
+    }
+
+    qDebug() << "Found" << projects.size() << "existing projects";
+    return projects;
 }

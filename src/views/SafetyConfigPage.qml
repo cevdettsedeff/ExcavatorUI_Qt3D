@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components"
 
 /**
  * SafetyConfigPage - Emniyet Ayarları Sayfası
@@ -78,6 +79,10 @@ Rectangle {
     property bool obstacleDetectionEnabled: true
     property var obstacles: []  // List of obstacles
 
+    // Step indicator properties
+    property int currentStep: 0
+    property var stepTitles: [root.tr("Emniyet Ayarları")]
+
     // Header
     Rectangle {
         id: header
@@ -126,9 +131,20 @@ Rectangle {
         }
     }
 
+    // Progress Indicator
+    StepProgressIndicator {
+        id: progressBar
+        anchors.top: header.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        currentStep: root.currentStep
+        stepTitles: root.stepTitles
+        primaryColor: root.primaryColor
+    }
+
     // Content
     ScrollView {
-        anchors.top: header.bottom
+        anchors.top: progressBar.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: footer.top

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components"
 
 /**
  * CalibrationConfigPage - Kalibrasyon Ayarları Sayfası
@@ -86,6 +87,10 @@ Rectangle {
     property bool isCalibrating: false
     property int calibrationProgress: 0
 
+    // Step indicator properties
+    property int currentStep: 0
+    property var stepTitles: [root.tr("Kalibrasyon")]
+
     // Header
     Rectangle {
         id: header
@@ -134,9 +139,20 @@ Rectangle {
         }
     }
 
+    // Progress Indicator
+    StepProgressIndicator {
+        id: progressBar
+        anchors.top: header.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        currentStep: root.currentStep
+        stepTitles: root.stepTitles
+        primaryColor: root.primaryColor
+    }
+
     // Content
     ScrollView {
-        anchors.top: header.bottom
+        anchors.top: progressBar.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: footer.top
