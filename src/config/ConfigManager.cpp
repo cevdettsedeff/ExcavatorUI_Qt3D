@@ -28,6 +28,7 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_gridStartLongitude(29.0000)
     , m_gridEndLatitude(40.7200)
     , m_gridEndLongitude(29.0100)
+    , m_cornerCount(4)
     , m_mapCenterLatitude(40.7128)
     , m_mapCenterLongitude(29.0060)
     , m_mapZoomLevel(15)
@@ -52,8 +53,8 @@ ConfigManager::ConfigManager(QObject *parent)
     // Default config path
     m_configPath = QDir::currentPath() + "/config/bathymetry_config.json";
 
-    // Projects base directory
-    m_projectsBaseDir = QDir::currentPath() + "/projects";
+    // Projects base directory (root project directory)
+    m_projectsBaseDir = QDir::currentPath();
 }
 
 ConfigManager::~ConfigManager()
@@ -464,6 +465,32 @@ void ConfigManager::setGridEndLongitude(double lon)
         m_gridEndLongitude = lon;
         emit gridEndLongitudeChanged();
     }
+}
+
+void ConfigManager::setCornerCount(int count)
+{
+    if (m_cornerCount != count && count >= 3) {
+        m_cornerCount = count;
+        emit cornerCountChanged();
+    }
+}
+
+void ConfigManager::setCornerPoints(const QVariantList &points)
+{
+    m_cornerPoints = points;
+    emit cornerPointsChanged();
+}
+
+void ConfigManager::setBathymetricPoints(const QVariantList &points)
+{
+    m_bathymetricPoints = points;
+    emit bathymetricPointsChanged();
+}
+
+void ConfigManager::setObstacles(const QVariantList &obstacles)
+{
+    m_obstacles = obstacles;
+    emit obstaclesChanged();
 }
 
 void ConfigManager::initializeGridDepths()
@@ -882,6 +909,79 @@ void ConfigManager::parseDigAreaSettings(const QJsonObject &digArea)
         m_digAreaConfigured = digArea["configured"].toBool(false);
         emit digAreaConfiguredChanged();
     }
+
+    // Parse corner count
+    if (digArea.contains("corner_count")) {
+        m_cornerCount = digArea["corner_count"].toInt(4);
+        emit cornerCountChanged();
+    }
+
+    // Parse corner points
+    if (digArea.contains("corner_points") && digArea["corner_points"].isArray()) {
+        m_cornerPoints.clear();
+        QJsonArray arr = digArea["corner_points"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject pt = val.toObject();
+                QVariantMap point;
+                point["x"] = pt["x"].toDouble(0.0);
+                point["y"] = pt["y"].toDouble(0.0);
+                point["label"] = pt["label"].toString("");
+                m_cornerPoints.append(point);
+            }
+        }
+        emit cornerPointsChanged();
+    }
+
+    // Parse bathymetric points
+    if (digArea.contains("bathymetric_points") && digArea["bathymetric_points"].isArray()) {
+        m_bathymetricPoints.clear();
+        QJsonArray arr = digArea["bathymetric_points"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject pt = val.toObject();
+                QVariantMap point;
+                point["x"] = pt["x"].toDouble(0.0);
+                point["y"] = pt["y"].toDouble(0.0);
+                point["depth"] = pt["depth"].toDouble(0.0);
+                m_bathymetricPoints.append(point);
+            }
+        }
+        emit bathymetricPointsChanged();
+    }
+
+    // Parse obstacles
+    if (digArea.contains("obstacles") && digArea["obstacles"].isArray()) {
+        m_obstacles.clear();
+        QJsonArray arr = digArea["obstacles"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject obs = val.toObject();
+                QVariantMap obstacle;
+                obstacle["id"] = obs["id"].toInt(0);
+                obstacle["type"] = obs["type"].toString("point");
+                obstacle["depth"] = obs["depth"].toDouble(0.0);
+
+                // Parse obstacle points
+                if (obs.contains("points") && obs["points"].isArray()) {
+                    QVariantList points;
+                    QJsonArray pointsArr = obs["points"].toArray();
+                    for (const auto &ptVal : pointsArr) {
+                        if (ptVal.isObject()) {
+                            QJsonObject pt = ptVal.toObject();
+                            QVariantMap point;
+                            point["x"] = pt["x"].toDouble(0.0);
+                            point["y"] = pt["y"].toDouble(0.0);
+                            points.append(point);
+                        }
+                    }
+                    obstacle["points"] = points;
+                }
+                m_obstacles.append(obstacle);
+            }
+        }
+        emit obstaclesChanged();
+    }
 }
 
 void ConfigManager::parseMapSettings(const QJsonObject &mapSettings)
@@ -1066,6 +1166,56 @@ bool ConfigManager::saveConfig()
     digArea["end_latitude"] = m_gridEndLatitude;
     digArea["end_longitude"] = m_gridEndLongitude;
     digArea["configured"] = m_digAreaConfigured;
+
+    // Save corner count and corner points
+    digArea["corner_count"] = m_cornerCount;
+
+    QJsonArray cornerPointsArray;
+    for (const auto &point : m_cornerPoints) {
+        QVariantMap pt = point.toMap();
+        QJsonObject ptObj;
+        ptObj["x"] = pt["x"].toDouble();
+        ptObj["y"] = pt["y"].toDouble();
+        ptObj["label"] = pt["label"].toString();
+        cornerPointsArray.append(ptObj);
+    }
+    digArea["corner_points"] = cornerPointsArray;
+
+    // Save bathymetric points
+    QJsonArray bathymetricPointsArray;
+    for (const auto &point : m_bathymetricPoints) {
+        QVariantMap pt = point.toMap();
+        QJsonObject ptObj;
+        ptObj["x"] = pt["x"].toDouble();
+        ptObj["y"] = pt["y"].toDouble();
+        ptObj["depth"] = pt["depth"].toDouble();
+        bathymetricPointsArray.append(ptObj);
+    }
+    digArea["bathymetric_points"] = bathymetricPointsArray;
+
+    // Save obstacles
+    QJsonArray obstaclesArray;
+    for (const auto &obstacle : m_obstacles) {
+        QVariantMap obs = obstacle.toMap();
+        QJsonObject obsObj;
+        obsObj["id"] = obs["id"].toInt();
+        obsObj["type"] = obs["type"].toString();
+        obsObj["depth"] = obs["depth"].toDouble();
+
+        QJsonArray obsPointsArray;
+        QVariantList points = obs["points"].toList();
+        for (const auto &point : points) {
+            QVariantMap pt = point.toMap();
+            QJsonObject ptObj;
+            ptObj["x"] = pt["x"].toDouble();
+            ptObj["y"] = pt["y"].toDouble();
+            obsPointsArray.append(ptObj);
+        }
+        obsObj["points"] = obsPointsArray;
+        obstaclesArray.append(obsObj);
+    }
+    digArea["obstacles"] = obstaclesArray;
+
     root["dig_area"] = digArea;
 
     // Map settings
@@ -1248,9 +1398,19 @@ QStringList ConfigManager::getExistingProjects()
         return projects;
     }
 
+    // Exclude system/build directories
+    QStringList excludeDirs = {"src", "build", "config", "docs", "resources",
+                               "static_maps", "scripts", ".git", "cmake-build-debug",
+                               "cmake-build-release", "CMakeFiles"};
+
     QStringList entries = baseDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
 
     for (const QString &entry : entries) {
+        // Skip excluded directories
+        if (excludeDirs.contains(entry, Qt::CaseInsensitive)) {
+            continue;
+        }
+
         QString configPath = m_projectsBaseDir + "/" + entry + "/configurations.json";
         if (QFile::exists(configPath)) {
             projects.append(entry);

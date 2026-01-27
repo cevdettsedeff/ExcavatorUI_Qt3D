@@ -53,6 +53,12 @@ class ConfigManager : public QObject
     Q_PROPERTY(double gridEndLatitude READ gridEndLatitude WRITE setGridEndLatitude NOTIFY gridEndLatitudeChanged)
     Q_PROPERTY(double gridEndLongitude READ gridEndLongitude WRITE setGridEndLongitude NOTIFY gridEndLongitudeChanged)
 
+    // Dig area polygon and data
+    Q_PROPERTY(int cornerCount READ cornerCount WRITE setCornerCount NOTIFY cornerCountChanged)
+    Q_PROPERTY(QVariantList cornerPoints READ cornerPoints WRITE setCornerPoints NOTIFY cornerPointsChanged)
+    Q_PROPERTY(QVariantList bathymetricPoints READ bathymetricPoints WRITE setBathymetricPoints NOTIFY bathymetricPointsChanged)
+    Q_PROPERTY(QVariantList obstacles READ obstacles WRITE setObstacles NOTIFY obstaclesChanged)
+
     // Map settings
     Q_PROPERTY(double mapCenterLatitude READ mapCenterLatitude WRITE setMapCenterLatitude NOTIFY mapCenterLatitudeChanged)
     Q_PROPERTY(double mapCenterLongitude READ mapCenterLongitude WRITE setMapCenterLongitude NOTIFY mapCenterLongitudeChanged)
@@ -123,6 +129,10 @@ public:
     double gridStartLongitude() const { return m_gridStartLongitude; }
     double gridEndLatitude() const { return m_gridEndLatitude; }
     double gridEndLongitude() const { return m_gridEndLongitude; }
+    int cornerCount() const { return m_cornerCount; }
+    QVariantList cornerPoints() const { return m_cornerPoints; }
+    QVariantList bathymetricPoints() const { return m_bathymetricPoints; }
+    QVariantList obstacles() const { return m_obstacles; }
 
     // Map getters
     double mapCenterLatitude() const { return m_mapCenterLatitude; }
@@ -171,6 +181,10 @@ public:
     void setGridCols(int cols);
     void setGridDepths(const QVariantList &depths);
     void setTargetDepth(double depth);
+    void setCornerCount(int count);
+    void setCornerPoints(const QVariantList &points);
+    void setBathymetricPoints(const QVariantList &points);
+    void setObstacles(const QVariantList &obstacles);
     void setGridStartLatitude(double lat);
     void setGridStartLongitude(double lon);
     void setGridEndLatitude(double lat);
@@ -370,6 +384,10 @@ signals:
     void gridStartLongitudeChanged();
     void gridEndLatitudeChanged();
     void gridEndLongitudeChanged();
+    void cornerCountChanged();
+    void cornerPointsChanged();
+    void bathymetricPointsChanged();
+    void obstaclesChanged();
 
     // Map signals
     void mapCenterLatitudeChanged();
@@ -453,6 +471,10 @@ private:
     double m_gridStartLongitude;
     double m_gridEndLatitude;
     double m_gridEndLongitude;
+    int m_cornerCount;
+    QVariantList m_cornerPoints;
+    QVariantList m_bathymetricPoints;
+    QVariantList m_obstacles;
 
     // Map settings
     double m_mapCenterLatitude;

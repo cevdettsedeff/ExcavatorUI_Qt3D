@@ -92,10 +92,75 @@ Rectangle {
 
     // Load configuration data from configManager
     function loadConfigurationData() {
-        // This will be called when loading an existing project
-        // to populate the UI with saved data
-        console.log("Loading configuration data from project")
-        // TODO: Load corner points, bathymetric data, obstacles from configManager
+        if (!configManager) {
+            console.log("ConfigManager not available")
+            return
+        }
+
+        console.log("Loading configuration data from project:", configManager.projectName)
+
+        // Load corner count
+        if (configManager.cornerCount > 0) {
+            cornerCount = configManager.cornerCount
+        }
+
+        // Load corner points
+        if (configManager.cornerPoints && configManager.cornerPoints.length > 0) {
+            cornerPoints = []
+            for (var i = 0; i < configManager.cornerPoints.length; i++) {
+                var pt = configManager.cornerPoints[i]
+                cornerPoints.push({
+                    x: pt.x || 0,
+                    y: pt.y || 0,
+                    label: pt.label || String.fromCharCode(65 + i)
+                })
+            }
+            cornerPointsChanged()
+        }
+
+        // Load bathymetric points
+        if (configManager.bathymetricPoints && configManager.bathymetricPoints.length > 0) {
+            bathymetricPoints = []
+            for (var j = 0; j < configManager.bathymetricPoints.length; j++) {
+                var bpt = configManager.bathymetricPoints[j]
+                bathymetricPoints.push({
+                    x: bpt.x || 0,
+                    y: bpt.y || 0,
+                    depth: bpt.depth || 0
+                })
+            }
+            bathymetricPointsChanged()
+        }
+
+        // Load obstacles
+        if (configManager.obstacles && configManager.obstacles.length > 0) {
+            obstacles = []
+            for (var k = 0; k < configManager.obstacles.length; k++) {
+                var obs = configManager.obstacles[k]
+                var obstaclePoints = []
+                if (obs.points) {
+                    for (var l = 0; l < obs.points.length; l++) {
+                        obstaclePoints.push({
+                            x: obs.points[l].x || 0,
+                            y: obs.points[l].y || 0
+                        })
+                    }
+                }
+                obstacles.push({
+                    id: obs.id || k,
+                    type: obs.type || "point",
+                    depth: obs.depth || 0,
+                    points: obstaclePoints
+                })
+            }
+            obstaclesChanged()
+        }
+
+        console.log("Configuration data loaded successfully")
+        console.log("  Corner count:", cornerCount)
+        console.log("  Corner points:", cornerPoints.length)
+        console.log("  Bathymetric points:", bathymetricPoints.length)
+        console.log("  Obstacles:", obstacles.length)
     }
 
     // Translation support
@@ -502,9 +567,8 @@ Rectangle {
                             // Load existing project
                             if (root.selectedProjectIndex >= 0 && root.selectedProjectIndex < root.existingProjects.length) {
                                 var projectName = root.existingProjects[root.selectedProjectIndex]
-                                var projectPath = (configManager ? configManager.projectPath.replace(configManager.projectName, "") : "./projects/") + projectName
-                                // Düzeltme: projects base dir kullan
-                                projectPath = "./projects/" + projectName
+                                // Project folders are in root directory
+                                var projectPath = "./" + projectName
                                 loadProjectFromFolder(projectPath)
                             } else {
                                 console.log("Please select a project")
@@ -2833,9 +2897,21 @@ Rectangle {
     }
 
     function saveConfiguration() {
-        // Save corner points to ConfigManager if available
+        // Save all data to ConfigManager
         if (configManager) {
-            // For now, save polygon bounds as grid coordinates
+            // Save corner count
+            configManager.cornerCount = cornerCount
+
+            // Save corner points
+            configManager.cornerPoints = cornerPoints
+
+            // Save bathymetric points
+            configManager.bathymetricPoints = bathymetricPoints
+
+            // Save obstacles
+            configManager.obstacles = obstacles
+
+            // Calculate and save polygon bounds as grid coordinates
             if (cornerPoints.length >= 2) {
                 var minX = Infinity, maxX = -Infinity
                 var minY = Infinity, maxY = -Infinity
@@ -2853,13 +2929,16 @@ Rectangle {
                 configManager.gridEndLatitude = maxY / 111000
                 configManager.gridEndLongitude = maxX / (111000 * Math.cos(maxY / 111000 * Math.PI / 180))
             }
+
+            // Mark dig area as configured
+            configManager.markDigAreaConfigured()
         }
 
         console.log("Configuration saved:")
         console.log("- Corner count:", cornerCount)
-        console.log("- Corner points:", JSON.stringify(cornerPoints))
-        console.log("- Bathymetric points:", JSON.stringify(bathymetricPoints))
-        console.log("- Obstacles:", JSON.stringify(obstacles))
+        console.log("- Corner points:", cornerPoints.length, "points")
+        console.log("- Bathymetric points:", bathymetricPoints.length, "points")
+        console.log("- Obstacles:", obstacles.length, "items")
     }
 
     // ==================== OBSTACLE HELPER FUNCTIONS ====================
