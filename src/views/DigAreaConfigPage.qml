@@ -2841,7 +2841,7 @@ Rectangle {
                     // ========== TOP: Obstacle List (Compact) ==========
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 260
+                        Layout.preferredHeight: 290
                         color: root.cardColor
                         radius: 10
                         border.width: 1
@@ -2852,7 +2852,7 @@ Rectangle {
                             anchors.margins: 10
                             spacing: 6
 
-                            // Compact Header with buttons inline
+                            // Header
                             RowLayout {
                                 Layout.fillWidth: true
                                 spacing: 8
@@ -2871,72 +2871,101 @@ Rectangle {
                                 }
 
                                 Item { Layout.fillWidth: true }
+                            }
 
-                                // Inline compact buttons
+                            // Action buttons - side by side with text
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 6
+
                                 Button {
-                                    implicitWidth: 28
-                                    implicitHeight: 28
-                                    ToolTip.visible: hovered
-                                    ToolTip.text: root.tr("Nokta Engel Ekle")
+                                    Layout.fillWidth: true
+                                    implicitHeight: 32
 
                                     background: Rectangle {
-                                        radius: 4
+                                        radius: 6
                                         color: parent.pressed ? Qt.darker("#FF9800", 1.2) :
                                                parent.hovered ? Qt.lighter("#FF9800", 1.1) : "#FF9800"
                                     }
 
-                                    contentItem: Text {
-                                        text: "●"
-                                        font.pixelSize: 12
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
+                                    contentItem: Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+                                        Text {
+                                            text: "●"
+                                            font.pixelSize: 12
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                        Text {
+                                            text: root.tr("Nokta Engel Ekle")
+                                            font.pixelSize: 10
+                                            font.bold: true
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
                                     }
 
                                     onClicked: root.addObstacle("point")
                                 }
 
                                 Button {
-                                    implicitWidth: 28
-                                    implicitHeight: 28
-                                    ToolTip.visible: hovered
-                                    ToolTip.text: root.tr("Alan Engel Ekle")
+                                    Layout.fillWidth: true
+                                    implicitHeight: 32
 
                                     background: Rectangle {
-                                        radius: 4
+                                        radius: 6
                                         color: parent.pressed ? Qt.darker("#E91E63", 1.2) :
                                                parent.hovered ? Qt.lighter("#E91E63", 1.1) : "#E91E63"
                                     }
 
-                                    contentItem: Text {
-                                        text: "◆"
-                                        font.pixelSize: 12
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
+                                    contentItem: Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+                                        Text {
+                                            text: "◆"
+                                            font.pixelSize: 12
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                        Text {
+                                            text: root.tr("Alan Engel Ekle")
+                                            font.pixelSize: 10
+                                            font.bold: true
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
                                     }
 
                                     onClicked: root.addObstacle("area")
                                 }
 
                                 Button {
-                                    implicitWidth: 28
-                                    implicitHeight: 28
-                                    ToolTip.visible: hovered
-                                    ToolTip.text: root.tr("Örnek Veri Oluştur")
+                                    Layout.fillWidth: true
+                                    implicitHeight: 32
 
                                     background: Rectangle {
-                                        radius: 4
+                                        radius: 6
                                         color: parent.pressed ? Qt.darker("#9C27B0", 1.2) :
                                                parent.hovered ? Qt.lighter("#9C27B0", 1.1) : "#9C27B0"
                                     }
 
-                                    contentItem: Text {
-                                        text: "⚡"
-                                        font.pixelSize: 12
-                                        color: "white"
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
+                                    contentItem: Row {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+                                        Text {
+                                            text: "⚡"
+                                            font.pixelSize: 12
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
+                                        Text {
+                                            text: root.tr("Örnek Veri")
+                                            font.pixelSize: 10
+                                            font.bold: true
+                                            color: "white"
+                                            anchors.verticalCenter: parent.verticalCenter
+                                        }
                                     }
 
                                     onClicked: root.generateSampleObstacles()
@@ -3354,6 +3383,11 @@ Rectangle {
             id: obstaclePreviewRoot
             color: "transparent"
 
+            // Pan and zoom properties
+            property real previewZoom: 1.0
+            property real previewPanX: 0
+            property real previewPanY: 0
+
             Rectangle {
                 anchors.fill: parent
                 color: "#1a1a2e"
@@ -3394,6 +3428,99 @@ Rectangle {
 
                         Item { Layout.fillWidth: true }
 
+                        // Zoom controls
+                        Row {
+                            spacing: 8
+
+                            Button {
+                                width: 28
+                                height: 28
+                                text: "-"
+                                font.pixelSize: 16
+                                font.bold: true
+                                onClicked: {
+                                    if (previewZoom > 0.5) {
+                                        previewZoom -= 0.25
+                                        if (previewZoom <= 0.75) {
+                                            previewPanX = 0
+                                            previewPanY = 0
+                                        }
+                                    }
+                                }
+                                background: Rectangle {
+                                    radius: 4
+                                    color: parent.pressed ? "#0d5a7d" : "#1A75A8"
+                                    border.width: 1
+                                    border.color: "white"
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    font: parent.font
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+
+                            Text {
+                                text: Math.round(previewZoom * 100) + "%"
+                                font.pixelSize: 11
+                                color: "white"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Button {
+                                width: 28
+                                height: 28
+                                text: "+"
+                                font.pixelSize: 16
+                                font.bold: true
+                                onClicked: {
+                                    if (previewZoom < 3.0) previewZoom += 0.25
+                                }
+                                background: Rectangle {
+                                    radius: 4
+                                    color: parent.pressed ? "#0d5a7d" : "#1A75A8"
+                                    border.width: 1
+                                    border.color: "white"
+                                }
+                                contentItem: Text {
+                                    text: parent.text
+                                    font: parent.font
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+
+                            // Reset button
+                            Button {
+                                width: 28
+                                height: 28
+                                visible: previewPanX !== 0 || previewPanY !== 0 || previewZoom !== 1.0
+                                onClicked: {
+                                    previewZoom = 1.0
+                                    previewPanX = 0
+                                    previewPanY = 0
+                                }
+                                background: Rectangle {
+                                    radius: 4
+                                    color: parent.pressed ? "#0d5a7d" : "#1A75A8"
+                                    border.width: 1
+                                    border.color: "white"
+                                }
+                                contentItem: Text {
+                                    text: "⟲"
+                                    font.pixelSize: 14
+                                    color: "white"
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+                        }
+
+                        Rectangle { width: 1; height: 24; color: "rgba(255,255,255,0.3)" }
+
                         // Legend
                         Row {
                             spacing: 15
@@ -3401,15 +3528,15 @@ Rectangle {
                             Row {
                                 spacing: 5
                                 Rectangle {
-                                    width: 16
-                                    height: 16
-                                    radius: 8
+                                    width: 14
+                                    height: 14
+                                    radius: 7
                                     color: "#FF9800"
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
                                 Text {
                                     text: root.tr("Nokta")
-                                    font.pixelSize: 12
+                                    font.pixelSize: 11
                                     color: "white"
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
@@ -3418,15 +3545,15 @@ Rectangle {
                             Row {
                                 spacing: 5
                                 Rectangle {
-                                    width: 16
-                                    height: 16
+                                    width: 14
+                                    height: 14
                                     radius: 3
                                     color: "#E91E63"
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
                                 Text {
                                     text: root.tr("Alan")
-                                    font.pixelSize: 12
+                                    font.pixelSize: 11
                                     color: "white"
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
@@ -3434,16 +3561,16 @@ Rectangle {
 
                             // Obstacle count
                             Rectangle {
-                                width: obstacleCountText.width + 20
-                                height: 28
-                                radius: 14
+                                width: obstacleCountText.width + 16
+                                height: 24
+                                radius: 12
                                 color: Qt.rgba(1, 1, 1, 0.2)
 
                                 Text {
                                     id: obstacleCountText
                                     anchors.centerIn: parent
                                     text: obstacles.length + " " + root.tr("engel")
-                                    font.pixelSize: 12
+                                    font.pixelSize: 11
                                     color: "white"
                                 }
                             }
@@ -3451,7 +3578,7 @@ Rectangle {
                     }
                 }
 
-                // Canvas for map preview
+                // Canvas for map preview with pan/zoom
                 Canvas {
                     id: obstaclePreviewCanvas
                     anchors.top: previewMapHeader.bottom
@@ -3459,6 +3586,14 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
                     anchors.margins: 20
+
+                    property real zoom: obstaclePreviewRoot.previewZoom
+                    property real panX: obstaclePreviewRoot.previewPanX
+                    property real panY: obstaclePreviewRoot.previewPanY
+
+                    onZoomChanged: requestPaint()
+                    onPanXChanged: requestPaint()
+                    onPanYChanged: requestPaint()
 
                     onPaint: {
                             var ctx = getContext("2d")
@@ -3488,14 +3623,15 @@ Rectangle {
                             var dataWidth = maxX - minX || 100
                             var dataHeight = maxY - minY || 100
                             var padding = 30
-                            var scale = Math.min((width - 2 * padding) / dataWidth,
+                            var baseScale = Math.min((width - 2 * padding) / dataWidth,
                                                 (height - 2 * padding) / dataHeight)
+                            var scale = baseScale * zoom
 
                             var centerDataX = (minX + maxX) / 2
                             var centerDataY = (minY + maxY) / 2
 
-                            function tx(x) { return width / 2 + (x - centerDataX) * scale }
-                            function ty(y) { return height / 2 - (y - centerDataY) * scale }
+                            function tx(x) { return width / 2 + (x - centerDataX) * scale + panX }
+                            function ty(y) { return height / 2 - (y - centerDataY) * scale + panY }
 
                             // Draw grid
                             ctx.strokeStyle = "rgba(255, 255, 255, 0.1)"
@@ -3668,11 +3804,65 @@ Rectangle {
 
                     Component.onCompleted: requestPaint()
 
-                    // Click to select obstacle
+                    // Pan/drag and click to select obstacle
                     MouseArea {
+                        id: previewPanArea
                         anchors.fill: parent
-                        onClicked: {
-                            // Find which obstacle was clicked
+                        cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
+                        hoverEnabled: true
+
+                        property real lastX: 0
+                        property real lastY: 0
+                        property bool isDragging: false
+                        property real dragDistance: 0
+
+                        onPressed: function(mouse) {
+                            lastX = mouse.x
+                            lastY = mouse.y
+                            isDragging = true
+                            dragDistance = 0
+                        }
+
+                        onReleased: function(mouse) {
+                            // If it was a click (not drag), try to select obstacle
+                            if (dragDistance < 10) {
+                                selectObstacleAt(mouse.x, mouse.y)
+                            }
+                            isDragging = false
+                        }
+
+                        onPositionChanged: function(mouse) {
+                            if (isDragging && pressed) {
+                                var deltaX = mouse.x - lastX
+                                var deltaY = mouse.y - lastY
+                                dragDistance += Math.abs(deltaX) + Math.abs(deltaY)
+
+                                var maxPanX = parent.width * Math.max(0.5, (obstaclePreviewRoot.previewZoom - 0.5)) * 0.6
+                                var maxPanY = parent.height * Math.max(0.5, (obstaclePreviewRoot.previewZoom - 0.5)) * 0.6
+
+                                obstaclePreviewRoot.previewPanX = Math.max(-maxPanX, Math.min(maxPanX, obstaclePreviewRoot.previewPanX + deltaX))
+                                obstaclePreviewRoot.previewPanY = Math.max(-maxPanY, Math.min(maxPanY, obstaclePreviewRoot.previewPanY + deltaY))
+
+                                lastX = mouse.x
+                                lastY = mouse.y
+                            }
+                        }
+
+                        onWheel: function(wheel) {
+                            if (wheel.angleDelta.y > 0) {
+                                if (obstaclePreviewRoot.previewZoom < 3.0) obstaclePreviewRoot.previewZoom += 0.25
+                            } else {
+                                if (obstaclePreviewRoot.previewZoom > 0.5) {
+                                    obstaclePreviewRoot.previewZoom -= 0.25
+                                    if (obstaclePreviewRoot.previewZoom <= 0.75) {
+                                        obstaclePreviewRoot.previewPanX = 0
+                                        obstaclePreviewRoot.previewPanY = 0
+                                    }
+                                }
+                            }
+                        }
+
+                        function selectObstacleAt(mx, my) {
                             if (cornerPoints.length < 3) return
 
                             var minX = Infinity, maxX = -Infinity
@@ -3688,16 +3878,16 @@ Rectangle {
                             var dataWidth = maxX - minX || 100
                             var dataHeight = maxY - minY || 100
                             var padding = 30
-                            var scale = Math.min((parent.width - 2 * padding) / dataWidth,
+                            var baseScale = Math.min((parent.width - 2 * padding) / dataWidth,
                                                 (parent.height - 2 * padding) / dataHeight)
+                            var scale = baseScale * obstaclePreviewRoot.previewZoom
 
                             var centerDataX = (minX + maxX) / 2
                             var centerDataY = (minY + maxY) / 2
 
-                            function tx(x) { return parent.width / 2 + (x - centerDataX) * scale }
-                            function ty(y) { return parent.height / 2 - (y - centerDataY) * scale }
+                            function tx(x) { return parent.width / 2 + (x - centerDataX) * scale + obstaclePreviewRoot.previewPanX }
+                            function ty(y) { return parent.height / 2 - (y - centerDataY) * scale + obstaclePreviewRoot.previewPanY }
 
-                            // Check each obstacle
                             for (var k = 0; k < obstacles.length; k++) {
                                 var obs = obstacles[k]
                                 if (!obs || !obs.points || obs.points.length === 0) continue
@@ -3705,13 +3895,12 @@ Rectangle {
                                 if (obs.type === "point") {
                                     var px = tx(obs.points[0].x)
                                     var py = ty(obs.points[0].y)
-                                    var dist = Math.sqrt(Math.pow(mouse.x - px, 2) + Math.pow(mouse.y - py, 2))
+                                    var dist = Math.sqrt(Math.pow(mx - px, 2) + Math.pow(my - py, 2))
                                     if (dist < 20) {
                                         selectedObstacleIndex = k
                                         return
                                     }
                                 } else if (obs.type === "area" && obs.points.length >= 3) {
-                                    // Check if click is inside polygon
                                     var sumX = 0, sumY = 0
                                     for (var p = 0; p < obs.points.length; p++) {
                                         sumX += obs.points[p].x
@@ -3719,7 +3908,7 @@ Rectangle {
                                     }
                                     var cx = tx(sumX / obs.points.length)
                                     var cy = ty(sumY / obs.points.length)
-                                    var distToCenter = Math.sqrt(Math.pow(mouse.x - cx, 2) + Math.pow(mouse.y - cy, 2))
+                                    var distToCenter = Math.sqrt(Math.pow(mx - cx, 2) + Math.pow(my - cy, 2))
                                     if (distToCenter < 40) {
                                         selectedObstacleIndex = k
                                         return
