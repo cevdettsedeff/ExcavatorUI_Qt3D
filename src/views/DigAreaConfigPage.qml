@@ -3572,12 +3572,13 @@ Rectangle {
                                     ctx.lineWidth = 2
                                     ctx.stroke()
 
-                                    // Label
+                                    // Label with background
                                     ctx.fillStyle = "white"
-                                    ctx.font = "bold 11px sans-serif"
+                                    ctx.font = "bold 10px sans-serif"
                                     ctx.textAlign = "center"
                                     ctx.fillText(obs.id, px, py + 4)
-                                    ctx.fillText(obs.depth.toFixed(1) + "m", px, py + 28)
+                                    ctx.font = "9px sans-serif"
+                                    ctx.fillText(obs.depth.toFixed(1) + "m", px, py + 24)
 
                                 } else if (obs.type === "area" && obs.points && obs.points.length > 0) {
                                     ctx.strokeStyle = isSelected ? "#E91E63" : "rgba(233, 30, 99, 0.7)"
@@ -3593,7 +3594,18 @@ Rectangle {
                                     ctx.stroke()
                                     if (obs.points.length > 2) ctx.fill()
 
-                                    // Corner points with labels
+                                    // Calculate center for offset directions
+                                    var centerX = 0, centerY = 0
+                                    for (var cp = 0; cp < obs.points.length; cp++) {
+                                        centerX += obs.points[cp].x
+                                        centerY += obs.points[cp].y
+                                    }
+                                    centerX /= obs.points.length
+                                    centerY /= obs.points.length
+                                    var labelCX = tx(centerX)
+                                    var labelCY = ty(centerY)
+
+                                    // Corner points with smart label positioning
                                     for (var n = 0; n < obs.points.length; n++) {
                                         var cpx = tx(obs.points[n].x)
                                         var cpy = ty(obs.points[n].y)
@@ -3601,37 +3613,48 @@ Rectangle {
                                         // Draw corner point
                                         ctx.fillStyle = isSelected ? "#E91E63" : "rgba(233, 30, 99, 0.8)"
                                         ctx.beginPath()
-                                        ctx.arc(cpx, cpy, isSelected ? 7 : 5, 0, 2 * Math.PI)
+                                        ctx.arc(cpx, cpy, isSelected ? 6 : 4, 0, 2 * Math.PI)
                                         ctx.fill()
 
-                                        // Draw corner label (E1-1, E1-2, etc.)
-                                        if (obs.points[n].label) {
+                                        // Draw corner label only when selected (smart offset away from center)
+                                        if (isSelected && obs.points[n].label) {
+                                            // Calculate offset direction (away from center)
+                                            var dx = cpx - labelCX
+                                            var dy = cpy - labelCY
+                                            var dist = Math.sqrt(dx * dx + dy * dy)
+                                            if (dist > 0) {
+                                                dx = dx / dist * 18
+                                                dy = dy / dist * 18
+                                            } else {
+                                                dy = -18
+                                            }
+
+                                            ctx.fillStyle = "rgba(233, 30, 99, 0.9)"
+                                            var lblWidth = ctx.measureText(obs.points[n].label).width + 6
+                                            ctx.fillRect(cpx + dx - lblWidth/2, cpy + dy - 8, lblWidth, 14)
                                             ctx.fillStyle = "white"
-                                            ctx.font = "bold 9px sans-serif"
+                                            ctx.font = "bold 8px sans-serif"
                                             ctx.textAlign = "center"
-                                            ctx.fillText(obs.points[n].label, cpx, cpy - 10)
+                                            ctx.fillText(obs.points[n].label, cpx + dx, cpy + dy + 3)
                                         }
                                     }
 
-                                    // Label at center
-                                    if (obs.points.length > 0) {
-                                        var sumX = 0, sumY = 0
-                                        for (var p = 0; p < obs.points.length; p++) {
-                                            sumX += obs.points[p].x
-                                            sumY += obs.points[p].y
-                                        }
-                                        var labelX = tx(sumX / obs.points.length)
-                                        var labelY = ty(sumY / obs.points.length)
-
-                                        ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
-                                        ctx.fillRect(labelX - 25, labelY - 10, 50, 28)
-                                        ctx.fillStyle = "white"
-                                        ctx.font = "bold 11px sans-serif"
-                                        ctx.textAlign = "center"
-                                        ctx.fillText(obs.id, labelX, labelY + 2)
-                                        ctx.font = "10px sans-serif"
-                                        ctx.fillText(obs.depth.toFixed(1) + "m", labelX, labelY + 14)
-                                    }
+                                    // Label at center (always show)
+                                    ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
+                                    var idText = obs.id
+                                    var depthText = obs.depth.toFixed(1) + "m"
+                                    ctx.font = "bold 10px sans-serif"
+                                    var idWidth = ctx.measureText(idText).width
+                                    ctx.font = "9px sans-serif"
+                                    var depthWidth = ctx.measureText(depthText).width
+                                    var boxWidth = Math.max(idWidth, depthWidth) + 12
+                                    ctx.fillRect(labelCX - boxWidth/2, labelCY - 8, boxWidth, 22)
+                                    ctx.fillStyle = "white"
+                                    ctx.font = "bold 10px sans-serif"
+                                    ctx.textAlign = "center"
+                                    ctx.fillText(idText, labelCX, labelCY + 3)
+                                    ctx.font = "9px sans-serif"
+                                    ctx.fillText(depthText, labelCX, labelCY + 12)
                                 }
                             }
                         }
