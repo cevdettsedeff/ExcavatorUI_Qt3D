@@ -193,6 +193,72 @@ Rectangle {
     // ==================== WIZARD STATE ====================
     property int currentStep: 0  // 0-7 arası
     property int totalSteps: 8
+    property string validationError: ""
+
+    // Validation function for each step
+    function validateCurrentStep() {
+        validationError = ""
+
+        switch (currentStep) {
+            case 0: // Proje Seçimi
+                if (projectMode === "new" && projectName.trim() === "") {
+                    validationError = root.tr("Lütfen bir proje adı girin")
+                    return false
+                }
+                if (projectMode === "existing" && selectedProjectIndex < 0) {
+                    validationError = root.tr("Lütfen bir proje seçin")
+                    return false
+                }
+                return true
+
+            case 1: // Köşe Sayısı
+                if (cornerCount < 3 || cornerCount > 20) {
+                    validationError = root.tr("Köşe sayısı 3 ile 20 arasında olmalı")
+                    return false
+                }
+                return true
+
+            case 2: // Koordinatlar
+                if (cornerPoints.length < cornerCount) {
+                    validationError = root.tr("Tüm köşe koordinatları girilmeli")
+                    return false
+                }
+                // Check if all coordinates are valid
+                for (var i = 0; i < cornerPoints.length; i++) {
+                    if (cornerPoints[i].x === 0 && cornerPoints[i].y === 0) {
+                        validationError = root.tr("Köşe %1 koordinatları girilmeli").arg(i + 1)
+                        return false
+                    }
+                }
+                return true
+
+            case 3: // Önizleme
+                // Preview step - just visual, no validation needed
+                return true
+
+            case 4: // Batimetri
+                if (bathymetricPoints.length === 0) {
+                    validationError = root.tr("En az bir batimetrik veri noktası girilmeli")
+                    return false
+                }
+                return true
+
+            case 5: // Harita
+                // Map view step - just visual, no validation needed
+                return true
+
+            case 6: // Engel Girişi
+                // Obstacle input is optional
+                return true
+
+            case 7: // Engel Önizleme
+                // Preview step - no validation needed
+                return true
+
+            default:
+                return true
+        }
+    }
 
     // Step titles
     property var stepTitles: [
@@ -481,6 +547,33 @@ Rectangle {
         }
     }
 
+    // ==================== VALIDATION ERROR MESSAGE ====================
+    Rectangle {
+        id: validationErrorBar
+        anchors.bottom: footer.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: validationError.length > 0 ? 40 : 0
+        color: "#E53E3E"
+        visible: validationError.length > 0
+
+        Behavior on height { NumberAnimation { duration: 200 } }
+
+        Text {
+            anchors.centerIn: parent
+            text: validationError
+            font.pixelSize: 12
+            color: "white"
+        }
+
+        // Auto-hide after 3 seconds
+        Timer {
+            running: validationError.length > 0
+            interval: 3000
+            onTriggered: validationError = ""
+        }
+    }
+
     // ==================== FOOTER ====================
     Rectangle {
         id: footer
@@ -552,14 +645,15 @@ Rectangle {
                 }
 
                 onClicked: {
+                    // Validate current step before proceeding
+                    if (!validateCurrentStep()) {
+                        return
+                    }
+
                     if (currentStep === 0) {
                         // Step 0: Project selection
                         if (root.projectMode === "new") {
                             // Create new project
-                            if (root.projectName.trim() === "") {
-                                console.log("Please enter project name")
-                                return
-                            }
                             if (createNewProject()) {
                                 currentStep++
                             }
@@ -570,8 +664,6 @@ Rectangle {
                                 // Project folders are in root directory
                                 var projectPath = "./" + projectName
                                 loadProjectFromFolder(projectPath)
-                            } else {
-                                console.log("Please select a project")
                             }
                         }
                     } else if (currentStep < totalSteps - 1) {

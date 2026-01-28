@@ -20,6 +20,8 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_bucketWidth(2.0)
     , m_scanningDepth(15.0)
     , m_excavatorConfigured(false)
+    , m_bucketLength(0.0)
+    , m_bucketDepth(0.0)
     , m_gridRows(4)
     , m_gridCols(4)
     , m_digAreaConfigured(false)
@@ -44,7 +46,15 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_screenSaverTimeoutSeconds(120)  // Varsayılan 2 dakika = 120 saniye
     , m_splashScreenTimeoutMilliseconds(3000)  // Varsayılan 3 saniye = 3000 milisaniye
     , m_safetyConfigured(false)
+    , m_collisionWarningDistance(50)
+    , m_obstacleDetectionEnabled(true)
     , m_calibrationConfigured(false)
+    , m_imuOffsetX(0.0)
+    , m_imuOffsetY(0.0)
+    , m_imuOffsetZ(0.0)
+    , m_gpsOffsetLat(0.0)
+    , m_gpsOffsetLon(0.0)
+    , m_autoCalibrationEnabled(false)
 {
     setDefaultValues();
     initializeGridDepths();
@@ -176,6 +186,16 @@ void ConfigManager::parseConfig(const QJsonObject &json)
     // Parse splash screen settings
     if (json.contains("splash_screen") && json["splash_screen"].isObject()) {
         parseSplashScreenSettings(json["splash_screen"].toObject());
+    }
+
+    // Parse safety settings
+    if (json.contains("safety") && json["safety"].isObject()) {
+        parseSafetySettings(json["safety"].toObject());
+    }
+
+    // Parse calibration settings
+    if (json.contains("calibration") && json["calibration"].isObject()) {
+        parseCalibrationSettings(json["calibration"].toObject());
     }
 
     // Parse excavator presets
@@ -387,6 +407,97 @@ void ConfigManager::setScanningDepth(double depth)
         m_scanningDepth = depth;
         emit scanningDepthChanged();
     }
+}
+
+void ConfigManager::setSelectedBucketName(const QString &name)
+{
+    if (m_selectedBucketName != name) {
+        m_selectedBucketName = name;
+        emit selectedBucketNameChanged();
+    }
+}
+
+void ConfigManager::setBucketLength(double length)
+{
+    if (m_bucketLength != length) {
+        m_bucketLength = length;
+        emit bucketLengthChanged();
+    }
+}
+
+void ConfigManager::setBucketDepth(double depth)
+{
+    if (m_bucketDepth != depth) {
+        m_bucketDepth = depth;
+        emit bucketDepthChanged();
+    }
+}
+
+void ConfigManager::saveBucketPreset(const QString &name, double width, double length, double depth)
+{
+    if (name.isEmpty()) {
+        emit errorOccurred("Kova adı boş olamaz.");
+        return;
+    }
+
+    // Check if bucket with same name already exists
+    for (const auto &bucket : m_bucketPresets) {
+        QVariantMap bucketMap = bucket.toMap();
+        if (bucketMap["name"].toString() == name) {
+            emit errorOccurred("Bu isimde bir kova zaten kayıtlı.");
+            return;
+        }
+    }
+
+    QVariantMap preset;
+    preset["name"] = name;
+    preset["width"] = width;
+    preset["length"] = length;
+    preset["depth"] = depth;
+
+    m_bucketPresets.append(preset);
+    emit bucketPresetsChanged();
+
+    // Auto-save to JSON
+    saveConfig();
+
+    qDebug() << "Saved bucket preset:" << name;
+}
+
+void ConfigManager::loadBucketPreset(int index)
+{
+    if (index < 0 || index >= m_bucketPresets.size()) {
+        qWarning() << "Invalid bucket preset index:" << index;
+        return;
+    }
+
+    QVariantMap preset = m_bucketPresets[index].toMap();
+
+    setSelectedBucketName(preset["name"].toString());
+    setBucketWidth(preset["width"].toDouble());
+    setBucketLength(preset["length"].toDouble());
+    setBucketDepth(preset["depth"].toDouble());
+
+    qDebug() << "Loaded bucket preset:" << preset["name"].toString();
+}
+
+void ConfigManager::removeBucketPreset(int index)
+{
+    if (index < 0 || index >= m_bucketPresets.size()) {
+        qWarning() << "Invalid bucket preset index:" << index;
+        return;
+    }
+
+    QVariantMap preset = m_bucketPresets[index].toMap();
+    QString name = preset["name"].toString();
+
+    m_bucketPresets.removeAt(index);
+    emit bucketPresetsChanged();
+
+    // Auto-save to JSON
+    saveConfig();
+
+    qDebug() << "Removed bucket preset:" << name;
 }
 
 // Dig Area setters
@@ -866,6 +977,38 @@ void ConfigManager::parseExcavatorSettings(const QJsonObject &excavator)
         m_excavatorConfigured = excavator["configured"].toBool(false);
         emit excavatorConfiguredChanged();
     }
+
+    // Parse bucket settings
+    if (excavator.contains("selected_bucket_name")) {
+        setSelectedBucketName(excavator["selected_bucket_name"].toString());
+    }
+    if (excavator.contains("bucket_length")) {
+        setBucketLength(excavator["bucket_length"].toDouble(0.0));
+    }
+    if (excavator.contains("bucket_depth")) {
+        setBucketDepth(excavator["bucket_depth"].toDouble(0.0));
+    }
+
+    // Parse bucket presets
+    if (excavator.contains("bucket_presets") && excavator["bucket_presets"].isArray()) {
+        m_bucketPresets.clear();
+        QJsonArray arr = excavator["bucket_presets"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject bucket = val.toObject();
+                QVariantMap preset;
+                preset["name"] = bucket["name"].toString("");
+                preset["width"] = bucket["width"].toDouble(0.0);
+                preset["length"] = bucket["length"].toDouble(0.0);
+                preset["depth"] = bucket["depth"].toDouble(0.0);
+                if (!preset["name"].toString().isEmpty()) {
+                    m_bucketPresets.append(preset);
+                }
+            }
+        }
+        qDebug() << "Loaded" << m_bucketPresets.size() << "bucket presets from JSON";
+        emit bucketPresetsChanged();
+    }
 }
 
 void ConfigManager::parseDigAreaSettings(const QJsonObject &digArea)
@@ -1037,6 +1180,64 @@ void ConfigManager::parseScreenSaverSettings(const QJsonObject &screenSaverSetti
     }
 }
 
+void ConfigManager::parseSafetySettings(const QJsonObject &safetySettings)
+{
+    if (safetySettings.contains("collision_warning_distance")) {
+        setCollisionWarningDistance(safetySettings["collision_warning_distance"].toInt(50));
+    }
+    if (safetySettings.contains("obstacle_detection_enabled")) {
+        setObstacleDetectionEnabled(safetySettings["obstacle_detection_enabled"].toBool(true));
+    }
+    if (safetySettings.contains("configured")) {
+        m_safetyConfigured = safetySettings["configured"].toBool(false);
+        emit safetyConfiguredChanged();
+    }
+
+    // Parse safety obstacles
+    if (safetySettings.contains("obstacles") && safetySettings["obstacles"].isArray()) {
+        m_safetyObstacles.clear();
+        QJsonArray arr = safetySettings["obstacles"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject obs = val.toObject();
+                QVariantMap obstacle;
+                obstacle["name"] = obs["name"].toString("");
+                obstacle["x"] = obs["x"].toDouble(0.0);
+                obstacle["y"] = obs["y"].toDouble(0.0);
+                obstacle["radius"] = obs["radius"].toDouble(0.0);
+                m_safetyObstacles.append(obstacle);
+            }
+        }
+        emit safetyObstaclesChanged();
+    }
+}
+
+void ConfigManager::parseCalibrationSettings(const QJsonObject &calibrationSettings)
+{
+    if (calibrationSettings.contains("imu_offset_x")) {
+        setImuOffsetX(calibrationSettings["imu_offset_x"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("imu_offset_y")) {
+        setImuOffsetY(calibrationSettings["imu_offset_y"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("imu_offset_z")) {
+        setImuOffsetZ(calibrationSettings["imu_offset_z"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("gps_offset_lat")) {
+        setGpsOffsetLat(calibrationSettings["gps_offset_lat"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("gps_offset_lon")) {
+        setGpsOffsetLon(calibrationSettings["gps_offset_lon"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("auto_calibration_enabled")) {
+        setAutoCalibrationEnabled(calibrationSettings["auto_calibration_enabled"].toBool(false));
+    }
+    if (calibrationSettings.contains("configured")) {
+        m_calibrationConfigured = calibrationSettings["configured"].toBool(false);
+        emit calibrationConfiguredChanged();
+    }
+}
+
 void ConfigManager::parseSplashScreenSettings(const QJsonObject &splashScreenSettings)
 {
     if (splashScreenSettings.contains("timeout_milliseconds")) {
@@ -1103,6 +1304,78 @@ void ConfigManager::setSplashScreenTimeoutMilliseconds(int milliseconds)
     }
 }
 
+// Safety setters
+void ConfigManager::setCollisionWarningDistance(int distance)
+{
+    if (m_collisionWarningDistance != distance) {
+        m_collisionWarningDistance = distance;
+        emit collisionWarningDistanceChanged();
+    }
+}
+
+void ConfigManager::setObstacleDetectionEnabled(bool enabled)
+{
+    if (m_obstacleDetectionEnabled != enabled) {
+        m_obstacleDetectionEnabled = enabled;
+        emit obstacleDetectionEnabledChanged();
+    }
+}
+
+void ConfigManager::setSafetyObstacles(const QVariantList &obstacles)
+{
+    m_safetyObstacles = obstacles;
+    emit safetyObstaclesChanged();
+}
+
+// Calibration setters
+void ConfigManager::setImuOffsetX(double offset)
+{
+    if (m_imuOffsetX != offset) {
+        m_imuOffsetX = offset;
+        emit imuOffsetXChanged();
+    }
+}
+
+void ConfigManager::setImuOffsetY(double offset)
+{
+    if (m_imuOffsetY != offset) {
+        m_imuOffsetY = offset;
+        emit imuOffsetYChanged();
+    }
+}
+
+void ConfigManager::setImuOffsetZ(double offset)
+{
+    if (m_imuOffsetZ != offset) {
+        m_imuOffsetZ = offset;
+        emit imuOffsetZChanged();
+    }
+}
+
+void ConfigManager::setGpsOffsetLat(double offset)
+{
+    if (m_gpsOffsetLat != offset) {
+        m_gpsOffsetLat = offset;
+        emit gpsOffsetLatChanged();
+    }
+}
+
+void ConfigManager::setGpsOffsetLon(double offset)
+{
+    if (m_gpsOffsetLon != offset) {
+        m_gpsOffsetLon = offset;
+        emit gpsOffsetLonChanged();
+    }
+}
+
+void ConfigManager::setAutoCalibrationEnabled(bool enabled)
+{
+    if (m_autoCalibrationEnabled != enabled) {
+        m_autoCalibrationEnabled = enabled;
+        emit autoCalibrationEnabledChanged();
+    }
+}
+
 bool ConfigManager::saveConfig()
 {
     QJsonObject root;
@@ -1149,6 +1422,25 @@ bool ConfigManager::saveConfig()
     excavator["bucket_width"] = m_bucketWidth;
     excavator["scanning_depth"] = m_scanningDepth;
     excavator["configured"] = m_excavatorConfigured;
+
+    // Bucket settings
+    excavator["selected_bucket_name"] = m_selectedBucketName;
+    excavator["bucket_length"] = m_bucketLength;
+    excavator["bucket_depth"] = m_bucketDepth;
+
+    // Bucket presets
+    QJsonArray bucketPresetsArray;
+    for (const auto &bucket : m_bucketPresets) {
+        QVariantMap bucketMap = bucket.toMap();
+        QJsonObject bucketObj;
+        bucketObj["name"] = bucketMap["name"].toString();
+        bucketObj["width"] = bucketMap["width"].toDouble();
+        bucketObj["length"] = bucketMap["length"].toDouble();
+        bucketObj["depth"] = bucketMap["depth"].toDouble();
+        bucketPresetsArray.append(bucketObj);
+    }
+    excavator["bucket_presets"] = bucketPresetsArray;
+
     root["excavator"] = excavator;
 
     // Dig area settings
@@ -1247,6 +1539,37 @@ bool ConfigManager::saveConfig()
     QJsonObject splashScreen;
     splashScreen["timeout_milliseconds"] = m_splashScreenTimeoutMilliseconds;
     root["splash_screen"] = splashScreen;
+
+    // Safety settings
+    QJsonObject safety;
+    safety["collision_warning_distance"] = m_collisionWarningDistance;
+    safety["obstacle_detection_enabled"] = m_obstacleDetectionEnabled;
+    safety["configured"] = m_safetyConfigured;
+
+    // Safety obstacles
+    QJsonArray safetyObstaclesArray;
+    for (const auto &obstacle : m_safetyObstacles) {
+        QVariantMap obs = obstacle.toMap();
+        QJsonObject obsObj;
+        obsObj["name"] = obs["name"].toString();
+        obsObj["x"] = obs["x"].toDouble();
+        obsObj["y"] = obs["y"].toDouble();
+        obsObj["radius"] = obs["radius"].toDouble();
+        safetyObstaclesArray.append(obsObj);
+    }
+    safety["obstacles"] = safetyObstaclesArray;
+    root["safety"] = safety;
+
+    // Calibration settings
+    QJsonObject calibration;
+    calibration["imu_offset_x"] = m_imuOffsetX;
+    calibration["imu_offset_y"] = m_imuOffsetY;
+    calibration["imu_offset_z"] = m_imuOffsetZ;
+    calibration["gps_offset_lat"] = m_gpsOffsetLat;
+    calibration["gps_offset_lon"] = m_gpsOffsetLon;
+    calibration["auto_calibration_enabled"] = m_autoCalibrationEnabled;
+    calibration["configured"] = m_calibrationConfigured;
+    root["calibration"] = calibration;
 
     // Excavator presets
     QJsonArray presetsArray;

@@ -39,6 +39,10 @@ class ConfigManager : public QObject
     Q_PROPERTY(double scanningDepth READ scanningDepth WRITE setScanningDepth NOTIFY scanningDepthChanged)
     Q_PROPERTY(bool excavatorConfigured READ excavatorConfigured NOTIFY excavatorConfiguredChanged)
     Q_PROPERTY(QVariantList excavatorPresets READ excavatorPresets NOTIFY excavatorPresetsChanged)
+    Q_PROPERTY(QVariantList bucketPresets READ bucketPresets NOTIFY bucketPresetsChanged)
+    Q_PROPERTY(QString selectedBucketName READ selectedBucketName WRITE setSelectedBucketName NOTIFY selectedBucketNameChanged)
+    Q_PROPERTY(double bucketLength READ bucketLength WRITE setBucketLength NOTIFY bucketLengthChanged)
+    Q_PROPERTY(double bucketDepth READ bucketDepth WRITE setBucketDepth NOTIFY bucketDepthChanged)
 
     // Dig Area / Grid settings
     Q_PROPERTY(int gridRows READ gridRows WRITE setGridRows NOTIFY gridRowsChanged)
@@ -83,9 +87,18 @@ class ConfigManager : public QObject
 
     // Safety settings
     Q_PROPERTY(bool safetyConfigured READ safetyConfigured NOTIFY safetyConfiguredChanged)
+    Q_PROPERTY(int collisionWarningDistance READ collisionWarningDistance WRITE setCollisionWarningDistance NOTIFY collisionWarningDistanceChanged)
+    Q_PROPERTY(bool obstacleDetectionEnabled READ obstacleDetectionEnabled WRITE setObstacleDetectionEnabled NOTIFY obstacleDetectionEnabledChanged)
+    Q_PROPERTY(QVariantList safetyObstacles READ safetyObstacles WRITE setSafetyObstacles NOTIFY safetyObstaclesChanged)
 
     // Calibration settings
     Q_PROPERTY(bool calibrationConfigured READ calibrationConfigured NOTIFY calibrationConfiguredChanged)
+    Q_PROPERTY(double imuOffsetX READ imuOffsetX WRITE setImuOffsetX NOTIFY imuOffsetXChanged)
+    Q_PROPERTY(double imuOffsetY READ imuOffsetY WRITE setImuOffsetY NOTIFY imuOffsetYChanged)
+    Q_PROPERTY(double imuOffsetZ READ imuOffsetZ WRITE setImuOffsetZ NOTIFY imuOffsetZChanged)
+    Q_PROPERTY(double gpsOffsetLat READ gpsOffsetLat WRITE setGpsOffsetLat NOTIFY gpsOffsetLatChanged)
+    Q_PROPERTY(double gpsOffsetLon READ gpsOffsetLon WRITE setGpsOffsetLon NOTIFY gpsOffsetLonChanged)
+    Q_PROPERTY(bool autoCalibrationEnabled READ autoCalibrationEnabled WRITE setAutoCalibrationEnabled NOTIFY autoCalibrationEnabledChanged)
 
     // Project settings
     Q_PROPERTY(QString projectName READ projectName WRITE setProjectName NOTIFY projectNameChanged)
@@ -117,6 +130,10 @@ public:
     double scanningDepth() const { return m_scanningDepth; }
     bool excavatorConfigured() const { return m_excavatorConfigured; }
     QVariantList excavatorPresets() const { return m_excavatorPresets; }
+    QVariantList bucketPresets() const { return m_bucketPresets; }
+    QString selectedBucketName() const { return m_selectedBucketName; }
+    double bucketLength() const { return m_bucketLength; }
+    double bucketDepth() const { return m_bucketDepth; }
 
     // Dig Area getters
     int gridRows() const { return m_gridRows; }
@@ -158,9 +175,18 @@ public:
 
     // Safety getters
     bool safetyConfigured() const { return m_safetyConfigured; }
+    int collisionWarningDistance() const { return m_collisionWarningDistance; }
+    bool obstacleDetectionEnabled() const { return m_obstacleDetectionEnabled; }
+    QVariantList safetyObstacles() const { return m_safetyObstacles; }
 
     // Calibration getters
     bool calibrationConfigured() const { return m_calibrationConfigured; }
+    double imuOffsetX() const { return m_imuOffsetX; }
+    double imuOffsetY() const { return m_imuOffsetY; }
+    double imuOffsetZ() const { return m_imuOffsetZ; }
+    double gpsOffsetLat() const { return m_gpsOffsetLat; }
+    double gpsOffsetLon() const { return m_gpsOffsetLon; }
+    bool autoCalibrationEnabled() const { return m_autoCalibrationEnabled; }
 
     // Project getters
     QString projectName() const { return m_projectName; }
@@ -175,6 +201,14 @@ public:
     void setArmLength(double length);
     void setBucketWidth(double width);
     void setScanningDepth(double depth);
+    void setSelectedBucketName(const QString &name);
+    void setBucketLength(double length);
+    void setBucketDepth(double depth);
+
+    // Bucket preset functions
+    Q_INVOKABLE void saveBucketPreset(const QString &name, double width, double length, double depth);
+    Q_INVOKABLE void loadBucketPreset(int index);
+    Q_INVOKABLE void removeBucketPreset(int index);
 
     // Dig Area setters
     void setGridRows(int rows);
@@ -209,6 +243,19 @@ public:
 
     // Splash Screen setters
     void setSplashScreenTimeoutMilliseconds(int milliseconds);
+
+    // Safety setters
+    void setCollisionWarningDistance(int distance);
+    void setObstacleDetectionEnabled(bool enabled);
+    void setSafetyObstacles(const QVariantList &obstacles);
+
+    // Calibration setters
+    void setImuOffsetX(double offset);
+    void setImuOffsetY(double offset);
+    void setImuOffsetZ(double offset);
+    void setGpsOffsetLat(double offset);
+    void setGpsOffsetLon(double offset);
+    void setAutoCalibrationEnabled(bool enabled);
 
     // Project setters
     void setProjectName(const QString &name);
@@ -372,6 +419,10 @@ signals:
     void scanningDepthChanged();
     void excavatorConfiguredChanged();
     void excavatorPresetsChanged();
+    void bucketPresetsChanged();
+    void selectedBucketNameChanged();
+    void bucketLengthChanged();
+    void bucketDepthChanged();
 
     // Dig Area signals
     void gridRowsChanged();
@@ -413,9 +464,18 @@ signals:
 
     // Safety signals
     void safetyConfiguredChanged();
+    void collisionWarningDistanceChanged();
+    void obstacleDetectionEnabledChanged();
+    void safetyObstaclesChanged();
 
     // Calibration signals
     void calibrationConfiguredChanged();
+    void imuOffsetXChanged();
+    void imuOffsetYChanged();
+    void imuOffsetZChanged();
+    void gpsOffsetLatChanged();
+    void gpsOffsetLonChanged();
+    void autoCalibrationEnabledChanged();
 
     // Project signals
     void projectNameChanged();
@@ -460,6 +520,10 @@ private:
     double m_scanningDepth;
     bool m_excavatorConfigured;
     QVariantList m_excavatorPresets;
+    QVariantList m_bucketPresets;
+    QString m_selectedBucketName;
+    double m_bucketLength;
+    double m_bucketDepth;
 
     // Dig Area / Grid settings
     int m_gridRows;
@@ -500,9 +564,18 @@ private:
 
     // Safety settings
     bool m_safetyConfigured;
+    int m_collisionWarningDistance;
+    bool m_obstacleDetectionEnabled;
+    QVariantList m_safetyObstacles;
 
     // Calibration settings
     bool m_calibrationConfigured;
+    double m_imuOffsetX;
+    double m_imuOffsetY;
+    double m_imuOffsetZ;
+    double m_gpsOffsetLat;
+    double m_gpsOffsetLon;
+    bool m_autoCalibrationEnabled;
 
     // Project settings
     QString m_projectName;
@@ -521,6 +594,8 @@ private:
     void parseAlarmSettings(const QJsonObject &alarmSettings);
     void parseScreenSaverSettings(const QJsonObject &screenSaverSettings);
     void parseSplashScreenSettings(const QJsonObject &splashScreenSettings);
+    void parseSafetySettings(const QJsonObject &safetySettings);
+    void parseCalibrationSettings(const QJsonObject &calibrationSettings);
     void parseExcavatorPresets(const QJsonArray &presets);
     QColor parseColor(const QString &colorString) const;
     void setDefaultValues();
