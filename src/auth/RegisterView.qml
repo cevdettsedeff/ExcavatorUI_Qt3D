@@ -13,21 +13,21 @@ Item {
 
     // Fallback değerleri - app null olduğunda kullanılır
     readonly property real _smallPadding: app ? app.smallPadding : 8
-    readonly property real _largeIconSize: app ? _largeIconSize : 32
-    readonly property real _buttonHeight: app ? _buttonHeight : 40
-    readonly property real _smallRadius: app ? _smallRadius : 4
-    readonly property real _normalRadius: app ? _normalRadius : 8
-    readonly property real _smallSpacing: app ? _smallSpacing : 4
-    readonly property real _normalSpacing: app ? _normalSpacing : 8
-    readonly property real _largeSpacing: app ? _largeSpacing : 16
-    readonly property real _xlSpacing: app ? _xlSpacing : 24
-    readonly property real _smallFontSize: app ? _smallFontSize : 11
-    readonly property real _baseFontSize: app ? _baseFontSize : 14
-    readonly property real _mediumFontSize: app ? _mediumFontSize : 16
-    readonly property real _xlFontSize: app ? _xlFontSize : 24
-    readonly property real _smallButtonHeight: app ? _smallButtonHeight : 32
-    readonly property real _largeButtonHeight: app ? _largeButtonHeight : 50
-    readonly property real _normalPadding: app ? _normalPadding : 12
+    readonly property real _largeIconSize: app ? app.largeIconSize : 32
+    readonly property real _buttonHeight: app ? app.buttonHeight : 40
+    readonly property real _smallRadius: app ? app.smallRadius : 4
+    readonly property real _normalRadius: app ? app.normalRadius : 8
+    readonly property real _smallSpacing: app ? app.smallSpacing : 4
+    readonly property real _normalSpacing: app ? app.normalSpacing : 8
+    readonly property real _largeSpacing: app ? app.largeSpacing : 16
+    readonly property real _xlSpacing: app ? app.xlSpacing : 24
+    readonly property real _smallFontSize: app ? app.smallFontSize : 11
+    readonly property real _baseFontSize: app ? app.baseFontSize : 14
+    readonly property real _mediumFontSize: app ? app.mediumFontSize : 16
+    readonly property real _xlFontSize: app ? app.xlFontSize : 24
+    readonly property real _smallButtonHeight: app ? app.smallButtonHeight : 32
+    readonly property real _largeButtonHeight: app ? app.largeButtonHeight : 50
+    readonly property real _normalPadding: app ? app.normalPadding : 12
 
     // Dil değişikliği tetikleyici - bu değiştiğinde tüm qsTr() çağrıları yenilenir
     property int languageTrigger: translationService ? translationService.currentLanguage.length : 0
