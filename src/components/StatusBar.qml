@@ -15,13 +15,13 @@ Rectangle {
     property real iconSize: height * 0.50  // İkon boyutu
     property real badgeHeight: height * 0.60  // Badge yüksekliği
 
-    // Properties
-    property string projectName: "AŞ-KAZI-042"
+    // Properties - ConfigManager'dan değer al, yoksa boş göster
+    property string projectName: configManager && configManager.projectName.length > 0 ? configManager.projectName : ""
     property bool gnssOk: true  // GNSS durumu: true = yeşil, false = gri
     property bool imu1Ok: true  // IMU/1 durumu
     property bool imu2Ok: true  // IMU/2 durumu
     property bool imu3Ok: true  // IMU/3 durumu
-    property string excavatorName: "CAT 390F LME"
+    property string excavatorName: configManager && configManager.excavatorName.length > 0 ? configManager.excavatorName : ""
     property string currentDate: Qt.formatDateTime(new Date(), "dd.MM.yyyy")
     property string currentTime: Qt.formatDateTime(new Date(), "HH:mm")
     property bool bluetoothEnabled: true
@@ -159,10 +159,10 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
 
                     Text {
-                        text: statusBar.projectName
+                        text: statusBar.projectName.length > 0 ? statusBar.projectName : "—"
                         font.pixelSize: statusBar.tinyFontSize
                         font.bold: true
-                        color: "#ffffff"
+                        color: statusBar.projectName.length > 0 ? "#ffffff" : "#666666"
                     }
 
                     // Ayırıcı çizgi
@@ -173,9 +173,9 @@ Rectangle {
                     }
 
                     Text {
-                        text: statusBar.excavatorName
+                        text: statusBar.excavatorName.length > 0 ? statusBar.excavatorName : "—"
                         font.pixelSize: statusBar.tinyFontSize
-                        color: "#888888"
+                        color: statusBar.excavatorName.length > 0 ? "#888888" : "#666666"
                     }
                 }
             }
