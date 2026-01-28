@@ -172,6 +172,7 @@ Item {
 
         ScrollView {
             anchors.fill: parent
+            anchors.topMargin: _buttonHeight + _smallPadding * 2  // Üst butonlar için boşluk
             contentWidth: availableWidth
             clip: true
 
@@ -179,15 +180,13 @@ Item {
                 width: Math.min(registerView.width * 0.92, 700)
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: _largeSpacing
-                anchors.topMargin: _xlSpacing * 3
-                anchors.bottomMargin: _largeSpacing
 
             // Logo/Başlık bölümü
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: _largeIconSize * 3
                 color: "transparent"
-                Layout.topMargin: _xlSpacing * 3.5
+                Layout.topMargin: _xlSpacing * 2
 
                 ColumnLayout {
                     anchors.fill: parent
