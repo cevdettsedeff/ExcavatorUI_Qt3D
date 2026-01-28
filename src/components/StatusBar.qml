@@ -15,13 +15,11 @@ Rectangle {
     property real iconSize: height * 0.50  // İkon boyutu
     property real badgeHeight: height * 0.60  // Badge yüksekliği
 
-    // Properties - ConfigManager'dan değer al, yoksa boş göster
-    property string projectName: configManager && configManager.projectName.length > 0 ? configManager.projectName : ""
+    // Properties
     property bool gnssOk: true  // GNSS durumu: true = yeşil, false = gri
     property bool imu1Ok: true  // IMU/1 durumu
     property bool imu2Ok: true  // IMU/2 durumu
     property bool imu3Ok: true  // IMU/3 durumu
-    property string excavatorName: configManager && configManager.excavatorName.length > 0 ? configManager.excavatorName : ""
     property string currentDate: Qt.formatDateTime(new Date(), "dd.MM.yyyy")
     property string currentTime: Qt.formatDateTime(new Date(), "HH:mm")
     property bool bluetoothEnabled: true
@@ -158,11 +156,15 @@ Rectangle {
                     spacing: 2
                     anchors.verticalCenter: parent.verticalCenter
 
+                    // ConfigManager'a direct binding - reaktif güncelleme
+                    property string _projectName: configManager ? configManager.projectName : ""
+                    property string _excavatorName: configManager ? configManager.excavatorName : ""
+
                     Text {
-                        text: statusBar.projectName.length > 0 ? statusBar.projectName : "—"
+                        text: parent._projectName.length > 0 ? parent._projectName : "—"
                         font.pixelSize: statusBar.tinyFontSize
                         font.bold: true
-                        color: statusBar.projectName.length > 0 ? "#ffffff" : "#666666"
+                        color: parent._projectName.length > 0 ? "#ffffff" : "#666666"
                     }
 
                     // Ayırıcı çizgi
@@ -173,9 +175,9 @@ Rectangle {
                     }
 
                     Text {
-                        text: statusBar.excavatorName.length > 0 ? statusBar.excavatorName : "—"
+                        text: parent._excavatorName.length > 0 ? parent._excavatorName : "—"
                         font.pixelSize: statusBar.tinyFontSize
-                        color: statusBar.excavatorName.length > 0 ? "#888888" : "#666666"
+                        color: parent._excavatorName.length > 0 ? "#888888" : "#666666"
                     }
                 }
             }
