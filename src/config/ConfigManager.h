@@ -103,6 +103,7 @@ class ConfigManager : public QObject
     // Project settings
     Q_PROPERTY(QString projectName READ projectName WRITE setProjectName NOTIFY projectNameChanged)
     Q_PROPERTY(QString projectPath READ projectPath NOTIFY projectPathChanged)
+    Q_PROPERTY(QString lastProjectPath READ lastProjectPath WRITE setLastProjectPath NOTIFY lastProjectPathChanged)
 
 public:
     explicit ConfigManager(QObject *parent = nullptr);
@@ -191,6 +192,10 @@ public:
     // Project getters
     QString projectName() const { return m_projectName; }
     QString projectPath() const { return m_projectPath; }
+    QString lastProjectPath() const { return m_lastProjectPath; }
+
+    // Project setters
+    void setLastProjectPath(const QString &path);
 
     // Property setters
     void setConfigPath(const QString &path);
@@ -282,10 +287,20 @@ public:
     Q_INVOKABLE bool loadProject(const QString &folderPath);
 
     /**
+     * Load last used project automatically
+     * @return true if successful
+     */
+    Q_INVOKABLE bool loadLastProject();
+
+    /**
      * Save current project configuration
      * @return true if successful
      */
     Q_INVOKABLE bool saveProjectConfig();
+
+    // Helper functions for last project persistence
+    void saveLastProjectToMainConfig();
+    void loadLastProjectFromMainConfig();
 
     /**
      * Get list of existing projects
@@ -480,6 +495,7 @@ signals:
     // Project signals
     void projectNameChanged();
     void projectPathChanged();
+    void lastProjectPathChanged();
     void projectLoaded();
     void projectCreated();
 
@@ -580,6 +596,7 @@ private:
     // Project settings
     QString m_projectName;
     QString m_projectPath;
+    QString m_lastProjectPath;
     QString m_projectsBaseDir;
 
     // JSON parsing helpers

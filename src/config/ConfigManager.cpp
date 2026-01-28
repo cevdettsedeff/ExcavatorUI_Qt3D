@@ -1618,6 +1618,82 @@ void ConfigManager::setProjectName(const QString &name)
     }
 }
 
+void ConfigManager::setLastProjectPath(const QString &path)
+{
+    if (m_lastProjectPath != path) {
+        m_lastProjectPath = path;
+        emit lastProjectPathChanged();
+        // Save to main config immediately
+        saveLastProjectToMainConfig();
+    }
+}
+
+void ConfigManager::saveLastProjectToMainConfig()
+{
+    // Save last project path to main config file
+    QString mainConfigPath = "config/bathymetry_config.json";
+    QFile file(mainConfigPath);
+
+    QJsonObject json;
+    if (file.open(QIODevice::ReadOnly)) {
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        file.close();
+        if (doc.isObject()) {
+            json = doc.object();
+        }
+    }
+
+    json["last_project_path"] = m_lastProjectPath;
+
+    // Ensure directory exists
+    QDir dir;
+    dir.mkpath("config");
+
+    if (file.open(QIODevice::WriteOnly)) {
+        QJsonDocument doc(json);
+        file.write(doc.toJson(QJsonDocument::Indented));
+        file.close();
+        qDebug() << "Saved last project path to main config:" << m_lastProjectPath;
+    }
+}
+
+void ConfigManager::loadLastProjectFromMainConfig()
+{
+    QString mainConfigPath = "config/bathymetry_config.json";
+    QFile file(mainConfigPath);
+
+    if (file.open(QIODevice::ReadOnly)) {
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        file.close();
+
+        if (doc.isObject()) {
+            QJsonObject json = doc.object();
+            if (json.contains("last_project_path")) {
+                m_lastProjectPath = json["last_project_path"].toString();
+                qDebug() << "Loaded last project path from main config:" << m_lastProjectPath;
+            }
+        }
+    }
+}
+
+bool ConfigManager::loadLastProject()
+{
+    loadLastProjectFromMainConfig();
+
+    if (m_lastProjectPath.isEmpty()) {
+        qDebug() << "No last project path saved";
+        return false;
+    }
+
+    QDir projectDir(m_lastProjectPath);
+    if (!projectDir.exists()) {
+        qDebug() << "Last project directory does not exist:" << m_lastProjectPath;
+        return false;
+    }
+
+    return loadProject(m_lastProjectPath);
+}
+
 bool ConfigManager::createProject(const QString &name)
 {
     if (name.isEmpty()) {
@@ -1665,6 +1741,9 @@ bool ConfigManager::createProject(const QString &name)
     emit projectCreated();
     qDebug() << "Project created:" << name << "at" << projectFolder;
 
+    // Save as last used project
+    setLastProjectPath(projectFolder);
+
     return true;
 }
 
@@ -1698,6 +1777,9 @@ bool ConfigManager::loadProject(const QString &folderPath)
 
     emit projectLoaded();
     qDebug() << "Project loaded:" << m_projectName << "from" << folderPath;
+
+    // Save as last used project
+    setLastProjectPath(folderPath);
 
     return true;
 }
