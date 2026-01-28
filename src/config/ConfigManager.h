@@ -613,6 +613,7 @@ private:
     void parseSplashScreenSettings(const QJsonObject &splashScreenSettings);
     void parseSafetySettings(const QJsonObject &safetySettings);
     void parseCalibrationSettings(const QJsonObject &calibrationSettings);
+    void parseProjectSettings(const QJsonObject &projectSettings);
     void parseExcavatorPresets(const QJsonArray &presets);
     QColor parseColor(const QString &colorString) const;
     void setDefaultValues();

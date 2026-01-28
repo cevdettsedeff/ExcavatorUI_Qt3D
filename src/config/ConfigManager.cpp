@@ -198,6 +198,11 @@ void ConfigManager::parseConfig(const QJsonObject &json)
         parseCalibrationSettings(json["calibration"].toObject());
     }
 
+    // Parse project settings
+    if (json.contains("project") && json["project"].isObject()) {
+        parseProjectSettings(json["project"].toObject());
+    }
+
     // Parse excavator presets
     if (json.contains("excavator_presets") && json["excavator_presets"].isArray()) {
         parseExcavatorPresets(json["excavator_presets"].toArray());
@@ -1238,6 +1243,24 @@ void ConfigManager::parseCalibrationSettings(const QJsonObject &calibrationSetti
     }
 }
 
+void ConfigManager::parseProjectSettings(const QJsonObject &projectSettings)
+{
+    if (projectSettings.contains("name")) {
+        QString name = projectSettings["name"].toString();
+        if (m_projectName != name) {
+            m_projectName = name;
+            emit projectNameChanged();
+        }
+    }
+    if (projectSettings.contains("path")) {
+        QString path = projectSettings["path"].toString();
+        if (m_projectPath != path) {
+            m_projectPath = path;
+            emit projectPathChanged();
+        }
+    }
+}
+
 void ConfigManager::parseSplashScreenSettings(const QJsonObject &splashScreenSettings)
 {
     if (splashScreenSettings.contains("timeout_milliseconds")) {
@@ -1570,6 +1593,12 @@ bool ConfigManager::saveConfig()
     calibration["auto_calibration_enabled"] = m_autoCalibrationEnabled;
     calibration["configured"] = m_calibrationConfigured;
     root["calibration"] = calibration;
+
+    // Project settings
+    QJsonObject project;
+    project["name"] = m_projectName;
+    project["path"] = m_projectPath;
+    root["project"] = project;
 
     // Excavator presets
     QJsonArray presetsArray;
