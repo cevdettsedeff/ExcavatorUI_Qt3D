@@ -288,6 +288,13 @@ Rectangle {
                 font.pixelSize: 12
                 color: "white"
             }
+
+            // Auto-hide after 3 seconds
+            Timer {
+                running: validationError.length > 0
+                interval: 3000
+                onTriggered: validationError = ""
+            }
         }
     }
 

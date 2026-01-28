@@ -1619,5 +1619,56 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Önceki adımdan engel ekleyin</source>
         <translation>Önceki adımdan engel ekleyin</translation>
     </message>
+    <!-- Validation Error Messages - Excavator Config -->
+    <message>
+        <source>Lütfen bir ekskavatör seçin veya yeni ekskavatör adı girin</source>
+        <translation>Lütfen bir ekskavatör seçin veya yeni ekskavatör adı girin</translation>
+    </message>
+    <message>
+        <source>Tarama derinliği girilmeli</source>
+        <translation>Tarama derinliği girilmeli</translation>
+    </message>
+    <message>
+        <source>Ana bom uzunluğu girilmeli</source>
+        <translation>Ana bom uzunluğu girilmeli</translation>
+    </message>
+    <message>
+        <source>Arm bom uzunluğu girilmeli</source>
+        <translation>Arm bom uzunluğu girilmeli</translation>
+    </message>
+    <message>
+        <source>Kova ölçüleri girilmeli veya kayıtlı bir kova seçilmeli</source>
+        <translation>Kova ölçüleri girilmeli veya kayıtlı bir kova seçilmeli</translation>
+    </message>
+    <!-- Validation Error Messages - Dig Area Config -->
+    <message>
+        <source>Lütfen bir proje adı girin</source>
+        <translation>Lütfen bir proje adı girin</translation>
+    </message>
+    <message>
+        <source>Lütfen bir proje seçin</source>
+        <translation>Lütfen bir proje seçin</translation>
+    </message>
+    <message>
+        <source>Köşe sayısı 3 ile 20 arasında olmalı</source>
+        <translation>Köşe sayısı 3 ile 20 arasında olmalı</translation>
+    </message>
+    <message>
+        <source>Tüm köşe koordinatları girilmeli</source>
+        <translation>Tüm köşe koordinatları girilmeli</translation>
+    </message>
+    <message>
+        <source>Köşe %1 koordinatları girilmeli</source>
+        <translation>Köşe %1 koordinatları girilmeli</translation>
+    </message>
+    <message>
+        <source>En az bir batimetrik veri noktası girilmeli</source>
+        <translation>En az bir batimetrik veri noktası girilmeli</translation>
+    </message>
+    <!-- Success Messages -->
+    <message>
+        <source>Proje dosyası başarıyla yüklendi</source>
+        <translation>Proje dosyası başarıyla yüklendi</translation>
+    </message>
 </context>
 </TS>

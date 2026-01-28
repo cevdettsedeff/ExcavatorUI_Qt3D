@@ -69,6 +69,9 @@ Rectangle {
             // Load corner points, bathymetric data, obstacles from saved config
             loadConfigurationData()
 
+            // Show success message
+            successMessage = root.tr("Proje dosyası başarıyla yüklendi")
+
             // Move to next step
             if (currentStep === 0) {
                 currentStep = 1
@@ -194,6 +197,7 @@ Rectangle {
     property int currentStep: 0  // 0-7 arası
     property int totalSteps: 8
     property string validationError: ""
+    property string successMessage: ""
 
     // Validation function for each step
     function validateCurrentStep() {
@@ -550,7 +554,7 @@ Rectangle {
     // ==================== VALIDATION ERROR MESSAGE ====================
     Rectangle {
         id: validationErrorBar
-        anchors.bottom: footer.top
+        anchors.bottom: successMessageBar.visible ? successMessageBar.top : footer.top
         anchors.left: parent.left
         anchors.right: parent.right
         height: validationError.length > 0 ? 40 : 0
@@ -571,6 +575,33 @@ Rectangle {
             running: validationError.length > 0
             interval: 3000
             onTriggered: validationError = ""
+        }
+    }
+
+    // ==================== SUCCESS MESSAGE ====================
+    Rectangle {
+        id: successMessageBar
+        anchors.bottom: footer.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: successMessage.length > 0 ? 40 : 0
+        color: "#38A169"  // Green color for success
+        visible: successMessage.length > 0
+
+        Behavior on height { NumberAnimation { duration: 200 } }
+
+        Text {
+            anchors.centerIn: parent
+            text: successMessage
+            font.pixelSize: 12
+            color: "white"
+        }
+
+        // Auto-hide after 3 seconds
+        Timer {
+            running: successMessage.length > 0
+            interval: 3000
+            onTriggered: successMessage = ""
         }
     }
 
