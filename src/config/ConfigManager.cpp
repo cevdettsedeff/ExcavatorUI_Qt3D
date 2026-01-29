@@ -129,14 +129,15 @@ bool ConfigManager::loadConfig()
 
     m_isLoaded = true;
     emit isLoadedChanged();
+    emit isConfiguredChanged();  // Update isConfigured state after loading
     emit configLoaded();
 
     qDebug() << "✓ Configuration loaded from" << m_configPath;
-    qDebug() << "  VRT Path:" << m_vrtPath;
-    qDebug() << "  Tile Size:" << m_tileSize;
-    qDebug() << "  Cache Size:" << m_cacheSize;
-    qDebug() << "  Default LOD:" << m_defaultLOD;
-    qDebug() << "  Vertical Exaggeration:" << m_verticalExaggeration;
+    qDebug() << "  Excavator Configured:" << m_excavatorConfigured;
+    qDebug() << "  Dig Area Configured:" << m_digAreaConfigured;
+    qDebug() << "  Safety Configured:" << m_safetyConfigured;
+    qDebug() << "  Calibration Configured:" << m_calibrationConfigured;
+    qDebug() << "  All Configured:" << isConfigured();
 
     return true;
 }
