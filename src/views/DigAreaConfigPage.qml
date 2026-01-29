@@ -25,39 +25,145 @@ Rectangle {
     // Global responsive değişkenlere erişim
     property var app: ApplicationWindow.window
 
-    // FileDialog for loading existing projects
-    FileDialog {
-        id: projectFileDialog
-        title: root.tr("Proje Dosyası Seç")
-        currentFolder: Qt.resolvedUrl(".")
-        nameFilters: [root.tr("JSON Dosyaları (*.json)"), "All files (*)"]
-        fileMode: FileDialog.OpenFile
+    // FileDialog for loading existing projects (folder selection)
+    FolderDialog {
+        id: projectFolderDialog
+        title: root.tr("Proje Klasörü Seç")
+        currentFolder: Qt.resolvedUrl("file://" + (configManager ? configManager.projectPath : ".") + "/../")
 
         onAccepted: {
-            console.log("Selected project file:", selectedFile)
-            root.projectFilePath = selectedFile.toString()
+            var folderPath = selectedFolder.toString().replace("file://", "")
+            console.log("Selected project folder:", folderPath)
+            root.projectFilePath = folderPath
 
-            // TODO: Load project from JSON file
-            // For now, just move to next step
-            if (root.projectMode === "existing" && root.projectFilePath !== "") {
-                // Validate and load JSON
-                loadProjectFromFile(root.projectFilePath)
+            // Load project using ConfigManager
+            if (root.projectMode === "existing" && folderPath !== "") {
+                loadProjectFromFolder(folderPath)
             }
         }
 
         onRejected: {
-            console.log("File selection cancelled")
+            console.log("Folder selection cancelled")
         }
     }
 
-    // Function to load project from JSON file
-    function loadProjectFromFile(filePath) {
-        console.log("Loading project from:", filePath)
-        // TODO: Implement JSON loading logic
-        // For now, just proceed to next step
-        if (currentStep === 0) {
-            currentStep = 1
+    // Mevcut projeler listesi
+    property var existingProjects: configManager ? configManager.getExistingProjects() : []
+    property int selectedProjectIndex: -1
+
+    // Mevcut projeleri yenileme fonksiyonu
+    function refreshProjectList() {
+        if (configManager) {
+            existingProjects = configManager.getExistingProjects()
         }
+    }
+
+    // Function to load project from folder
+    function loadProjectFromFolder(folderPath) {
+        console.log("Loading project from folder:", folderPath)
+        if (configManager && configManager.loadProject(folderPath)) {
+            // Load successful - populate data from configManager
+            root.projectName = configManager.projectName
+            root.projectFilePath = configManager.projectPath
+
+            // Load corner points, bathymetric data, obstacles from saved config
+            loadConfigurationData()
+
+            // Show success message
+            successMessage = root.tr("Proje dosyası başarıyla yüklendi")
+
+            // Move to next step
+            if (currentStep === 0) {
+                currentStep = 1
+            }
+        }
+    }
+
+    // Function to create new project
+    function createNewProject() {
+        if (root.projectName.trim() === "") {
+            console.log("Project name cannot be empty")
+            return false
+        }
+
+        if (configManager && configManager.createProject(root.projectName.trim())) {
+            console.log("Project created successfully:", root.projectName)
+            return true
+        }
+        return false
+    }
+
+    // Load configuration data from configManager
+    function loadConfigurationData() {
+        if (!configManager) {
+            console.log("ConfigManager not available")
+            return
+        }
+
+        console.log("Loading configuration data from project:", configManager.projectName)
+
+        // Load corner count
+        if (configManager.cornerCount > 0) {
+            cornerCount = configManager.cornerCount
+        }
+
+        // Load corner points
+        if (configManager.cornerPoints && configManager.cornerPoints.length > 0) {
+            cornerPoints = []
+            for (var i = 0; i < configManager.cornerPoints.length; i++) {
+                var pt = configManager.cornerPoints[i]
+                cornerPoints.push({
+                    x: pt.x || 0,
+                    y: pt.y || 0,
+                    label: pt.label || String.fromCharCode(65 + i)
+                })
+            }
+            cornerPointsChanged()
+        }
+
+        // Load bathymetric points
+        if (configManager.bathymetricPoints && configManager.bathymetricPoints.length > 0) {
+            bathymetricPoints = []
+            for (var j = 0; j < configManager.bathymetricPoints.length; j++) {
+                var bpt = configManager.bathymetricPoints[j]
+                bathymetricPoints.push({
+                    x: bpt.x || 0,
+                    y: bpt.y || 0,
+                    depth: bpt.depth || 0
+                })
+            }
+            bathymetricPointsChanged()
+        }
+
+        // Load obstacles
+        if (configManager.obstacles && configManager.obstacles.length > 0) {
+            obstacles = []
+            for (var k = 0; k < configManager.obstacles.length; k++) {
+                var obs = configManager.obstacles[k]
+                var obstaclePoints = []
+                if (obs.points) {
+                    for (var l = 0; l < obs.points.length; l++) {
+                        obstaclePoints.push({
+                            x: obs.points[l].x || 0,
+                            y: obs.points[l].y || 0
+                        })
+                    }
+                }
+                obstacles.push({
+                    id: obs.id || k,
+                    type: obs.type || "point",
+                    depth: obs.depth || 0,
+                    points: obstaclePoints
+                })
+            }
+            obstaclesChanged()
+        }
+
+        console.log("Configuration data loaded successfully")
+        console.log("  Corner count:", cornerCount)
+        console.log("  Corner points:", cornerPoints.length)
+        console.log("  Bathymetric points:", bathymetricPoints.length)
+        console.log("  Obstacles:", obstacles.length)
     }
 
     // Translation support
@@ -90,6 +196,73 @@ Rectangle {
     // ==================== WIZARD STATE ====================
     property int currentStep: 0  // 0-7 arası
     property int totalSteps: 8
+    property string validationError: ""
+    property string successMessage: ""
+
+    // Validation function for each step
+    function validateCurrentStep() {
+        validationError = ""
+
+        switch (currentStep) {
+            case 0: // Proje Seçimi
+                if (projectMode === "new" && projectName.trim() === "") {
+                    validationError = root.tr("Lütfen bir proje adı girin")
+                    return false
+                }
+                if (projectMode === "existing" && selectedProjectIndex < 0) {
+                    validationError = root.tr("Lütfen bir proje seçin")
+                    return false
+                }
+                return true
+
+            case 1: // Köşe Sayısı
+                if (cornerCount < 3 || cornerCount > 20) {
+                    validationError = root.tr("Köşe sayısı 3 ile 20 arasında olmalı")
+                    return false
+                }
+                return true
+
+            case 2: // Koordinatlar
+                if (cornerPoints.length < cornerCount) {
+                    validationError = root.tr("Tüm köşe koordinatları girilmeli")
+                    return false
+                }
+                // Check if all coordinates are valid
+                for (var i = 0; i < cornerPoints.length; i++) {
+                    if (cornerPoints[i].x === 0 && cornerPoints[i].y === 0) {
+                        validationError = root.tr("Köşe %1 koordinatları girilmeli").arg(i + 1)
+                        return false
+                    }
+                }
+                return true
+
+            case 3: // Önizleme
+                // Preview step - just visual, no validation needed
+                return true
+
+            case 4: // Batimetri
+                if (bathymetricPoints.length === 0) {
+                    validationError = root.tr("En az bir batimetrik veri noktası girilmeli")
+                    return false
+                }
+                return true
+
+            case 5: // Harita
+                // Map view step - just visual, no validation needed
+                return true
+
+            case 6: // Engel Girişi
+                // Obstacle input is optional
+                return true
+
+            case 7: // Engel Önizleme
+                // Preview step - no validation needed
+                return true
+
+            default:
+                return true
+        }
+    }
 
     // Step titles
     property var stepTitles: [
@@ -378,6 +551,60 @@ Rectangle {
         }
     }
 
+    // ==================== VALIDATION ERROR MESSAGE ====================
+    Rectangle {
+        id: validationErrorBar
+        anchors.bottom: successMessageBar.visible ? successMessageBar.top : footer.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: validationError.length > 0 ? 40 : 0
+        color: "#E53E3E"
+        visible: validationError.length > 0
+
+        Behavior on height { NumberAnimation { duration: 200 } }
+
+        Text {
+            anchors.centerIn: parent
+            text: validationError
+            font.pixelSize: 12
+            color: "white"
+        }
+
+        // Auto-hide after 3 seconds
+        Timer {
+            running: validationError.length > 0
+            interval: 3000
+            onTriggered: validationError = ""
+        }
+    }
+
+    // ==================== SUCCESS MESSAGE ====================
+    Rectangle {
+        id: successMessageBar
+        anchors.bottom: footer.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: successMessage.length > 0 ? 40 : 0
+        color: "#38A169"  // Green color for success
+        visible: successMessage.length > 0
+
+        Behavior on height { NumberAnimation { duration: 200 } }
+
+        Text {
+            anchors.centerIn: parent
+            text: successMessage
+            font.pixelSize: 12
+            color: "white"
+        }
+
+        // Auto-hide after 3 seconds
+        Timer {
+            running: successMessage.length > 0
+            interval: 3000
+            onTriggered: successMessage = ""
+        }
+    }
+
     // ==================== FOOTER ====================
     Rectangle {
         id: footer
@@ -449,11 +676,35 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (currentStep < totalSteps - 1) {
+                    // Validate current step before proceeding
+                    if (!validateCurrentStep()) {
+                        return
+                    }
+
+                    if (currentStep === 0) {
+                        // Step 0: Project selection
+                        if (root.projectMode === "new") {
+                            // Create new project
+                            if (createNewProject()) {
+                                currentStep++
+                            }
+                        } else {
+                            // Load existing project
+                            if (root.selectedProjectIndex >= 0 && root.selectedProjectIndex < root.existingProjects.length) {
+                                var projectName = root.existingProjects[root.selectedProjectIndex]
+                                // Project folders are in root directory
+                                var projectPath = "./" + projectName
+                                loadProjectFromFolder(projectPath)
+                            }
+                        }
+                    } else if (currentStep < totalSteps - 1) {
                         currentStep++
                     } else {
                         // Save and finish
                         saveConfiguration()
+                        if (configManager) {
+                            configManager.saveProjectConfig()
+                        }
                         root.configSaved()
                     }
                 }
@@ -620,8 +871,7 @@ Rectangle {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     root.projectMode = "existing"
-                                    // Open file dialog to select project file
-                                    projectFileDialog.open()
+                                    root.refreshProjectList()
                                 }
                             }
 
@@ -662,7 +912,7 @@ Rectangle {
                                         }
 
                                         Text {
-                                            text: root.tr("Daha önce kaydedilmiş bir proje dosyasını yükleyin")
+                                            text: root.tr("Daha önce kaydedilmiş bir proje seçin")
                                             font.pixelSize: app ? app.baseFontSize : 14
                                             color: root.textSecondaryColor
                                             wrapMode: Text.WordWrap
@@ -691,6 +941,138 @@ Rectangle {
                                             }
                                         }
                                     }
+                                }
+                            }
+                        }
+
+                        // Mevcut Projeler Listesi (only visible when existing mode selected)
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: projectListContent.height + (app ? app.normalPadding * 2 : 32)
+                            color: root.cardColor
+                            radius: app ? app.normalRadius : 12
+                            border.width: 1
+                            border.color: root.borderColor
+                            visible: root.projectMode === "existing"
+
+                            ColumnLayout {
+                                id: projectListContent
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.margins: app ? app.normalPadding : 20
+                                spacing: app ? app.smallSpacing : 12
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+
+                                    Text {
+                                        text: root.tr("Kayıtlı Projeler")
+                                        font.pixelSize: app ? app.mediumFontSize : 18
+                                        font.bold: true
+                                        color: root.textColor
+                                    }
+
+                                    Item { Layout.fillWidth: true }
+
+                                    Button {
+                                        text: root.tr("Klasörden Aç")
+                                        font.pixelSize: app ? app.smallFontSize : 12
+
+                                        background: Rectangle {
+                                            radius: app ? app.smallRadius : 6
+                                            color: parent.pressed ? Qt.darker(root.primaryColor, 1.2) : root.primaryColor
+                                        }
+
+                                        contentItem: Text {
+                                            text: parent.text
+                                            font: parent.font
+                                            color: "white"
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+
+                                        onClicked: {
+                                            projectFolderDialog.open()
+                                        }
+                                    }
+                                }
+
+                                // Proje listesi
+                                ListView {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: Math.min(root.existingProjects.length * 50, 200)
+                                    clip: true
+                                    model: root.existingProjects
+                                    visible: root.existingProjects.length > 0
+
+                                    delegate: Rectangle {
+                                        width: ListView.view.width
+                                        height: 45
+                                        color: root.selectedProjectIndex === index ? Qt.rgba(root.primaryColor.r, root.primaryColor.g, root.primaryColor.b, 0.3) : (mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent")
+                                        radius: app ? app.smallRadius : 6
+
+                                        MouseArea {
+                                            id: mouseArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                root.selectedProjectIndex = index
+                                                root.projectName = modelData
+                                            }
+                                        }
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.margins: app ? app.smallPadding : 8
+                                            spacing: app ? app.smallSpacing : 8
+
+                                            Text {
+                                                text: "📁"
+                                                font.pixelSize: app ? app.baseFontSize : 16
+                                            }
+
+                                            Text {
+                                                Layout.fillWidth: true
+                                                text: modelData
+                                                font.pixelSize: app ? app.baseFontSize : 14
+                                                font.bold: root.selectedProjectIndex === index
+                                                color: root.textColor
+                                                elide: Text.ElideRight
+                                            }
+
+                                            Rectangle {
+                                                width: 20
+                                                height: 20
+                                                radius: 10
+                                                border.width: 2
+                                                border.color: root.selectedProjectIndex === index ? root.primaryColor : root.borderColor
+                                                color: root.selectedProjectIndex === index ? root.primaryColor : "transparent"
+                                                visible: root.selectedProjectIndex === index
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    text: "✓"
+                                                    font.pixelSize: 12
+                                                    color: "white"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Proje yok mesajı
+                                Text {
+                                    Layout.fillWidth: true
+                                    Layout.topMargin: app ? app.normalSpacing : 16
+                                    Layout.bottomMargin: app ? app.normalSpacing : 16
+                                    text: root.tr("Henüz kayıtlı proje bulunmuyor.\n'Klasörden Aç' butonu ile proje klasörü seçebilirsiniz.")
+                                    font.pixelSize: app ? app.baseFontSize : 14
+                                    color: root.textSecondaryColor
+                                    horizontalAlignment: Text.AlignHCenter
+                                    wrapMode: Text.WordWrap
+                                    visible: root.existingProjects.length === 0
                                 }
                             }
                         }
@@ -2638,9 +3020,21 @@ Rectangle {
     }
 
     function saveConfiguration() {
-        // Save corner points to ConfigManager if available
+        // Save all data to ConfigManager
         if (configManager) {
-            // For now, save polygon bounds as grid coordinates
+            // Save corner count
+            configManager.cornerCount = cornerCount
+
+            // Save corner points
+            configManager.cornerPoints = cornerPoints
+
+            // Save bathymetric points
+            configManager.bathymetricPoints = bathymetricPoints
+
+            // Save obstacles
+            configManager.obstacles = obstacles
+
+            // Calculate and save polygon bounds as grid coordinates
             if (cornerPoints.length >= 2) {
                 var minX = Infinity, maxX = -Infinity
                 var minY = Infinity, maxY = -Infinity
@@ -2658,13 +3052,16 @@ Rectangle {
                 configManager.gridEndLatitude = maxY / 111000
                 configManager.gridEndLongitude = maxX / (111000 * Math.cos(maxY / 111000 * Math.PI / 180))
             }
+
+            // Mark dig area as configured
+            configManager.markDigAreaConfigured()
         }
 
         console.log("Configuration saved:")
         console.log("- Corner count:", cornerCount)
-        console.log("- Corner points:", JSON.stringify(cornerPoints))
-        console.log("- Bathymetric points:", JSON.stringify(bathymetricPoints))
-        console.log("- Obstacles:", JSON.stringify(obstacles))
+        console.log("- Corner points:", cornerPoints.length, "points")
+        console.log("- Bathymetric points:", bathymetricPoints.length, "points")
+        console.log("- Obstacles:", obstacles.length, "items")
     }
 
     // ==================== OBSTACLE HELPER FUNCTIONS ====================

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components"
 
 /**
  * CalibrationConfigPage - Kalibrasyon Ayarları Sayfası
@@ -74,17 +75,40 @@ Rectangle {
     property color warningColor: "#ed8936"
     property color successColor: "#48bb78"
 
-    // Calibration settings (placeholder values - will be connected to ConfigManager)
-    property real imuOffsetX: 0.0
-    property real imuOffsetY: 0.0
-    property real imuOffsetZ: 0.0
-    property real gpsOffsetLat: 0.0
-    property real gpsOffsetLon: 0.0
-    property bool autoCalibrationEnabled: false
+    // Calibration settings - connected to ConfigManager
+    property real imuOffsetX: configManager ? configManager.imuOffsetX : 0.0
+    property real imuOffsetY: configManager ? configManager.imuOffsetY : 0.0
+    property real imuOffsetZ: configManager ? configManager.imuOffsetZ : 0.0
+    property real gpsOffsetLat: configManager ? configManager.gpsOffsetLat : 0.0
+    property real gpsOffsetLon: configManager ? configManager.gpsOffsetLon : 0.0
+    property bool autoCalibrationEnabled: configManager ? configManager.autoCalibrationEnabled : false
 
     // Calibration status
     property bool isCalibrating: false
     property int calibrationProgress: 0
+
+    // Save calibration settings to ConfigManager
+    function saveSettings() {
+        if (configManager) {
+            configManager.imuOffsetX = imuOffsetX
+            configManager.imuOffsetY = imuOffsetY
+            configManager.imuOffsetZ = imuOffsetZ
+            configManager.gpsOffsetLat = gpsOffsetLat
+            configManager.gpsOffsetLon = gpsOffsetLon
+            configManager.autoCalibrationEnabled = autoCalibrationEnabled
+            configManager.markCalibrationConfigured()
+            configManager.saveProjectConfig()
+
+            console.log("Calibration settings saved:")
+            console.log("- IMU Offset:", imuOffsetX, imuOffsetY, imuOffsetZ)
+            console.log("- GPS Offset:", gpsOffsetLat, gpsOffsetLon)
+            console.log("- Auto calibration:", autoCalibrationEnabled)
+        }
+    }
+
+    // Step indicator properties
+    property int currentStep: 0
+    property var stepTitles: [root.tr("Kalibrasyon")]
 
     // Header
     Rectangle {
@@ -134,9 +158,20 @@ Rectangle {
         }
     }
 
+    // Progress Indicator
+    StepProgressIndicator {
+        id: progressBar
+        anchors.top: header.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        currentStep: root.currentStep
+        stepTitles: root.stepTitles
+        primaryColor: root.primaryColor
+    }
+
     // Content
     ScrollView {
-        anchors.top: header.bottom
+        anchors.top: progressBar.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: footer.top
@@ -550,11 +585,7 @@ Rectangle {
                 }
 
                 onClicked: {
-                    // TODO: Save calibration settings to ConfigManager
-                    console.log("Kalibrasyon ayarları kaydedilecek")
-                    console.log("Otomatik kalibrasyon:", root.autoCalibrationEnabled)
-                    console.log("IMU Offset:", root.imuOffsetX, root.imuOffsetY, root.imuOffsetZ)
-                    console.log("GPS Offset:", root.gpsOffsetLat, root.gpsOffsetLon)
+                    saveSettings()
                     root.configSaved()
                 }
             }

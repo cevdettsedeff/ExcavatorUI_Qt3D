@@ -1097,5 +1097,56 @@ Redirecting to login screen...</translation>
         <source>Önceki adımdan engel ekleyin</source>
         <translation>Add obstacles from previous step</translation>
     </message>
+    <!-- Validation Error Messages - Excavator Config -->
+    <message>
+        <source>Lütfen bir ekskavatör seçin veya yeni ekskavatör adı girin</source>
+        <translation>Please select an excavator or enter a new excavator name</translation>
+    </message>
+    <message>
+        <source>Tarama derinliği girilmeli</source>
+        <translation>Scanning depth must be entered</translation>
+    </message>
+    <message>
+        <source>Ana bom uzunluğu girilmeli</source>
+        <translation>Main boom length must be entered</translation>
+    </message>
+    <message>
+        <source>Arm bom uzunluğu girilmeli</source>
+        <translation>Arm boom length must be entered</translation>
+    </message>
+    <message>
+        <source>Kova ölçüleri girilmeli veya kayıtlı bir kova seçilmeli</source>
+        <translation>Bucket dimensions must be entered or a saved bucket must be selected</translation>
+    </message>
+    <!-- Validation Error Messages - Dig Area Config -->
+    <message>
+        <source>Lütfen bir proje adı girin</source>
+        <translation>Please enter a project name</translation>
+    </message>
+    <message>
+        <source>Lütfen bir proje seçin</source>
+        <translation>Please select a project</translation>
+    </message>
+    <message>
+        <source>Köşe sayısı 3 ile 20 arasında olmalı</source>
+        <translation>Corner count must be between 3 and 20</translation>
+    </message>
+    <message>
+        <source>Tüm köşe koordinatları girilmeli</source>
+        <translation>All corner coordinates must be entered</translation>
+    </message>
+    <message>
+        <source>Köşe %1 koordinatları girilmeli</source>
+        <translation>Corner %1 coordinates must be entered</translation>
+    </message>
+    <message>
+        <source>En az bir batimetrik veri noktası girilmeli</source>
+        <translation>At least one bathymetric data point must be entered</translation>
+    </message>
+    <!-- Success Messages -->
+    <message>
+        <source>Proje dosyası başarıyla yüklendi</source>
+        <translation>Project file loaded successfully</translation>
+    </message>
 </context>
 </TS>

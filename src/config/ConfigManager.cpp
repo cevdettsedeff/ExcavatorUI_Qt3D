@@ -20,6 +20,8 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_bucketWidth(2.0)
     , m_scanningDepth(15.0)
     , m_excavatorConfigured(false)
+    , m_bucketLength(0.0)
+    , m_bucketDepth(0.0)
     , m_gridRows(4)
     , m_gridCols(4)
     , m_digAreaConfigured(false)
@@ -28,6 +30,7 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_gridStartLongitude(29.0000)
     , m_gridEndLatitude(40.7200)
     , m_gridEndLongitude(29.0100)
+    , m_cornerCount(4)
     , m_mapCenterLatitude(40.7128)
     , m_mapCenterLongitude(29.0060)
     , m_mapZoomLevel(15)
@@ -43,7 +46,15 @@ ConfigManager::ConfigManager(QObject *parent)
     , m_screenSaverTimeoutSeconds(120)  // Varsayılan 2 dakika = 120 saniye
     , m_splashScreenTimeoutMilliseconds(3000)  // Varsayılan 3 saniye = 3000 milisaniye
     , m_safetyConfigured(false)
+    , m_collisionWarningDistance(50)
+    , m_obstacleDetectionEnabled(true)
     , m_calibrationConfigured(false)
+    , m_imuOffsetX(0.0)
+    , m_imuOffsetY(0.0)
+    , m_imuOffsetZ(0.0)
+    , m_gpsOffsetLat(0.0)
+    , m_gpsOffsetLon(0.0)
+    , m_autoCalibrationEnabled(false)
 {
     setDefaultValues();
     initializeGridDepths();
@@ -51,6 +62,9 @@ ConfigManager::ConfigManager(QObject *parent)
 
     // Default config path
     m_configPath = QDir::currentPath() + "/config/bathymetry_config.json";
+
+    // Projects base directory (root project directory)
+    m_projectsBaseDir = QDir::currentPath();
 }
 
 ConfigManager::~ConfigManager()
@@ -115,14 +129,15 @@ bool ConfigManager::loadConfig()
 
     m_isLoaded = true;
     emit isLoadedChanged();
+    emit isConfiguredChanged();  // Update isConfigured state after loading
     emit configLoaded();
 
     qDebug() << "✓ Configuration loaded from" << m_configPath;
-    qDebug() << "  VRT Path:" << m_vrtPath;
-    qDebug() << "  Tile Size:" << m_tileSize;
-    qDebug() << "  Cache Size:" << m_cacheSize;
-    qDebug() << "  Default LOD:" << m_defaultLOD;
-    qDebug() << "  Vertical Exaggeration:" << m_verticalExaggeration;
+    qDebug() << "  Excavator Configured:" << m_excavatorConfigured;
+    qDebug() << "  Dig Area Configured:" << m_digAreaConfigured;
+    qDebug() << "  Safety Configured:" << m_safetyConfigured;
+    qDebug() << "  Calibration Configured:" << m_calibrationConfigured;
+    qDebug() << "  All Configured:" << isConfigured();
 
     return true;
 }
@@ -172,6 +187,21 @@ void ConfigManager::parseConfig(const QJsonObject &json)
     // Parse splash screen settings
     if (json.contains("splash_screen") && json["splash_screen"].isObject()) {
         parseSplashScreenSettings(json["splash_screen"].toObject());
+    }
+
+    // Parse safety settings
+    if (json.contains("safety") && json["safety"].isObject()) {
+        parseSafetySettings(json["safety"].toObject());
+    }
+
+    // Parse calibration settings
+    if (json.contains("calibration") && json["calibration"].isObject()) {
+        parseCalibrationSettings(json["calibration"].toObject());
+    }
+
+    // Parse project settings
+    if (json.contains("project") && json["project"].isObject()) {
+        parseProjectSettings(json["project"].toObject());
     }
 
     // Parse excavator presets
@@ -385,6 +415,97 @@ void ConfigManager::setScanningDepth(double depth)
     }
 }
 
+void ConfigManager::setSelectedBucketName(const QString &name)
+{
+    if (m_selectedBucketName != name) {
+        m_selectedBucketName = name;
+        emit selectedBucketNameChanged();
+    }
+}
+
+void ConfigManager::setBucketLength(double length)
+{
+    if (m_bucketLength != length) {
+        m_bucketLength = length;
+        emit bucketLengthChanged();
+    }
+}
+
+void ConfigManager::setBucketDepth(double depth)
+{
+    if (m_bucketDepth != depth) {
+        m_bucketDepth = depth;
+        emit bucketDepthChanged();
+    }
+}
+
+void ConfigManager::saveBucketPreset(const QString &name, double width, double length, double depth)
+{
+    if (name.isEmpty()) {
+        emit errorOccurred("Kova adı boş olamaz.");
+        return;
+    }
+
+    // Check if bucket with same name already exists
+    for (const auto &bucket : m_bucketPresets) {
+        QVariantMap bucketMap = bucket.toMap();
+        if (bucketMap["name"].toString() == name) {
+            emit errorOccurred("Bu isimde bir kova zaten kayıtlı.");
+            return;
+        }
+    }
+
+    QVariantMap preset;
+    preset["name"] = name;
+    preset["width"] = width;
+    preset["length"] = length;
+    preset["depth"] = depth;
+
+    m_bucketPresets.append(preset);
+    emit bucketPresetsChanged();
+
+    // Auto-save to JSON
+    saveConfig();
+
+    qDebug() << "Saved bucket preset:" << name;
+}
+
+void ConfigManager::loadBucketPreset(int index)
+{
+    if (index < 0 || index >= m_bucketPresets.size()) {
+        qWarning() << "Invalid bucket preset index:" << index;
+        return;
+    }
+
+    QVariantMap preset = m_bucketPresets[index].toMap();
+
+    setSelectedBucketName(preset["name"].toString());
+    setBucketWidth(preset["width"].toDouble());
+    setBucketLength(preset["length"].toDouble());
+    setBucketDepth(preset["depth"].toDouble());
+
+    qDebug() << "Loaded bucket preset:" << preset["name"].toString();
+}
+
+void ConfigManager::removeBucketPreset(int index)
+{
+    if (index < 0 || index >= m_bucketPresets.size()) {
+        qWarning() << "Invalid bucket preset index:" << index;
+        return;
+    }
+
+    QVariantMap preset = m_bucketPresets[index].toMap();
+    QString name = preset["name"].toString();
+
+    m_bucketPresets.removeAt(index);
+    emit bucketPresetsChanged();
+
+    // Auto-save to JSON
+    saveConfig();
+
+    qDebug() << "Removed bucket preset:" << name;
+}
+
 // Dig Area setters
 void ConfigManager::setGridRows(int rows)
 {
@@ -461,6 +582,32 @@ void ConfigManager::setGridEndLongitude(double lon)
         m_gridEndLongitude = lon;
         emit gridEndLongitudeChanged();
     }
+}
+
+void ConfigManager::setCornerCount(int count)
+{
+    if (m_cornerCount != count && count >= 3) {
+        m_cornerCount = count;
+        emit cornerCountChanged();
+    }
+}
+
+void ConfigManager::setCornerPoints(const QVariantList &points)
+{
+    m_cornerPoints = points;
+    emit cornerPointsChanged();
+}
+
+void ConfigManager::setBathymetricPoints(const QVariantList &points)
+{
+    m_bathymetricPoints = points;
+    emit bathymetricPointsChanged();
+}
+
+void ConfigManager::setObstacles(const QVariantList &obstacles)
+{
+    m_obstacles = obstacles;
+    emit obstaclesChanged();
 }
 
 void ConfigManager::initializeGridDepths()
@@ -836,6 +983,38 @@ void ConfigManager::parseExcavatorSettings(const QJsonObject &excavator)
         m_excavatorConfigured = excavator["configured"].toBool(false);
         emit excavatorConfiguredChanged();
     }
+
+    // Parse bucket settings
+    if (excavator.contains("selected_bucket_name")) {
+        setSelectedBucketName(excavator["selected_bucket_name"].toString());
+    }
+    if (excavator.contains("bucket_length")) {
+        setBucketLength(excavator["bucket_length"].toDouble(0.0));
+    }
+    if (excavator.contains("bucket_depth")) {
+        setBucketDepth(excavator["bucket_depth"].toDouble(0.0));
+    }
+
+    // Parse bucket presets
+    if (excavator.contains("bucket_presets") && excavator["bucket_presets"].isArray()) {
+        m_bucketPresets.clear();
+        QJsonArray arr = excavator["bucket_presets"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject bucket = val.toObject();
+                QVariantMap preset;
+                preset["name"] = bucket["name"].toString("");
+                preset["width"] = bucket["width"].toDouble(0.0);
+                preset["length"] = bucket["length"].toDouble(0.0);
+                preset["depth"] = bucket["depth"].toDouble(0.0);
+                if (!preset["name"].toString().isEmpty()) {
+                    m_bucketPresets.append(preset);
+                }
+            }
+        }
+        qDebug() << "Loaded" << m_bucketPresets.size() << "bucket presets from JSON";
+        emit bucketPresetsChanged();
+    }
 }
 
 void ConfigManager::parseDigAreaSettings(const QJsonObject &digArea)
@@ -878,6 +1057,79 @@ void ConfigManager::parseDigAreaSettings(const QJsonObject &digArea)
     if (digArea.contains("configured")) {
         m_digAreaConfigured = digArea["configured"].toBool(false);
         emit digAreaConfiguredChanged();
+    }
+
+    // Parse corner count
+    if (digArea.contains("corner_count")) {
+        m_cornerCount = digArea["corner_count"].toInt(4);
+        emit cornerCountChanged();
+    }
+
+    // Parse corner points
+    if (digArea.contains("corner_points") && digArea["corner_points"].isArray()) {
+        m_cornerPoints.clear();
+        QJsonArray arr = digArea["corner_points"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject pt = val.toObject();
+                QVariantMap point;
+                point["x"] = pt["x"].toDouble(0.0);
+                point["y"] = pt["y"].toDouble(0.0);
+                point["label"] = pt["label"].toString("");
+                m_cornerPoints.append(point);
+            }
+        }
+        emit cornerPointsChanged();
+    }
+
+    // Parse bathymetric points
+    if (digArea.contains("bathymetric_points") && digArea["bathymetric_points"].isArray()) {
+        m_bathymetricPoints.clear();
+        QJsonArray arr = digArea["bathymetric_points"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject pt = val.toObject();
+                QVariantMap point;
+                point["x"] = pt["x"].toDouble(0.0);
+                point["y"] = pt["y"].toDouble(0.0);
+                point["depth"] = pt["depth"].toDouble(0.0);
+                m_bathymetricPoints.append(point);
+            }
+        }
+        emit bathymetricPointsChanged();
+    }
+
+    // Parse obstacles
+    if (digArea.contains("obstacles") && digArea["obstacles"].isArray()) {
+        m_obstacles.clear();
+        QJsonArray arr = digArea["obstacles"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject obs = val.toObject();
+                QVariantMap obstacle;
+                obstacle["id"] = obs["id"].toInt(0);
+                obstacle["type"] = obs["type"].toString("point");
+                obstacle["depth"] = obs["depth"].toDouble(0.0);
+
+                // Parse obstacle points
+                if (obs.contains("points") && obs["points"].isArray()) {
+                    QVariantList points;
+                    QJsonArray pointsArr = obs["points"].toArray();
+                    for (const auto &ptVal : pointsArr) {
+                        if (ptVal.isObject()) {
+                            QJsonObject pt = ptVal.toObject();
+                            QVariantMap point;
+                            point["x"] = pt["x"].toDouble(0.0);
+                            point["y"] = pt["y"].toDouble(0.0);
+                            points.append(point);
+                        }
+                    }
+                    obstacle["points"] = points;
+                }
+                m_obstacles.append(obstacle);
+            }
+        }
+        emit obstaclesChanged();
     }
 }
 
@@ -931,6 +1183,82 @@ void ConfigManager::parseScreenSaverSettings(const QJsonObject &screenSaverSetti
     }
     if (screenSaverSettings.contains("timeout_seconds")) {
         setScreenSaverTimeoutSeconds(screenSaverSettings["timeout_seconds"].toInt(120));
+    }
+}
+
+void ConfigManager::parseSafetySettings(const QJsonObject &safetySettings)
+{
+    if (safetySettings.contains("collision_warning_distance")) {
+        setCollisionWarningDistance(safetySettings["collision_warning_distance"].toInt(50));
+    }
+    if (safetySettings.contains("obstacle_detection_enabled")) {
+        setObstacleDetectionEnabled(safetySettings["obstacle_detection_enabled"].toBool(true));
+    }
+    if (safetySettings.contains("configured")) {
+        m_safetyConfigured = safetySettings["configured"].toBool(false);
+        emit safetyConfiguredChanged();
+    }
+
+    // Parse safety obstacles
+    if (safetySettings.contains("obstacles") && safetySettings["obstacles"].isArray()) {
+        m_safetyObstacles.clear();
+        QJsonArray arr = safetySettings["obstacles"].toArray();
+        for (const auto &val : arr) {
+            if (val.isObject()) {
+                QJsonObject obs = val.toObject();
+                QVariantMap obstacle;
+                obstacle["name"] = obs["name"].toString("");
+                obstacle["x"] = obs["x"].toDouble(0.0);
+                obstacle["y"] = obs["y"].toDouble(0.0);
+                obstacle["radius"] = obs["radius"].toDouble(0.0);
+                m_safetyObstacles.append(obstacle);
+            }
+        }
+        emit safetyObstaclesChanged();
+    }
+}
+
+void ConfigManager::parseCalibrationSettings(const QJsonObject &calibrationSettings)
+{
+    if (calibrationSettings.contains("imu_offset_x")) {
+        setImuOffsetX(calibrationSettings["imu_offset_x"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("imu_offset_y")) {
+        setImuOffsetY(calibrationSettings["imu_offset_y"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("imu_offset_z")) {
+        setImuOffsetZ(calibrationSettings["imu_offset_z"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("gps_offset_lat")) {
+        setGpsOffsetLat(calibrationSettings["gps_offset_lat"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("gps_offset_lon")) {
+        setGpsOffsetLon(calibrationSettings["gps_offset_lon"].toDouble(0.0));
+    }
+    if (calibrationSettings.contains("auto_calibration_enabled")) {
+        setAutoCalibrationEnabled(calibrationSettings["auto_calibration_enabled"].toBool(false));
+    }
+    if (calibrationSettings.contains("configured")) {
+        m_calibrationConfigured = calibrationSettings["configured"].toBool(false);
+        emit calibrationConfiguredChanged();
+    }
+}
+
+void ConfigManager::parseProjectSettings(const QJsonObject &projectSettings)
+{
+    if (projectSettings.contains("name")) {
+        QString name = projectSettings["name"].toString();
+        if (m_projectName != name) {
+            m_projectName = name;
+            emit projectNameChanged();
+        }
+    }
+    if (projectSettings.contains("path")) {
+        QString path = projectSettings["path"].toString();
+        if (m_projectPath != path) {
+            m_projectPath = path;
+            emit projectPathChanged();
+        }
     }
 }
 
@@ -1000,6 +1328,78 @@ void ConfigManager::setSplashScreenTimeoutMilliseconds(int milliseconds)
     }
 }
 
+// Safety setters
+void ConfigManager::setCollisionWarningDistance(int distance)
+{
+    if (m_collisionWarningDistance != distance) {
+        m_collisionWarningDistance = distance;
+        emit collisionWarningDistanceChanged();
+    }
+}
+
+void ConfigManager::setObstacleDetectionEnabled(bool enabled)
+{
+    if (m_obstacleDetectionEnabled != enabled) {
+        m_obstacleDetectionEnabled = enabled;
+        emit obstacleDetectionEnabledChanged();
+    }
+}
+
+void ConfigManager::setSafetyObstacles(const QVariantList &obstacles)
+{
+    m_safetyObstacles = obstacles;
+    emit safetyObstaclesChanged();
+}
+
+// Calibration setters
+void ConfigManager::setImuOffsetX(double offset)
+{
+    if (m_imuOffsetX != offset) {
+        m_imuOffsetX = offset;
+        emit imuOffsetXChanged();
+    }
+}
+
+void ConfigManager::setImuOffsetY(double offset)
+{
+    if (m_imuOffsetY != offset) {
+        m_imuOffsetY = offset;
+        emit imuOffsetYChanged();
+    }
+}
+
+void ConfigManager::setImuOffsetZ(double offset)
+{
+    if (m_imuOffsetZ != offset) {
+        m_imuOffsetZ = offset;
+        emit imuOffsetZChanged();
+    }
+}
+
+void ConfigManager::setGpsOffsetLat(double offset)
+{
+    if (m_gpsOffsetLat != offset) {
+        m_gpsOffsetLat = offset;
+        emit gpsOffsetLatChanged();
+    }
+}
+
+void ConfigManager::setGpsOffsetLon(double offset)
+{
+    if (m_gpsOffsetLon != offset) {
+        m_gpsOffsetLon = offset;
+        emit gpsOffsetLonChanged();
+    }
+}
+
+void ConfigManager::setAutoCalibrationEnabled(bool enabled)
+{
+    if (m_autoCalibrationEnabled != enabled) {
+        m_autoCalibrationEnabled = enabled;
+        emit autoCalibrationEnabledChanged();
+    }
+}
+
 bool ConfigManager::saveConfig()
 {
     QJsonObject root;
@@ -1046,6 +1446,25 @@ bool ConfigManager::saveConfig()
     excavator["bucket_width"] = m_bucketWidth;
     excavator["scanning_depth"] = m_scanningDepth;
     excavator["configured"] = m_excavatorConfigured;
+
+    // Bucket settings
+    excavator["selected_bucket_name"] = m_selectedBucketName;
+    excavator["bucket_length"] = m_bucketLength;
+    excavator["bucket_depth"] = m_bucketDepth;
+
+    // Bucket presets
+    QJsonArray bucketPresetsArray;
+    for (const auto &bucket : m_bucketPresets) {
+        QVariantMap bucketMap = bucket.toMap();
+        QJsonObject bucketObj;
+        bucketObj["name"] = bucketMap["name"].toString();
+        bucketObj["width"] = bucketMap["width"].toDouble();
+        bucketObj["length"] = bucketMap["length"].toDouble();
+        bucketObj["depth"] = bucketMap["depth"].toDouble();
+        bucketPresetsArray.append(bucketObj);
+    }
+    excavator["bucket_presets"] = bucketPresetsArray;
+
     root["excavator"] = excavator;
 
     // Dig area settings
@@ -1063,6 +1482,56 @@ bool ConfigManager::saveConfig()
     digArea["end_latitude"] = m_gridEndLatitude;
     digArea["end_longitude"] = m_gridEndLongitude;
     digArea["configured"] = m_digAreaConfigured;
+
+    // Save corner count and corner points
+    digArea["corner_count"] = m_cornerCount;
+
+    QJsonArray cornerPointsArray;
+    for (const auto &point : m_cornerPoints) {
+        QVariantMap pt = point.toMap();
+        QJsonObject ptObj;
+        ptObj["x"] = pt["x"].toDouble();
+        ptObj["y"] = pt["y"].toDouble();
+        ptObj["label"] = pt["label"].toString();
+        cornerPointsArray.append(ptObj);
+    }
+    digArea["corner_points"] = cornerPointsArray;
+
+    // Save bathymetric points
+    QJsonArray bathymetricPointsArray;
+    for (const auto &point : m_bathymetricPoints) {
+        QVariantMap pt = point.toMap();
+        QJsonObject ptObj;
+        ptObj["x"] = pt["x"].toDouble();
+        ptObj["y"] = pt["y"].toDouble();
+        ptObj["depth"] = pt["depth"].toDouble();
+        bathymetricPointsArray.append(ptObj);
+    }
+    digArea["bathymetric_points"] = bathymetricPointsArray;
+
+    // Save obstacles
+    QJsonArray obstaclesArray;
+    for (const auto &obstacle : m_obstacles) {
+        QVariantMap obs = obstacle.toMap();
+        QJsonObject obsObj;
+        obsObj["id"] = obs["id"].toInt();
+        obsObj["type"] = obs["type"].toString();
+        obsObj["depth"] = obs["depth"].toDouble();
+
+        QJsonArray obsPointsArray;
+        QVariantList points = obs["points"].toList();
+        for (const auto &point : points) {
+            QVariantMap pt = point.toMap();
+            QJsonObject ptObj;
+            ptObj["x"] = pt["x"].toDouble();
+            ptObj["y"] = pt["y"].toDouble();
+            obsPointsArray.append(ptObj);
+        }
+        obsObj["points"] = obsPointsArray;
+        obstaclesArray.append(obsObj);
+    }
+    digArea["obstacles"] = obstaclesArray;
+
     root["dig_area"] = digArea;
 
     // Map settings
@@ -1094,6 +1563,43 @@ bool ConfigManager::saveConfig()
     QJsonObject splashScreen;
     splashScreen["timeout_milliseconds"] = m_splashScreenTimeoutMilliseconds;
     root["splash_screen"] = splashScreen;
+
+    // Safety settings
+    QJsonObject safety;
+    safety["collision_warning_distance"] = m_collisionWarningDistance;
+    safety["obstacle_detection_enabled"] = m_obstacleDetectionEnabled;
+    safety["configured"] = m_safetyConfigured;
+
+    // Safety obstacles
+    QJsonArray safetyObstaclesArray;
+    for (const auto &obstacle : m_safetyObstacles) {
+        QVariantMap obs = obstacle.toMap();
+        QJsonObject obsObj;
+        obsObj["name"] = obs["name"].toString();
+        obsObj["x"] = obs["x"].toDouble();
+        obsObj["y"] = obs["y"].toDouble();
+        obsObj["radius"] = obs["radius"].toDouble();
+        safetyObstaclesArray.append(obsObj);
+    }
+    safety["obstacles"] = safetyObstaclesArray;
+    root["safety"] = safety;
+
+    // Calibration settings
+    QJsonObject calibration;
+    calibration["imu_offset_x"] = m_imuOffsetX;
+    calibration["imu_offset_y"] = m_imuOffsetY;
+    calibration["imu_offset_z"] = m_imuOffsetZ;
+    calibration["gps_offset_lat"] = m_gpsOffsetLat;
+    calibration["gps_offset_lon"] = m_gpsOffsetLon;
+    calibration["auto_calibration_enabled"] = m_autoCalibrationEnabled;
+    calibration["configured"] = m_calibrationConfigured;
+    root["calibration"] = calibration;
+
+    // Project settings
+    QJsonObject project;
+    project["name"] = m_projectName;
+    project["path"] = m_projectPath;
+    root["project"] = project;
 
     // Excavator presets
     QJsonArray presetsArray;
@@ -1131,4 +1637,221 @@ bool ConfigManager::saveConfig()
 
     qDebug() << "Configuration saved to" << m_configPath;
     return true;
+}
+
+// Project management functions
+void ConfigManager::setProjectName(const QString &name)
+{
+    if (m_projectName != name) {
+        m_projectName = name;
+        emit projectNameChanged();
+    }
+}
+
+void ConfigManager::setLastProjectPath(const QString &path)
+{
+    if (m_lastProjectPath != path) {
+        m_lastProjectPath = path;
+        emit lastProjectPathChanged();
+        // Save to main config immediately
+        saveLastProjectToMainConfig();
+    }
+}
+
+void ConfigManager::saveLastProjectToMainConfig()
+{
+    // Save last project path to main config file
+    QString mainConfigPath = "config/bathymetry_config.json";
+    QFile file(mainConfigPath);
+
+    QJsonObject json;
+    if (file.open(QIODevice::ReadOnly)) {
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        file.close();
+        if (doc.isObject()) {
+            json = doc.object();
+        }
+    }
+
+    json["last_project_path"] = m_lastProjectPath;
+
+    // Ensure directory exists
+    QDir dir;
+    dir.mkpath("config");
+
+    if (file.open(QIODevice::WriteOnly)) {
+        QJsonDocument doc(json);
+        file.write(doc.toJson(QJsonDocument::Indented));
+        file.close();
+        qDebug() << "Saved last project path to main config:" << m_lastProjectPath;
+    }
+}
+
+void ConfigManager::loadLastProjectFromMainConfig()
+{
+    QString mainConfigPath = "config/bathymetry_config.json";
+    QFile file(mainConfigPath);
+
+    if (file.open(QIODevice::ReadOnly)) {
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        file.close();
+
+        if (doc.isObject()) {
+            QJsonObject json = doc.object();
+            if (json.contains("last_project_path")) {
+                m_lastProjectPath = json["last_project_path"].toString();
+                qDebug() << "Loaded last project path from main config:" << m_lastProjectPath;
+            }
+        }
+    }
+}
+
+bool ConfigManager::loadLastProject()
+{
+    loadLastProjectFromMainConfig();
+
+    if (m_lastProjectPath.isEmpty()) {
+        qDebug() << "No last project path saved";
+        return false;
+    }
+
+    QDir projectDir(m_lastProjectPath);
+    if (!projectDir.exists()) {
+        qDebug() << "Last project directory does not exist:" << m_lastProjectPath;
+        return false;
+    }
+
+    return loadProject(m_lastProjectPath);
+}
+
+bool ConfigManager::createProject(const QString &name)
+{
+    if (name.isEmpty()) {
+        emit errorOccurred("Proje adı boş olamaz.");
+        return false;
+    }
+
+    // Create projects base directory if it doesn't exist
+    QDir baseDir(m_projectsBaseDir);
+    if (!baseDir.exists()) {
+        if (!baseDir.mkpath(".")) {
+            emit errorOccurred("Projeler klasörü oluşturulamadı: " + m_projectsBaseDir);
+            return false;
+        }
+    }
+
+    // Create project folder
+    QString projectFolder = m_projectsBaseDir + "/" + name;
+    QDir projectDir(projectFolder);
+
+    if (projectDir.exists()) {
+        emit errorOccurred("Bu isimde bir proje zaten mevcut: " + name);
+        return false;
+    }
+
+    if (!projectDir.mkpath(".")) {
+        emit errorOccurred("Proje klasörü oluşturulamadı: " + projectFolder);
+        return false;
+    }
+
+    // Set project properties
+    m_projectName = name;
+    m_projectPath = projectFolder;
+    m_configPath = projectFolder + "/configurations.json";
+
+    emit projectNameChanged();
+    emit projectPathChanged();
+
+    // Save initial configuration
+    if (!saveConfig()) {
+        emit errorOccurred("Proje konfigürasyonu kaydedilemedi.");
+        return false;
+    }
+
+    emit projectCreated();
+    qDebug() << "Project created:" << name << "at" << projectFolder;
+
+    // Save as last used project
+    setLastProjectPath(projectFolder);
+
+    return true;
+}
+
+bool ConfigManager::loadProject(const QString &folderPath)
+{
+    QDir projectDir(folderPath);
+    if (!projectDir.exists()) {
+        emit errorOccurred("Proje klasörü bulunamadı: " + folderPath);
+        return false;
+    }
+
+    QString configFile = folderPath + "/configurations.json";
+    if (!QFile::exists(configFile)) {
+        emit errorOccurred("Proje konfigürasyon dosyası bulunamadı: " + configFile);
+        return false;
+    }
+
+    // Set project properties
+    m_projectName = projectDir.dirName();
+    m_projectPath = folderPath;
+    m_configPath = configFile;
+
+    emit projectNameChanged();
+    emit projectPathChanged();
+
+    // Load configuration
+    if (!loadConfig()) {
+        emit errorOccurred("Proje konfigürasyonu yüklenemedi.");
+        return false;
+    }
+
+    emit projectLoaded();
+    qDebug() << "Project loaded:" << m_projectName << "from" << folderPath;
+
+    // Save as last used project
+    setLastProjectPath(folderPath);
+
+    return true;
+}
+
+bool ConfigManager::saveProjectConfig()
+{
+    if (m_projectPath.isEmpty()) {
+        emit errorOccurred("Aktif proje yok. Önce bir proje oluşturun veya açın.");
+        return false;
+    }
+
+    return saveConfig();
+}
+
+QStringList ConfigManager::getExistingProjects()
+{
+    QStringList projects;
+
+    QDir baseDir(m_projectsBaseDir);
+    if (!baseDir.exists()) {
+        return projects;
+    }
+
+    // Exclude system/build directories
+    QStringList excludeDirs = {"src", "build", "config", "docs", "resources",
+                               "static_maps", "scripts", ".git", "cmake-build-debug",
+                               "cmake-build-release", "CMakeFiles"};
+
+    QStringList entries = baseDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    for (const QString &entry : entries) {
+        // Skip excluded directories
+        if (excludeDirs.contains(entry, Qt::CaseInsensitive)) {
+            continue;
+        }
+
+        QString configPath = m_projectsBaseDir + "/" + entry + "/configurations.json";
+        if (QFile::exists(configPath)) {
+            projects.append(entry);
+        }
+    }
+
+    qDebug() << "Found" << projects.size() << "existing projects";
+    return projects;
 }

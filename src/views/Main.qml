@@ -42,8 +42,7 @@ Rectangle {
         StatusBar {
             id: statusBar
             Layout.fillWidth: true
-            projectName: "AŞ-KAZI-042"
-            excavatorName: "CAT 390F LME"
+            // projectName ve excavatorName artık ConfigManager'dan otomatik alınıyor
             gnssOk: true  // GNSS durumu (true = yeşil, false = gri)
             imu1Ok: true  // IMU/1 durumu (default: hepsi OK = yeşil)
             imu2Ok: true  // IMU/2 durumu

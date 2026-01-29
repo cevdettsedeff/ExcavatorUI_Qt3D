@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components"
 
 /**
  * ExcavatorConfigPage - Ekskavatör Ayarları Sayfası (2 Sekmeli Wizard)
@@ -57,12 +58,52 @@ Rectangle {
     property int selectedPresetIndex: -1  // -1 means "Yeni Ekskavatör"
 
     // ==================== BUCKET DATA ====================
-    property var savedBuckets: []  // [{name: "Kova 1", length: 1.2, width: 1.8, depth: 0.9}, ...]
+    property var savedBuckets: configManager ? configManager.bucketPresets : []
     property int selectedBucketIndex: -1  // -1 means "Yeni Kova"
-    property real bucketLength: 0  // Boy (metre)
-    property real bucketWidth: 0   // Genişlik (metre)
-    property real bucketDepth: 0   // Derinlik (metre)
-    property string bucketName: ""
+    property real bucketLength: configManager ? configManager.bucketLength : 0
+    property real bucketWidth: configManager ? configManager.bucketWidth : 0
+    property real bucketDepth: configManager ? configManager.bucketDepth : 0
+    property string bucketName: configManager ? configManager.selectedBucketName : ""
+
+    // ==================== VALIDATION ====================
+    property bool isExcavatorValid: configManager && configManager.excavatorName.length > 0 &&
+                                    configManager.scanningDepth > 0 &&
+                                    configManager.boomLength > 0 &&
+                                    configManager.armLength > 0
+    property bool isBucketValid: bucketWidth > 0 && bucketLength > 0 && bucketDepth > 0
+    property string validationError: ""
+
+    // Validation function
+    function validateCurrentStep() {
+        validationError = ""
+
+        if (currentStep === 0) {
+            if (!configManager || configManager.excavatorName.length === 0) {
+                validationError = root.tr("Lütfen bir ekskavatör seçin veya yeni ekskavatör adı girin")
+                return false
+            }
+            if (configManager.scanningDepth <= 0) {
+                validationError = root.tr("Tarama derinliği girilmeli")
+                return false
+            }
+            if (configManager.boomLength <= 0) {
+                validationError = root.tr("Ana bom uzunluğu girilmeli")
+                return false
+            }
+            if (configManager.armLength <= 0) {
+                validationError = root.tr("Arm bom uzunluğu girilmeli")
+                return false
+            }
+            return true
+        } else if (currentStep === 1) {
+            if (bucketWidth <= 0 || bucketLength <= 0 || bucketDepth <= 0) {
+                validationError = root.tr("Kova ölçüleri girilmeli veya kayıtlı bir kova seçilmeli")
+                return false
+            }
+            return true
+        }
+        return true
+    }
 
     // Step titles for progress bar
     property var stepTitles: [
@@ -119,68 +160,14 @@ Rectangle {
     }
 
     // Progress Indicator
-    Rectangle {
+    StepProgressIndicator {
         id: progressBar
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 70
-        color: root.cardColor
-
-        RowLayout {
-            anchors.centerIn: parent
-            spacing: 0
-
-            Repeater {
-                model: stepTitles.length
-
-                RowLayout {
-                    spacing: 0
-
-                    // Step circle
-                    Rectangle {
-                        width: 36
-                        height: 36
-                        radius: 18
-                        color: index < currentStep ? root.primaryColor :
-                               (index === currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.1))
-                        border.width: 2
-                        border.color: index <= currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.3)
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: index < currentStep ? "✓" : (index + 1).toString()
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: index <= currentStep ? "white" : root.textSecondaryColor
-                        }
-                    }
-
-                    // Step label
-                    Column {
-                        Layout.leftMargin: 8
-                        Layout.rightMargin: index < stepTitles.length - 1 ? 0 : 0
-
-                        Text {
-                            text: stepTitles[index]
-                            font.pixelSize: 12
-                            font.bold: index === currentStep
-                            color: index <= currentStep ? root.textColor : root.textSecondaryColor
-                        }
-                    }
-
-                    // Connector line
-                    Rectangle {
-                        visible: index < stepTitles.length - 1
-                        Layout.preferredWidth: 60
-                        Layout.preferredHeight: 2
-                        Layout.leftMargin: 12
-                        Layout.rightMargin: 12
-                        color: index < currentStep ? root.primaryColor : Qt.rgba(1, 1, 1, 0.2)
-                    }
-                }
-            }
-        }
+        currentStep: root.currentStep
+        stepTitles: root.stepTitles
+        primaryColor: root.primaryColor
     }
 
     // Content Area with Loader
@@ -272,13 +259,41 @@ Rectangle {
                 }
 
                 onClicked: {
-                    if (currentStep < stepTitles.length - 1) {
-                        currentStep++
-                    } else {
-                        saveConfiguration()
-                        root.configSaved()
+                    if (validateCurrentStep()) {
+                        if (currentStep < stepTitles.length - 1) {
+                            currentStep++
+                        } else {
+                            saveConfiguration()
+                            root.configSaved()
+                        }
                     }
                 }
+            }
+        }
+
+        // Validation error message
+        Rectangle {
+            anchors.bottom: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: validationError.length > 0 ? 40 : 0
+            color: "#E53E3E"
+            visible: validationError.length > 0
+
+            Behavior on height { NumberAnimation { duration: 200 } }
+
+            Text {
+                anchors.centerIn: parent
+                text: validationError
+                font.pixelSize: 12
+                color: "white"
+            }
+
+            // Auto-hide after 3 seconds
+            Timer {
+                running: validationError.length > 0
+                interval: 3000
+                onTriggered: validationError = ""
             }
         }
     }
@@ -967,8 +982,9 @@ Rectangle {
 
                                 model: {
                                     var list = [root.tr("Yeni Kova")];
-                                    for (var i = 0; i < root.savedBuckets.length; i++) {
-                                        list.push(root.savedBuckets[i].name);
+                                    var presets = configManager ? configManager.bucketPresets : [];
+                                    for (var i = 0; i < presets.length; i++) {
+                                        list.push(presets[i].name);
                                     }
                                     return list;
                                 }
@@ -982,14 +998,21 @@ Rectangle {
                                         root.bucketLength = 0;
                                         root.bucketWidth = 0;
                                         root.bucketDepth = 0;
-                                    } else if (currentIndex > 0) {
+                                        if (configManager) {
+                                            configManager.selectedBucketName = "";
+                                            configManager.bucketLength = 0;
+                                            configManager.bucketWidth = 0;
+                                            configManager.bucketDepth = 0;
+                                        }
+                                    } else if (currentIndex > 0 && configManager) {
                                         var idx = currentIndex - 1;
                                         root.selectedBucketIndex = idx;
-                                        var bucket = root.savedBuckets[idx];
-                                        root.bucketName = bucket.name;
-                                        root.bucketLength = bucket.length;
-                                        root.bucketWidth = bucket.width;
-                                        root.bucketDepth = bucket.depth;
+                                        configManager.loadBucketPreset(idx);
+                                        // Update local properties from configManager
+                                        root.bucketName = configManager.selectedBucketName;
+                                        root.bucketLength = configManager.bucketLength;
+                                        root.bucketWidth = configManager.bucketWidth;
+                                        root.bucketDepth = configManager.bucketDepth;
                                     }
                                 }
 
@@ -1312,35 +1335,42 @@ Rectangle {
         }
     }
 
-    // Save bucket to list
+    // Save bucket to ConfigManager
     function saveBucket() {
-        var newBucket = {
-            name: bucketName,
-            length: bucketLength,
-            width: bucketWidth,
-            depth: bucketDepth
+        if (configManager && bucketName.length > 0 && bucketWidth > 0 && bucketLength > 0 && bucketDepth > 0) {
+            configManager.saveBucketPreset(bucketName, bucketWidth, bucketLength, bucketDepth)
+
+            // Select the newly saved bucket
+            selectedBucketIndex = configManager.bucketPresets.length - 1
+
+            // Update local reference
+            savedBuckets = configManager.bucketPresets
+
+            console.log("Bucket saved:", bucketName)
         }
-
-        var buckets = savedBuckets.slice()
-        buckets.push(newBucket)
-        savedBuckets = buckets
-
-        // Select the newly saved bucket
-        selectedBucketIndex = savedBuckets.length - 1
-
-        console.log("Bucket saved:", JSON.stringify(newBucket))
     }
 
     // Save all configuration
     function saveConfiguration() {
-        // Save bucket to configManager if available
         if (configManager) {
+            // Save bucket dimensions
             configManager.bucketWidth = bucketWidth
-            // Additional bucket properties could be saved here
-        }
+            configManager.bucketLength = bucketLength
+            configManager.bucketDepth = bucketDepth
+            configManager.selectedBucketName = bucketName
 
-        console.log("Configuration saved:")
-        console.log("- Excavator:", configManager ? configManager.excavatorName : "N/A")
-        console.log("- Bucket:", bucketName, bucketLength, "x", bucketWidth, "x", bucketDepth, "m")
+            // Mark excavator as configured
+            configManager.markExcavatorConfigured()
+
+            // Save to JSON file
+            configManager.saveProjectConfig()
+
+            console.log("Configuration saved:")
+            console.log("- Excavator:", configManager.excavatorName)
+            console.log("- Scanning Depth:", configManager.scanningDepth)
+            console.log("- Boom Length:", configManager.boomLength)
+            console.log("- Arm Length:", configManager.armLength)
+            console.log("- Bucket:", bucketName, bucketLength, "x", bucketWidth, "x", bucketDepth, "mm")
+        }
     }
 }

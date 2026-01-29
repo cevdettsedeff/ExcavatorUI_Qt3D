@@ -56,6 +56,13 @@ int main(int argc, char *argv[])
     configManager.setConfigPath("config/bathymetry_config.json");
     configManager.loadConfig();
 
+    // Son kullanılan projeyi otomatik yükle
+    if (configManager.loadLastProject()) {
+        qDebug() << "Last project loaded successfully:" << configManager.projectName();
+    } else {
+        qDebug() << "No previous project to load";
+    }
+
     // Debug: Working directory ve maps klasörü kontrolü
     QString workingDir = QDir::currentPath();
     QString mapsPath = QDir(workingDir).filePath("maps");

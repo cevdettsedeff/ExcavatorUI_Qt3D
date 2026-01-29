@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../components"
 
 /**
  * SafetyConfigPage - Emniyet Ayarları Sayfası
@@ -73,10 +74,30 @@ Rectangle {
     property color warningColor: "#ed8936"
     property color successColor: "#48bb78"
 
-    // Safety settings (placeholder values - will be connected to ConfigManager)
-    property int collisionWarningDistance: 50  // cm
-    property bool obstacleDetectionEnabled: true
-    property var obstacles: []  // List of obstacles
+    // Safety settings - connected to ConfigManager
+    property int collisionWarningDistance: configManager ? configManager.collisionWarningDistance : 50
+    property bool obstacleDetectionEnabled: configManager ? configManager.obstacleDetectionEnabled : true
+    property var obstacles: configManager ? configManager.safetyObstacles : []
+
+    // Save safety settings to ConfigManager
+    function saveSettings() {
+        if (configManager) {
+            configManager.collisionWarningDistance = collisionWarningDistance
+            configManager.obstacleDetectionEnabled = obstacleDetectionEnabled
+            configManager.safetyObstacles = obstacles
+            configManager.markSafetyConfigured()
+            configManager.saveProjectConfig()
+
+            console.log("Safety settings saved:")
+            console.log("- Collision warning distance:", collisionWarningDistance, "cm")
+            console.log("- Obstacle detection:", obstacleDetectionEnabled)
+            console.log("- Obstacles count:", obstacles.length)
+        }
+    }
+
+    // Step indicator properties
+    property int currentStep: 0
+    property var stepTitles: [root.tr("Emniyet Ayarları")]
 
     // Header
     Rectangle {
@@ -126,9 +147,20 @@ Rectangle {
         }
     }
 
+    // Progress Indicator
+    StepProgressIndicator {
+        id: progressBar
+        anchors.top: header.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        currentStep: root.currentStep
+        stepTitles: root.stepTitles
+        primaryColor: root.primaryColor
+    }
+
     // Content
     ScrollView {
-        anchors.top: header.bottom
+        anchors.top: progressBar.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: footer.top
@@ -474,10 +506,7 @@ Rectangle {
                 }
 
                 onClicked: {
-                    // TODO: Save safety settings to ConfigManager
-                    console.log("Emniyet ayarları kaydedilecek")
-                    console.log("Çarpışma uyarı mesafesi:", root.collisionWarningDistance, "cm")
-                    console.log("Engel tespiti:", root.obstacleDetectionEnabled)
+                    saveSettings()
                     root.configSaved()
                 }
             }

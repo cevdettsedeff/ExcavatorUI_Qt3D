@@ -98,3 +98,8 @@ maps/*/*/*/*.png
 *.db
 *.sqlite
 *.sqlite3
+
+# Project configuration folders (user-created excavation projects)
+# These folders contain configurations.json files
+# Pattern: any folder in root that contains configurations.json
+**/configurations.json
