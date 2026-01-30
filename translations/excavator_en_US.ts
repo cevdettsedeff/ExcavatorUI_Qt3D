@@ -1148,5 +1148,283 @@ Redirecting to login screen...</translation>
         <source>Proje dosyası başarıyla yüklendi</source>
         <translation>Project file loaded successfully</translation>
     </message>
+    <!-- ==================== NEW SETTINGS PAGES TRANSLATIONS ==================== -->
+    <!-- UserManagementView - Profile Section -->
+    <message>
+        <source>OPERATOR</source>
+        <translation>OPERATOR</translation>
+    </message>
+    <message>
+        <source>Full system access</source>
+        <translation>Full system access</translation>
+    </message>
+    <message>
+        <source>Standard user access</source>
+        <translation>Standard user access</translation>
+    </message>
+    <message>
+        <source>Change Name</source>
+        <translation>Change Name</translation>
+    </message>
+    <message>
+        <source>Change Password</source>
+        <translation>Change Password</translation>
+    </message>
+    <message>
+        <source>YOU</source>
+        <translation>YOU</translation>
+    </message>
+    <message>
+        <source>Update your username</source>
+        <translation>Update your username</translation>
+    </message>
+    <message>
+        <source>Enter new username...</source>
+        <translation>Enter new username...</translation>
+    </message>
+    <message>
+        <source>Update your password</source>
+        <translation>Update your password</translation>
+    </message>
+    <message>
+        <source>Current Password</source>
+        <translation>Current Password</translation>
+    </message>
+    <message>
+        <source>Enter current password...</source>
+        <translation>Enter current password...</translation>
+    </message>
+    <message>
+        <source>Re-enter new password...</source>
+        <translation>Re-enter new password...</translation>
+    </message>
+    <message>
+        <source>Passwords do not match</source>
+        <translation>Passwords do not match</translation>
+    </message>
+    <!-- Map Settings Page -->
+    <message>
+        <source>Map Settings</source>
+        <translation>Map Settings</translation>
+    </message>
+    <message>
+        <source>Map Layers</source>
+        <translation>Map Layers</translation>
+    </message>
+    <message>
+        <source>Configure visible map layers and display options</source>
+        <translation>Configure visible map layers and display options</translation>
+    </message>
+    <message>
+        <source>Map layer settings will be configured here</source>
+        <translation>Map layer settings will be configured here</translation>
+    </message>
+    <!-- Alarm Settings Page -->
+    <message>
+        <source>Alarm Settings</source>
+        <translation>Alarm Settings</translation>
+    </message>
+    <message>
+        <source>Alarm Thresholds</source>
+        <translation>Alarm Thresholds</translation>
+    </message>
+    <message>
+        <source>Configure alarm thresholds and notification settings</source>
+        <translation>Configure alarm thresholds and notification settings</translation>
+    </message>
+    <message>
+        <source>Alarm threshold settings will be configured here</source>
+        <translation>Alarm threshold settings will be configured here</translation>
+    </message>
+    <!-- Excavator Display Settings Page -->
+    <message>
+        <source>Excavator Display</source>
+        <translation>Excavator Display</translation>
+    </message>
+    <message>
+        <source>Excavator View Settings</source>
+        <translation>Excavator View Settings</translation>
+    </message>
+    <message>
+        <source>Configure excavator display and view options</source>
+        <translation>Configure excavator display and view options</translation>
+    </message>
+    <message>
+        <source>Excavator display settings will be configured here</source>
+        <translation>Excavator display settings will be configured here</translation>
+    </message>
+    <!-- Depth Panel Settings Page -->
+    <message>
+        <source>Depth Panel Settings</source>
+        <translation>Depth Panel Settings</translation>
+    </message>
+    <message>
+        <source>Color Settings</source>
+        <translation>Color Settings</translation>
+    </message>
+    <message>
+        <source>Configure depth panel color scheme</source>
+        <translation>Configure depth panel color scheme</translation>
+    </message>
+    <message>
+        <source>Color settings will be configured here</source>
+        <translation>Color settings will be configured here</translation>
+    </message>
+    <message>
+        <source>Reference Points</source>
+        <translation>Reference Points</translation>
+    </message>
+    <message>
+        <source>Configure depth reference points</source>
+        <translation>Configure depth reference points</translation>
+    </message>
+    <message>
+        <source>Reference point settings will be configured here</source>
+        <translation>Reference point settings will be configured here</translation>
+    </message>
+    <message>
+        <source>3D View Settings</source>
+        <translation>3D View Settings</translation>
+    </message>
+    <message>
+        <source>Configure 3D view display options</source>
+        <translation>Configure 3D view display options</translation>
+    </message>
+    <message>
+        <source>3D view settings will be configured here</source>
+        <translation>3D view settings will be configured here</translation>
+    </message>
+    <!-- Reports & Logs Page -->
+    <message>
+        <source>Reports &amp; Logs</source>
+        <translation>Reports &amp; Logs</translation>
+    </message>
+    <message>
+        <source>Safety Switch Cancellations</source>
+        <translation>Safety Switch Cancellations</translation>
+    </message>
+    <message>
+        <source>View safety switch cancellation logs</source>
+        <translation>View safety switch cancellation logs</translation>
+    </message>
+    <message>
+        <source>Safety switch logs will be displayed here</source>
+        <translation>Safety switch logs will be displayed here</translation>
+    </message>
+    <message>
+        <source>Alarm Logs</source>
+        <translation>Alarm Logs</translation>
+    </message>
+    <message>
+        <source>View alarm history and logs</source>
+        <translation>View alarm history and logs</translation>
+    </message>
+    <message>
+        <source>Alarm logs will be displayed here</source>
+        <translation>Alarm logs will be displayed here</translation>
+    </message>
+    <!-- Hardware Settings Page -->
+    <message>
+        <source>Hardware Settings</source>
+        <translation>Hardware Settings</translation>
+    </message>
+    <message>
+        <source>Bluetooth Settings</source>
+        <translation>Bluetooth Settings</translation>
+    </message>
+    <message>
+        <source>Configure Bluetooth connection and device management</source>
+        <translation>Configure Bluetooth connection and device management</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings will be configured here</source>
+        <translation>Bluetooth settings will be configured here</translation>
+    </message>
+    <message>
+        <source>IMU Status &amp; Settings</source>
+        <translation>IMU Status &amp; Settings</translation>
+    </message>
+    <message>
+        <source>IMU sensor calibration and status information</source>
+        <translation>IMU sensor calibration and status information</translation>
+    </message>
+    <message>
+        <source>IMU settings will be configured here</source>
+        <translation>IMU settings will be configured here</translation>
+    </message>
+    <message>
+        <source>GNSS Status &amp; Settings</source>
+        <translation>GNSS Status &amp; Settings</translation>
+    </message>
+    <message>
+        <source>GNSS configuration and status information</source>
+        <translation>GNSS configuration and status information</translation>
+    </message>
+    <message>
+        <source>GNSS settings will be configured here</source>
+        <translation>GNSS settings will be configured here</translation>
+    </message>
+    <message>
+        <source>Safety Switch Management</source>
+        <translation>Safety Switch Management</translation>
+    </message>
+    <message>
+        <source>Enable/disable safety switch and management settings</source>
+        <translation>Enable/disable safety switch and management settings</translation>
+    </message>
+    <message>
+        <source>Safety switch settings will be configured here</source>
+        <translation>Safety switch settings will be configured here</translation>
+    </message>
+    <!-- System Settings Page -->
+    <message>
+        <source>System</source>
+        <translation>System</translation>
+    </message>
+    <message>
+        <source>Storage Usage</source>
+        <translation>Storage Usage</translation>
+    </message>
+    <message>
+        <source>View storage space and usage information</source>
+        <translation>View storage space and usage information</translation>
+    </message>
+    <message>
+        <source>used</source>
+        <translation>used</translation>
+    </message>
+    <message>
+        <source>Used</source>
+        <translation>Used</translation>
+    </message>
+    <message>
+        <source>Free</source>
+        <translation>Free</translation>
+    </message>
+    <!-- About Page -->
+    <message>
+        <source>About</source>
+        <translation>About</translation>
+    </message>
+    <message>
+        <source>Excavator Control System</source>
+        <translation>Excavator Control System</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Version</translation>
+    </message>
+    <message>
+        <source>Build</source>
+        <translation>Build</translation>
+    </message>
+    <message>
+        <source>License Information</source>
+        <translation>License Information</translation>
+    </message>
+    <message>
+        <source>This software uses the following open source libraries:</source>
+        <translation>This software uses the following open source libraries:</translation>
+    </message>
 </context>
 </TS>

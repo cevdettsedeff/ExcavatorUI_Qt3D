@@ -1670,5 +1670,283 @@ Giriş ekranına yönlendiriliyorsunuz...</translation>
         <source>Proje dosyası başarıyla yüklendi</source>
         <translation>Proje dosyası başarıyla yüklendi</translation>
     </message>
+    <!-- ==================== NEW SETTINGS PAGES TRANSLATIONS ==================== -->
+    <!-- UserManagementView - Profile Section -->
+    <message>
+        <source>OPERATOR</source>
+        <translation>OPERATÖR</translation>
+    </message>
+    <message>
+        <source>Full system access</source>
+        <translation>Tam sistem erişimi</translation>
+    </message>
+    <message>
+        <source>Standard user access</source>
+        <translation>Standart kullanıcı erişimi</translation>
+    </message>
+    <message>
+        <source>Change Name</source>
+        <translation>İsim Değiştir</translation>
+    </message>
+    <message>
+        <source>Change Password</source>
+        <translation>Şifre Değiştir</translation>
+    </message>
+    <message>
+        <source>YOU</source>
+        <translation>SEN</translation>
+    </message>
+    <message>
+        <source>Update your username</source>
+        <translation>Kullanıcı adınızı güncelleyin</translation>
+    </message>
+    <message>
+        <source>Enter new username...</source>
+        <translation>Yeni kullanıcı adı girin...</translation>
+    </message>
+    <message>
+        <source>Update your password</source>
+        <translation>Şifrenizi güncelleyin</translation>
+    </message>
+    <message>
+        <source>Current Password</source>
+        <translation>Mevcut Şifre</translation>
+    </message>
+    <message>
+        <source>Enter current password...</source>
+        <translation>Mevcut şifrenizi girin...</translation>
+    </message>
+    <message>
+        <source>Re-enter new password...</source>
+        <translation>Yeni şifreyi tekrar girin...</translation>
+    </message>
+    <message>
+        <source>Passwords do not match</source>
+        <translation>Şifreler eşleşmiyor</translation>
+    </message>
+    <!-- Map Settings Page -->
+    <message>
+        <source>Map Settings</source>
+        <translation>Harita Ayarları</translation>
+    </message>
+    <message>
+        <source>Map Layers</source>
+        <translation>Harita Katmanları</translation>
+    </message>
+    <message>
+        <source>Configure visible map layers and display options</source>
+        <translation>Görünür harita katmanlarını ve görüntüleme seçeneklerini yapılandırın</translation>
+    </message>
+    <message>
+        <source>Map layer settings will be configured here</source>
+        <translation>Harita katmanı ayarları burada yapılandırılacak</translation>
+    </message>
+    <!-- Alarm Settings Page -->
+    <message>
+        <source>Alarm Settings</source>
+        <translation>Alarm Ayarları</translation>
+    </message>
+    <message>
+        <source>Alarm Thresholds</source>
+        <translation>Alarm Eşikleri</translation>
+    </message>
+    <message>
+        <source>Configure alarm thresholds and notification settings</source>
+        <translation>Alarm eşiklerini ve bildirim ayarlarını yapılandırın</translation>
+    </message>
+    <message>
+        <source>Alarm threshold settings will be configured here</source>
+        <translation>Alarm eşik ayarları burada yapılandırılacak</translation>
+    </message>
+    <!-- Excavator Display Settings Page -->
+    <message>
+        <source>Excavator Display</source>
+        <translation>Ekskavatör Ekranı</translation>
+    </message>
+    <message>
+        <source>Excavator View Settings</source>
+        <translation>Ekskavatör Görünüm Ayarları</translation>
+    </message>
+    <message>
+        <source>Configure excavator display and view options</source>
+        <translation>Ekskavatör ekranını ve görünüm seçeneklerini yapılandırın</translation>
+    </message>
+    <message>
+        <source>Excavator display settings will be configured here</source>
+        <translation>Ekskavatör ekran ayarları burada yapılandırılacak</translation>
+    </message>
+    <!-- Depth Panel Settings Page -->
+    <message>
+        <source>Depth Panel Settings</source>
+        <translation>Derinlik Paneli Ayarları</translation>
+    </message>
+    <message>
+        <source>Color Settings</source>
+        <translation>Renk Ayarları</translation>
+    </message>
+    <message>
+        <source>Configure depth panel color scheme</source>
+        <translation>Derinlik paneli renk şemasını yapılandırın</translation>
+    </message>
+    <message>
+        <source>Color settings will be configured here</source>
+        <translation>Renk ayarları burada yapılandırılacak</translation>
+    </message>
+    <message>
+        <source>Reference Points</source>
+        <translation>Referans Noktaları</translation>
+    </message>
+    <message>
+        <source>Configure depth reference points</source>
+        <translation>Derinlik referans noktalarını yapılandırın</translation>
+    </message>
+    <message>
+        <source>Reference point settings will be configured here</source>
+        <translation>Referans noktası ayarları burada yapılandırılacak</translation>
+    </message>
+    <message>
+        <source>3D View Settings</source>
+        <translation>3B Görünüm Ayarları</translation>
+    </message>
+    <message>
+        <source>Configure 3D view display options</source>
+        <translation>3B görünüm seçeneklerini yapılandırın</translation>
+    </message>
+    <message>
+        <source>3D view settings will be configured here</source>
+        <translation>3B görünüm ayarları burada yapılandırılacak</translation>
+    </message>
+    <!-- Reports & Logs Page -->
+    <message>
+        <source>Reports &amp; Logs</source>
+        <translation>Raporlar ve Kayıtlar</translation>
+    </message>
+    <message>
+        <source>Safety Switch Cancellations</source>
+        <translation>Emniyet Şalteri İptalleri</translation>
+    </message>
+    <message>
+        <source>View safety switch cancellation logs</source>
+        <translation>Emniyet şalteri iptal kayıtlarını görüntüleyin</translation>
+    </message>
+    <message>
+        <source>Safety switch logs will be displayed here</source>
+        <translation>Emniyet şalteri kayıtları burada gösterilecek</translation>
+    </message>
+    <message>
+        <source>Alarm Logs</source>
+        <translation>Alarm Kayıtları</translation>
+    </message>
+    <message>
+        <source>View alarm history and logs</source>
+        <translation>Alarm geçmişini ve kayıtlarını görüntüleyin</translation>
+    </message>
+    <message>
+        <source>Alarm logs will be displayed here</source>
+        <translation>Alarm kayıtları burada gösterilecek</translation>
+    </message>
+    <!-- Hardware Settings Page -->
+    <message>
+        <source>Hardware Settings</source>
+        <translation>Donanım Ayarları</translation>
+    </message>
+    <message>
+        <source>Bluetooth Settings</source>
+        <translation>Bluetooth Ayarları</translation>
+    </message>
+    <message>
+        <source>Configure Bluetooth connection and device management</source>
+        <translation>Bluetooth bağlantısını ve cihaz yönetimini yapılandırın</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings will be configured here</source>
+        <translation>Bluetooth ayarları burada yapılandırılacak</translation>
+    </message>
+    <message>
+        <source>IMU Status &amp; Settings</source>
+        <translation>IMU Durum ve Ayarları</translation>
+    </message>
+    <message>
+        <source>IMU sensor calibration and status information</source>
+        <translation>IMU sensör kalibrasyonu ve durum bilgisi</translation>
+    </message>
+    <message>
+        <source>IMU settings will be configured here</source>
+        <translation>IMU ayarları burada yapılandırılacak</translation>
+    </message>
+    <message>
+        <source>GNSS Status &amp; Settings</source>
+        <translation>GNSS Durum ve Ayarları</translation>
+    </message>
+    <message>
+        <source>GNSS configuration and status information</source>
+        <translation>GNSS yapılandırması ve durum bilgisi</translation>
+    </message>
+    <message>
+        <source>GNSS settings will be configured here</source>
+        <translation>GNSS ayarları burada yapılandırılacak</translation>
+    </message>
+    <message>
+        <source>Safety Switch Management</source>
+        <translation>Emniyet Şalteri Yönetimi</translation>
+    </message>
+    <message>
+        <source>Enable/disable safety switch and management settings</source>
+        <translation>Emniyet şalterini etkinleştir/devre dışı bırak ve yönetim ayarları</translation>
+    </message>
+    <message>
+        <source>Safety switch settings will be configured here</source>
+        <translation>Emniyet şalteri ayarları burada yapılandırılacak</translation>
+    </message>
+    <!-- System Settings Page -->
+    <message>
+        <source>System</source>
+        <translation>Sistem</translation>
+    </message>
+    <message>
+        <source>Storage Usage</source>
+        <translation>Depolama Kullanımı</translation>
+    </message>
+    <message>
+        <source>View storage space and usage information</source>
+        <translation>Depolama alanı ve kullanım bilgilerini görüntüleyin</translation>
+    </message>
+    <message>
+        <source>used</source>
+        <translation>kullanılıyor</translation>
+    </message>
+    <message>
+        <source>Used</source>
+        <translation>Kullanılan</translation>
+    </message>
+    <message>
+        <source>Free</source>
+        <translation>Boş</translation>
+    </message>
+    <!-- About Page -->
+    <message>
+        <source>About</source>
+        <translation>Hakkında</translation>
+    </message>
+    <message>
+        <source>Excavator Control System</source>
+        <translation>Ekskavatör Kontrol Sistemi</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Sürüm</translation>
+    </message>
+    <message>
+        <source>Build</source>
+        <translation>Yapı</translation>
+    </message>
+    <message>
+        <source>License Information</source>
+        <translation>Lisans Bilgileri</translation>
+    </message>
+    <message>
+        <source>This software uses the following open source libraries:</source>
+        <translation>Bu yazılım aşağıdaki açık kaynak kütüphaneleri kullanır:</translation>
+    </message>
 </context>
 </TS>
