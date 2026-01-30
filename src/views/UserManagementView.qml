@@ -28,6 +28,9 @@ Rectangle {
         }
     }
 
+    // Kullanıcı bilgileri
+    property bool isAdmin: authService ? authService.isAdmin : false
+    property string currentUsername: authService ? authService.currentUser : ""
     property var pendingUsers: []
     property var allUsers: []
 
@@ -59,8 +62,219 @@ Rectangle {
             width: parent.width - 20
             spacing: 25
 
-            // Onay Bekleyen Kullanıcılar
+            // ==================== PROFİL AYARLARIM (TÜM KULLANICILAR) ====================
             Rectangle {
+                Layout.fillWidth: true
+                Layout.minimumHeight: profileContent.implicitHeight + 40
+                color: root.surfaceColor
+                radius: 12
+                border.color: root.primaryColor
+                border.width: 2
+
+                Column {
+                    id: profileContent
+                    anchors.fill: parent
+                    anchors.margins: 20
+                    spacing: 20
+
+                    // Başlık
+                    RowLayout {
+                        width: parent.width
+                        spacing: 12
+
+                        Rectangle {
+                            width: 4
+                            height: 30
+                            radius: 2
+                            color: root.primaryColor
+                        }
+
+                        Text {
+                            text: tr("My Profile")
+                            font.pixelSize: app.mediumFontSize
+                            font.bold: true
+                            color: root.textColor
+                            Layout.fillWidth: true
+                        }
+                    }
+
+                    // Profil kartı
+                    Rectangle {
+                        width: parent.width
+                        height: 120
+                        color: Qt.darker(root.surfaceColor, 1.1)
+                        radius: 12
+                        border.color: root.borderColor
+                        border.width: 1
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 20
+                            spacing: 20
+
+                            // Avatar
+                            Rectangle {
+                                width: 80
+                                height: 80
+                                radius: 40
+                                color: isAdmin ? "#9c27b0" : root.primaryColor
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: isAdmin ? "👑" : currentUsername.charAt(0).toUpperCase()
+                                    font.pixelSize: isAdmin ? 36 : 32
+                                    font.bold: true
+                                    color: "white"
+                                }
+                            }
+
+                            // Kullanıcı bilgileri
+                            Column {
+                                spacing: 8
+                                Layout.fillWidth: true
+
+                                Row {
+                                    spacing: 12
+
+                                    Text {
+                                        text: currentUsername
+                                        font.pixelSize: app.largeFontSize
+                                        font.bold: true
+                                        color: root.textColor
+                                    }
+
+                                    Rectangle {
+                                        visible: isAdmin
+                                        width: adminBadge.width + 16
+                                        height: 24
+                                        radius: 12
+                                        color: "#9c27b0"
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Text {
+                                            id: adminBadge
+                                            anchors.centerIn: parent
+                                            text: "ADMIN"
+                                            font.pixelSize: app.smallFontSize * 0.9
+                                            font.bold: true
+                                            color: "white"
+                                        }
+                                    }
+
+                                    Rectangle {
+                                        visible: !isAdmin
+                                        width: operatorBadge.width + 16
+                                        height: 24
+                                        radius: 12
+                                        color: root.primaryColor
+                                        anchors.verticalCenter: parent.verticalCenter
+
+                                        Text {
+                                            id: operatorBadge
+                                            anchors.centerIn: parent
+                                            text: tr("OPERATOR")
+                                            font.pixelSize: app.smallFontSize * 0.9
+                                            font.bold: true
+                                            color: "white"
+                                        }
+                                    }
+                                }
+
+                                Text {
+                                    text: isAdmin ? tr("Full system access") : tr("Standard user access")
+                                    font.pixelSize: app.smallFontSize
+                                    color: root.textSecondaryColor
+                                }
+                            }
+                        }
+                    }
+
+                    // Profil işlemleri
+                    Row {
+                        width: parent.width
+                        spacing: 15
+
+                        // İsim Değiştir
+                        Rectangle {
+                            width: (parent.width - 15) / 2
+                            height: 60
+                            radius: 10
+                            color: changeNameArea.containsMouse ? Qt.lighter("#2196F3", 1.1) : "#2196F3"
+
+                            Row {
+                                anchors.centerIn: parent
+                                spacing: 10
+
+                                Text {
+                                    text: "✎"
+                                    font.pixelSize: app.largeFontSize
+                                    color: "white"
+                                }
+
+                                Text {
+                                    text: tr("Change Name")
+                                    font.pixelSize: app.baseFontSize
+                                    font.bold: true
+                                    color: "white"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            MouseArea {
+                                id: changeNameArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: changeNameDialog.open()
+                            }
+
+                            Behavior on color { ColorAnimation { duration: 150 } }
+                        }
+
+                        // Şifre Değiştir
+                        Rectangle {
+                            width: (parent.width - 15) / 2
+                            height: 60
+                            radius: 10
+                            color: changePasswordArea.containsMouse ? Qt.lighter("#ff9800", 1.1) : "#ff9800"
+
+                            Row {
+                                anchors.centerIn: parent
+                                spacing: 10
+
+                                Text {
+                                    text: "🔒"
+                                    font.pixelSize: app.largeFontSize
+                                }
+
+                                Text {
+                                    text: tr("Change Password")
+                                    font.pixelSize: app.baseFontSize
+                                    font.bold: true
+                                    color: "white"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+
+                            MouseArea {
+                                id: changePasswordArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: changePasswordDialog.open()
+                            }
+
+                            Behavior on color { ColorAnimation { duration: 150 } }
+                        }
+                    }
+                }
+            }
+
+            // ==================== KULLANICI YÖNETİMİ (SADECE ADMİN) ====================
+
+            // Onay Bekleyen Kullanıcılar (Sadece Admin)
+            Rectangle {
+                visible: isAdmin
                 Layout.fillWidth: true
                 Layout.minimumHeight: pendingContent.implicitHeight + 40
                 color: root.surfaceColor
@@ -159,7 +373,7 @@ Rectangle {
                                         }
                                     }
 
-                                    // Onayla butonu - BÜYÜK
+                                    // Onayla butonu
                                     Rectangle {
                                         width: approveText.width + 30
                                         height: 44
@@ -201,7 +415,7 @@ Rectangle {
                                         Behavior on color { ColorAnimation { duration: 150 } }
                                     }
 
-                                    // Reddet butonu - BÜYÜK
+                                    // Reddet butonu
                                     Rectangle {
                                         width: rejectText.width + 30
                                         height: 44
@@ -276,8 +490,9 @@ Rectangle {
                 }
             }
 
-            // Tüm Kullanıcılar
+            // Tüm Kullanıcılar (Sadece Admin)
             Rectangle {
+                visible: isAdmin
                 Layout.fillWidth: true
                 Layout.minimumHeight: allUsersContent.implicitHeight + 40
                 color: root.surfaceColor
@@ -426,6 +641,24 @@ Rectangle {
                                                     color: "white"
                                                 }
                                             }
+
+                                            // Mevcut kullanıcı etiketi
+                                            Rectangle {
+                                                visible: modelData.username === currentUsername
+                                                width: youLabel.width + 12
+                                                height: 20
+                                                radius: 10
+                                                color: "#4CAF50"
+
+                                                Text {
+                                                    id: youLabel
+                                                    anchors.centerIn: parent
+                                                    text: tr("YOU")
+                                                    font.pixelSize: app.smallFontSize * 0.8
+                                                    font.bold: true
+                                                    color: "white"
+                                                }
+                                            }
                                         }
 
                                         Text {
@@ -435,7 +668,7 @@ Rectangle {
                                         }
                                     }
 
-                                    // Düzenle butonu - BÜYÜK
+                                    // Düzenle butonu
                                     Rectangle {
                                         width: editBtnText.width + 30
                                         height: 44
@@ -477,7 +710,7 @@ Rectangle {
                                         Behavior on color { ColorAnimation { duration: 150 } }
                                     }
 
-                                    // Sil butonu - BÜYÜK
+                                    // Sil butonu
                                     Rectangle {
                                         width: deleteBtnText.width + 30
                                         height: 44
@@ -508,7 +741,7 @@ Rectangle {
                                             anchors.fill: parent
                                             hoverEnabled: true
                                             cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                            enabled: modelData.username !== authService.currentUser
+                                            enabled: modelData.username !== currentUsername
                                             onClicked: {
                                                 deleteConfirmDialog.userId = modelData.id
                                                 deleteConfirmDialog.username = modelData.username
@@ -527,9 +760,426 @@ Rectangle {
         }
     }
 
-    // ==================== DIALOG'LAR (Karartılmış Arka Plan ile) ====================
+    // ==================== DIALOG'LAR ====================
 
-    // Yeni Kullanıcı Ekleme Dialog
+    // İsim Değiştirme Dialog (Profil için)
+    Dialog {
+        id: changeNameDialog
+        title: ""
+        anchors.centerIn: parent
+        width: 420
+        modal: true
+        dim: true
+
+        onOpened: {
+            newNameField.text = currentUsername
+        }
+
+        Overlay.modal: Rectangle {
+            color: Qt.rgba(0, 0, 0, 0.7)
+        }
+
+        background: Rectangle {
+            color: root.surfaceColor
+            radius: 16
+            border.color: "#2196F3"
+            border.width: 2
+        }
+
+        contentItem: Column {
+            spacing: 24
+            padding: 24
+
+            // Header
+            Row {
+                spacing: 16
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 56
+                    height: 56
+                    radius: 28
+                    color: "#2196F3"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "✎"
+                        font.pixelSize: 26
+                        color: "white"
+                    }
+                }
+
+                Column {
+                    spacing: 4
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Text {
+                        text: tr("Change Name")
+                        font.pixelSize: 22
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    Text {
+                        text: tr("Update your username")
+                        font.pixelSize: 13
+                        color: root.textSecondaryColor
+                    }
+                }
+            }
+
+            Rectangle {
+                width: parent.width - 48
+                height: 1
+                color: root.borderColor
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            // Form
+            Column {
+                width: parent.width - 48
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 18
+
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: tr("New Username")
+                        font.pixelSize: app.baseFontSize
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    TextField {
+                        id: newNameField
+                        width: parent.width
+                        height: 48
+                        placeholderText: tr("Enter new username...")
+                        font.pixelSize: 15
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
+                        leftPadding: 15
+
+                        background: Rectangle {
+                            color: Qt.darker(root.surfaceColor, 1.3)
+                            radius: 10
+                            border.color: newNameField.activeFocus ? "#2196F3" : root.borderColor
+                            border.width: newNameField.activeFocus ? 2 : 1
+                        }
+                    }
+                }
+            }
+
+            // Buttons
+            Row {
+                spacing: 16
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 140
+                    height: 50
+                    radius: 10
+                    color: cancelNameArea.containsMouse ? Qt.lighter(root.borderColor, 1.2) : root.borderColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Cancel")
+                        font.pixelSize: 15
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    MouseArea {
+                        id: cancelNameArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: changeNameDialog.close()
+                    }
+                }
+
+                Rectangle {
+                    width: 140
+                    height: 50
+                    radius: 10
+                    color: saveNameArea.containsMouse ? Qt.lighter("#2196F3", 1.1) : "#2196F3"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Save")
+                        font.pixelSize: 15
+                        font.bold: true
+                        color: "white"
+                    }
+
+                    MouseArea {
+                        id: saveNameArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (newNameField.text.length >= 3 && newNameField.text !== currentUsername) {
+                                if (authService.updateCurrentUserName(newNameField.text)) {
+                                    changeNameDialog.close()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Şifre Değiştirme Dialog (Profil için)
+    Dialog {
+        id: changePasswordDialog
+        title: ""
+        anchors.centerIn: parent
+        width: 420
+        modal: true
+        dim: true
+
+        onOpened: {
+            currentPasswordField.text = ""
+            newPasswordField.text = ""
+            confirmPasswordField.text = ""
+        }
+
+        Overlay.modal: Rectangle {
+            color: Qt.rgba(0, 0, 0, 0.7)
+        }
+
+        background: Rectangle {
+            color: root.surfaceColor
+            radius: 16
+            border.color: "#ff9800"
+            border.width: 2
+        }
+
+        contentItem: Column {
+            spacing: 24
+            padding: 24
+
+            // Header
+            Row {
+                spacing: 16
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 56
+                    height: 56
+                    radius: 28
+                    color: "#ff9800"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "🔒"
+                        font.pixelSize: 26
+                    }
+                }
+
+                Column {
+                    spacing: 4
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Text {
+                        text: tr("Change Password")
+                        font.pixelSize: 22
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    Text {
+                        text: tr("Update your password")
+                        font.pixelSize: 13
+                        color: root.textSecondaryColor
+                    }
+                }
+            }
+
+            Rectangle {
+                width: parent.width - 48
+                height: 1
+                color: root.borderColor
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            // Form
+            Column {
+                width: parent.width - 48
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 18
+
+                // Mevcut şifre
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: tr("Current Password")
+                        font.pixelSize: app.baseFontSize
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    TextField {
+                        id: currentPasswordField
+                        width: parent.width
+                        height: 48
+                        placeholderText: tr("Enter current password...")
+                        echoMode: TextInput.Password
+                        font.pixelSize: 15
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
+                        leftPadding: 15
+
+                        background: Rectangle {
+                            color: Qt.darker(root.surfaceColor, 1.3)
+                            radius: 10
+                            border.color: currentPasswordField.activeFocus ? "#ff9800" : root.borderColor
+                            border.width: currentPasswordField.activeFocus ? 2 : 1
+                        }
+                    }
+                }
+
+                // Yeni şifre
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: tr("New Password")
+                        font.pixelSize: app.baseFontSize
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    TextField {
+                        id: newPasswordField
+                        width: parent.width
+                        height: 48
+                        placeholderText: tr("Minimum 6 characters")
+                        echoMode: TextInput.Password
+                        font.pixelSize: 15
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
+                        leftPadding: 15
+
+                        background: Rectangle {
+                            color: Qt.darker(root.surfaceColor, 1.3)
+                            radius: 10
+                            border.color: newPasswordField.activeFocus ? "#ff9800" : root.borderColor
+                            border.width: newPasswordField.activeFocus ? 2 : 1
+                        }
+                    }
+                }
+
+                // Şifre tekrar
+                Column {
+                    width: parent.width
+                    spacing: 8
+
+                    Text {
+                        text: tr("Confirm Password")
+                        font.pixelSize: app.baseFontSize
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    TextField {
+                        id: confirmPasswordField
+                        width: parent.width
+                        height: 48
+                        placeholderText: tr("Re-enter new password...")
+                        echoMode: TextInput.Password
+                        font.pixelSize: 15
+                        color: root.textColor
+                        placeholderTextColor: root.textSecondaryColor
+                        leftPadding: 15
+
+                        background: Rectangle {
+                            color: Qt.darker(root.surfaceColor, 1.3)
+                            radius: 10
+                            border.color: confirmPasswordField.activeFocus ? "#ff9800" : root.borderColor
+                            border.width: confirmPasswordField.activeFocus ? 2 : 1
+                        }
+                    }
+                }
+
+                // Uyarı mesajı
+                Text {
+                    visible: newPasswordField.text.length > 0 && confirmPasswordField.text.length > 0 && newPasswordField.text !== confirmPasswordField.text
+                    text: tr("Passwords do not match")
+                    font.pixelSize: app.smallFontSize
+                    color: "#f44336"
+                }
+            }
+
+            // Buttons
+            Row {
+                spacing: 16
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle {
+                    width: 140
+                    height: 50
+                    radius: 10
+                    color: cancelPassArea.containsMouse ? Qt.lighter(root.borderColor, 1.2) : root.borderColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Cancel")
+                        font.pixelSize: 15
+                        font.bold: true
+                        color: root.textColor
+                    }
+
+                    MouseArea {
+                        id: cancelPassArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: changePasswordDialog.close()
+                    }
+                }
+
+                Rectangle {
+                    width: 140
+                    height: 50
+                    radius: 10
+                    color: savePassArea.containsMouse ? Qt.lighter("#ff9800", 1.1) : "#ff9800"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: tr("Save")
+                        font.pixelSize: 15
+                        font.bold: true
+                        color: "white"
+                    }
+
+                    MouseArea {
+                        id: savePassArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (currentPasswordField.text.length >= 6 &&
+                                newPasswordField.text.length >= 6 &&
+                                newPasswordField.text === confirmPasswordField.text) {
+                                if (authService.changeCurrentUserPassword(currentPasswordField.text, newPasswordField.text)) {
+                                    changePasswordDialog.close()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Yeni Kullanıcı Ekleme Dialog (Admin)
     Dialog {
         id: addUserDialog
         title: ""
@@ -538,7 +1188,6 @@ Rectangle {
         modal: true
         dim: true
 
-        // Karartılmış arka plan
         Overlay.modal: Rectangle {
             color: Qt.rgba(0, 0, 0, 0.7)
         }
@@ -782,7 +1431,7 @@ Rectangle {
         }
     }
 
-    // Kullanıcı Düzenleme Dialog
+    // Kullanıcı Düzenleme Dialog (Admin)
     Dialog {
         id: editUserDialog
         title: ""
@@ -1040,7 +1689,7 @@ Rectangle {
         }
     }
 
-    // Silme Onay Dialog
+    // Silme Onay Dialog (Admin)
     Dialog {
         id: deleteConfirmDialog
         title: ""
